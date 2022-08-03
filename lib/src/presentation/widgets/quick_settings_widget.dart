@@ -14,7 +14,7 @@ class QuickSettingsExtendableButton extends StatelessWidget {
       animation: animation,
       builder: (context, child) {
         return animation.value == 0
-            ? QuickSettingsActionButton()
+            ? const QuickSettingsActionButton()
             : Row(
                 children: [
                   TextButton.icon(
@@ -30,10 +30,9 @@ class QuickSettingsExtendableButton extends StatelessWidget {
 }
 
 class QuickSettingsActionButton extends StatelessWidget {
-  final String _tag = '$QuickSettingsActionButton';
   final EdgeInsetsGeometry padding;
 
-  QuickSettingsActionButton({
+  const QuickSettingsActionButton({
     super.key,
     this.padding = const EdgeInsets.symmetric(
       vertical: AppStyles.menuButtonVerticalPadding,
@@ -55,9 +54,7 @@ class QuickSettingsActionButton extends StatelessWidget {
 }
 
 class QuickSettingsBottomSheet extends StatelessWidget {
-  final String _tag = '$QuickSettingsBottomSheet';
-
-  QuickSettingsBottomSheet({
+  const QuickSettingsBottomSheet({
     super.key,
   });
 

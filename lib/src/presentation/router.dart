@@ -37,10 +37,79 @@ part 'router.gr.dart';
       page: ArtistEditPage,
     ),
 
+    /// Dances
+    AutoRoute(
+      path: AppPaths.kPathDances,
+      page: DanceListPage,
+    ),
+    AutoRoute(
+      path: '${AppPaths.kPathDances}/${AppPaths.kViewCreate}',
+      page: DanceCreatePage,
+    ),
+    RedirectRoute(
+      path: '${AppPaths.kPathDances}/:${AppPaths.kParamDanceId}',
+      redirectTo:
+          '${AppPaths.kPathDances}/:${AppPaths.kParamDanceId}/${AppPaths.kViewDetails}',
+    ),
+    AutoRoute(
+      path:
+          '${AppPaths.kPathDances}/:${AppPaths.kParamDanceId}/${AppPaths.kViewDetails}',
+      page: DanceDetailsPage,
+    ),
+    AutoRoute(
+      path:
+          '${AppPaths.kPathDances}/:${AppPaths.kParamDanceId}/${AppPaths.kViewEdit}',
+      page: DanceEditPage,
+    ),
+
     /// Figures
     AutoRoute(
       path: AppPaths.kPathFigures,
       page: FigureListPage,
+    ),
+    AutoRoute(
+      path: '${AppPaths.kPathFigures}/${AppPaths.kViewCreate}',
+      page: FigureCreatePage,
+    ),
+    RedirectRoute(
+      path: '${AppPaths.kPathFigures}/:${AppPaths.kParamFigureId}',
+      redirectTo:
+          '${AppPaths.kPathFigures}/:${AppPaths.kParamFigureId}/${AppPaths.kViewDetails}',
+    ),
+    AutoRoute(
+      path:
+          '${AppPaths.kPathFigures}/:${AppPaths.kParamFigureId}/${AppPaths.kViewDetails}',
+      page: FigureDetailsPage,
+    ),
+    AutoRoute(
+      path:
+          '${AppPaths.kPathFigures}/:${AppPaths.kParamFigureId}/${AppPaths.kViewEdit}',
+      page: FigureEditPage,
+    ),
+
+    /// Practices
+    AutoRoute(
+      path: AppPaths.kPathPractices,
+      page: PracticeListPage,
+    ),
+    AutoRoute(
+      path: '${AppPaths.kPathPractices}/${AppPaths.kViewCreate}',
+      page: PracticeCreatePage,
+    ),
+    RedirectRoute(
+      path: '${AppPaths.kPathPractices}/:${AppPaths.kParamPracticeId}',
+      redirectTo:
+          '${AppPaths.kPathPractices}/:${AppPaths.kParamPracticeId}/${AppPaths.kViewDetails}',
+    ),
+    AutoRoute(
+      path:
+          '${AppPaths.kPathPractices}/:${AppPaths.kParamPracticeId}/${AppPaths.kViewDetails}',
+      page: PracticeDetailsPage,
+    ),
+    AutoRoute(
+      path:
+          '${AppPaths.kPathPractices}/:${AppPaths.kParamPracticeId}/${AppPaths.kViewEdit}',
+      page: PracticeEditPage,
     ),
 
     /// Videos
@@ -55,16 +124,16 @@ part 'router.gr.dart';
     RedirectRoute(
       path: '${AppPaths.kPathVideos}/:${AppPaths.kParamVideoId}',
       redirectTo:
-      '${AppPaths.kPathVideos}/:${AppPaths.kParamVideoId}/${AppPaths.kViewDetails}',
+          '${AppPaths.kPathVideos}/:${AppPaths.kParamVideoId}/${AppPaths.kViewDetails}',
     ),
     AutoRoute(
       path:
-      '${AppPaths.kPathVideos}/:${AppPaths.kParamVideoId}/${AppPaths.kViewDetails}',
+          '${AppPaths.kPathVideos}/:${AppPaths.kParamVideoId}/${AppPaths.kViewDetails}',
       page: VideoDetailsPage,
     ),
     AutoRoute(
       path:
-      '${AppPaths.kPathVideos}/:${AppPaths.kParamVideoId}/${AppPaths.kViewEdit}',
+          '${AppPaths.kPathVideos}/:${AppPaths.kParamVideoId}/${AppPaths.kViewEdit}',
       page: VideoEditPage,
     ),
 
@@ -75,6 +144,4 @@ part 'router.gr.dart';
     ),
   ],
 )
-class AppRouter extends _$AppRouter {
-  final String _tag = '$AppRouter';
-}
+class AppRouter extends _$AppRouter {}

@@ -23,10 +23,10 @@ class Offset {
   }
 
   @override
-  String toString() => '$runtimeType{ '
+  String toString() => '$runtimeType{'
       'offset: $offset, '
       'limit: $limit'
-      ' }';
+      '}';
 }
 
 class Sort {
@@ -49,8 +49,8 @@ class Sort {
   }
 
   @override
-  String toString() => '$runtimeType{ '
+  String toString() => '$runtimeType{'
       'sortBy: $sortBy, '
       'sortReversed: $sortReversed'
-      ' }';
+      '}';
 }

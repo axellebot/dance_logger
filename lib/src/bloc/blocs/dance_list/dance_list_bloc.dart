@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
@@ -11,54 +13,57 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     required this.danceRepository,
     required this.mapper,
   }) : super(const DanceListUninitialized()) {
-    on<DanceListLoad>((event, emit) async {
-      if (state is DanceListUninitialized) {
-        final List<DanceViewModel> danceViewModels;
-        danceViewModels = await _fetchDances(
-          ofArtist: event.ofArtist,
-          offset: 0,
-        );
-        emit(DanceListLoaded(
-          ofArtist: event.ofArtist,
-          dances: danceViewModels,
-          hasReachedMax: danceViewModels.isEmpty,
-        ));
-      }
-    });
-    on<DanceListLoadMore>((event, emit) async {
-      final List<DanceViewModel> danceViewModels;
+    on<DanceListLoad>(_onDanceListLoad);
+    on<DanceListLoadMore>(_onDanceListLoadMore);
+    on<DanceListRefresh>(_onDanceListRefresh);
+  }
 
-      if (state is DanceListLoaded) {
-        danceViewModels = await _fetchDances(
-          ofArtist: (state as DanceListLoaded).ofArtist,
-          offset: (state as DanceListLoaded).dances.length,
-        );
-        if (danceViewModels.isNotEmpty) {
-          emit((state as DanceListLoaded).copyWith(
-            dances: (state as DanceListLoaded).dances + danceViewModels,
-            hasReachedMax: false,
-          ));
-        } else {
-          emit((state as DanceListLoaded).copyWith(
-            hasReachedMax: true,
-          ));
-        }
-      }
-    });
+  FutureOr<void> _onDanceListLoad(event, emit) async {
+    final List<DanceViewModel> danceViewModels;
+    danceViewModels = await _fetchDances(
+      ofArtist: event.ofArtist,
+      offset: 0,
+    );
+    emit(DanceListLoaded(
+      ofArtist: event.ofArtist,
+      dances: danceViewModels,
+      hasReachedMax: danceViewModels.isEmpty,
+    ));
+  }
 
-    on<DanceListRefresh>((event, emit) async {
-      if (state is DanceListLoaded) {
-        List<DanceViewModel> danceViewModels = await _fetchDances(
-          ofArtist: (state as DanceListLoaded).ofArtist,
-          offset: 0,
-        );
+  FutureOr<void> _onDanceListLoadMore(event, emit) async {
+    final List<DanceViewModel> danceViewModels;
 
+    if (state is DanceListLoaded) {
+      danceViewModels = await _fetchDances(
+        ofArtist: (state as DanceListLoaded).ofArtist,
+        offset: (state as DanceListLoaded).dances.length,
+      );
+      if (danceViewModels.isNotEmpty) {
         emit((state as DanceListLoaded).copyWith(
-          dances: danceViewModels,
+          dances: (state as DanceListLoaded).dances + danceViewModels,
           hasReachedMax: false,
         ));
+      } else {
+        emit((state as DanceListLoaded).copyWith(
+          hasReachedMax: true,
+        ));
       }
-    });
+    }
+  }
+
+  FutureOr<void> _onDanceListRefresh(event, emit) async {
+    if (state is DanceListLoaded) {
+      List<DanceViewModel> danceViewModels = await _fetchDances(
+        ofArtist: (state as DanceListLoaded).ofArtist,
+        offset: 0,
+      );
+
+      emit((state as DanceListLoaded).copyWith(
+        dances: danceViewModels,
+        hasReachedMax: false,
+      ));
+    }
   }
 
   Future<List<DanceViewModel>> _fetchDances({

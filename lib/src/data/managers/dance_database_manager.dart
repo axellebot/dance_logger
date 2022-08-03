@@ -762,6 +762,34 @@ class DanceDatabaseManager
   }
 
   @override
+  FutureOr<List<VideoDataModel>> getVideosOfDance(
+    String danceId, {
+    required Offset offset,
+  }) async {
+    List results = await db.rawQuery(
+      '''
+      SELECT DISTINCT v.* FROM videos v
+      INNER JOIN timecodes tc
+      ON v.video_id = tc.video_id
+        INNER JOIN figures f
+        ON f.figure_id = tc.figure_id
+      WHERE f.dance_id = ?
+      LIMIT ?
+      OFFSET ?
+    ''',
+      [
+        danceId,
+        offset.limit,
+        offset.offset,
+      ],
+    );
+
+    List<VideoDataModel> videos =
+        results.map((e) => VideoDataModel.fromJson(e)).toList();
+    return videos;
+  }
+
+  @override
   FutureOr<List<VideoDataModel>> getVideosOfFigure(
     String figureId, {
     required Offset offset,

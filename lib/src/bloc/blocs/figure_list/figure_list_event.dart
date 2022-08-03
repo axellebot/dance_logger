@@ -1,4 +1,3 @@
-import 'package:dance/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import 'figure_list_params.dart';

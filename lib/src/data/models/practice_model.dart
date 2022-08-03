@@ -11,11 +11,15 @@ class PracticeDataModel implements PracticeEntity {
 
   @override
   @JsonKey(name: 'date')
-  DateTime date;
+  DateTime doneAt;
 
   @override
   @JsonKey(name: 'status')
   String status;
+
+  @override
+  @JsonKey(name: 'figure_id')
+  String figureId;
 
   @override
   @JsonKey(name: 'created_at')
@@ -31,8 +35,9 @@ class PracticeDataModel implements PracticeEntity {
 
   PracticeDataModel({
     required this.id,
-    required this.date,
+    required this.doneAt,
     required this.status,
+    required this.figureId,
     required this.createdAt,
     required this.updatedAt,
     required this.version,

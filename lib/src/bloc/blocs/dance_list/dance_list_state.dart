@@ -1,6 +1,7 @@
 import 'package:dance/presentation.dart';
-import 'package:dance/src/bloc/blocs/dance_list/dance_list_params.dart';
 import 'package:equatable/equatable.dart';
+
+import 'dance_list_params.dart';
 
 abstract class DanceListState extends Equatable {
   const DanceListState();
@@ -32,12 +33,18 @@ class DanceListRefreshing extends DanceListState {
 class DanceListLoaded extends DanceListState implements DanceListParams {
   @override
   final String? ofArtist;
+  @override
+  final String? ofFigure;
+  @override
+  final String? ofVideo;
 
   final List<DanceViewModel> dances;
   final bool hasReachedMax;
 
   const DanceListLoaded({
     this.ofArtist,
+    this.ofFigure,
+    this.ofVideo,
     required this.dances,
     required this.hasReachedMax,
   });
@@ -47,13 +54,15 @@ class DanceListLoaded extends DanceListState implements DanceListParams {
 
   DanceListLoaded copyWith({
     String? ofArtist,
-    String? ofDance,
+    String? ofFigure,
     String? ofVideo,
     List<DanceViewModel>? dances,
     bool? hasReachedMax,
   }) {
     return DanceListLoaded(
       ofArtist: ofArtist ?? this.ofArtist,
+      ofFigure: ofFigure ?? this.ofFigure,
+      ofVideo: ofVideo ?? this.ofVideo,
       dances: dances ?? this.dances,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
     );
@@ -63,6 +72,8 @@ class DanceListLoaded extends DanceListState implements DanceListParams {
   String toString() {
     return 'DanceListLoaded{'
         'ofArtist: $ofArtist, '
+        'ofFigure: $ofFigure, '
+        'ofVideo: $ofVideo, '
         'dances: $dances, '
         'hasReachedMax: $hasReachedMax'
         '}';

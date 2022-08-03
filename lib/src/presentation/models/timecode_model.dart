@@ -18,7 +18,7 @@ class TimeViewModel extends BaseViewModel {
   });
 
   @override
-  String toString() => '$runtimeType{ '
+  String toString() => '$runtimeType{'
       'id: $id, '
       'startTime: $startTime, '
       'endTime: $endTime, '
@@ -28,5 +28,5 @@ class TimeViewModel extends BaseViewModel {
       'createdAt: $createdAt, '
       'updatedAt: $updatedAt, '
       'version: $version'
-      ' }';
+      '}';
 }

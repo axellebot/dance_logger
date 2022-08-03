@@ -6,26 +6,54 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-class ArtistListPage extends StatelessWidget implements AutoRouteWrapper {
+class ArtistListPage extends StatelessWidget
+    implements AutoRouteWrapper, ArtistListParams {
+  @override
+  final String? ofDance;
+  @override
+  final String? ofFigure;
+  @override
+  final String? ofVideo;
+  final ArtistListBloc? artistListBloc;
+
   const ArtistListPage({
     super.key,
+    this.ofDance,
+    this.ofFigure,
+    this.ofVideo,
+    this.artistListBloc,
   });
 
   @override
   Widget build(BuildContext context) {
-    return const ArtistListView();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Artists'),
+      ),
+      body: const ArtistListView(),
+    );
   }
 
   @override
   Widget wrappedRoute(BuildContext context) {
     final repo = Provider.of<ArtistRepository>(context, listen: false);
-
-    return BlocProvider<ArtistListBloc>(
-      create: (_) => ArtistListBloc(
-        artistRepository: repo,
-        mapper: ModelMapper(),
-      )..add(const ArtistListLoadMore()),
-      child: this,
-    );
+    if (artistListBloc != null) {
+      return BlocProvider<ArtistListBloc>.value(
+        value: artistListBloc!,
+        child: this,
+      );
+    } else {
+      return BlocProvider<ArtistListBloc>(
+        create: (_) => ArtistListBloc(
+          artistRepository: repo,
+          mapper: ModelMapper(),
+        )..add(ArtistListLoad(
+            ofDance: ofDance,
+            ofFigure: ofFigure,
+            ofVideo: ofVideo,
+          )),
+        child: this,
+      );
+    }
   }
 }

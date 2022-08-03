@@ -12,10 +12,10 @@ abstract class BaseViewModel {
   }) : super();
 
   @override
-  String toString() => '$runtimeType{ '
+  String toString() => '$runtimeType{'
       'id: $id, '
       'createdAt: $createdAt, '
       'updatedAt: $updatedAt, '
       'version: $version'
-      ' }';
+      '}';
 }

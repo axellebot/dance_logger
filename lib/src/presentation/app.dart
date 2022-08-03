@@ -15,70 +15,77 @@ class ConfigWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<ConfigurationBloc>(
       create: (_) => ConfigurationBloc()..add(ConfigLoad()),
-      child: AppWrapper(),
+      child: const RepoWrapper(),
     );
   }
 }
 
-class AppWrapper extends StatelessWidget {
-  const AppWrapper({super.key});
+class RepoWrapper extends StatelessWidget {
+  const RepoWrapper({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ConfigurationBloc, ConfigurationState>(
-      builder: (context, ConfigurationState state) {
-        if (state is ConfigNotLoaded || state is ConfigLoaded) {
-          late AppPrefsRepository appPrefsRepository;
-          late List<Provider> providers;
+    return BlocBuilder<ConfigurationBloc, ConfigState>(
+      builder: (context, ConfigState state) {
+        switch (state.status) {
+          case ConfigStatus.notReady:
+          case ConfigStatus.ready:
+            late AppPrefsRepository appPrefsRepository;
+            late List<Provider> providers;
 
-          if (state is ConfigNotLoaded) {
-            appPrefsRepository = state.appPrefsRepository;
-            providers = <Provider>[
-              RepositoryProvider<AppPrefsRepository>.value(
-                value: appPrefsRepository,
+            if (state.status == ConfigStatus.notReady) {
+              appPrefsRepository = state.appPrefsRepository!;
+              providers = <Provider>[
+                RepositoryProvider<AppPrefsRepository>.value(
+                  value: state.appPrefsRepository!,
+                ),
+              ];
+            } else if (state.status == ConfigStatus.ready) {
+              /// Dependency Injection of repositories
+              /// Use updateShouldNotify to make dependencies available in
+              /// `initState` methods of children widgets
+              appPrefsRepository = state.appPrefsRepository!;
+              providers = <Provider>[
+                RepositoryProvider<AppPrefsRepository>.value(
+                  value: appPrefsRepository,
+                ),
+                RepositoryProvider<ArtistRepository>.value(
+                  value: state.artistRepository!,
+                ),
+                RepositoryProvider<FigureRepository>.value(
+                  value: state.figureRepository!,
+                ),
+                RepositoryProvider<VideoRepository>.value(
+                  value: state.videoRepository!,
+                ),
+                RepositoryProvider<PracticeRepository>.value(
+                  value: state.practiceRepository!,
+                ),
+                RepositoryProvider<DanceRepository>.value(
+                  value: state.danceRepository!,
+                ),
+              ];
+            }
+            return MultiProvider(
+              providers: providers,
+              child: BlocProvider<AppBloc>(
+                create: (_) =>
+                    AppBloc(appPreferencesRepository: appPrefsRepository)
+                      ..add(AppLaunch()),
+                child: App(),
               ),
-            ];
-          } else if (state is ConfigLoaded) {
-            /// Dependency Injection of repositories
-            /// Use updateShouldNotify to make dependencies available in
-            /// `initState` methods of children widgets
-            appPrefsRepository = state.appPrefsRepository;
-            providers = <Provider>[
-              RepositoryProvider<AppPrefsRepository>.value(
-                value: appPrefsRepository,
-              ),
-              RepositoryProvider<ArtistRepository>.value(
-                value: state.artistRepository,
-              ),
-              RepositoryProvider<FigureRepository>.value(
-                value: state.figureRepository,
-              ),
-              RepositoryProvider<VideoRepository>.value(
-                value: state.videoRepository,
-              ),
-              RepositoryProvider<PracticeRepository>.value(
-                value: state.practiceRepository,
-              ),
-              RepositoryProvider<DanceRepository>.value(
-                value: state.danceRepository,
-              ),
-            ];
-          }
-          return MultiProvider(
-            providers: providers,
-            child: BlocProvider<AppBloc>(
-              create: (_) =>
-                  AppBloc(appPreferencesRepository: appPrefsRepository)
-                    ..add(AppLaunch()),
-              child: App(),
-            ),
-          );
-        } else if (state is ConfigLoading) {
-          return const LoadingApp();
+            );
+          case ConfigStatus.loading:
+            return const LoadingApp();
+          case ConfigStatus.failure:
+            return ErrorApp(
+              error: state.error,
+            );
+          default:
+            return ErrorApp(
+              error: NotSupportedError(message: '${state.runtimeType}'),
+            );
         }
-        return ErrorApp(
-          error: NotSupportedError(message: '${state.runtimeType}'),
-        );
       },
     );
   }
@@ -97,50 +104,54 @@ class App extends StatelessWidget {
 
     return BlocBuilder<AppBloc, AppState>(
       builder: (BuildContext context, AppState state) {
-        if (state is AppUninitialized) {
-          return const LoadingApp();
-        } else if (state is AppInitialized) {
-          ThemeMode themeMode;
-          switch (state.themeMode) {
-            case 0:
-              themeMode = ThemeMode.system;
-              break;
-            case 1:
-              themeMode = ThemeMode.light;
-              break;
-            case 2:
-              themeMode = ThemeMode.dark;
-              break;
-            default:
-              themeMode = ThemeMode.system;
-          }
-          return MaterialApp.router(
-            routerDelegate: appRouter.delegate(),
-            routeInformationParser: appRouter.defaultRouteParser(),
-            onGenerateTitle: (BuildContext context) =>
-                DanceLocalizations.of(context)?.appName ?? 'Dance',
-            theme: _buildTheme(
-              darkMode: false,
-              ultraDark: state.themeUltraDark,
-            ),
-            darkTheme: _buildTheme(
-              darkMode: true,
-              ultraDark: state.themeUltraDark,
-            ),
-            themeMode: themeMode,
-            localizationsDelegates: const [
-              DanceLocalizationsDelegate(),
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: const [
-              Locale('en', ''),
-              Locale('fr', ''),
-            ],
-            debugShowCheckedModeBanner: false,
-          );
+        switch (state.status) {
+          case AppStatus.loading:
+            return const LoadingApp();
+          case AppStatus.success:
+            ThemeMode themeMode;
+            switch (state.themeMode) {
+              case 0:
+                themeMode = ThemeMode.system;
+                break;
+              case 1:
+                themeMode = ThemeMode.light;
+                break;
+              case 2:
+                themeMode = ThemeMode.dark;
+                break;
+              default:
+                themeMode = ThemeMode.system;
+            }
+            return MaterialApp.router(
+              routerDelegate: appRouter.delegate(),
+              routeInformationParser: appRouter.defaultRouteParser(),
+              onGenerateTitle: (BuildContext context) =>
+                  DanceLocalizations.of(context)?.appName ?? 'Dance',
+              theme: _buildTheme(
+                darkMode: false,
+                ultraDark: state.themeUltraDark,
+              ),
+              darkTheme: _buildTheme(
+                darkMode: true,
+                ultraDark: state.themeUltraDark,
+              ),
+              themeMode: themeMode,
+              localizationsDelegates: const [
+                DanceLocalizationsDelegate(),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: const [
+                Locale('en', ''),
+                Locale('fr', ''),
+              ],
+              debugShowCheckedModeBanner: false,
+            );
+          default:
+            return ErrorApp(
+              error: NotImplementedYetError('${state.status}'),
+            );
         }
-        return ErrorApp(error: NotImplementedYetError('${state.runtimeType}'));
       },
     );
   }

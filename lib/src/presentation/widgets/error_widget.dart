@@ -190,12 +190,15 @@ class ErrorListView extends CustomErrorWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget errorWidget = (scrollDirection == Axis.vertical)
+        ? ErrorTile(error: error)
+        : ErrorCard(error: error);
     return ListView(
       scrollDirection: scrollDirection,
       shrinkWrap: shrinkWrap,
       physics: physics,
       children: <Widget>[
-        ErrorTile(error: error),
+        errorWidget,
       ],
     );
   }

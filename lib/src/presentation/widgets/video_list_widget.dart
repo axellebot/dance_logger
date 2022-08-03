@@ -85,16 +85,11 @@ class _VideoListViewLoadedState extends State<_VideoListViewLoaded> {
                 ? state.videos.length
                 : state.videos.length + 1,
             itemBuilder: (context, index) {
-              if (widget.scrollDirection == Axis.vertical) {
-                return (index < state.videos.length)
-                    ? (widget.scrollDirection == Axis.vertical)
-                        ? VideoItemTile(video: state.videos[index])
-                        : VideoItemCard(video: state.videos[index])
-                    : const BottomListLoadingIndicator();
-              }
-              return ErrorListView(
-                error: NotSupportedError(message: '${widget.scrollDirection}'),
-              );
+              return (index < state.videos.length)
+                  ? (widget.scrollDirection == Axis.vertical)
+                      ? VideoItemTile(video: state.videos[index])
+                      : VideoItemCard(video: state.videos[index])
+                  : const RightListLoadingIndicator();
             },
           );
         }
@@ -107,16 +102,17 @@ class _VideoListViewLoadedState extends State<_VideoListViewLoaded> {
   }
 
   void _onScroll() {
-    if (_isAtEnd) {
+    if (_shouldLoadMore) {
       context.read<VideoListBloc>().add(const VideoListLoadMore());
     }
   }
 
-  bool get _isAtEnd {
+  bool get _shouldLoadMore {
     if (!_scrollController.hasClients) return false;
     final maxScroll = _scrollController.position.maxScrollExtent;
+    final scrollThreshold = (maxScroll * 0.9);
     final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll * 0.9);
+    return currentScroll >= scrollThreshold;
   }
 
   @override

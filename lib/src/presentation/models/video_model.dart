@@ -18,7 +18,7 @@ class VideoViewModel extends BaseViewModel {
   });
 
   @override
-  String toString() => '$runtimeType{ '
+  String toString() => '$runtimeType{'
       'id: $id, '
       'name: $name, '
       'url: $url, '
@@ -28,5 +28,5 @@ class VideoViewModel extends BaseViewModel {
       'createdAt: $createdAt, '
       'updatedAt: $updatedAt, '
       'version: $version'
-      ' }';
+      '}';
 }

@@ -1,73 +1,78 @@
 import 'package:dance/domain.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class ConfigurationState extends Equatable {
-  const ConfigurationState();
+enum ConfigStatus { initial, loading, notReady, ready, failure }
 
-  @override
-  String toString() => 'ConfigurationState{}';
-}
+class ConfigState extends Equatable {
+  final ConfigStatus status;
 
-class ConfigLoading extends ConfigurationState {
-  @override
-  List<Object> get props => [];
-}
+  final String? fileDir;
+  final String? fileName;
 
-class ConfigNotLoaded extends ConfigurationState {
-  final AppPrefsRepository appPrefsRepository;
+  final AppPrefsRepository? appPrefsRepository;
+  final DanceRepository? danceRepository;
+  final ArtistRepository? artistRepository;
+  final VideoRepository? videoRepository;
+  final FigureRepository? figureRepository;
+  final PracticeRepository? practiceRepository;
 
-  const ConfigNotLoaded({required this.appPrefsRepository});
+  final Error? error;
 
-  @override
-  List<Object> get props => [appPrefsRepository];
-}
-
-class ConfigLoaded extends ConfigurationState {
-  final AppPrefsRepository appPrefsRepository;
-
-  final String fileDir;
-  final String fileName;
-
-  final DanceRepository danceRepository;
-  final ArtistRepository artistRepository;
-  final VideoRepository videoRepository;
-  final FigureRepository figureRepository;
-  final PracticeRepository practiceRepository;
-
-  const ConfigLoaded({
-    required this.fileDir,
-    required this.fileName,
-    required this.appPrefsRepository,
-    required this.danceRepository,
-    required this.artistRepository,
-    required this.videoRepository,
-    required this.figureRepository,
-    required this.practiceRepository,
+  const ConfigState({
+    this.status = ConfigStatus.initial,
+    this.fileDir,
+    this.fileName,
+    this.appPrefsRepository,
+    this.danceRepository,
+    this.artistRepository,
+    this.videoRepository,
+    this.figureRepository,
+    this.practiceRepository,
+    this.error,
   });
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
+        status,
         fileDir,
         fileName,
         appPrefsRepository,
-        danceRepository,
         artistRepository,
-        videoRepository,
+        danceRepository,
         figureRepository,
         practiceRepository,
+        videoRepository,
+        error,
       ];
-}
 
-class ConfigFailed extends ConfigurationState {
-  final Error error;
-
-  const ConfigFailed({required this.error}) : super();
+  ConfigState copyWith({
+    ConfigStatus? status,
+    String? fileDir,
+    String? fileName,
+    AppPrefsRepository? appPrefsRepository,
+    ArtistRepository? artistRepository,
+    DanceRepository? danceRepository,
+    FigureRepository? figureRepository,
+    PracticeRepository? practiceRepository,
+    VideoRepository? videoRepository,
+    Error? error,
+  }) {
+    return ConfigState(
+      status: status ?? this.status,
+      fileDir: fileDir ?? this.fileDir,
+      fileName: fileName ?? this.fileName,
+      appPrefsRepository: appPrefsRepository ?? this.appPrefsRepository,
+      artistRepository: artistRepository ?? this.artistRepository,
+      danceRepository: danceRepository ?? this.danceRepository,
+      figureRepository: figureRepository ?? this.figureRepository,
+      practiceRepository: practiceRepository ?? this.practiceRepository,
+      videoRepository: videoRepository ?? this.videoRepository,
+      error: error ?? this.error,
+    );
+  }
 
   @override
-  List<Object> get props => [error];
-
-  @override
-  String toString() => 'ConfigFailed{'
-      'error: $error'
-      '}';
+  String toString() {
+    return 'ConfigurationState{status: $status, fileDir: $fileDir, fileName: $fileName, appPrefsRepository: $appPrefsRepository, danceRepository: $danceRepository, artistRepository: $artistRepository, videoRepository: $videoRepository, figureRepository: $figureRepository, practiceRepository: $practiceRepository, error: $error}';
+  }
 }

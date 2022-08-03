@@ -76,4 +76,16 @@ class ImplVideoRepository extends VideoRepository {
     );
     return dataModels;
   }
+
+  @override
+  FutureOr<List<VideoEntity>> getVideosOfDance(String danceId, {required Offset offset}) async {
+    if (kDebugMode) print('$_tag:getVideosOfDance($danceId)');
+    final dataModels = await factory.databaseDataStore.getVideosOfDance(
+      danceId,
+      offset: offset,
+    );
+    return dataModels;
+  }
+
+
 }

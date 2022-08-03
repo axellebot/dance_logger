@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
@@ -11,23 +13,60 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
     required this.practiceRepository,
     required this.mapper,
   }) : super(const PracticeListUninitialized()) {
-    on<PracticeListLoadMore>((event, emit) async {
-      List<PracticeViewModel> practiceViewModels = await _fetchPractices(
-        offset: (state is PracticeListLoaded)
-            ? (state as PracticeListLoaded).practices.length
-            : 0,
+    on<PracticeListLoad>(_onPracticeListLoad);
+    on<PracticeListLoadMore>(_onPracticeListLoadMore);
+    on<PracticeListRefresh>(_onPracticeListRefresh);
+  }
+
+  FutureOr<void> _onPracticeListLoad(event, emit) async {
+    final List<PracticeViewModel> practiceViewModels;
+    practiceViewModels = await _fetchPractices(
+      ofDance: event.ofDance,
+      ofFigure: event.ofFigure,
+      ofVideo: event.ofVideo,
+      offset: 0,
+    );
+    emit(PracticeListLoaded(
+      ofDance: event.ofDance,
+      ofFigure: event.ofFigure,
+      ofVideo: event.ofVideo,
+      practices: practiceViewModels,
+      hasReachedMax: false,
+    ));
+  }
+
+  FutureOr<void> _onPracticeListLoadMore(event, emit) async {
+    if (state is PracticeListLoaded) {
+      List<PracticeViewModel> practiceViewModels;
+
+      practiceViewModels = await _fetchPractices(
+        ofArtist: (state as PracticeListLoaded).ofArtist,
+        ofDance: (state as PracticeListLoaded).ofDance,
+        ofFigure: (state as PracticeListLoaded).ofFigure,
+        ofVideo: (state as PracticeListLoaded).ofVideo,
+        offset: (state as PracticeListLoaded).practices.length,
       );
+      if (practiceViewModels.isNotEmpty) {
+        emit((state as PracticeListLoaded).copyWith(
+          practices:
+              (state as PracticeListLoaded).practices + practiceViewModels,
+          hasReachedMax: false,
+        ));
+      } else {
+        emit((state as PracticeListLoaded).copyWith(
+          hasReachedMax: true,
+        ));
+      }
+    }
+  }
 
-      emit(PracticeListLoaded(
-        practices: (state is PracticeListLoaded)
-            ? (state as PracticeListLoaded).practices + practiceViewModels
-            : practiceViewModels,
-        hasReachedMax: practiceViewModels.isEmpty,
-      ));
-    });
-
-    on<PracticeListRefresh>((event, emit) async {
+  FutureOr<void> _onPracticeListRefresh(event, emit) async {
+    if (state is PracticeListLoaded) {
       List<PracticeViewModel> practiceViewModels = await _fetchPractices(
+        ofArtist: (state as PracticeListLoaded).ofArtist,
+        ofDance: (state as PracticeListLoaded).ofDance,
+        ofFigure: (state as PracticeListLoaded).ofFigure,
+        ofVideo: (state as PracticeListLoaded).ofVideo,
         offset: 0,
       );
 
@@ -35,19 +74,34 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
         practices: practiceViewModels,
         hasReachedMax: false,
       ));
-    });
+    }
   }
 
   Future<List<PracticeViewModel>> _fetchPractices({
+    String? ofArtist,
+    String? ofDance,
+    String? ofFigure,
+    String? ofVideo,
     required int offset,
     int limit = 10,
   }) async {
-    List<PracticeEntity> practiceEntities = await practiceRepository.getList(
-      offset: Offset(
-        offset: offset,
-        limit: limit,
-      ),
-    );
+    List<PracticeEntity> practiceEntities;
+    if (ofFigure != null) {
+      practiceEntities = await practiceRepository.getPracticesOfFigure(
+        ofFigure,
+        offset: Offset(
+          offset: offset,
+          limit: limit,
+        ),
+      );
+    } else {
+      practiceEntities = await practiceRepository.getList(
+        offset: Offset(
+          offset: offset,
+          limit: limit,
+        ),
+      );
+    }
 
     List<PracticeViewModel> practiceViewModels = practiceEntities
         .map<PracticeViewModel>(

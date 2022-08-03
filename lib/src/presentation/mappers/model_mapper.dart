@@ -4,8 +4,6 @@ import 'package:dance/presentation.dart';
 
 /// [ModelMapper] for MVVM pattern
 class ModelMapper {
-  final String _tag = '$ModelMapper';
-
   static ModelMapper? _instance;
 
   static _initState() {
@@ -54,7 +52,9 @@ class ModelMapper {
   PracticeViewModel toPracticeViewModel(PracticeEntity dataModel) {
     return PracticeViewModel(
       id: dataModel.id,
+      doneAt: dataModel.doneAt,
       status: dataModel.status,
+      figureId:dataModel.figureId,
       createdAt: dataModel.createdAt,
       updatedAt: dataModel.updatedAt,
       version: dataModel.version,

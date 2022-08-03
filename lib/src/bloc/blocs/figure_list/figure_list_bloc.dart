@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
@@ -11,62 +13,65 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
     required this.figureRepository,
     required this.mapper,
   }) : super(const FigureListUninitialized()) {
-    on<FigureListLoad>((event, emit) async {
-      if (state is FigureListUninitialized) {
-        final List<FigureViewModel> figureViewModels;
-        figureViewModels = await _fetchFigures(
-          ofArtist: event.ofArtist,
-          ofDance: event.ofDance,
-          ofVideo: event.ofVideo,
-          offset: 0,
-        );
-        emit(FigureListLoaded(
-          ofArtist: event.ofArtist,
-          ofDance: event.ofDance,
-          ofVideo: event.ofVideo,
-          figures: figureViewModels,
-          hasReachedMax: figureViewModels.isEmpty,
-        ));
-      }
-    });
-    on<FigureListLoadMore>((event, emit) async {
-      final List<FigureViewModel> figureViewModels;
+    on<FigureListLoad>(_onFigureListLoad);
+    on<FigureListLoadMore>(_onFigureListLoadMore);
+    on<FigureListRefresh>(_onFigureListRefresh);
+  }
 
-      if (state is FigureListLoaded) {
-        figureViewModels = await _fetchFigures(
-          ofArtist: (state as FigureListLoaded).ofArtist,
-          ofDance: (state as FigureListLoaded).ofDance,
-          ofVideo: (state as FigureListLoaded).ofVideo,
-          offset: (state as FigureListLoaded).figures.length,
-        );
-        if (figureViewModels.isNotEmpty) {
-          emit((state as FigureListLoaded).copyWith(
-            figures: (state as FigureListLoaded).figures + figureViewModels,
-            hasReachedMax: false,
-          ));
-        } else {
-          emit((state as FigureListLoaded).copyWith(
-            hasReachedMax: true,
-          ));
-        }
-      }
-    });
+  FutureOr<void> _onFigureListLoad(event, emit) async {
+    final List<FigureViewModel> figureViewModels;
+    figureViewModels = await _fetchFigures(
+      ofArtist: event.ofArtist,
+      ofDance: event.ofDance,
+      ofVideo: event.ofVideo,
+      offset: 0,
+    );
+    emit(FigureListLoaded(
+      ofArtist: event.ofArtist,
+      ofDance: event.ofDance,
+      ofVideo: event.ofVideo,
+      figures: figureViewModels,
+      hasReachedMax: figureViewModels.isEmpty,
+    ));
+  }
 
-    on<FigureListRefresh>((event, emit) async {
-      if (state is FigureListLoaded) {
-        List<FigureViewModel> figureViewModels = await _fetchFigures(
-          ofArtist: (state as FigureListLoaded).ofArtist,
-          ofDance: (state as FigureListLoaded).ofDance,
-          ofVideo: (state as FigureListLoaded).ofVideo,
-          offset: 0,
-        );
+  FutureOr<void> _onFigureListLoadMore(event, emit) async {
+    final List<FigureViewModel> figureViewModels;
 
+    if (state is FigureListLoaded) {
+      figureViewModels = await _fetchFigures(
+        ofArtist: (state as FigureListLoaded).ofArtist,
+        ofDance: (state as FigureListLoaded).ofDance,
+        ofVideo: (state as FigureListLoaded).ofVideo,
+        offset: (state as FigureListLoaded).figures.length,
+      );
+      if (figureViewModels.isNotEmpty) {
         emit((state as FigureListLoaded).copyWith(
-          figures: figureViewModels,
+          figures: (state as FigureListLoaded).figures + figureViewModels,
           hasReachedMax: false,
         ));
+      } else {
+        emit((state as FigureListLoaded).copyWith(
+          hasReachedMax: true,
+        ));
       }
-    });
+    }
+  }
+
+  FutureOr<void> _onFigureListRefresh(event, emit) async {
+    if (state is FigureListLoaded) {
+      List<FigureViewModel> figureViewModels = await _fetchFigures(
+        ofArtist: (state as FigureListLoaded).ofArtist,
+        ofDance: (state as FigureListLoaded).ofDance,
+        ofVideo: (state as FigureListLoaded).ofVideo,
+        offset: 0,
+      );
+
+      emit((state as FigureListLoaded).copyWith(
+        figures: figureViewModels,
+        hasReachedMax: false,
+      ));
+    }
   }
 
   Future<List<FigureViewModel>> _fetchFigures({

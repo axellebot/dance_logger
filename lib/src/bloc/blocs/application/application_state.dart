@@ -1,46 +1,42 @@
 import 'package:equatable/equatable.dart';
 
-abstract class AppState extends Equatable {
-  const AppState() : super();
+enum AppStatus { initial, loading, success, failure }
 
-  @override
-  List<Object?> get props => [];
-
-  @override
-  String toString() => 'AppState{}';
-}
-
-class AppUninitialized extends AppState {}
-
-class AppInitialized extends AppState {
+class AppState extends Equatable {
+  final AppStatus status;
   final int themeMode;
   final bool themeUltraDark;
+  final Error? error;
 
-  const AppInitialized({
+  const AppState({
+    this.status = AppStatus.initial,
     this.themeMode = 0,
     this.themeUltraDark = false,
+    this.error,
   });
 
   @override
-  List<Object?> get props => [themeMode, themeUltraDark];
+  List<Object?> get props => [status, themeMode, themeUltraDark, error];
+
+  AppState copyWith({
+    AppStatus? status,
+    int? themeMode,
+    bool? themeUltraDark,
+    Error? error,
+  }) {
+    return AppState(
+      status: status ?? this.status,
+      themeMode: themeMode ?? this.themeMode,
+      themeUltraDark: themeUltraDark ?? this.themeUltraDark,
+      error: error ?? this.error,
+    );
+  }
 
   @override
   String toString() => 'AppInitialized{'
+      'status: $status, '
       'themeMode: $themeMode, '
-      'ultraDark: $themeUltraDark'
-      '}';
-}
-
-class AppFailed extends AppState {
-  final Error error;
-
-  const AppFailed({required this.error});
-
-  @override
-  List<Object?> get props => [error];
-
-  @override
-  String toString() => 'AppFailed{'
+      'ultraDark: $themeUltraDark, '
       'error: $error'
       '}';
 }

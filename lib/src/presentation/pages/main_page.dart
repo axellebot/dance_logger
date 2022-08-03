@@ -1,8 +1,6 @@
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
-import 'package:dance/src/presentation/widgets/dance_list_widget.dart';
-import 'package:dance/src/presentation/widgets/video_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,7 +34,7 @@ class _MainPageState extends State<MainPage> {
         title: Text(DanceLocalizations.of(context)?.homeTitle ?? 'Dance'),
         actions: [
           MediaQuery.of(context).orientation == Orientation.portrait
-              ? QuickSettingsActionButton()
+              ? const QuickSettingsActionButton()
               : const SizedBox(),
         ],
       ),
@@ -69,7 +67,7 @@ class _MainPageState extends State<MainPage> {
       return BlocProvider<VideoListBloc>(
         create: (context) {
           VideoRepository videoRepository =
-          RepositoryProvider.of<VideoRepository>(context);
+              RepositoryProvider.of<VideoRepository>(context);
           return VideoListBloc(
             videoRepository: videoRepository,
             mapper: ModelMapper(),
@@ -102,7 +100,17 @@ class _MainPageState extends State<MainPage> {
         child: const DanceListView(),
       );
     } else if (_selectedIndex == 3) {
-      return PracticeListPage();
+      return BlocProvider<PracticeListBloc>(
+        create: (context) {
+          PracticeRepository practiceRepository =
+              RepositoryProvider.of<PracticeRepository>(context);
+          return PracticeListBloc(
+            practiceRepository: practiceRepository,
+            mapper: ModelMapper(),
+          )..add(const PracticeListLoad());
+        },
+        child: const PracticeListView(),
+      );
     }
     return Container();
   }
@@ -114,7 +122,7 @@ class _MainPageState extends State<MainPage> {
       child: NavigationRail(
         labelType: NavigationRailLabelType.none,
         extended: _railExtended,
-        trailing: QuickSettingsActionButton(),
+        trailing: const QuickSettingsActionButton(),
         selectedIndex: _selectedIndex,
         onDestinationSelected: _onItemTapped,
         destinations: const <NavigationRailDestination>[

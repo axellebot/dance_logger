@@ -6,10 +6,10 @@ class LoadingIndicator extends StatelessWidget {
   final double? height;
 
   const LoadingIndicator({
-    Key? key,
+    super.key,
     this.width,
     this.height,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

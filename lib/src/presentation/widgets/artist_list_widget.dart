@@ -1,10 +1,9 @@
 import 'package:dance/bloc.dart';
-import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ArtistListView extends StatelessWidget {
+class ArtistListView extends StatefulWidget {
   final Axis scrollDirection;
 
   const ArtistListView({
@@ -13,59 +12,13 @@ class ArtistListView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    // TODO: Add pull down to refresh
-    return BlocBuilder<ArtistListBloc, ArtistListState>(
-      builder: (BuildContext context, ArtistListState state) {
-        if (state is ArtistListUninitialized) {
-          return ListView(
-            scrollDirection: scrollDirection,
-          );
-        } else if (state is ArtistListRefreshing) {
-          return LoadingListView(
-            scrollDirection: scrollDirection,
-          );
-        } else if (state is ArtistListLoaded) {
-          if (state.artists.isNotEmpty) {
-            return _ArtistListViewLoaded(
-              scrollDirection: scrollDirection,
-            );
-          } else {
-            return ListView(
-              scrollDirection: scrollDirection,
-              children: [
-                (scrollDirection == Axis.vertical)
-                    ? const ListTile(title: Text('No Artists'))
-                    : const Card(child: Text('No Artists'))
-              ],
-            );
-          }
-        }
-        return ErrorListView(
-          scrollDirection: scrollDirection,
-          error: NotSupportedError(message: '${state.runtimeType}'),
-        );
-      },
-    );
-  }
+  State<StatefulWidget> createState() => _ArtistListViewState();
 }
 
-class _ArtistListViewLoaded extends StatefulWidget {
-  final Axis scrollDirection;
-
-  const _ArtistListViewLoaded({
-    super.key,
-    required this.scrollDirection,
-  });
-
-  @override
-  State<StatefulWidget> createState() => _ArtistListViewLoadedState();
-}
-
-class _ArtistListViewLoadedState extends State<_ArtistListViewLoaded> {
+class _ArtistListViewState extends State<ArtistListView> {
   final _scrollController = ScrollController();
 
-  _ArtistListViewLoadedState();
+  _ArtistListViewState();
 
   @override
   void initState() {
@@ -75,9 +28,19 @@ class _ArtistListViewLoadedState extends State<_ArtistListViewLoaded> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: Add pull down to refresh
     return BlocBuilder<ArtistListBloc, ArtistListState>(
-      builder: (context, state) {
-        if (state is ArtistListLoaded) {
+        builder: (BuildContext context, ArtistListState state) {
+      switch (state.status) {
+        case ArtistListStatus.failure:
+          return ErrorListView(error: state.error);
+        case ArtistListStatus.success:
+          if (state.artists.isEmpty) {
+            return EmptyListView(
+              scrollDirection: widget.scrollDirection,
+              label: 'No Artists',
+            );
+          }
           return ListView.builder(
             scrollDirection: widget.scrollDirection,
             controller: _scrollController,
@@ -85,40 +48,33 @@ class _ArtistListViewLoadedState extends State<_ArtistListViewLoaded> {
                 ? state.artists.length
                 : state.artists.length + 1,
             itemBuilder: (context, index) {
-              if (widget.scrollDirection == Axis.vertical) {
-                return (index < state.artists.length)
-                    ? (widget.scrollDirection == Axis.vertical)
-                        ? ArtistItemTile(artist: state.artists[index])
-                        : ArtistItemCard(artist: state.artists[index])
-                    : (widget.scrollDirection == Axis.vertical)
-                        ? const BottomListLoadingIndicator()
-                        : const RightListLoadingIndicator();
-              }
-              return ErrorListView(
-                error: NotSupportedError(message: '${widget.scrollDirection}'),
-              );
+              return (index < state.artists.length)
+                  ? (widget.scrollDirection == Axis.vertical)
+                      ? ArtistItemTile(artist: state.artists[index])
+                      : ArtistItemCard(artist: state.artists[index])
+                  : (widget.scrollDirection == Axis.vertical)
+                      ? const BottomListLoadingIndicator()
+                      : const RightListLoadingIndicator();
             },
           );
-        }
-        return ErrorListView(
-          scrollDirection: widget.scrollDirection,
-          error: NotSupportedError(message: '${state.runtimeType}'),
-        );
-      },
-    );
+        default:
+          return LoadingListView(scrollDirection: widget.scrollDirection);
+      }
+    });
   }
 
   void _onScroll() {
-    if (_isAtEnd) {
+    if (_shouldLoadMore) {
       context.read<ArtistListBloc>().add(const ArtistListLoadMore());
     }
   }
 
-  bool get _isAtEnd {
+  bool get _shouldLoadMore {
     if (!_scrollController.hasClients) return false;
     final maxScroll = _scrollController.position.maxScrollExtent;
+    final scrollThreshold = (maxScroll * 0.9);
     final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll * 0.9);
+    return currentScroll >= scrollThreshold;
   }
 
   @override

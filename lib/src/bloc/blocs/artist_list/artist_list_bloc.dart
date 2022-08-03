@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
@@ -10,62 +12,68 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
   ArtistListBloc({
     required this.artistRepository,
     required this.mapper,
-  }) : super(const ArtistListUninitialized()) {
-    on<ArtistListLoad>((event, emit) async {
-      if (state is ArtistListUninitialized) {
-        final List<ArtistViewModel> artistViewModels;
-        artistViewModels = await _fetchArtists(
-          ofDance: event.ofDance,
-          ofFigure: event.ofFigure,
-          ofVideo: event.ofVideo,
-          offset: 0,
-        );
-        emit(ArtistListLoaded(
-          ofDance: event.ofDance,
-          ofFigure: event.ofFigure,
-          ofVideo: event.ofVideo,
-          artists: artistViewModels,
+  }) : super(const ArtistListState()) {
+    on<ArtistListLoad>(_onArtistListLoad);
+    on<ArtistListLoadMore>(_onArtistListLoadMore);
+    on<ArtistListRefresh>(_onArtistListRefresh);
+  }
+
+  FutureOr<void> _onArtistListLoad(event, emit) async {
+    final List<ArtistViewModel> artistViewModels;
+    artistViewModels = await _fetchArtists(
+      ofDance: event.ofDance,
+      ofFigure: event.ofFigure,
+      ofVideo: event.ofVideo,
+      offset: 0,
+    );
+    emit(state.copyWith(
+      status: ArtistListStatus.success,
+      artists: artistViewModels,
+      hasReachedMax: false,
+    ));
+  }
+
+  FutureOr<void> _onArtistListLoadMore(event, emit) async {
+    if (state.status == ArtistListStatus.success) {
+      final List<ArtistViewModel> artistViewModels;
+      artistViewModels = await _fetchArtists(
+        ofDance: state.ofDance,
+        ofFigure: state.ofFigure,
+        ofVideo: state.ofVideo,
+        offset: state.artists.length,
+      );
+      if (artistViewModels.isNotEmpty) {
+        emit(state.copyWith(
+          artists: List.of(state.artists)..addAll(artistViewModels),
           hasReachedMax: false,
         ));
-      }
-    });
-    on<ArtistListLoadMore>((event, emit) async {
-      if (state is ArtistListLoaded) {
-        final List<ArtistViewModel> artistViewModels;
-        artistViewModels = await _fetchArtists(
-          ofDance: (state as ArtistListLoaded).ofDance,
-          ofFigure: (state as ArtistListLoaded).ofFigure,
-          ofVideo: (state as ArtistListLoaded).ofVideo,
-          offset: (state as ArtistListLoaded).artists.length,
-        );
-        if (artistViewModels.isNotEmpty) {
-          emit((state as ArtistListLoaded).copyWith(
-            artists: (state as ArtistListLoaded).artists + artistViewModels,
-            hasReachedMax: false,
-          ));
-        } else {
-          emit((state as ArtistListLoaded).copyWith(
-            hasReachedMax: true,
-          ));
-        }
-      }
-    });
-
-    on<ArtistListRefresh>((event, emit) async {
-      if (state is ArtistListLoaded) {
-        List<ArtistViewModel> artistViewModels = await _fetchArtists(
-          ofDance: (state as ArtistListLoaded).ofDance,
-          ofFigure: (state as ArtistListLoaded).ofFigure,
-          ofVideo: (state as ArtistListLoaded).ofVideo,
-          offset: 0,
-        );
-
-        emit((state as ArtistListLoaded).copyWith(
-          artists: artistViewModels,
-          hasReachedMax: false,
+      } else {
+        emit(state.copyWith(
+          hasReachedMax: true,
         ));
       }
-    });
+    }
+  }
+
+  FutureOr<void> _onArtistListRefresh(event, emit) async {
+    if (state.status == ArtistListStatus.success) {
+      emit(state.copyWith(
+        status: ArtistListStatus.loading,
+      ));
+
+      List<ArtistViewModel> artistViewModels = await _fetchArtists(
+        ofDance: state.ofDance,
+        ofFigure: state.ofFigure,
+        ofVideo: state.ofVideo,
+        offset: 0,
+      );
+
+      emit(state.copyWith(
+        status: ArtistListStatus.success,
+        artists: artistViewModels,
+        hasReachedMax: false,
+      ));
+    }
   }
 
   Future<List<ArtistViewModel>> _fetchArtists({

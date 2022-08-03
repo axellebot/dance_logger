@@ -9,7 +9,7 @@ void navigateToSettings(BuildContext context) {
 void openQuickSettings(BuildContext context) {
   showModalBottomSheet(
     context: context,
-    builder: (context) => QuickSettingsBottomSheet(),
+    builder: (context) => const QuickSettingsBottomSheet(),
   );
 }
 

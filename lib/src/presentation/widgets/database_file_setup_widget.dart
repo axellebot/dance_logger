@@ -10,34 +10,39 @@ class DatabaseFileSetupTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ConfigurationBloc, ConfigurationState>(
+    return BlocBuilder<ConfigurationBloc, ConfigState>(
       builder: (context, state) {
-        if (state is ConfigLoading) {
-          return const LoadingTile();
-        } else if (state is ConfigNotLoaded || state is ConfigLoaded) {
-          String? dirPath;
-          String? fileName;
-          if (state is ConfigLoaded) {
+        switch (state.status) {
+          case ConfigStatus.loading:
+            return const LoadingTile();
+          case ConfigStatus.notReady:
+          case ConfigStatus.ready:
+            String? dirPath;
+            String? fileName;
             dirPath = state.fileDir;
             fileName = state.fileName;
-          }
-          return ListTile(
-            leading: const Icon(MdiIcons.file),
-            trailing: const Icon(MdiIcons.pencil),
-            title: const Text(
-              'Change file name',
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Directory: $dirPath'),
-                Text('Filename: $fileName'),
-              ],
-            ),
-            onTap: () => openFileSetting(context),
-          );
+            return ListTile(
+              leading: const Icon(MdiIcons.file),
+              trailing: const Icon(MdiIcons.pencil),
+              title: const Text(
+                'Change file name',
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Directory: $dirPath'),
+                  Text('Filename: $fileName'),
+                ],
+              ),
+              onTap: () => openFileSetting(context),
+            );
+          case ConfigStatus.failure:
+            return ErrorTile(error: state.error);
+          default:
+            return ErrorTile(
+              error: NotSupportedError(message: '${state.status}'),
+            );
         }
-        return ErrorTile(error: NotSupportedError());
       },
     );
   }
@@ -54,10 +59,10 @@ class DatabaseFileSettingDialog extends StatelessWidget {
 
     final fieldController = TextEditingController();
 
-    ConfigurationState state = configBloc.state;
+    ConfigState state = configBloc.state;
     _refreshController(state, fieldController);
 
-    return BlocListener<ConfigurationBloc, ConfigurationState>(
+    return BlocListener<ConfigurationBloc, ConfigState>(
       bloc: configBloc,
       listener: (context, state) {
         _refreshController(state, fieldController);
@@ -101,11 +106,15 @@ class DatabaseFileSettingDialog extends StatelessWidget {
   }
 
   void _refreshController(
-      ConfigurationState state, TextEditingController fieldController) {
-    if (state is ConfigNotLoaded) {
-      fieldController.text = '';
-    } else if (state is ConfigLoaded) {
-      fieldController.text = state.fileName;
+    ConfigState state,
+    TextEditingController fieldController,
+  ) {
+    switch (state.status) {
+      case ConfigStatus.ready:
+        fieldController.text = state.fileName!;
+        break;
+      default:
+        fieldController.text = '';
     }
   }
 }

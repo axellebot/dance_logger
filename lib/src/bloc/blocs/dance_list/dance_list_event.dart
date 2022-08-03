@@ -1,4 +1,3 @@
-import 'package:dance/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import 'dance_list_params.dart';
@@ -14,18 +13,26 @@ abstract class DanceListEvent extends Equatable {
 class DanceListLoad extends DanceListEvent implements DanceListParams {
   @override
   final String? ofArtist;
+  @override
+  final String? ofFigure;
+  @override
+  final String? ofVideo;
 
   const DanceListLoad({
     this.ofArtist,
+    this.ofFigure,
+    this.ofVideo,
   });
 
   @override
-  List<Object?> get props => [ofArtist];
+  List<Object?> get props => [ofArtist, ofFigure, ofVideo];
 
   @override
   String toString() {
-    return 'DanceListLoadMore{'
-        'ofArtist: $ofArtist'
+    return 'DanceListLoad{'
+        'ofArtist: $ofArtist, '
+        'ofFigure: $ofFigure, '
+        'ofVideo: $ofVideo'
         '}';
   }
 }

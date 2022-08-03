@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
@@ -11,61 +13,64 @@ class TimeListBloc extends Bloc<TimeListEvent, TimeListState> {
     required this.timeRepository,
     required this.mapper,
   }) : super(const TimeListUninitialized()) {
-    on<TimeListLoad>((event, emit) async {
-      if (state is TimeListUninitialized) {
-        final List<TimeViewModel> timeViewModels;
-        timeViewModels = await _fetchTimes(
-          ofArtist: event.ofArtist,
-          ofFigure: event.ofFigure,
-          ofVideo: event.ofVideo,
-          offset: 0,
-        );
-        emit(TimeListLoaded(
-          ofArtist: event.ofArtist,
-          ofFigure: event.ofFigure,
-          ofVideo: event.ofVideo,
-          times: timeViewModels,
-          hasReachedMax: false,
-        ));
-      }
-    });
-    on<TimeListLoadMore>((event, emit) async {
-      if (state is TimeListLoaded) {
-        final List<TimeViewModel> timeViewModels;
-        timeViewModels = await _fetchTimes(
-          ofArtist: (state as TimeListLoaded).ofArtist,
-          ofFigure: (state as TimeListLoaded).ofFigure,
-          ofVideo: (state as TimeListLoaded).ofVideo,
-          offset: (state as TimeListLoaded).times.length,
-        );
-        if (timeViewModels.isNotEmpty) {
-          emit((state as TimeListLoaded).copyWith(
-            times: (state as TimeListLoaded).times + timeViewModels,
-            hasReachedMax: false,
-          ));
-        } else {
-          emit((state as TimeListLoaded).copyWith(
-            hasReachedMax: true,
-          ));
-        }
-      }
-    });
+    on<TimeListLoad>(_onTimeListLoad);
+    on<TimeListLoadMore>(_onTimeListLoadMore);
+    on<TimeListRefresh>(_onTimeListRefresh);
+  }
 
-    on<TimeListRefresh>((event, emit) async {
-      if (state is TimeListLoaded) {
-        List<TimeViewModel> timeViewModels = await _fetchTimes(
-          ofArtist: (state as TimeListLoaded).ofArtist,
-          ofFigure: (state as TimeListLoaded).ofFigure,
-          ofVideo: (state as TimeListLoaded).ofVideo,
-          offset: 0,
-        );
+  FutureOr<void> _onTimeListLoad(event, emit) async {
+    final List<TimeViewModel> timeViewModels;
+    timeViewModels = await _fetchTimes(
+      ofArtist: event.ofArtist,
+      ofFigure: event.ofFigure,
+      ofVideo: event.ofVideo,
+      offset: 0,
+    );
+    emit(TimeListLoaded(
+      ofArtist: event.ofArtist,
+      ofFigure: event.ofFigure,
+      ofVideo: event.ofVideo,
+      times: timeViewModels,
+      hasReachedMax: false,
+    ));
+  }
 
+  FutureOr<void> _onTimeListLoadMore(event, emit) async {
+    if (state is TimeListLoaded) {
+      final List<TimeViewModel> timeViewModels;
+      timeViewModels = await _fetchTimes(
+        ofArtist: (state as TimeListLoaded).ofArtist,
+        ofFigure: (state as TimeListLoaded).ofFigure,
+        ofVideo: (state as TimeListLoaded).ofVideo,
+        offset: (state as TimeListLoaded).times.length,
+      );
+      if (timeViewModels.isNotEmpty) {
         emit((state as TimeListLoaded).copyWith(
-          times: timeViewModels,
+          times: (state as TimeListLoaded).times + timeViewModels,
           hasReachedMax: false,
         ));
+      } else {
+        emit((state as TimeListLoaded).copyWith(
+          hasReachedMax: true,
+        ));
       }
-    });
+    }
+  }
+
+  FutureOr<void> _onTimeListRefresh(event, emit) async {
+    if (state is TimeListLoaded) {
+      List<TimeViewModel> timeViewModels = await _fetchTimes(
+        ofArtist: (state as TimeListLoaded).ofArtist,
+        ofFigure: (state as TimeListLoaded).ofFigure,
+        ofVideo: (state as TimeListLoaded).ofVideo,
+        offset: 0,
+      );
+
+      emit((state as TimeListLoaded).copyWith(
+        times: timeViewModels,
+        hasReachedMax: false,
+      ));
+    }
   }
 
   Future<List<TimeViewModel>> _fetchTimes({

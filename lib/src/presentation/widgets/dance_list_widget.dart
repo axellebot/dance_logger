@@ -85,18 +85,13 @@ class _DanceListViewLoadedState extends State<_DanceListViewLoaded> {
                 ? state.dances.length
                 : state.dances.length + 1,
             itemBuilder: (context, index) {
-              if (widget.scrollDirection == Axis.vertical) {
-                return (index < state.dances.length)
-                    ? (widget.scrollDirection == Axis.vertical)
-                        ? DanceItemTile(dance: state.dances[index])
-                        : DanceItemChip(dance: state.dances[index])
-                    : (widget.scrollDirection == Axis.vertical)
-                        ? const BottomListLoadingIndicator()
-                        : const RightListLoadingIndicator();
-              }
-              return ErrorListView(
-                error: NotSupportedError(message: '${widget.scrollDirection}'),
-              );
+              return (index < state.dances.length)
+                  ? (widget.scrollDirection == Axis.vertical)
+                      ? DanceItemTile(dance: state.dances[index])
+                      : DanceItemChip(dance: state.dances[index])
+                  : (widget.scrollDirection == Axis.vertical)
+                      ? const BottomListLoadingIndicator()
+                      : const RightListLoadingIndicator();
             },
           );
         }
@@ -109,16 +104,17 @@ class _DanceListViewLoadedState extends State<_DanceListViewLoaded> {
   }
 
   void _onScroll() {
-    if (_isAtEnd) {
+    if (_shouldLoadMore) {
       context.read<DanceListBloc>().add(const DanceListLoadMore());
     }
   }
 
-  bool get _isAtEnd {
+  bool get _shouldLoadMore {
     if (!_scrollController.hasClients) return false;
     final maxScroll = _scrollController.position.maxScrollExtent;
+    final scrollThreshold = (maxScroll * 0.9);
     final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll * 0.9);
+    return currentScroll >= scrollThreshold;
   }
 
   @override

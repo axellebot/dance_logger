@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 class SettingsPage extends StatelessWidget {
-  final String _tag = '$SettingsPage';
-
   SettingsPage({super.key});
 
   @override
@@ -20,7 +18,7 @@ class SettingsPage extends StatelessWidget {
         child: SettingsList(
           sections: [
             SettingsSection(
-              title: Text('Appearence'),
+              title: Text('Appearance'),
               tiles: [
                 CustomSettingsTile(
                   child: ThemeTile(),

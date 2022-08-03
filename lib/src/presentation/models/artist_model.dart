@@ -18,7 +18,7 @@ class ArtistViewModel extends BaseViewModel {
   });
 
   @override
-  String toString() => '$runtimeType{ '
+  String toString() => '$runtimeType{'
       'id: $id, '
       'name: $name, '
       'figures: $figures, '
@@ -26,5 +26,5 @@ class ArtistViewModel extends BaseViewModel {
       'createdAt: $createdAt, '
       'updatedAt: $updatedAt, '
       'version: $version'
-      ' }';
+      '}';
 }

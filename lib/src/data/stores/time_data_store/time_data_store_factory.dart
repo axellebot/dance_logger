@@ -10,7 +10,7 @@ class TimeDataStoreFactory {
   TimeDataStore get create => databaseDataStore;
 
   @override
-  String toString() => '$runtimeType{ '
+  String toString() => '$runtimeType{'
       'databaseDataStore: $databaseDataStore, '
-      ' }';
+      '}';
 }

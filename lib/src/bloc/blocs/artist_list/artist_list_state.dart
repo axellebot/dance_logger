@@ -1,35 +1,13 @@
 import 'package:dance/presentation.dart';
-import 'package:dance/src/bloc/blocs/artist_list/artist_list_params.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class ArtistListState extends Equatable {
-  const ArtistListState();
+import 'artist_list_params.dart';
 
-  @override
-  String toString() => 'ArtistListState{}';
-}
+enum ArtistListStatus { initial, loading, success, failure }
 
-class ArtistListUninitialized extends ArtistListState {
-  const ArtistListUninitialized();
+class ArtistListState extends Equatable implements ArtistListParams {
+  final ArtistListStatus status;
 
-  @override
-  List<Object?> get props => [];
-
-  @override
-  String toString() => 'ArtistListUninitialized{}';
-}
-
-class ArtistListRefreshing extends ArtistListState {
-  const ArtistListRefreshing();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  String toString() => 'ArtistListRefreshing{}';
-}
-
-class ArtistListLoaded extends ArtistListState implements ArtistListParams {
   @override
   final String? ofDance;
   @override
@@ -37,45 +15,55 @@ class ArtistListLoaded extends ArtistListState implements ArtistListParams {
   @override
   final String? ofVideo;
 
+  final Error? error;
+
   final List<ArtistViewModel> artists;
   final bool hasReachedMax;
 
-  const ArtistListLoaded({
+  const ArtistListState({
+    this.status = ArtistListStatus.initial,
     this.ofDance,
     this.ofFigure,
     this.ofVideo,
-    required this.artists,
-    required this.hasReachedMax,
+    this.artists = const <ArtistViewModel>[],
+    this.hasReachedMax = false,
+    this.error,
   });
 
   @override
   List<Object?> get props =>
-      [ofDance, ofFigure, ofVideo, artists, hasReachedMax];
+      [status, ofDance, ofFigure, ofVideo, artists, hasReachedMax, error];
 
-  ArtistListLoaded copyWith({
+  ArtistListState copyWith({
+    ArtistListStatus? status,
     String? ofDance,
     String? ofFigure,
     String? ofVideo,
     List<ArtistViewModel>? artists,
     bool? hasReachedMax,
+    Error? error,
   }) {
-    return ArtistListLoaded(
+    return ArtistListState(
+      status: status ?? this.status,
       ofDance: ofDance ?? this.ofDance,
       ofFigure: ofFigure ?? this.ofFigure,
       ofVideo: ofVideo ?? this.ofVideo,
       artists: artists ?? this.artists,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      error: error ?? this.error,
     );
   }
 
   @override
   String toString() {
     return 'ArtistListLoaded{'
+        'status: $status, '
         'ofDance: $ofDance, '
         'ofFigure: $ofFigure, '
         'ofVideo: $ofVideo, '
         'artists: $artists, '
         'hasReachedMax: $hasReachedMax'
+        'error: $error'
         '}';
   }
 }

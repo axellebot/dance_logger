@@ -53,14 +53,14 @@ class TimeListLoaded extends TimeListState implements TimeListParams {
       [ofArtist, ofFigure, ofVideo, times, hasReachedMax];
 
   TimeListLoaded copyWith({
-    String? ofDance,
+    String? ofArtist,
     String? ofFigure,
     String? ofVideo,
     List<TimeViewModel>? times,
     bool? hasReachedMax,
   }) {
     return TimeListLoaded(
-      ofArtist: ofDance ?? this.ofArtist,
+      ofArtist: ofArtist ?? this.ofArtist,
       ofFigure: ofFigure ?? this.ofFigure,
       ofVideo: ofVideo ?? this.ofVideo,
       times: times ?? this.times,

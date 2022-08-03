@@ -1,6 +1,7 @@
 import 'package:dance/presentation.dart';
-import 'package:dance/src/bloc/blocs/figure_list/figure_list_params.dart';
 import 'package:equatable/equatable.dart';
+
+import 'figure_list_params.dart';
 
 abstract class FigureListState extends Equatable {
   const FigureListState();

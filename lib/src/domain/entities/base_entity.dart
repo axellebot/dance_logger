@@ -5,10 +5,10 @@ abstract class BaseEntity {
   late int version;
 
   @override
-  String toString() => '$runtimeType{ '
+  String toString() => '$runtimeType{'
       'id: $id, '
       'createdAt: $createdAt, '
       'updatedAt: $updatedAt, '
       'version: $version'
-      ' }';
+      '}';
 }

@@ -1,4 +1,3 @@
-import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:dance/src/bloc/blocs/video_list/video_list_params.dart';
 import 'package:equatable/equatable.dart';

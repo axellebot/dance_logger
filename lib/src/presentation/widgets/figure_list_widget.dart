@@ -104,16 +104,17 @@ class _FigureListViewLoadedState extends State<_FigureListViewLoaded> {
   }
 
   void _onScroll() {
-    if (_isAtEnd) {
+    if (_shouldLoadMore) {
       context.read<FigureListBloc>().add(const FigureListLoadMore());
     }
   }
 
-  bool get _isAtEnd {
+  bool get _shouldLoadMore {
     if (!_scrollController.hasClients) return false;
     final maxScroll = _scrollController.position.maxScrollExtent;
+    final scrollThreshold = (maxScroll * 0.9);
     final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll * 0.9);
+    return currentScroll >= scrollThreshold;
   }
 
   @override
