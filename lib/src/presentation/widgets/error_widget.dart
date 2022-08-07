@@ -179,6 +179,7 @@ class ErrorListView extends CustomErrorWidget {
   final Axis scrollDirection;
   final bool shrinkWrap;
   final ScrollPhysics? physics;
+  final EdgeInsets? padding;
 
   const ErrorListView({
     super.key,
@@ -188,6 +189,7 @@ class ErrorListView extends CustomErrorWidget {
     this.scrollDirection = Axis.vertical,
     this.shrinkWrap = false,
     this.physics,
+    this.padding,
   });
 
   @override
@@ -197,6 +199,7 @@ class ErrorListView extends CustomErrorWidget {
         : ErrorCard(error: error);
     return ListView(
       scrollDirection: scrollDirection,
+      padding: padding,
       shrinkWrap: shrinkWrap,
       physics: physics,
       children: <Widget>[

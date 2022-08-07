@@ -53,16 +53,19 @@ class LoadingPage extends StatelessWidget {
 
 class LoadingListView extends StatelessWidget {
   final Axis scrollDirection;
+  final EdgeInsets? padding;
 
   const LoadingListView({
     super.key,
     this.scrollDirection = Axis.vertical,
+    this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       scrollDirection: scrollDirection,
+      padding: padding,
     );
   }
 }

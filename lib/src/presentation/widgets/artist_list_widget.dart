@@ -6,10 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ArtistListView extends StatefulWidget {
   final Axis scrollDirection;
+  final EdgeInsets? padding;
 
   const ArtistListView({
     super.key,
     this.scrollDirection = Axis.vertical,
+    this.padding,
   });
 
   @override
@@ -36,17 +38,20 @@ class _ArtistListViewState extends State<ArtistListView> {
           case ArtistListStatus.loading:
             return LoadingListView(
               scrollDirection: widget.scrollDirection,
+              padding: widget.padding,
             );
           case ArtistListStatus.failure:
           case ArtistListStatus.success:
             if (state.artists.isEmpty) {
               return EmptyListView(
                 scrollDirection: widget.scrollDirection,
+                padding: widget.padding,
                 label: 'No Artists',
               );
             } else {
               return ListView.builder(
                 scrollDirection: widget.scrollDirection,
+                padding: widget.padding,
                 controller: _scrollController,
                 itemCount: state.hasReachedMax
                     ? state.artists.length
@@ -65,6 +70,7 @@ class _ArtistListViewState extends State<ArtistListView> {
           default:
             return ErrorListView(
               scrollDirection: widget.scrollDirection,
+              padding: widget.padding,
               error: NotSupportedError(message: '${state.status}'),
             );
         }
