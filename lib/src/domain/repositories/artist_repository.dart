@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:dance/domain.dart';
 
-/// Repository interface for artists purpose
+/// Repository interface for artists
 abstract class ArtistRepository extends EntityRepository<ArtistEntity> {
 
   FutureOr<List<ArtistEntity>> getArtistsOfFigure(

@@ -32,7 +32,7 @@ abstract class ArtistDataStore {
     required Offset offset,
   });
 
-  FutureOr<List<ArtistDataModel>> getArtistsOfTime(
+  FutureOr<List<ArtistDataModel>> getArtistsOfMoment(
     String timeId, {
 
     /// TODO: Add filters

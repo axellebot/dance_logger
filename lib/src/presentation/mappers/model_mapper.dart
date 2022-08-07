@@ -62,7 +62,7 @@ class ModelMapper {
   }
 
   /// [MomentEntity] to [MomentViewModel]
-  MomentViewModel toTimeViewModel(MomentEntity dataModel) {
+  MomentViewModel tomomentViewModel(MomentEntity dataModel) {
     return MomentViewModel(
       id: dataModel.id,
       startTime: dataModel.startTime,

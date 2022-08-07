@@ -100,7 +100,7 @@ class ImplArtistRepository extends ArtistRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$_tag:getArtistsOfTime($timeId)');
-    final dataModels = await factory.databaseDataStore.getArtistsOfTime(
+    final dataModels = await factory.databaseDataStore.getArtistsOfMoment(
       timeId,
       offset: offset,
     );

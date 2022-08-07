@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:dance/domain.dart';
 
-/// Repository interface for dance purpose
+/// Repository interface for dances
 abstract class DanceRepository extends EntityRepository<DanceEntity> {
   FutureOr<List<DanceEntity>> getDancesOfArtist(
     String artistId, {

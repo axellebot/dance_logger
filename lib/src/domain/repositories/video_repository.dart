@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:dance/domain.dart';
 
-/// Repository interface for video purpose
+/// Repository interface for videos
 abstract class VideoRepository extends EntityRepository<VideoEntity> {
   FutureOr<List<VideoEntity>> getVideosOfArtist(
     String artistId, {

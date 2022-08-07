@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:dance/domain.dart';
 
-/// Repository interface for practice purpose
+/// Repository interface for practices
 abstract class PracticeRepository extends EntityRepository<PracticeEntity> {
   FutureOr<List<PracticeEntity>> getPracticesOfFigure(
     String figureId, {

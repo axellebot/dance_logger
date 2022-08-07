@@ -140,8 +140,8 @@ class DanceDatabaseManager
           moment_id TEXT PRIMARY KEY,
           video_id TEXT NOT NULL,
           figure_id TEXT NOT NULL,
-          start_time TEXT,
-          end_time TEXT,
+          start_time INTEGER NOT NULL,
+          end_time INTEGER,
           created_at TEXT NOT NULL,
           updated_at TEXT NOT NULL,
           version INTEGER NOT NULL,
@@ -306,8 +306,8 @@ class DanceDatabaseManager
   }
 
   @override
-  FutureOr<List<ArtistDataModel>> getArtistsOfTime(
-    String timeId, {
+  FutureOr<List<ArtistDataModel>> getArtistsOfMoment(
+    String momentId, {
     required Offset offset,
   }) async {
     List results = await db.rawQuery(
@@ -320,7 +320,7 @@ class DanceDatabaseManager
       OFFSET ?
     ''',
       [
-        timeId,
+        momentId,
         offset.limit,
         offset.offset,
       ],
@@ -816,10 +816,10 @@ class DanceDatabaseManager
   }
 
   @override
-  FutureOr<MomentDataModel> setMoment(MomentDataModel timeModel) async {
+  FutureOr<MomentDataModel> setMoment(MomentDataModel momentModel) async {
     bool exists = true;
     try {
-      await getDance(timeModel.id);
+      await getDance(momentModel.id);
     } on DataNotFoundError {
       exists = false;
     }
@@ -828,48 +828,48 @@ class DanceDatabaseManager
     if (!exists) {
       count = await db.insert(
         'moments',
-        timeModel.toJson(),
+        momentModel.toJson(),
       );
       if (count == 0) {
-        throw DataNotCreatedError('Time');
+        throw DataNotCreatedError('Moment');
       }
     } else {
       count = await db.update(
         'moments',
-        timeModel.toJson(),
+        momentModel.toJson(),
       );
       if (count == 0) {
-        throw DataNotUpdatedError('Time');
+        throw DataNotUpdatedError('Moment');
       }
     }
-    return await getMoment(timeModel.id);
+    return await getMoment(momentModel.id);
   }
 
   @override
-  FutureOr<MomentDataModel> getMoment(String timeId) async {
+  FutureOr<MomentDataModel> getMoment(String momentId) async {
     List results = await db.query(
       'moments',
       where: 'moment_id = ?',
-      whereArgs: [timeId],
+      whereArgs: [momentId],
     );
 
     if (results.isEmpty) {
-      throw DataNotFoundError('Time');
+      throw DataNotFoundError('Moment');
     }
 
-    MomentDataModel time = MomentDataModel.fromJson(results.first);
-    return time;
+    MomentDataModel moment = MomentDataModel.fromJson(results.first);
+    return moment;
   }
 
   @override
-  FutureOr<void> deleteMoment(String timeId) async {
+  FutureOr<void> deleteMoment(String momentId) async {
     int count = await db.delete(
       'moments',
       where: 'moment_id = ?',
-      whereArgs: [timeId],
+      whereArgs: [momentId],
     );
     if (count == 0) {
-      throw DataNotDeletedError('Time');
+      throw DataNotDeletedError('Moment');
     }
   }
 
@@ -883,13 +883,13 @@ class DanceDatabaseManager
       offset: offset.offset,
     );
 
-    List<MomentDataModel> times =
+    List<MomentDataModel> moments =
         results.map((result) => MomentDataModel.fromJson(result)).toList();
-    return times;
+    return moments;
   }
 
   @override
-  FutureOr<List<MomentDataModel>> getTimesOfFigure(
+  FutureOr<List<MomentDataModel>> getMomentsOfFigure(
     String figureId, {
     required Offset offset,
   }) async {
@@ -907,9 +907,9 @@ class DanceDatabaseManager
       ],
     );
 
-    List<MomentDataModel> times =
+    List<MomentDataModel> moments =
         results.map((result) => MomentDataModel.fromJson(result)).toList();
-    return times;
+    return moments;
   }
 
   @override
@@ -931,9 +931,9 @@ class DanceDatabaseManager
       ],
     );
 
-    List<MomentDataModel> times =
+    List<MomentDataModel> moments =
         results.map((result) => MomentDataModel.fromJson(result)).toList();
-    return times;
+    return moments;
   }
 
   @override
@@ -957,8 +957,8 @@ class DanceDatabaseManager
       ],
     );
 
-    List<MomentDataModel> times =
+    List<MomentDataModel> moments =
         results.map((result) => MomentDataModel.fromJson(result)).toList();
-    return times;
+    return moments;
   }
 }

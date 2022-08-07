@@ -16,7 +16,7 @@ abstract class MomentDataStore {
     required Offset offset,
   });
 
-  FutureOr<List<MomentDataModel>> getTimesOfFigure(
+  FutureOr<List<MomentDataModel>> getMomentsOfFigure(
     String figureId, {
 
     /// TODO: Add filters

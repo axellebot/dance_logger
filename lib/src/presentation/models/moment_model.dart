@@ -1,8 +1,8 @@
 import 'package:dance/presentation.dart';
 
 class MomentViewModel extends BaseViewModel {
-  String startTime;
-  String endTime;
+  int startTime;
+  int endTime;
 
   VideoViewModel? video;
   List<ArtistViewModel>? artists;

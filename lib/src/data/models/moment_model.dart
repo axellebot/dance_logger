@@ -15,11 +15,11 @@ class MomentDataModel implements MomentEntity {
 
   @override
   @JsonKey(name: 'start_time')
-  String startTime;
+  int startTime;
 
   @override
   @JsonKey(name: 'end_time')
-  String endTime;
+  int endTime;
 
   @override
   @JsonKey(name: 'figure_id')

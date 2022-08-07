@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:dance/domain.dart';
 
-/// Repository interface for timecode purpose
-abstract class TimeRepository extends EntityRepository<MomentEntity> {
-  FutureOr<List<MomentEntity>> getTimesOfVideo(
+/// Repository interface for moments
+abstract class MomentRepository extends EntityRepository<MomentEntity> {
+  FutureOr<List<MomentEntity>> getMomentsOfVideo(
     String videoId, {
     required Offset offset,
 
@@ -12,7 +12,7 @@ abstract class TimeRepository extends EntityRepository<MomentEntity> {
     /// TODO: Add sort
   });
 
-  FutureOr<List<MomentEntity>> getTimesOfFigure(
+  FutureOr<List<MomentEntity>> getMomentsOfFigure(
     String figureId, {
     required Offset offset,
 
@@ -20,7 +20,7 @@ abstract class TimeRepository extends EntityRepository<MomentEntity> {
     /// TODO: Add sort
   });
 
-  FutureOr<List<MomentEntity>> getTimesOfArtist(
+  FutureOr<List<MomentEntity>> getMomentsOfArtist(
     String artistId, {
     required Offset offset,
 
