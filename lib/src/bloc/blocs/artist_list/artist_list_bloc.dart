@@ -19,22 +19,38 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
   }
 
   FutureOr<void> _onArtistListLoad(event, emit) async {
-    final List<ArtistViewModel> artistViewModels;
-    artistViewModels = await _fetchArtists(
-      ofDance: event.ofDance,
-      ofFigure: event.ofFigure,
-      ofVideo: event.ofVideo,
-      offset: 0,
-    );
-    emit(state.copyWith(
-      status: ArtistListStatus.success,
-      artists: artistViewModels,
-      hasReachedMax: false,
-    ));
+    try {
+      emit(state.copyWith(
+        status: ArtistListStatus.loading,
+      ));
+
+      final List<ArtistViewModel> artistViewModels;
+      artistViewModels = await _fetchArtists(
+        ofDance: event.ofDance,
+        ofFigure: event.ofFigure,
+        ofVideo: event.ofVideo,
+        offset: 0,
+      );
+
+      emit(state.copyWith(
+        status: ArtistListStatus.success,
+        ofDance: event.ofDance,
+        ofFigure: event.ofFigure,
+        ofVideo: event.ofVideo,
+        artists: artistViewModels,
+        hasReachedMax: false,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: ArtistListStatus.failure,
+        error: error,
+      ));
+    }
   }
 
   FutureOr<void> _onArtistListLoadMore(event, emit) async {
-    if (state.status == ArtistListStatus.success) {
+    if (state.status != ArtistListStatus.success) return;
+    try {
       final List<ArtistViewModel> artistViewModels;
       artistViewModels = await _fetchArtists(
         ofDance: state.ofDance,
@@ -52,11 +68,16 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
           hasReachedMax: true,
         ));
       }
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: ArtistListStatus.failure,
+        error: error,
+      ));
     }
   }
 
   FutureOr<void> _onArtistListRefresh(event, emit) async {
-    if (state.status == ArtistListStatus.success) {
+    try {
       emit(state.copyWith(
         status: ArtistListStatus.loading,
       ));
@@ -72,6 +93,11 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
         status: ArtistListStatus.success,
         artists: artistViewModels,
         hasReachedMax: false,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: ArtistListStatus.failure,
+        error: error,
       ));
     }
   }

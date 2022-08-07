@@ -125,7 +125,11 @@ class _$AppRouter extends RootStackRouter {
       final args = routeData.argsAs<PracticeListRouteArgs>(
           orElse: () => const PracticeListRouteArgs());
       return MaterialPageX<dynamic>(
-          routeData: routeData, child: PracticeListPage(key: args.key));
+          routeData: routeData,
+          child: PracticeListPage(
+              key: args.key,
+              ofFigure: args.ofFigure,
+              practiceListBloc: args.practiceListBloc));
     },
     PracticeCreateRoute.name: (routeData) {
       final args = routeData.argsAs<PracticeCreateRouteArgs>(
@@ -598,21 +602,29 @@ class FigureEditRouteArgs {
 /// generated route for
 /// [PracticeListPage]
 class PracticeListRoute extends PageRouteInfo<PracticeListRouteArgs> {
-  PracticeListRoute({Key? key})
+  PracticeListRoute({Key? key, String? ofFigure, dynamic practiceListBloc})
       : super(PracticeListRoute.name,
-            path: 'practices', args: PracticeListRouteArgs(key: key));
+            path: 'practices',
+            args: PracticeListRouteArgs(
+                key: key,
+                ofFigure: ofFigure,
+                practiceListBloc: practiceListBloc));
 
   static const String name = 'PracticeListRoute';
 }
 
 class PracticeListRouteArgs {
-  const PracticeListRouteArgs({this.key});
+  const PracticeListRouteArgs({this.key, this.ofFigure, this.practiceListBloc});
 
   final Key? key;
 
+  final String? ofFigure;
+
+  final dynamic practiceListBloc;
+
   @override
   String toString() {
-    return 'PracticeListRouteArgs{key: $key}';
+    return 'PracticeListRouteArgs{key: $key, ofFigure: $ofFigure, practiceListBloc: $practiceListBloc}';
   }
 }
 

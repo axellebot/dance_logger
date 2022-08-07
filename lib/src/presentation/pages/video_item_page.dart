@@ -3,7 +3,9 @@ import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class VideoDetailsPage extends StatelessWidget implements AutoRouteWrapper {
   final String videoId;
@@ -49,8 +51,14 @@ class VideoDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                   SliverList(
                     delegate: SliverChildListDelegate(
                       <Widget>[
-                        if (isYoutube(state.video!.url))
-                          Text('${getYoutubeId(state.video!.url)}'),
+                        ListTile(
+                          title: Text(state.video!.url),
+                          trailing: const Icon(MdiIcons.contentCopy),
+                          onTap: () {
+                            Clipboard.setData(
+                                ClipboardData(text: state.video!.url));
+                          }
+                        ),
                         _buildFiguresSection(),
                         _buildArtistsSection(),
                         EntityInfoListTile(
@@ -68,7 +76,7 @@ class VideoDetailsPage extends StatelessWidget implements AutoRouteWrapper {
             return ErrorPage(error: state.error);
           default:
             return ErrorText(
-              error: NotSupportedError(message: '${state.runtimeType}'),
+              error: NotSupportedError(message: '${state.status}'),
             );
         }
       },

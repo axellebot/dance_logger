@@ -3,34 +3,11 @@ import 'package:equatable/equatable.dart';
 
 import 'figure_list_params.dart';
 
-abstract class FigureListState extends Equatable {
-  const FigureListState();
+enum FigureListStatus { initial, loading, success, failure }
 
-  @override
-  String toString() => 'FigureListState{}';
-}
+class FigureListState extends Equatable implements FigureListParams {
+  final FigureListStatus status;
 
-class FigureListUninitialized extends FigureListState {
-  const FigureListUninitialized();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  String toString() => 'FigureListUninitialized{}';
-}
-
-class FigureListRefreshing extends FigureListState {
-  const FigureListRefreshing();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  String toString() => 'FigureListRefreshing{}';
-}
-
-class FigureListLoaded extends FigureListState implements FigureListParams {
   @override
   final String? ofArtist;
   @override
@@ -40,57 +17,52 @@ class FigureListLoaded extends FigureListState implements FigureListParams {
 
   final List<FigureViewModel> figures;
   final bool hasReachedMax;
+  final Error? error;
 
-  const FigureListLoaded({
+  const FigureListState({
+    this.status = FigureListStatus.initial,
     this.ofArtist,
     this.ofDance,
     this.ofVideo,
-    required this.figures,
-    required this.hasReachedMax,
+    this.figures = const <FigureViewModel>[],
+    this.hasReachedMax = false,
+    this.error,
   });
 
   @override
   List<Object?> get props =>
-      [ofArtist, ofDance, ofVideo, figures, hasReachedMax];
+      [status, ofArtist, ofDance, ofVideo, figures, hasReachedMax, error];
 
-  FigureListLoaded copyWith({
+  FigureListState copyWith({
+    FigureListStatus? status,
     String? ofArtist,
     String? ofDance,
     String? ofVideo,
     List<FigureViewModel>? figures,
     bool? hasReachedMax,
+    Error? error,
   }) {
-    return FigureListLoaded(
+    return FigureListState(
+      status: status ?? this.status,
       ofArtist: ofArtist ?? this.ofArtist,
       ofDance: ofDance ?? this.ofDance,
       ofVideo: ofVideo ?? this.ofVideo,
       figures: figures ?? this.figures,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      error: error ?? this.error,
     );
   }
 
   @override
   String toString() {
-    return 'FigureListLoaded{'
+    return 'FigureListState{'
+        'status: $status, '
         'ofArtist: $ofArtist, '
         'ofDance: $ofDance, '
         'ofVideo: $ofVideo, '
         'figures: $figures, '
-        'hasReachedMax: $hasReachedMax'
+        'hasReachedMax: $hasReachedMax, '
+        'error: $error'
         '}';
   }
-}
-
-class FigureListFailed extends FigureListState {
-  final Error error;
-
-  const FigureListFailed({required this.error});
-
-  @override
-  List<Object?> get props => [error];
-
-  @override
-  String toString() => 'FigureListFailed{'
-      'error: $error'
-      '}';
 }

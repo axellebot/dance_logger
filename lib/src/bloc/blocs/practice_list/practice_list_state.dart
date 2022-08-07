@@ -1,36 +1,13 @@
 import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
+
 import 'practice_list_params.dart';
 
-abstract class PracticeListState extends Equatable {
-  const PracticeListState();
+enum PracticeListStatus { initial, loading, success, failure }
 
-  @override
-  String toString() => 'PracticeListState{}';
-}
+class PracticeListState extends Equatable implements PracticeListParams {
+  final PracticeListStatus status;
 
-class PracticeListUninitialized extends PracticeListState {
-  const PracticeListUninitialized();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  String toString() => 'PracticeListUninitialized{}';
-}
-
-class PracticeListRefreshing extends PracticeListState {
-  const PracticeListRefreshing();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  String toString() => 'PracticeListRefreshing{}';
-}
-
-class PracticeListLoaded extends PracticeListState
-    implements PracticeListParams {
   @override
   final String? ofArtist;
   @override
@@ -42,58 +19,64 @@ class PracticeListLoaded extends PracticeListState
 
   final List<PracticeViewModel> practices;
   final bool hasReachedMax;
+  final Error? error;
 
-  const PracticeListLoaded({
+  const PracticeListState({
+    this.status = PracticeListStatus.initial,
     this.ofArtist,
     this.ofDance,
     this.ofFigure,
     this.ofVideo,
-    required this.practices,
-    required this.hasReachedMax,
+    this.practices = const <PracticeViewModel>[],
+    this.hasReachedMax = false,
+    this.error,
   });
 
   @override
-  List<Object?> get props => [practices, hasReachedMax];
+  List<Object?> get props => [
+        status,
+        ofArtist,
+        ofDance,
+        ofFigure,
+        ofVideo,
+        practices,
+        hasReachedMax,
+        error,
+      ];
 
-  PracticeListLoaded copyWith({
+  PracticeListState copyWith({
+    PracticeListStatus? status,
     String? ofArtist,
     String? ofDance,
     String? ofFigure,
     String? ofVideo,
     List<PracticeViewModel>? practices,
     bool? hasReachedMax,
+    Error? error,
   }) {
-    return PracticeListLoaded(
+    return PracticeListState(
+      status: status ?? this.status,
       ofArtist: ofArtist ?? this.ofArtist,
       ofDance: ofDance ?? this.ofDance,
       ofFigure: ofFigure ?? this.ofFigure,
       ofVideo: ofVideo ?? this.ofVideo,
       practices: practices ?? this.practices,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      error: error ?? this.error,
     );
   }
 
   @override
-  String toString() => 'PracticeListLoaded{'
-      'ofArtist: $ofArtist, '
-      'ofDance: $ofDance, '
-      'ofFigure: $ofFigure, '
-      'ofVideo: $ofVideo, '
-      'practices: $practices, '
-      'hasReachedMax: $hasReachedMax'
-      '}';
-}
-
-class PracticeListFailed extends PracticeListState {
-  final Error error;
-
-  const PracticeListFailed({required this.error});
-
-  @override
-  List<Object?> get props => [error];
-
-  @override
-  String toString() => 'PracticeListFailed{'
-      'error: $error'
-      '}';
+  String toString() {
+    return 'PracticeListState{'
+        'status: $status, '
+        'ofArtist: $ofArtist, '
+        'ofDance: $ofDance, '
+        'ofFigure: $ofFigure, '
+        'ofVideo: $ofVideo, '
+        'practices: $practices, '
+        'hasReachedMax: $hasReachedMax, '
+        'error: $error'
+        '}';
+  }
 }

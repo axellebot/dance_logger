@@ -12,64 +12,93 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
   VideoListBloc({
     required this.videoRepository,
     required this.mapper,
-  }) : super(const VideoListUninitialized()) {
-    on<VideoListLoad>(__onVideoListLoad);
+  }) : super(const VideoListState()) {
+    on<VideoListLoad>(_onVideoListLoad);
     on<VideoListLoadMore>(_onVideoListLoadMore);
     on<VideoListRefresh>(_onVideoListRefresh);
   }
 
-  FutureOr<void> __onVideoListLoad(event, emit) async {
-    final List<VideoViewModel> videoViewModels;
-    videoViewModels = await _fetchVideos(
-      ofArtist: event.ofArtist,
-      ofDance: event.ofDance,
-      ofFigure: event.ofFigure,
-      offset: 0,
-    );
-    emit(VideoListLoaded(
-      ofArtist: event.ofArtist,
-      ofDance: event.ofDance,
-      ofFigure: event.ofFigure,
-      videos: videoViewModels,
-      hasReachedMax: false,
-    ));
+  FutureOr<void> _onVideoListLoad(event, emit) async {
+    try {
+      emit(state.copyWith(
+        status: VideoListStatus.loading,
+      ));
+
+      final List<VideoViewModel> videoViewModels;
+      videoViewModels = await _fetchVideos(
+        ofArtist: event.ofArtist,
+        ofDance: event.ofDance,
+        ofFigure: event.ofFigure,
+        offset: 0,
+      );
+
+      emit(state.copyWith(
+        status: VideoListStatus.success,
+        ofArtist: event.ofArtist,
+        ofDance: event.ofDance,
+        ofFigure: event.ofFigure,
+        videos: videoViewModels,
+        hasReachedMax: false,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: VideoListStatus.failure,
+        error: error,
+      ));
+    }
   }
 
   FutureOr<void> _onVideoListLoadMore(event, emit) async {
-    if (state is VideoListLoaded) {
+    if (state.status != VideoListStatus.success) return;
+    try {
       List<VideoViewModel> videoViewModels;
-      videoViewModels = await _fetchVideos(
-        ofArtist: (state as VideoListLoaded).ofArtist,
-        ofDance: (state as VideoListLoaded).ofDance,
-        ofFigure: (state as VideoListLoaded).ofFigure,
-        offset: (state as VideoListLoaded).videos.length,
-      );
 
+      videoViewModels = await _fetchVideos(
+        ofArtist: state.ofArtist,
+        ofDance: state.ofDance,
+        ofFigure: state.ofFigure,
+        offset: state.videos.length,
+      );
       if (videoViewModels.isNotEmpty) {
-        emit((state as VideoListLoaded).copyWith(
-          videos: (state as VideoListLoaded).videos + videoViewModels,
+        emit(state.copyWith(
+          videos: List.of(state.videos)..addAll(videoViewModels),
           hasReachedMax: videoViewModels.isEmpty,
         ));
       } else {
-        emit((state as VideoListLoaded).copyWith(
+        emit(state.copyWith(
           hasReachedMax: true,
         ));
       }
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: VideoListStatus.failure,
+        error: error,
+      ));
     }
   }
 
   FutureOr<void> _onVideoListRefresh(event, emit) async {
-    if (state is VideoListLoaded) {
+    try {
+      emit(state.copyWith(
+        status: VideoListStatus.loading,
+      ));
+
       List<VideoViewModel> videoViewModels = await _fetchVideos(
-        ofArtist: (state as VideoListLoaded).ofArtist,
-        ofDance: (state as VideoListLoaded).ofDance,
-        ofFigure: (state as VideoListLoaded).ofFigure,
+        ofArtist: state.ofArtist,
+        ofDance: state.ofDance,
+        ofFigure: state.ofFigure,
         offset: 0,
       );
 
-      emit((state as VideoListLoaded).copyWith(
+      emit(state.copyWith(
+        status: VideoListStatus.success,
         videos: videoViewModels,
         hasReachedMax: false,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: VideoListStatus.failure,
+        error: error,
       ));
     }
   }

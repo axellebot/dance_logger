@@ -1,4 +1,6 @@
+import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 abstract class EntityList extends StatelessWidget {
   final Axis scrollDirection;
@@ -23,7 +25,18 @@ class EmptyListView extends StatelessWidget {
       children: [
         (scrollDirection == Axis.vertical)
             ? ListTile(title: Text(label))
-            : Card(child: Text(label))
+            : SizedBox(
+                width: AppStyles.cardWidth,
+                height: AppStyles.cardHeight,
+                child: Card(
+                  child: Container(
+                    padding: AppStyles.cardPadding,
+                    child: Center(
+                      child: Text(label),
+                    ),
+                  ),
+                ),
+              )
       ],
     );
   }
@@ -33,6 +46,7 @@ class SectionTile extends StatelessWidget {
   final Widget? leading;
   final GestureTapCallback? onTap;
   final Widget title;
+
   final Widget? trailing;
 
   const SectionTile({
@@ -48,7 +62,9 @@ class SectionTile extends StatelessWidget {
     return ListTile(
       leading: leading,
       title: title,
-      trailing: trailing,
+      trailing: (trailing == null && onTap != null)
+          ? const Icon(MdiIcons.arrowRight)
+          : trailing,
       onTap: onTap,
     );
   }

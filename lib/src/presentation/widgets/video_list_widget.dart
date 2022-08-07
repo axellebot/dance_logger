@@ -4,7 +4,7 @@ import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class VideoListView extends StatelessWidget {
+class VideoListView extends StatefulWidget {
   final Axis scrollDirection;
 
   const VideoListView({
@@ -13,59 +13,13 @@ class VideoListView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    // TODO: Add pull down to refresh
-    return BlocBuilder<VideoListBloc, VideoListState>(
-      builder: (BuildContext context, VideoListState state) {
-        if (state is VideoListUninitialized) {
-          return ListView(
-            scrollDirection: scrollDirection,
-          );
-        } else if (state is VideoListRefreshing) {
-          return LoadingListView(
-            scrollDirection: scrollDirection,
-          );
-        } else if (state is VideoListLoaded) {
-          if (state.videos.isNotEmpty) {
-            return _VideoListViewLoaded(
-              scrollDirection: scrollDirection,
-            );
-          } else {
-            return ListView(
-              scrollDirection: scrollDirection,
-              children: [
-                (scrollDirection == Axis.vertical)
-                    ? const ListTile(title: Text('No Videos'))
-                    : const Card(child: Text('No Videos'))
-              ],
-            );
-          }
-        }
-        return ErrorListView(
-          scrollDirection: scrollDirection,
-          error: NotSupportedError(message: '${state.runtimeType}'),
-        );
-      },
-    );
-  }
+  State<StatefulWidget> createState() => _VideoListViewState();
 }
 
-class _VideoListViewLoaded extends StatefulWidget {
-  final Axis scrollDirection;
-
-  const _VideoListViewLoaded({
-    super.key,
-    required this.scrollDirection,
-  });
-
-  @override
-  State<StatefulWidget> createState() => _VideoListViewLoadedState();
-}
-
-class _VideoListViewLoadedState extends State<_VideoListViewLoaded> {
+class _VideoListViewState extends State<VideoListView> {
   final _scrollController = ScrollController();
 
-  _VideoListViewLoadedState();
+  _VideoListViewState();
 
   @override
   void initState() {
@@ -77,26 +31,40 @@ class _VideoListViewLoadedState extends State<_VideoListViewLoaded> {
   Widget build(BuildContext context) {
     return BlocBuilder<VideoListBloc, VideoListState>(
       builder: (context, state) {
-        if (state is VideoListLoaded) {
-          return ListView.builder(
-            scrollDirection: widget.scrollDirection,
-            controller: _scrollController,
-            itemCount: state.hasReachedMax
-                ? state.videos.length
-                : state.videos.length + 1,
-            itemBuilder: (context, index) {
-              return (index < state.videos.length)
-                  ? (widget.scrollDirection == Axis.vertical)
-                      ? VideoItemTile(video: state.videos[index])
-                      : VideoItemCard(video: state.videos[index])
-                  : const RightListLoadingIndicator();
-            },
-          );
+        switch (state.status) {
+          case VideoListStatus.loading:
+            return LoadingListView(
+              scrollDirection: widget.scrollDirection,
+            );
+          case VideoListStatus.failure:
+          case VideoListStatus.success:
+            if (state.videos.isEmpty) {
+              return EmptyListView(
+                scrollDirection: widget.scrollDirection,
+                label: 'No Videos',
+              );
+            } else {
+              return ListView.builder(
+                scrollDirection: widget.scrollDirection,
+                controller: _scrollController,
+                itemCount: state.hasReachedMax
+                    ? state.videos.length
+                    : state.videos.length + 1,
+                itemBuilder: (context, index) {
+                  return (index < state.videos.length)
+                      ? (widget.scrollDirection == Axis.vertical)
+                          ? VideoItemTile(video: state.videos[index])
+                          : VideoItemCard(video: state.videos[index])
+                      : const RightListLoadingIndicator();
+                },
+              );
+            }
+          default:
+            return ErrorListView(
+              scrollDirection: widget.scrollDirection,
+              error: NotSupportedError(message: '${state.status}'),
+            );
         }
-        return ErrorListView(
-          scrollDirection: widget.scrollDirection,
-          error: NotSupportedError(message: '${state.runtimeType}'),
-        );
       },
     );
   }

@@ -82,7 +82,7 @@ class ThemeTile extends StatelessWidget {
             return ErrorTile(error: state.error);
           default:
             return ErrorTile(
-              error: NotSupportedError(message: '${state.runtimeType}'),
+              error: NotSupportedError(message: '${state.status}'),
             );
         }
       },

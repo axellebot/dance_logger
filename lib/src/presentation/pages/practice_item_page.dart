@@ -65,7 +65,7 @@ class PracticeDetailsPage extends StatelessWidget implements AutoRouteWrapper {
             return ErrorPage(error: state.error);
           default:
             return ErrorText(
-              error: NotSupportedError(message: '${state.runtimeType}'),
+              error: NotSupportedError(message: '${state.status}'),
             );
         }
       },

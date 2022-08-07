@@ -83,7 +83,7 @@ class RepoWrapper extends StatelessWidget {
             );
           default:
             return ErrorApp(
-              error: NotSupportedError(message: '${state.runtimeType}'),
+              error: NotSupportedError(message: '${state.status}'),
             );
         }
       },

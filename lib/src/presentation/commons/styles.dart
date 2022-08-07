@@ -67,7 +67,7 @@ class AppStyles {
   static const EdgeInsets cardPadding = EdgeInsets.all(15.0);
   static const double cardBorderRadius = 10.0;
   static const double cardWidth = 150.0;
-  static const double cardHeight = 75.0;
+  static const double cardHeight = 80.0;
 
   /// --------------------------------------------------------------------------
   ///                               Sheet

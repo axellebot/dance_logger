@@ -12,67 +12,94 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
   PracticeListBloc({
     required this.practiceRepository,
     required this.mapper,
-  }) : super(const PracticeListUninitialized()) {
+  }) : super(const PracticeListState()) {
     on<PracticeListLoad>(_onPracticeListLoad);
     on<PracticeListLoadMore>(_onPracticeListLoadMore);
     on<PracticeListRefresh>(_onPracticeListRefresh);
   }
 
   FutureOr<void> _onPracticeListLoad(event, emit) async {
-    final List<PracticeViewModel> practiceViewModels;
-    practiceViewModels = await _fetchPractices(
-      ofDance: event.ofDance,
-      ofFigure: event.ofFigure,
-      ofVideo: event.ofVideo,
-      offset: 0,
-    );
-    emit(PracticeListLoaded(
-      ofDance: event.ofDance,
-      ofFigure: event.ofFigure,
-      ofVideo: event.ofVideo,
-      practices: practiceViewModels,
-      hasReachedMax: false,
-    ));
+    try {
+      emit(state.copyWith(
+        status: PracticeListStatus.loading,
+      ));
+
+      final List<PracticeViewModel> practiceViewModels;
+      practiceViewModels = await _fetchPractices(
+        ofDance: event.ofDance,
+        ofFigure: event.ofFigure,
+        ofVideo: event.ofVideo,
+        offset: 0,
+      );
+      emit(state.copyWith(
+        status: PracticeListStatus.success,
+        ofDance: event.ofDance,
+        ofFigure: event.ofFigure,
+        ofVideo: event.ofVideo,
+        practices: practiceViewModels,
+        hasReachedMax: false,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: PracticeListStatus.failure,
+        error: error,
+      ));
+    }
   }
 
   FutureOr<void> _onPracticeListLoadMore(event, emit) async {
-    if (state is PracticeListLoaded) {
-      List<PracticeViewModel> practiceViewModels;
+    if (state.status != PracticeListStatus.success) return;
+    try {
+      final List<PracticeViewModel> practiceViewModels;
 
       practiceViewModels = await _fetchPractices(
-        ofArtist: (state as PracticeListLoaded).ofArtist,
-        ofDance: (state as PracticeListLoaded).ofDance,
-        ofFigure: (state as PracticeListLoaded).ofFigure,
-        ofVideo: (state as PracticeListLoaded).ofVideo,
-        offset: (state as PracticeListLoaded).practices.length,
+        ofArtist: state.ofArtist,
+        ofDance: state.ofDance,
+        ofFigure: state.ofFigure,
+        ofVideo: state.ofVideo,
+        offset: state.practices.length,
       );
       if (practiceViewModels.isNotEmpty) {
-        emit((state as PracticeListLoaded).copyWith(
-          practices:
-              (state as PracticeListLoaded).practices + practiceViewModels,
+        emit(state.copyWith(
+          practices: List.of(state.practices)..addAll(practiceViewModels),
           hasReachedMax: false,
         ));
       } else {
-        emit((state as PracticeListLoaded).copyWith(
+        emit(state.copyWith(
           hasReachedMax: true,
         ));
       }
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: PracticeListStatus.failure,
+        error: error,
+      ));
     }
   }
 
   FutureOr<void> _onPracticeListRefresh(event, emit) async {
-    if (state is PracticeListLoaded) {
+    try {
+      emit(state.copyWith(
+        status: PracticeListStatus.loading,
+      ));
+
       List<PracticeViewModel> practiceViewModels = await _fetchPractices(
-        ofArtist: (state as PracticeListLoaded).ofArtist,
-        ofDance: (state as PracticeListLoaded).ofDance,
-        ofFigure: (state as PracticeListLoaded).ofFigure,
-        ofVideo: (state as PracticeListLoaded).ofVideo,
+        ofArtist: state.ofArtist,
+        ofDance: state.ofDance,
+        ofFigure: state.ofFigure,
+        ofVideo: state.ofVideo,
         offset: 0,
       );
 
-      emit(PracticeListLoaded(
+      emit(state.copyWith(
+        status: PracticeListStatus.success,
         practices: practiceViewModels,
         hasReachedMax: false,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: PracticeListStatus.failure,
+        error: error,
       ));
     }
   }
@@ -86,6 +113,7 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
     int limit = 10,
   }) async {
     List<PracticeEntity> practiceEntities;
+
     if (ofFigure != null) {
       practiceEntities = await practiceRepository.getPracticesOfFigure(
         ofFigure,

@@ -2,34 +2,11 @@ import 'package:dance/presentation.dart';
 import 'package:dance/src/bloc/blocs/moment_list/moment_list_params.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class MomentListState extends Equatable {
-  const MomentListState();
+enum MomentListStatus { initial, loading, success, failure }
 
-  @override
-  String toString() => 'MomentListState{}';
-}
+class MomentListState extends Equatable implements MomentListParams {
+  final MomentListStatus status;
 
-class MomentListUninitialized extends MomentListState {
-  const MomentListUninitialized();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  String toString() => 'MomentListUninitialized{}';
-}
-
-class MomentListRefreshing extends MomentListState {
-  const MomentListRefreshing();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  String toString() => 'MomentListRefreshing{}';
-}
-
-class MomentListLoaded extends MomentListState implements MomentListParams {
   @override
   final String? ofArtist;
   @override
@@ -37,45 +14,54 @@ class MomentListLoaded extends MomentListState implements MomentListParams {
   @override
   final String? ofVideo;
 
-  final List<MomentViewModel> times;
+  final List<MomentViewModel> moments;
   final bool hasReachedMax;
+  final Error? error;
 
-  const MomentListLoaded({
+  const MomentListState({
+    this.status = MomentListStatus.initial,
     this.ofArtist,
     this.ofFigure,
     this.ofVideo,
-    required this.times,
-    required this.hasReachedMax,
+    this.moments = const <MomentViewModel>[],
+    this.hasReachedMax = false,
+    this.error,
   });
 
   @override
   List<Object?> get props =>
-      [ofArtist, ofFigure, ofVideo, times, hasReachedMax];
+      [status, ofArtist, ofFigure, ofVideo, moments, hasReachedMax, error];
 
-  MomentListLoaded copyWith({
+  MomentListState copyWith({
+    MomentListStatus? status,
     String? ofArtist,
     String? ofFigure,
     String? ofVideo,
-    List<MomentViewModel>? times,
+    List<MomentViewModel>? moments,
     bool? hasReachedMax,
+    Error? error,
   }) {
-    return MomentListLoaded(
+    return MomentListState(
+      status: status ?? this.status,
       ofArtist: ofArtist ?? this.ofArtist,
       ofFigure: ofFigure ?? this.ofFigure,
       ofVideo: ofVideo ?? this.ofVideo,
-      times: times ?? this.times,
+      moments: moments ?? this.moments,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      error: error ?? this.error,
     );
   }
 
   @override
   String toString() {
-    return 'MomentListLoaded{'
-        'ofDance: $ofArtist, '
+    return 'MomentListState{'
+        'status: $status, '
+        'ofArtist: $ofArtist, '
         'ofFigure: $ofFigure, '
         'ofVideo: $ofVideo, '
-        'times: $times, '
-        'hasReachedMax: $hasReachedMax'
+        'moments: $moments, '
+        'hasReachedMax: $hasReachedMax, '
+        'error: $error'
         '}';
   }
 }

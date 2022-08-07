@@ -2,34 +2,11 @@ import 'package:dance/presentation.dart';
 import 'package:dance/src/bloc/blocs/video_list/video_list_params.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class VideoListState extends Equatable {
-  const VideoListState();
+enum VideoListStatus { initial, loading, success, failure }
 
-  @override
-  String toString() => 'VideoListState{}';
-}
+class VideoListState extends Equatable implements VideoListParams {
+  final VideoListStatus status;
 
-class VideoListUninitialized extends VideoListState {
-  const VideoListUninitialized();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  String toString() => 'VideoListUninitialized{}';
-}
-
-class VideoListRefreshing extends VideoListState {
-  const VideoListRefreshing();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  String toString() => 'VideoListRefreshing{}';
-}
-
-class VideoListLoaded extends VideoListState implements VideoListParams {
   @override
   final String? ofArtist;
   @override
@@ -39,57 +16,59 @@ class VideoListLoaded extends VideoListState implements VideoListParams {
 
   final List<VideoViewModel> videos;
   final bool hasReachedMax;
+  final Error? error;
 
-  const VideoListLoaded({
+  const VideoListState({
+    this.status = VideoListStatus.initial,
     this.ofArtist,
     this.ofDance,
     this.ofFigure,
-    required this.videos,
-    required this.hasReachedMax,
+    this.videos = const <VideoViewModel>[],
+    this.hasReachedMax = false,
+    this.error,
   });
 
   @override
-  List<Object?> get props =>
-      [ofArtist, ofDance, ofFigure, videos, hasReachedMax];
+  List<Object?> get props => [
+        status,
+        ofArtist,
+        ofDance,
+        ofFigure,
+        videos,
+        hasReachedMax,
+        error,
+      ];
 
-  VideoListLoaded copyWith({
+  VideoListState copyWith({
+    VideoListStatus? status,
     String? ofArtist,
     String? ofDance,
     String? ofFigure,
     List<VideoViewModel>? videos,
     bool? hasReachedMax,
+    Error? error,
   }) {
-    return VideoListLoaded(
+    return VideoListState(
+      status: status ?? this.status,
       ofArtist: ofArtist ?? this.ofArtist,
       ofDance: ofDance ?? this.ofDance,
       ofFigure: ofFigure ?? this.ofFigure,
       videos: videos ?? this.videos,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      error: error ?? this.error,
     );
   }
 
   @override
   String toString() {
-    return 'VideoListLoaded{'
+    return 'VideoListState{'
+        'status: $status, '
         'ofArtist: $ofArtist, '
         'ofDance: $ofDance, '
         'ofFigure: $ofFigure, '
         'videos: $videos, '
-        'hasReachedMax: $hasReachedMax'
+        'hasReachedMax: $hasReachedMax, '
+        'error: $error'
         '}';
   }
-}
-
-class VideoListFailed extends VideoListState {
-  final Error error;
-
-  const VideoListFailed({required this.error});
-
-  @override
-  List<Object?> get props => [error];
-
-  @override
-  String toString() => 'VideoListFailed{'
-      'error: $error'
-      '}';
 }

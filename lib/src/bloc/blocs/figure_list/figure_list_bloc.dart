@@ -12,64 +12,93 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
   FigureListBloc({
     required this.figureRepository,
     required this.mapper,
-  }) : super(const FigureListUninitialized()) {
+  }) : super(const FigureListState()) {
     on<FigureListLoad>(_onFigureListLoad);
     on<FigureListLoadMore>(_onFigureListLoadMore);
     on<FigureListRefresh>(_onFigureListRefresh);
   }
 
   FutureOr<void> _onFigureListLoad(event, emit) async {
-    final List<FigureViewModel> figureViewModels;
-    figureViewModels = await _fetchFigures(
-      ofArtist: event.ofArtist,
-      ofDance: event.ofDance,
-      ofVideo: event.ofVideo,
-      offset: 0,
-    );
-    emit(FigureListLoaded(
-      ofArtist: event.ofArtist,
-      ofDance: event.ofDance,
-      ofVideo: event.ofVideo,
-      figures: figureViewModels,
-      hasReachedMax: figureViewModels.isEmpty,
-    ));
+    try {
+      emit(state.copyWith(
+        status: FigureListStatus.loading,
+      ));
+
+      final List<FigureViewModel> figureViewModels;
+      figureViewModels = await _fetchFigures(
+        ofArtist: event.ofArtist,
+        ofDance: event.ofDance,
+        ofVideo: event.ofVideo,
+        offset: 0,
+      );
+
+      emit(state.copyWith(
+        status: FigureListStatus.success,
+        ofArtist: event.ofArtist,
+        ofDance: event.ofDance,
+        ofVideo: event.ofVideo,
+        figures: figureViewModels,
+        hasReachedMax: figureViewModels.isEmpty,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: FigureListStatus.failure,
+        error: error,
+      ));
+    }
   }
 
   FutureOr<void> _onFigureListLoadMore(event, emit) async {
-    final List<FigureViewModel> figureViewModels;
+    if (state.status != FigureListStatus.success) return;
+    try {
+      final List<FigureViewModel> figureViewModels;
 
-    if (state is FigureListLoaded) {
       figureViewModels = await _fetchFigures(
-        ofArtist: (state as FigureListLoaded).ofArtist,
-        ofDance: (state as FigureListLoaded).ofDance,
-        ofVideo: (state as FigureListLoaded).ofVideo,
-        offset: (state as FigureListLoaded).figures.length,
+        ofArtist: state.ofArtist,
+        ofDance: state.ofDance,
+        ofVideo: state.ofVideo,
+        offset: state.figures.length,
       );
       if (figureViewModels.isNotEmpty) {
-        emit((state as FigureListLoaded).copyWith(
-          figures: (state as FigureListLoaded).figures + figureViewModels,
+        emit(state.copyWith(
+          figures: List.of(state.figures)..addAll(figureViewModels),
           hasReachedMax: false,
         ));
       } else {
-        emit((state as FigureListLoaded).copyWith(
+        emit(state.copyWith(
           hasReachedMax: true,
         ));
       }
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: FigureListStatus.failure,
+        error: error,
+      ));
     }
   }
 
   FutureOr<void> _onFigureListRefresh(event, emit) async {
-    if (state is FigureListLoaded) {
+    try {
+      emit(state.copyWith(
+        status: FigureListStatus.loading,
+      ));
+
       List<FigureViewModel> figureViewModels = await _fetchFigures(
-        ofArtist: (state as FigureListLoaded).ofArtist,
-        ofDance: (state as FigureListLoaded).ofDance,
-        ofVideo: (state as FigureListLoaded).ofVideo,
+        ofArtist: state.ofArtist,
+        ofDance: state.ofDance,
+        ofVideo: state.ofVideo,
         offset: 0,
       );
 
-      emit((state as FigureListLoaded).copyWith(
+      emit(state.copyWith(
+        status: FigureListStatus.success,
         figures: figureViewModels,
         hasReachedMax: false,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: FigureListStatus.failure,
+        error: error,
       ));
     }
   }
@@ -82,6 +111,7 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
     int limit = 10,
   }) async {
     List<FigureEntity> figureEntities;
+
     if (ofArtist != null) {
       figureEntities = await figureRepository.getFiguresOfArtist(
         ofArtist,

@@ -12,78 +12,107 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
   MomentListBloc({
     required this.momentRepository,
     required this.mapper,
-  }) : super(const MomentListUninitialized()) {
+  }) : super(const MomentListState()) {
     on<MomentListLoad>(_onMomentListLoad);
     on<MomentListLoadMore>(_onMomentListLoadMore);
     on<MomentListRefresh>(_onMomentListRefresh);
   }
 
   FutureOr<void> _onMomentListLoad(event, emit) async {
-    final List<MomentViewModel> momentViewModels;
-    momentViewModels = await _fetchTimes(
-      ofArtist: event.ofArtist,
-      ofFigure: event.ofFigure,
-      ofVideo: event.ofVideo,
-      offset: 0,
-    );
-    emit(MomentListLoaded(
-      ofArtist: event.ofArtist,
-      ofFigure: event.ofFigure,
-      ofVideo: event.ofVideo,
-      times: momentViewModels,
-      hasReachedMax: false,
-    ));
-  }
+    try {
+      emit(state.copyWith(
+        status: MomentListStatus.loading,
+      ));
 
-  FutureOr<void> _onMomentListLoadMore(event, emit) async {
-    if (state is MomentListLoaded) {
       final List<MomentViewModel> momentViewModels;
-      momentViewModels = await _fetchTimes(
-        ofArtist: (state as MomentListLoaded).ofArtist,
-        ofFigure: (state as MomentListLoaded).ofFigure,
-        ofVideo: (state as MomentListLoaded).ofVideo,
-        offset: (state as MomentListLoaded).times.length,
-      );
-      if (momentViewModels.isNotEmpty) {
-        emit((state as MomentListLoaded).copyWith(
-          times: (state as MomentListLoaded).times + momentViewModels,
-          hasReachedMax: false,
-        ));
-      } else {
-        emit((state as MomentListLoaded).copyWith(
-          hasReachedMax: true,
-        ));
-      }
-    }
-  }
-
-  FutureOr<void> _onMomentListRefresh(event, emit) async {
-    if (state is MomentListLoaded) {
-      List<MomentViewModel> momentViewModels = await _fetchTimes(
-        ofArtist: (state as MomentListLoaded).ofArtist,
-        ofFigure: (state as MomentListLoaded).ofFigure,
-        ofVideo: (state as MomentListLoaded).ofVideo,
+      momentViewModels = await _fetchMoments(
+        ofArtist: event.ofArtist,
+        ofFigure: event.ofFigure,
+        ofVideo: event.ofVideo,
         offset: 0,
       );
-
-      emit((state as MomentListLoaded).copyWith(
-        times: momentViewModels,
+      emit(MomentListState(
+        status: MomentListStatus.success,
+        ofArtist: event.ofArtist,
+        ofFigure: event.ofFigure,
+        ofVideo: event.ofVideo,
+        moments: momentViewModels,
         hasReachedMax: false,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: MomentListStatus.failure,
+        error: error,
       ));
     }
   }
 
-  Future<List<MomentViewModel>> _fetchTimes({
+  FutureOr<void> _onMomentListLoadMore(event, emit) async {
+    if (state.status != MomentListStatus.success) return;
+
+    try {
+      final List<MomentViewModel> momentViewModels;
+      momentViewModels = await _fetchMoments(
+        ofArtist: state.ofArtist,
+        ofFigure: state.ofFigure,
+        ofVideo: state.ofVideo,
+        offset: state.moments.length,
+      );
+      if (momentViewModels.isNotEmpty) {
+        emit(state.copyWith(
+          moments: List.of(state.moments)..addAll(momentViewModels),
+          hasReachedMax: false,
+        ));
+      } else {
+        emit(state.copyWith(
+          hasReachedMax: true,
+        ));
+      }
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: MomentListStatus.failure,
+        error: error,
+      ));
+    }
+  }
+
+  FutureOr<void> _onMomentListRefresh(event, emit) async {
+    try {
+      emit(state.copyWith(
+        status: MomentListStatus.loading,
+      ));
+
+      List<MomentViewModel> momentViewModels = await _fetchMoments(
+        ofArtist: state.ofArtist,
+        ofFigure: state.ofFigure,
+        ofVideo: state.ofVideo,
+        offset: 0,
+      );
+
+      emit(state.copyWith(
+        status: MomentListStatus.success,
+        moments: momentViewModels,
+        hasReachedMax: false,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: MomentListStatus.failure,
+        error: error,
+      ));
+    }
+  }
+
+  Future<List<MomentViewModel>> _fetchMoments({
     String? ofArtist,
     String? ofFigure,
     String? ofVideo,
     required int offset,
     int limit = 10,
   }) async {
-    List<MomentEntity> timeEntities;
+    List<MomentEntity> momentEntities;
 
     if (ofArtist != null) {
-      timeEntities = await momentRepository.getMomentsOfArtist(
+      momentEntities = await momentRepository.getMomentsOfArtist(
         ofArtist,
         offset: Offset(
           offset: offset,
@@ -91,7 +120,7 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
         ),
       );
     } else if (ofFigure != null) {
-      timeEntities = await momentRepository.getMomentsOfFigure(
+      momentEntities = await momentRepository.getMomentsOfFigure(
         ofFigure,
         offset: Offset(
           offset: offset,
@@ -99,7 +128,7 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
         ),
       );
     } else if (ofVideo != null) {
-      timeEntities = await momentRepository.getMomentsOfVideo(
+      momentEntities = await momentRepository.getMomentsOfVideo(
         ofVideo,
         offset: Offset(
           offset: offset,
@@ -107,7 +136,7 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
         ),
       );
     } else {
-      timeEntities = await momentRepository.getList(
+      momentEntities = await momentRepository.getList(
         offset: Offset(
           offset: offset,
           limit: limit,
@@ -115,8 +144,9 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
       );
     }
 
-    List<MomentViewModel> momentViewModels = timeEntities
-        .map<MomentViewModel>((timeEntity) => mapper.tomomentViewModel(timeEntity))
+    List<MomentViewModel> momentViewModels = momentEntities
+        .map<MomentViewModel>(
+            (timeEntity) => mapper.tomomentViewModel(timeEntity))
         .toList();
     return momentViewModels;
   }

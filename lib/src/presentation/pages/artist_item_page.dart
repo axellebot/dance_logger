@@ -92,27 +92,29 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
           figureRepository: RepositoryProvider.of<FigureRepository>(context),
           mapper: ModelMapper(),
         )..add(FigureListLoad(ofArtist: artistId)),
-        child: Builder(builder: (context) {
-          return Column(
-            children: [
-              SectionTile(
-                title: const Text('Figures'),
-                onTap: () => AutoRouter.of(context).push(
-                  FigureListRoute(
-                    ofArtist: artistId,
-                    figureListBloc: BlocProvider.of<FigureListBloc>(context),
+        child: Builder(
+          builder: (context) {
+            return Column(
+              children: [
+                SectionTile(
+                  title: const Text('Figures'),
+                  onTap: () => AutoRouter.of(context).push(
+                    FigureListRoute(
+                      ofArtist: artistId,
+                      figureListBloc: BlocProvider.of<FigureListBloc>(context),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: AppStyles.cardHeight,
-                child: FigureListView(
-                  scrollDirection: Axis.horizontal,
+                const SizedBox(
+                  height: AppStyles.cardHeight,
+                  child: FigureListView(
+                    scrollDirection: Axis.horizontal,
+                  ),
                 ),
-              ),
-            ],
-          );
-        }),
+              ],
+            );
+          },
+        ),
       );
 
   Widget _buildVideosSection() => BlocProvider<VideoListBloc>(

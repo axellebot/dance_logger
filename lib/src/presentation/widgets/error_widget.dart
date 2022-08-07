@@ -158,11 +158,13 @@ class ErrorCard extends CustomErrorWidget {
     return SizedBox(
       height: height ?? AppStyles.cardHeight,
       width: width ?? AppStyles.cardWidth,
-      child: Card(
-        elevation: AppStyles.cardElevation,
-        child: Container(
-          padding: AppStyles.cardPadding,
-          child: ErrorText(error: error),
+      child: Center(
+        child: Card(
+          elevation: AppStyles.cardElevation,
+          child: Container(
+            padding: AppStyles.cardPadding,
+            child: ErrorText(error: error),
+          ),
         ),
       ),
     );

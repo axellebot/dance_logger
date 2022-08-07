@@ -15,10 +15,9 @@ class ArtistListState extends Equatable implements ArtistListParams {
   @override
   final String? ofVideo;
 
-  final Error? error;
-
   final List<ArtistViewModel> artists;
   final bool hasReachedMax;
+  final Error? error;
 
   const ArtistListState({
     this.status = ArtistListStatus.initial,
@@ -31,8 +30,15 @@ class ArtistListState extends Equatable implements ArtistListParams {
   });
 
   @override
-  List<Object?> get props =>
-      [status, ofDance, ofFigure, ofVideo, artists, hasReachedMax, error];
+  List<Object?> get props => [
+        status,
+        ofDance,
+        ofFigure,
+        ofVideo,
+        artists,
+        hasReachedMax,
+        error,
+      ];
 
   ArtistListState copyWith({
     ArtistListStatus? status,
@@ -56,13 +62,13 @@ class ArtistListState extends Equatable implements ArtistListParams {
 
   @override
   String toString() {
-    return 'ArtistListLoaded{'
+    return 'ArtistListState{'
         'status: $status, '
         'ofDance: $ofDance, '
         'ofFigure: $ofFigure, '
         'ofVideo: $ofVideo, '
         'artists: $artists, '
-        'hasReachedMax: $hasReachedMax'
+        'hasReachedMax: $hasReachedMax, '
         'error: $error'
         '}';
   }

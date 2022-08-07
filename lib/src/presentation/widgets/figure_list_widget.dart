@@ -4,7 +4,7 @@ import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class FigureListView extends StatelessWidget {
+class FigureListView extends StatefulWidget {
   final Axis scrollDirection;
 
   const FigureListView({
@@ -13,59 +13,13 @@ class FigureListView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    // TODO: Add pull down to refresh
-    return BlocBuilder<FigureListBloc, FigureListState>(
-      builder: (BuildContext context, FigureListState state) {
-        if (state is FigureListUninitialized) {
-          return ListView(
-            scrollDirection: scrollDirection,
-          );
-        } else if (state is FigureListRefreshing) {
-          return LoadingListView(
-            scrollDirection: scrollDirection,
-          );
-        } else if (state is FigureListLoaded) {
-          if (state.figures.isNotEmpty) {
-            return _FigureListViewLoaded(
-              scrollDirection: scrollDirection,
-            );
-          } else {
-            return ListView(
-              scrollDirection: scrollDirection,
-              children: [
-                (scrollDirection == Axis.vertical)
-                    ? const ListTile(title: Text('No Figures'))
-                    : const Card(child: Text('No Figures'))
-              ],
-            );
-          }
-        }
-        return ErrorListView(
-          scrollDirection: scrollDirection,
-          error: NotSupportedError(message: '${state.runtimeType}'),
-        );
-      },
-    );
-  }
+  State<StatefulWidget> createState() => _FigureListViewState();
 }
 
-class _FigureListViewLoaded extends StatefulWidget {
-  final Axis scrollDirection;
-
-  const _FigureListViewLoaded({
-    super.key,
-    required this.scrollDirection,
-  });
-
-  @override
-  State<StatefulWidget> createState() => _FigureListViewLoadedState();
-}
-
-class _FigureListViewLoadedState extends State<_FigureListViewLoaded> {
+class _FigureListViewState extends State<FigureListView> {
   final _scrollController = ScrollController();
 
-  _FigureListViewLoadedState();
+  _FigureListViewState();
 
   @override
   void initState() {
@@ -77,28 +31,43 @@ class _FigureListViewLoadedState extends State<_FigureListViewLoaded> {
   Widget build(BuildContext context) {
     return BlocBuilder<FigureListBloc, FigureListState>(
       builder: (context, state) {
-        if (state is FigureListLoaded) {
-          return ListView.builder(
-            scrollDirection: widget.scrollDirection,
-            controller: _scrollController,
-            itemCount: state.hasReachedMax
-                ? state.figures.length
-                : state.figures.length + 1,
-            itemBuilder: (context, index) {
-              return (index < state.figures.length)
-                  ? (widget.scrollDirection == Axis.vertical)
-                      ? FigureItemTile(figure: state.figures[index])
-                      : FigureItemCard(figure: state.figures[index])
-                  : (widget.scrollDirection == Axis.vertical)
-                      ? const BottomListLoadingIndicator()
-                      : const RightListLoadingIndicator();
-            },
-          );
+        switch (state.status) {
+          case FigureListStatus.loading:
+            return LoadingListView(
+              scrollDirection: widget.scrollDirection,
+            );
+
+          case FigureListStatus.failure:
+          case FigureListStatus.success:
+            if (state.figures.isEmpty) {
+              return EmptyListView(
+                scrollDirection: widget.scrollDirection,
+                label: 'No Figures',
+              );
+            } else {
+              return ListView.builder(
+                scrollDirection: widget.scrollDirection,
+                controller: _scrollController,
+                itemCount: state.hasReachedMax
+                    ? state.figures.length
+                    : state.figures.length + 1,
+                itemBuilder: (context, index) {
+                  return (index < state.figures.length)
+                      ? (widget.scrollDirection == Axis.vertical)
+                          ? FigureItemTile(figure: state.figures[index])
+                          : FigureItemCard(figure: state.figures[index])
+                      : (widget.scrollDirection == Axis.vertical)
+                          ? const BottomListLoadingIndicator()
+                          : const RightListLoadingIndicator();
+                },
+              );
+            }
+          default:
+            return ErrorListView(
+              scrollDirection: widget.scrollDirection,
+              error: NotSupportedError(message: '${state.status}'),
+            );
         }
-        return ErrorListView(
-          scrollDirection: widget.scrollDirection,
-          error: NotSupportedError(message: '${state.runtimeType}'),
-        );
       },
     );
   }

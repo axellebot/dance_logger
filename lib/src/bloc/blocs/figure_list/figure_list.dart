@@ -1,4 +1,4 @@
 export 'figure_list_bloc.dart';
 export 'figure_list_event.dart';
-export 'figure_list_state.dart';
 export 'figure_list_params.dart';
+export 'figure_list_state.dart';

@@ -4,7 +4,7 @@ import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PracticeListView extends StatelessWidget {
+class PracticeListView extends StatefulWidget {
   final Axis scrollDirection;
 
   const PracticeListView({
@@ -13,59 +13,13 @@ class PracticeListView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    // TODO: Add pull down to refresh
-    return BlocBuilder<PracticeListBloc, PracticeListState>(
-      builder: (BuildContext context, PracticeListState state) {
-        if (state is PracticeListUninitialized) {
-          return ListView(
-            scrollDirection: scrollDirection,
-          );
-        } else if (state is PracticeListRefreshing) {
-          return LoadingListView(
-            scrollDirection: scrollDirection,
-          );
-        } else if (state is PracticeListLoaded) {
-          if (state.practices.isNotEmpty) {
-            return _PracticeListViewLoaded(
-              scrollDirection: scrollDirection,
-            );
-          } else {
-            return ListView(
-              scrollDirection: scrollDirection,
-              children: [
-                (scrollDirection == Axis.vertical)
-                    ? const ListTile(title: Text('No Practices'))
-                    : const Card(child: Text('No Practices'))
-              ],
-            );
-          }
-        }
-        return ErrorListView(
-          scrollDirection: scrollDirection,
-          error: NotSupportedError(message: '${state.runtimeType}'),
-        );
-      },
-    );
-  }
+  State<StatefulWidget> createState() => _PracticeListViewState();
 }
 
-class _PracticeListViewLoaded extends StatefulWidget {
-  final Axis scrollDirection;
-
-  const _PracticeListViewLoaded({
-    super.key,
-    required this.scrollDirection,
-  });
-
-  @override
-  State<StatefulWidget> createState() => _PracticeListViewLoadedState();
-}
-
-class _PracticeListViewLoadedState extends State<_PracticeListViewLoaded> {
+class _PracticeListViewState extends State<PracticeListView> {
   final _scrollController = ScrollController();
 
-  _PracticeListViewLoadedState();
+  _PracticeListViewState();
 
   @override
   void initState() {
@@ -77,28 +31,42 @@ class _PracticeListViewLoadedState extends State<_PracticeListViewLoaded> {
   Widget build(BuildContext context) {
     return BlocBuilder<PracticeListBloc, PracticeListState>(
       builder: (context, state) {
-        if (state is PracticeListLoaded) {
-          return ListView.builder(
-            scrollDirection: widget.scrollDirection,
-            controller: _scrollController,
-            itemCount: state.hasReachedMax
-                ? state.practices.length
-                : state.practices.length + 1,
-            itemBuilder: (context, index) {
-              return (index < state.practices.length)
-                  ? (widget.scrollDirection == Axis.vertical)
-                      ? PracticeItemTile(practice: state.practices[index])
-                      : PracticeItemCard(practice: state.practices[index])
-                  : (widget.scrollDirection == Axis.vertical)
-                      ? const BottomListLoadingIndicator()
-                      : const RightListLoadingIndicator();
-            },
-          );
+        switch (state.status) {
+          case PracticeListStatus.loading:
+            return LoadingListView(
+              scrollDirection: widget.scrollDirection,
+            );
+          case PracticeListStatus.failure:
+          case PracticeListStatus.success:
+            if (state.practices.isEmpty) {
+              return EmptyListView(
+                scrollDirection: widget.scrollDirection,
+                label: 'No practices',
+              );
+            } else {
+              return ListView.builder(
+                scrollDirection: widget.scrollDirection,
+                controller: _scrollController,
+                itemCount: state.hasReachedMax
+                    ? state.practices.length
+                    : state.practices.length + 1,
+                itemBuilder: (context, index) {
+                  return (index < state.practices.length)
+                      ? (widget.scrollDirection == Axis.vertical)
+                          ? PracticeItemTile(practice: state.practices[index])
+                          : PracticeItemCard(practice: state.practices[index])
+                      : (widget.scrollDirection == Axis.vertical)
+                          ? const BottomListLoadingIndicator()
+                          : const RightListLoadingIndicator();
+                },
+              );
+            }
+          default:
+            return ErrorListView(
+              scrollDirection: widget.scrollDirection,
+              error: NotSupportedError(message: '${state.status}'),
+            );
         }
-        return ErrorListView(
-          scrollDirection: widget.scrollDirection,
-          error: NotSupportedError(message: '${state.runtimeType}'),
-        );
       },
     );
   }

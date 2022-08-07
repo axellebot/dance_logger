@@ -3,93 +3,55 @@ import 'package:equatable/equatable.dart';
 
 import 'dance_list_params.dart';
 
-abstract class DanceListState extends Equatable {
-  const DanceListState();
+enum DanceListStatus { initial, loading, success, failure }
 
-  @override
-  String toString() => 'DanceListState{}';
-}
+class DanceListState extends Equatable implements DanceListParams {
+  final DanceListStatus status;
 
-class DanceListUninitialized extends DanceListState {
-  const DanceListUninitialized();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  String toString() => 'DanceListUninitialized{}';
-}
-
-class DanceListRefreshing extends DanceListState {
-  const DanceListRefreshing();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  String toString() => 'DanceListRefreshing{}';
-}
-
-class DanceListLoaded extends DanceListState implements DanceListParams {
   @override
   final String? ofArtist;
-  @override
-  final String? ofFigure;
-  @override
-  final String? ofVideo;
 
   final List<DanceViewModel> dances;
   final bool hasReachedMax;
+  final Error? error;
 
-  const DanceListLoaded({
+  const DanceListState({
+    this.status = DanceListStatus.initial,
     this.ofArtist,
-    this.ofFigure,
-    this.ofVideo,
-    required this.dances,
-    required this.hasReachedMax,
+    this.dances = const <DanceViewModel>[],
+    this.hasReachedMax = false,
+    this.error,
   });
 
   @override
-  List<Object?> get props => [ofArtist, dances, hasReachedMax];
+  List<Object?> get props => [status, ofArtist, dances, hasReachedMax, error];
 
-  DanceListLoaded copyWith({
+  DanceListState copyWith({
+    DanceListStatus? status,
     String? ofArtist,
     String? ofFigure,
     String? ofVideo,
     List<DanceViewModel>? dances,
     bool? hasReachedMax,
+    Error? error,
   }) {
-    return DanceListLoaded(
+    return DanceListState(
+      status: status ?? this.status,
       ofArtist: ofArtist ?? this.ofArtist,
-      ofFigure: ofFigure ?? this.ofFigure,
-      ofVideo: ofVideo ?? this.ofVideo,
       dances: dances ?? this.dances,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      error: error ?? this.error,
     );
   }
 
   @override
   String toString() {
-    return 'DanceListLoaded{'
+    return 'DanceListState{'
+        'status: $status, '
         'ofArtist: $ofArtist, '
-        'ofFigure: $ofFigure, '
-        'ofVideo: $ofVideo, '
         'dances: $dances, '
-        'hasReachedMax: $hasReachedMax'
+        'hasReachedMax: $hasReachedMax, '
+        'error: $error'
         '}';
   }
-}
-
-class DanceListFailed extends DanceListState {
-  final Error error;
-
-  const DanceListFailed({required this.error});
-
-  @override
-  List<Object?> get props => [error];
-
-  @override
-  String toString() => 'DanceListFailed{'
-      'error: $error'
-      '}';
 }
