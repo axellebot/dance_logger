@@ -37,7 +37,7 @@ class TimeListLoaded extends TimeListState implements TimeListParams {
   @override
   final String? ofVideo;
 
-  final List<TimeViewModel> times;
+  final List<MomentViewModel> times;
   final bool hasReachedMax;
 
   const TimeListLoaded({
@@ -56,7 +56,7 @@ class TimeListLoaded extends TimeListState implements TimeListParams {
     String? ofArtist,
     String? ofFigure,
     String? ofVideo,
-    List<TimeViewModel>? times,
+    List<MomentViewModel>? times,
     bool? hasReachedMax,
   }) {
     return TimeListLoaded(

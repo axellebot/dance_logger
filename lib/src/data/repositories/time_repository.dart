@@ -7,18 +7,18 @@ import 'package:flutter/foundation.dart';
 class ImplTimeRepository implements TimeRepository {
   final String _tag = '$ImplTimeRepository';
 
-  final TimeDataStoreFactory factory;
+  final MomentDataStoreFactory factory;
 
   ImplTimeRepository({required this.factory});
 
   @override
-  FutureOr<TimeEntity> getById(
+  FutureOr<MomentEntity> getById(
     String id, {
     bool force = false,
   }) async {
     if (kDebugMode) print('$_tag:getById($id)');
 
-    final dataModel = await factory.databaseDataStore.getTime(id);
+    final dataModel = await factory.databaseDataStore.getMoment(id);
 
     return dataModel;
   }
@@ -26,11 +26,11 @@ class ImplTimeRepository implements TimeRepository {
   @override
   FutureOr<void> deleteById(String id) async {
     if (kDebugMode) print('$_tag:deleteById($id)');
-    await factory.databaseDataStore.deleteTime(id);
+    await factory.databaseDataStore.deleteMoment(id);
   }
 
   @override
-  FutureOr<List<TimeEntity>> getList({
+  FutureOr<List<MomentEntity>> getList({
     required Offset offset,
 
     /// TODO: Add filters
@@ -38,7 +38,7 @@ class ImplTimeRepository implements TimeRepository {
   }) async {
     if (kDebugMode) print('$_tag:getList()');
 
-    final dataModels = await factory.databaseDataStore.getTimes(
+    final dataModels = await factory.databaseDataStore.getMoments(
       offset: offset,
     );
 
@@ -46,7 +46,7 @@ class ImplTimeRepository implements TimeRepository {
   }
 
   @override
-  FutureOr<List<TimeEntity>> getTimesOfFigure(
+  FutureOr<List<MomentEntity>> getTimesOfFigure(
     String figureId, {
     required Offset offset,
 
@@ -64,7 +64,7 @@ class ImplTimeRepository implements TimeRepository {
   }
 
   @override
-  FutureOr<List<TimeEntity>> getTimesOfVideo(
+  FutureOr<List<MomentEntity>> getTimesOfVideo(
     String videoId, {
     required Offset offset,
 
@@ -72,7 +72,7 @@ class ImplTimeRepository implements TimeRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$_tag:getTimesOfVideo($videoId)');
-    final dataModels = await factory.databaseDataStore.getTimesOfVideo(
+    final dataModels = await factory.databaseDataStore.getMomentsOfVideo(
       videoId,
       offset: offset,
     );
@@ -80,7 +80,7 @@ class ImplTimeRepository implements TimeRepository {
   }
 
   @override
-  FutureOr<List<TimeEntity>> getTimesOfArtist(
+  FutureOr<List<MomentEntity>> getTimesOfArtist(
     String artistId, {
     required Offset offset,
 
@@ -88,7 +88,7 @@ class ImplTimeRepository implements TimeRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$_tag:getTimesOfArtist($artistId)');
-    final dataModels = await factory.databaseDataStore.getTimesOfArtist(
+    final dataModels = await factory.databaseDataStore.getMomentsOfArtist(
       artistId,
       offset: offset,
     );

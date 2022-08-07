@@ -4,7 +4,7 @@ class FigureViewModel extends BaseViewModel {
   String name;
 
   late List<ArtistViewModel>? artists;
-  late List<TimeViewModel>? times;
+  late List<MomentViewModel>? times;
   late List<VideoViewModel>? videos;
   late List<PracticeViewModel>? practices;
 

@@ -1,26 +1,30 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'time_model.dart';
+part of 'moment_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-TimeDataModel _$TimeDataModelFromJson(Map<String, dynamic> json) =>
-    TimeDataModel(
-      id: json['timecode_id'] as String,
+MomentDataModel _$MomentDataModelFromJson(Map<String, dynamic> json) =>
+    MomentDataModel(
+      id: json['moment_id'] as String,
+      videoId: json['video_id'] as String,
       startTime: json['start_time'] as String,
       endTime: json['end_time'] as String,
+      figureId: json['figure_id'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
       version: json['version'] as int,
     );
 
-Map<String, dynamic> _$TimeDataModelToJson(TimeDataModel instance) =>
+Map<String, dynamic> _$MomentDataModelToJson(MomentDataModel instance) =>
     <String, dynamic>{
-      'timecode_id': instance.id,
+      'moment_id': instance.id,
+      'video_id': instance.videoId,
       'start_time': instance.startTime,
       'end_time': instance.endTime,
+      'figure_id': instance.figureId,
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),
       'version': instance.version,

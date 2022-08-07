@@ -19,7 +19,7 @@ class TimeListBloc extends Bloc<TimeListEvent, TimeListState> {
   }
 
   FutureOr<void> _onTimeListLoad(event, emit) async {
-    final List<TimeViewModel> timeViewModels;
+    final List<MomentViewModel> timeViewModels;
     timeViewModels = await _fetchTimes(
       ofArtist: event.ofArtist,
       ofFigure: event.ofFigure,
@@ -37,7 +37,7 @@ class TimeListBloc extends Bloc<TimeListEvent, TimeListState> {
 
   FutureOr<void> _onTimeListLoadMore(event, emit) async {
     if (state is TimeListLoaded) {
-      final List<TimeViewModel> timeViewModels;
+      final List<MomentViewModel> timeViewModels;
       timeViewModels = await _fetchTimes(
         ofArtist: (state as TimeListLoaded).ofArtist,
         ofFigure: (state as TimeListLoaded).ofFigure,
@@ -59,7 +59,7 @@ class TimeListBloc extends Bloc<TimeListEvent, TimeListState> {
 
   FutureOr<void> _onTimeListRefresh(event, emit) async {
     if (state is TimeListLoaded) {
-      List<TimeViewModel> timeViewModels = await _fetchTimes(
+      List<MomentViewModel> timeViewModels = await _fetchTimes(
         ofArtist: (state as TimeListLoaded).ofArtist,
         ofFigure: (state as TimeListLoaded).ofFigure,
         ofVideo: (state as TimeListLoaded).ofVideo,
@@ -73,14 +73,14 @@ class TimeListBloc extends Bloc<TimeListEvent, TimeListState> {
     }
   }
 
-  Future<List<TimeViewModel>> _fetchTimes({
+  Future<List<MomentViewModel>> _fetchTimes({
     String? ofArtist,
     String? ofFigure,
     String? ofVideo,
     required int offset,
     int limit = 10,
   }) async {
-    List<TimeEntity> timeEntities;
+    List<MomentEntity> timeEntities;
 
     if (ofArtist != null) {
       timeEntities = await timeRepository.getTimesOfArtist(
@@ -115,8 +115,8 @@ class TimeListBloc extends Bloc<TimeListEvent, TimeListState> {
       );
     }
 
-    List<TimeViewModel> timeViewModels = timeEntities
-        .map<TimeViewModel>((timeEntity) => mapper.toTimeViewModel(timeEntity))
+    List<MomentViewModel> timeViewModels = timeEntities
+        .map<MomentViewModel>((timeEntity) => mapper.toTimeViewModel(timeEntity))
         .toList();
     return timeViewModels;
   }

@@ -6,7 +6,7 @@ class VideoViewModel extends BaseViewModel {
 
   late List<ArtistViewModel>? artists;
   late List<FigureViewModel>? figures;
-  late List<TimeViewModel>? times;
+  late List<MomentViewModel>? times;
 
   VideoViewModel({
     required super.id,

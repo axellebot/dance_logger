@@ -14,7 +14,7 @@ class DanceDatabaseManager
         FigureDataStore,
         PracticeDataStore,
         VideoDataStore,
-        TimeDataStore {
+        MomentDataStore {
   final String filePath;
   late Database db;
   late final DatabaseFactory dbFactory;
@@ -136,8 +136,8 @@ class DanceDatabaseManager
         )
       ''');
       db.execute('''
-        CREATE TABLE timecodes(
-          timecode_id TEXT PRIMARY KEY,
+        CREATE TABLE moments(
+          moment_id TEXT PRIMARY KEY,
           video_id TEXT NOT NULL,
           figure_id TEXT NOT NULL,
           start_time TEXT,
@@ -154,14 +154,14 @@ class DanceDatabaseManager
         )
       ''');
       db.execute('''
-        CREATE TABLE timecodes_artists(
-          timecode_id TEXT NOT NULL,
+        CREATE TABLE moments_artists(
+          moment_id TEXT NOT NULL,
           artist_id TEXT NOT NULL,
           created_at TEXT NOT NULL,
           updated_at TEXT NOT NULL,
           version INTEGER NOT NULL,
-          FOREIGN KEY (timecode_id)
-            REFERENCES timecodes (timecode_id)
+          FOREIGN KEY (moment_id)
+            REFERENCES moments (moment_id)
             ON DELETE CASCADE,
           FOREIGN KEY (artist_id)
             REFERENCES artists (artist_id)
@@ -257,12 +257,12 @@ class DanceDatabaseManager
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT a.* FROM artists a
-      INNER JOIN timecodes_artists tca
-      ON a.artist_id = tca.artist_id
-        INNER JOIN timecodes tc
-        ON tca.timecode_id = tc.timecode_id
+      INNER JOIN moments_artists m_a
+      ON a.artist_id = m_a.artist_id
+        INNER JOIN moments m
+        ON m_a.moment_id = m.moment_id
           INNER JOIN figures f
-          ON tc.figure_id = f.figure_id
+          ON m.figure_id = f.figure_id
       WHERE f.dance_id=?
       LIMIT ?
       OFFSET ?
@@ -286,11 +286,11 @@ class DanceDatabaseManager
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT a.* FROM artists a 
-      INNER JOIN timecodes_artists tc_a 
-      ON a.artist_id = tc_a.artist_id 
-        INNER JOIN timecodes tc 
-        ON tc_a.timecode_id = tc.timecode_id
-      WHERE tc.figure_id = ?
+      INNER JOIN moments_artists m_a 
+      ON a.artist_id = m_a.artist_id 
+        INNER JOIN moments m 
+        ON m_a.moment_id = m.moment_id
+      WHERE m.figure_id = ?
       LIMIT ?
       OFFSET ?
     ''',
@@ -313,9 +313,9 @@ class DanceDatabaseManager
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT a.* FROM artists a
-      INNER JOIN timecodes_artists tc_a
-      ON a.artist_id = tc_a.artist_id
-      WHERE tc_a.timecode_id = ?
+      INNER JOIN moments_artists m_a
+      ON a.artist_id = m_a.artist_id
+      WHERE m_a.moment_id = ?
       LIMIT ?
       OFFSET ?
     ''',
@@ -338,11 +338,11 @@ class DanceDatabaseManager
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT a.* FROM artists a
-      INNER JOIN timecodes_artists tca 
-      ON a.artist_id=tca.artist_id 
-        INNER JOIN timecodes tc 
-        ON tca.timecode_id=tc.timecode_id
-      WHERE tc.video_id = ?
+      INNER JOIN moments_artists m_a 
+      ON a.artist_id=m_a.artist_id 
+        INNER JOIN moments m 
+        ON m_a.moment_id=m.moment_id
+      WHERE m.video_id = ?
       LIMIT ?
       OFFSET ?
     ''',
@@ -434,11 +434,11 @@ class DanceDatabaseManager
       SELECT DISTINCT d.* FROM dances d
       INNER JOIN figures f
       ON d.dance_id = f.dance_id
-        INNER JOIN timecodes tc
-        ON f.figure_id = tc.figure_id 
-          INNER JOIN timecodes_artists tc_a
-          ON tc.timecode_id = tc_a.timecode_id
-      WHERE tc_a.artist_id = ?
+        INNER JOIN moments m
+        ON f.figure_id = m.figure_id 
+          INNER JOIN moments_artists m_a
+          ON m.moment_id = m_a.moment_id
+      WHERE m_a.artist_id = ?
       LIMIT ?
       OFFSET ?
     ''',
@@ -527,11 +527,11 @@ class DanceDatabaseManager
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT f.* FROM figures f
-      INNER JOIN timecodes tc
-      ON f.figure_id = tc.figure_id
-        INNER JOIN timecodes_artists tc_a
-        ON tc.timecode_id = tc_a.timecode_id
-      WHERE tc_a.artist_id = ?
+      INNER JOIN moments m
+      ON f.figure_id = m.figure_id
+        INNER JOIN moments_artists m_a
+        ON m.moment_id = m_a.moment_id
+      WHERE m_a.artist_id = ?
       LIMIT ?
       OFFSET ?
     ''',
@@ -577,9 +577,9 @@ class DanceDatabaseManager
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT f.* FROM figures f
-      INNER JOIN timecodes tc
-      ON f.figure_id = tc.figure_id
-      WHERE tc.video_id = ?
+      INNER JOIN moments m
+      ON f.figure_id = m.figure_id
+      WHERE m.video_id = ?
       LIMIT ?
       OFFSET ?
     ''',
@@ -741,11 +741,11 @@ class DanceDatabaseManager
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT v.* FROM videos v
-      INNER JOIN timecodes tc
-      ON v.video_id = tc.video_id
-        INNER JOIN timecodes_artists tc_a
-        ON tc.timecode_id = tc_a.timecode_id
-      WHERE tc_a.artist_id = ?
+      INNER JOIN moments m
+      ON v.video_id = m.video_id
+        INNER JOIN moments_artists m_a
+        ON m.moment_id = m_a.moment_id
+      WHERE m_a.artist_id = ?
       LIMIT ?
       OFFSET ?
     ''',
@@ -769,10 +769,10 @@ class DanceDatabaseManager
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT v.* FROM videos v
-      INNER JOIN timecodes tc
-      ON v.video_id = tc.video_id
+      INNER JOIN moments m
+      ON v.video_id = m.video_id
         INNER JOIN figures f
-        ON f.figure_id = tc.figure_id
+        ON f.figure_id = m.figure_id
       WHERE f.dance_id = ?
       LIMIT ?
       OFFSET ?
@@ -797,9 +797,9 @@ class DanceDatabaseManager
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT f.* FROM figures f
-      INNER JOIN timecodes tc
-      ON f.figure_id = tc.figure_id
-      WHERE tc.video_id = ?
+      INNER JOIN moments m
+      ON f.figure_id = m.figure_id
+      WHERE m.video_id = ?
       LIMIT ?
       OFFSET ?
     ''',
@@ -816,7 +816,7 @@ class DanceDatabaseManager
   }
 
   @override
-  FutureOr<TimeDataModel> setTime(TimeDataModel timeModel) async {
+  FutureOr<MomentDataModel> setMoment(MomentDataModel timeModel) async {
     bool exists = true;
     try {
       await getDance(timeModel.id);
@@ -827,7 +827,7 @@ class DanceDatabaseManager
     int count;
     if (!exists) {
       count = await db.insert(
-        'timecodes',
+        'moments',
         timeModel.toJson(),
       );
       if (count == 0) {
@@ -835,21 +835,21 @@ class DanceDatabaseManager
       }
     } else {
       count = await db.update(
-        'timecodes',
+        'moments',
         timeModel.toJson(),
       );
       if (count == 0) {
         throw DataNotUpdatedError('Time');
       }
     }
-    return await getTime(timeModel.id);
+    return await getMoment(timeModel.id);
   }
 
   @override
-  FutureOr<TimeDataModel> getTime(String timeId) async {
+  FutureOr<MomentDataModel> getMoment(String timeId) async {
     List results = await db.query(
-      'timecodes',
-      where: 'timecode_id = ?',
+      'moments',
+      where: 'moment_id = ?',
       whereArgs: [timeId],
     );
 
@@ -857,15 +857,15 @@ class DanceDatabaseManager
       throw DataNotFoundError('Time');
     }
 
-    TimeDataModel time = TimeDataModel.fromJson(results.first);
+    MomentDataModel time = MomentDataModel.fromJson(results.first);
     return time;
   }
 
   @override
-  FutureOr<void> deleteTime(String timeId) async {
+  FutureOr<void> deleteMoment(String timeId) async {
     int count = await db.delete(
-      'timecodes',
-      where: 'timecode_id = ?',
+      'moments',
+      where: 'moment_id = ?',
       whereArgs: [timeId],
     );
     if (count == 0) {
@@ -874,29 +874,29 @@ class DanceDatabaseManager
   }
 
   @override
-  FutureOr<List<TimeDataModel>> getTimes({
+  FutureOr<List<MomentDataModel>> getMoments({
     required Offset offset,
   }) async {
     List results = await db.query(
-      'timecodes',
+      'moments',
       limit: offset.limit,
       offset: offset.offset,
     );
 
-    List<TimeDataModel> times =
-        results.map((result) => TimeDataModel.fromJson(result)).toList();
+    List<MomentDataModel> times =
+        results.map((result) => MomentDataModel.fromJson(result)).toList();
     return times;
   }
 
   @override
-  FutureOr<List<TimeDataModel>> getTimesOfFigure(
+  FutureOr<List<MomentDataModel>> getTimesOfFigure(
     String figureId, {
     required Offset offset,
   }) async {
     List results = await db.rawQuery(
       '''
-      SELECT DISTINCT tc.* FROM timecodes tc
-      WHERE tc.figure_id = ?
+      SELECT DISTINCT m.* FROM moments m
+      WHERE m.figure_id = ?
       LIMIT ?
       OFFSET ?
     ''',
@@ -907,20 +907,20 @@ class DanceDatabaseManager
       ],
     );
 
-    List<TimeDataModel> times =
-        results.map((result) => TimeDataModel.fromJson(result)).toList();
+    List<MomentDataModel> times =
+        results.map((result) => MomentDataModel.fromJson(result)).toList();
     return times;
   }
 
   @override
-  FutureOr<List<TimeDataModel>> getTimesOfVideo(
+  FutureOr<List<MomentDataModel>> getMomentsOfVideo(
     String videoId, {
     required Offset offset,
   }) async {
     List results = await db.rawQuery(
       '''
-      SELECT DISTINCT tc.* FROM timecodes tc
-      WHERE tc.video_id = ?
+      SELECT DISTINCT m.* FROM moments m
+      WHERE m.video_id = ?
       LIMIT ?
       OFFSET ?
     ''',
@@ -931,22 +931,22 @@ class DanceDatabaseManager
       ],
     );
 
-    List<TimeDataModel> times =
-        results.map((result) => TimeDataModel.fromJson(result)).toList();
+    List<MomentDataModel> times =
+        results.map((result) => MomentDataModel.fromJson(result)).toList();
     return times;
   }
 
   @override
-  FutureOr<List<TimeDataModel>> getTimesOfArtist(
+  FutureOr<List<MomentDataModel>> getMomentsOfArtist(
     String artistId, {
     required Offset offset,
   }) async {
     List results = await db.rawQuery(
       '''
-      SELECT DISTINCT tc.* FROM timecodes tc
-      INNER JOIN timecodes_artists tc_a
-      ON tc.timecode_id = tc_a.timecode_id
-      WHERE tc_a.artist_id = ?
+      SELECT DISTINCT m.* FROM moments m
+      INNER JOIN moments_artists m_a
+      ON m.moment_id = m_a.moment_id
+      WHERE m_a.artist_id = ?
       LIMIT ?
       OFFSET ?
     ''',
@@ -957,8 +957,8 @@ class DanceDatabaseManager
       ],
     );
 
-    List<TimeDataModel> times =
-        results.map((result) => TimeDataModel.fromJson(result)).toList();
+    List<MomentDataModel> times =
+        results.map((result) => MomentDataModel.fromJson(result)).toList();
     return times;
   }
 }

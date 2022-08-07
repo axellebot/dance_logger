@@ -61,9 +61,9 @@ class ModelMapper {
     );
   }
 
-  /// [TimeEntity] to [TimeViewModel]
-  TimeViewModel toTimeViewModel(TimeEntity dataModel) {
-    return TimeViewModel(
+  /// [MomentEntity] to [MomentViewModel]
+  MomentViewModel toTimeViewModel(MomentEntity dataModel) {
+    return MomentViewModel(
       id: dataModel.id,
       startTime: dataModel.startTime,
       endTime: dataModel.endTime,
