@@ -14,6 +14,12 @@ class ImplArtistRepository extends ArtistRepository {
   });
 
   @override
+  FutureOr<ArtistEntity> save(ArtistEntity entity) async {
+    return await factory.databaseDataStore
+        .saveArtist(entity as ArtistDataModel);
+  }
+
+  @override
   FutureOr<ArtistEntity> getById(
     String id, {
     bool force = false,

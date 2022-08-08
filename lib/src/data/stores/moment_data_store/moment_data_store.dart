@@ -4,7 +4,7 @@ import 'package:dance/data.dart';
 import 'package:dance/domain.dart';
 
 abstract class MomentDataStore {
-  FutureOr<MomentDataModel> setMoment(MomentDataModel momentModel);
+  FutureOr<MomentDataModel> saveMoment(MomentDataModel momentModel);
 
   FutureOr<MomentDataModel> getMoment(String momentId);
 

@@ -178,7 +178,7 @@ class DanceDatabaseManager
   }
 
   @override
-  FutureOr<ArtistDataModel> setArtist(ArtistDataModel artistModel) async {
+  FutureOr<ArtistDataModel> saveArtist(ArtistDataModel artistModel) async {
     bool exists = true;
     try {
       await getArtist(artistModel.id);
@@ -358,7 +358,7 @@ class DanceDatabaseManager
   }
 
   @override
-  FutureOr<DanceDataModel> setDance(DanceDataModel danceModel) async {
+  FutureOr<DanceDataModel> saveDance(DanceDataModel danceModel) async {
     bool exists = true;
     try {
       await getDance(danceModel.id);
@@ -454,7 +454,7 @@ class DanceDatabaseManager
   }
 
   @override
-  FutureOr<FigureDataModel> setFigure(FigureDataModel figureModel) async {
+  FutureOr<FigureDataModel> saveFigure(FigureDataModel figureModel) async {
     bool exists = true;
     try {
       await getDance(figureModel.id);
@@ -501,8 +501,14 @@ class DanceDatabaseManager
 
   @override
   FutureOr<void> deleteFigure(String figureId) async {
-    // TODO: implement deleteFigure
-    throw UnimplementedError();
+    int count = await db.delete(
+      'figures',
+      where: 'figure_id= ?',
+      whereArgs: [figureId],
+    );
+    if (count == 0) {
+      throw DataNotDeletedError('Figure');
+    }
   }
 
   @override
@@ -595,10 +601,34 @@ class DanceDatabaseManager
   }
 
   @override
-  FutureOr<PracticeDataModel> setPractice(
+  FutureOr<PracticeDataModel> savePractice(
       PracticeDataModel practiceModel) async {
-    // TODO: implement setPractice
-    throw UnimplementedError();
+    bool exists = true;
+    try {
+      await getPractice(practiceModel.id);
+    } on DataNotFoundError {
+      exists = false;
+    }
+
+    int count;
+    if (!exists) {
+      count = await db.insert(
+        'practices',
+        practiceModel.toJson(),
+      );
+      if (count == 0) {
+        throw DataNotCreatedError('Practice');
+      }
+    } else {
+      count = await db.update(
+        'practices',
+        practiceModel.toJson(),
+      );
+      if (count == 0) {
+        throw DataNotUpdatedError('Practice');
+      }
+    }
+    return await getPractice(practiceModel.id);
   }
 
   @override
@@ -662,7 +692,7 @@ class DanceDatabaseManager
   }
 
   @override
-  FutureOr<VideoDataModel> setVideo(VideoDataModel videoModel) async {
+  FutureOr<VideoDataModel> saveVideo(VideoDataModel videoModel) async {
     bool exists = true;
     try {
       await getVideo(videoModel.id);
@@ -816,7 +846,7 @@ class DanceDatabaseManager
   }
 
   @override
-  FutureOr<MomentDataModel> setMoment(MomentDataModel momentModel) async {
+  FutureOr<MomentDataModel> saveMoment(MomentDataModel momentModel) async {
     bool exists = true;
     try {
       await getDance(momentModel.id);

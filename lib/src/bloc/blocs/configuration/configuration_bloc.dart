@@ -44,9 +44,9 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
     emit(state.copyWith(
       status: ConfigStatus.loading,
     ));
-    await _appPrefsRepository?.setFileDir(await _getDefaultFileDirPath());
+    await _appPrefsRepository?.saveFileDir(await _getDefaultFileDirPath());
     event.fileName != null
-        ? await _appPrefsRepository?.setFileName(event.fileName!)
+        ? await _appPrefsRepository?.saveFileName(event.fileName!)
         : await _appPrefsRepository?.deleteFileName();
 
     await _loadConfig(emit);

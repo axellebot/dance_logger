@@ -4,7 +4,7 @@ import 'package:dance/data.dart';
 import 'package:dance/domain.dart';
 
 abstract class PracticeDataStore {
-  FutureOr<PracticeDataModel> setPractice(PracticeDataModel practiceModel);
+  FutureOr<PracticeDataModel> savePractice(PracticeDataModel practiceModel);
 
   FutureOr<PracticeDataModel> getPractice(String practiceId);
 

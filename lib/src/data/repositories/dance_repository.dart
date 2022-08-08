@@ -12,6 +12,11 @@ class ImplDanceRepository extends DanceRepository {
   ImplDanceRepository({required this.factory});
 
   @override
+  FutureOr<DanceEntity> save(DanceEntity entity) async {
+    return await factory.databaseDataStore.saveDance(entity as DanceDataModel);
+  }
+
+  @override
   FutureOr<DanceEntity> getById(
     String id, {
     bool force = false,

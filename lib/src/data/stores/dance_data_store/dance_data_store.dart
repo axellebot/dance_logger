@@ -4,7 +4,7 @@ import 'package:dance/data.dart';
 import 'package:dance/domain.dart';
 
 abstract class DanceDataStore {
-  FutureOr<DanceDataModel> setDance(DanceDataModel danceModel);
+  FutureOr<DanceDataModel> saveDance(DanceDataModel danceModel);
 
   FutureOr<DanceDataModel> getDance(String danceId);
 

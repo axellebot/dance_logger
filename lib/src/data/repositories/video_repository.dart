@@ -12,6 +12,11 @@ class ImplVideoRepository extends VideoRepository {
   ImplVideoRepository({required this.factory});
 
   @override
+  FutureOr<VideoEntity> save(VideoEntity entity) async {
+    return await factory.databaseDataStore.saveVideo(entity as VideoDataModel);
+  }
+
+  @override
   FutureOr<VideoEntity> getById(
     String id, {
     bool force = false,
@@ -78,7 +83,8 @@ class ImplVideoRepository extends VideoRepository {
   }
 
   @override
-  FutureOr<List<VideoEntity>> getVideosOfDance(String danceId, {required Offset offset}) async {
+  FutureOr<List<VideoEntity>> getVideosOfDance(String danceId,
+      {required Offset offset}) async {
     if (kDebugMode) print('$_tag:getVideosOfDance($danceId)');
     final dataModels = await factory.databaseDataStore.getVideosOfDance(
       danceId,
@@ -86,6 +92,4 @@ class ImplVideoRepository extends VideoRepository {
     );
     return dataModels;
   }
-
-
 }

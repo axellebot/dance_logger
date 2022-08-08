@@ -12,6 +12,12 @@ class ImplPracticeRepository extends PracticeRepository {
   ImplPracticeRepository({required this.factory});
 
   @override
+  FutureOr<PracticeEntity> save(PracticeEntity entity) async {
+    return await factory.databaseDataStore
+        .savePractice(entity as PracticeDataModel);
+  }
+
+  @override
   FutureOr<PracticeEntity> getById(
     String id, {
     bool force = false,

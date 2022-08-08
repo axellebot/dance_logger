@@ -12,6 +12,12 @@ class ImplMomentRepository implements MomentRepository {
   ImplMomentRepository({required this.factory});
 
   @override
+  FutureOr<MomentEntity> save(MomentEntity entity) async {
+    return await factory.databaseDataStore
+        .saveMoment(entity as MomentDataModel);
+  }
+
+  @override
   FutureOr<MomentEntity> getById(
     String momentId, {
     bool force = false,

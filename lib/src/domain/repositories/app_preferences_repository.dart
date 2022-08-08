@@ -8,14 +8,14 @@ abstract class AppPrefsRepository {
   FutureOr<int?> getThemeMode();
 
   /// Set Application dark mode([int])
-  FutureOr<bool> setThemeMode(int themeMode);
+  FutureOr<bool> saveThemeMode(int themeMode);
 
   /// Delete Application dark mode
   FutureOr<bool> deleteDarkMode();
 
   FutureOr<bool?> getThemeUltraDark();
 
-  FutureOr<bool> setThemeUltraDark(bool themeUltraDark);
+  FutureOr<bool> saveThemeUltraDark(bool themeUltraDark);
 
   FutureOr<bool> deleteThemeUltraDark();
 
@@ -23,7 +23,7 @@ abstract class AppPrefsRepository {
   FutureOr<String?> getFileDir();
 
   /// Set database file dir
-  FutureOr<bool> setFileDir(String fileDir);
+  FutureOr<bool> saveFileDir(String fileDir);
 
   /// Delete database file dir
   FutureOr<bool> deleteFileDir();
@@ -32,7 +32,7 @@ abstract class AppPrefsRepository {
   FutureOr<String?> getFileName();
 
   /// Set database file name
-  FutureOr<bool> setFileName(String fileName);
+  FutureOr<bool> saveFileName(String fileName);
 
   /// Delete database file path
   FutureOr<bool> deleteFileName();

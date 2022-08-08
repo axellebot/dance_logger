@@ -4,7 +4,7 @@ import 'package:dance/data.dart';
 import 'package:dance/domain.dart';
 
 abstract class VideoDataStore {
-  FutureOr<VideoDataModel> setVideo(VideoDataModel videoModel);
+  FutureOr<VideoDataModel> saveVideo(VideoDataModel videoModel);
 
   FutureOr<VideoDataModel> getVideo(String videoId);
 

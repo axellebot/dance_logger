@@ -12,6 +12,12 @@ class ImplFigureRepository extends FigureRepository {
   ImplFigureRepository({required this.factory});
 
   @override
+  FutureOr<FigureEntity> save(FigureEntity entity) async {
+    return await factory.databaseDataStore
+        .saveFigure(entity as FigureDataModel);
+  }
+
+  @override
   FutureOr<FigureEntity> getById(
     String id, {
     bool force = false,

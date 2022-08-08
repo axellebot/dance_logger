@@ -4,7 +4,7 @@ import 'package:dance/data.dart';
 import 'package:dance/domain.dart';
 
 abstract class FigureDataStore {
-  FutureOr<FigureDataModel> setFigure(FigureDataModel figureModel);
+  FutureOr<FigureDataModel> saveFigure(FigureDataModel figureModel);
 
   FutureOr<FigureDataModel> getFigure(String figureId);
 

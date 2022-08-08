@@ -13,8 +13,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }) : super(const AppState()) {
     on<AppThemeChange>((event, emit) async {
       try {
-        await appPreferencesRepository.setThemeMode(event.themeMode);
-        await appPreferencesRepository.setThemeUltraDark(event.themeUltraDark);
+        await appPreferencesRepository.saveThemeMode(event.themeMode);
+        await appPreferencesRepository.saveThemeUltraDark(event.themeUltraDark);
         emit(state.copyWith(
           status: AppStatus.success,
           themeMode: event.themeMode,

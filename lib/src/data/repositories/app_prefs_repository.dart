@@ -9,7 +9,7 @@ class ImplAppPrefsRepository extends AppPrefsRepository {
   ImplAppPrefsRepository({required this.factory});
 
   @override
-  FutureOr<bool> setThemeMode(int themeMode) {
+  FutureOr<bool> saveThemeMode(int themeMode) {
     return factory.create.setThemeMode(themeMode);
   }
 
@@ -34,7 +34,7 @@ class ImplAppPrefsRepository extends AppPrefsRepository {
   }
 
   @override
-  FutureOr<bool> setThemeUltraDark(bool themeUltraDark) {
+  FutureOr<bool> saveThemeUltraDark(bool themeUltraDark) {
     return factory.create.setThemeUltraDark(themeUltraDark);
   }
 
@@ -44,7 +44,7 @@ class ImplAppPrefsRepository extends AppPrefsRepository {
   }
 
   @override
-  FutureOr<bool> setFileDir(String fileDir) {
+  FutureOr<bool> saveFileDir(String fileDir) {
     return factory.create.setFileDir(fileDir);
   }
 
@@ -59,7 +59,7 @@ class ImplAppPrefsRepository extends AppPrefsRepository {
   }
 
   @override
-  FutureOr<bool> setFileName(String fileName) {
+  FutureOr<bool> saveFileName(String fileName) {
     return factory.create.setFileName(fileName);
   }
 
