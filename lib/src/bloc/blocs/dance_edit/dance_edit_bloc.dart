@@ -18,23 +18,29 @@ class DanceEditBloc extends Bloc<DanceEditEvent, DanceEditState> {
   }
 
   FutureOr<void> _onDanceEditStart(event, emit) async {
-    emit(const DanceEditLoading());
-    DanceViewModel danceViewModel;
+    try {
+      emit(const DanceEditLoading());
+      DanceViewModel danceViewModel;
 
-    if (event.danceId != null) {
-      DanceEntity danceDataModel =
-          await danceRepository.getById(event.danceId!);
-      danceViewModel = mapper.toDanceViewModel(danceDataModel);
-    } else {
-      danceViewModel = DanceViewModel(
-        id: const Uuid().v4(),
-        name: '',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        version: 1,
-      );
+      if (event.danceId != null) {
+        DanceEntity danceDataModel =
+            await danceRepository.getById(event.danceId!);
+        danceViewModel = mapper.toDanceViewModel(danceDataModel);
+      } else {
+        danceViewModel = DanceViewModel(
+          id: const Uuid().v4(),
+          name: '',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          version: 1,
+        );
+      }
+
+      emit(DanceEditLoaded(dance: danceViewModel));
+    } on Error catch (error) {
+      emit(DanceEditFailed(
+        error: error,
+      ));
     }
-
-    emit(DanceEditLoaded(dance: danceViewModel));
   }
 }

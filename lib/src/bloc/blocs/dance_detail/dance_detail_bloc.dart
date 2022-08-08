@@ -17,16 +17,23 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
   }
 
   FutureOr<void> _onDanceDetailLoad(event, emit) async {
-    emit(state.copyWith(
-      status: DanceDetailStatus.loading,
-    ));
+    try {
+      emit(state.copyWith(
+        status: DanceDetailStatus.loading,
+      ));
 
-    DanceEntity danceDataModel = await danceRepository.getById(event.danceId);
-    DanceViewModel danceViewModel = mapper.toDanceViewModel(danceDataModel);
+      DanceEntity danceDataModel = await danceRepository.getById(event.danceId);
+      DanceViewModel danceViewModel = mapper.toDanceViewModel(danceDataModel);
 
-    emit(state.copyWith(
-      status: DanceDetailStatus.success,
-      dance: danceViewModel,
-    ));
+      emit(state.copyWith(
+        status: DanceDetailStatus.success,
+        dance: danceViewModel,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: DanceDetailStatus.failure,
+        error: error,
+      ));
+    }
   }
 }

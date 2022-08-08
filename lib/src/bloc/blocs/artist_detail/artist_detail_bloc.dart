@@ -17,17 +17,25 @@ class ArtistBloc extends Bloc<ArtistEvent, ArtistDetailState> {
   }
 
   FutureOr<void> _onArtistLoad(event, emit) async {
-    emit(state.copyWith(
-      status: ArtistDetailStatus.loading,
-    ));
+    try {
+      emit(state.copyWith(
+        status: ArtistDetailStatus.loading,
+      ));
 
-    ArtistEntity artistDataModel =
-        await artistRepository.getById(event.artistId);
-    ArtistViewModel artistViewModel = mapper.toArtistViewModel(artistDataModel);
+      ArtistEntity artistDataModel =
+          await artistRepository.getById(event.artistId);
+      ArtistViewModel artistViewModel =
+          mapper.toArtistViewModel(artistDataModel);
 
-    emit(state.copyWith(
-      status: ArtistDetailStatus.success,
-      artist: artistViewModel,
-    ));
+      emit(state.copyWith(
+        status: ArtistDetailStatus.success,
+        artist: artistViewModel,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: ArtistDetailStatus.failure,
+        error: error,
+      ));
+    }
   }
 }

@@ -49,7 +49,6 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
 
   FutureOr<void> _onMomentListLoadMore(event, emit) async {
     if (state.status != MomentListStatus.success) return;
-
     try {
       final List<MomentViewModel> momentViewModels;
       momentViewModels = await _fetchMoments(

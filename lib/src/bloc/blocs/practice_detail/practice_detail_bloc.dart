@@ -18,18 +18,25 @@ class PracticeDetailBloc
   }
 
   FutureOr<void> _onPracticeDetailLoad(event, emit) async {
-    emit(state.copyWith(
-      status: PracticeDetailStatus.loading,
-    ));
+    try {
+      emit(state.copyWith(
+        status: PracticeDetailStatus.loading,
+      ));
 
-    PracticeEntity practiceDataModel =
-        await practiceRepository.getById(event.practiceId);
-    PracticeViewModel practiceViewModel =
-        mapper.toPracticeViewModel(practiceDataModel);
+      PracticeEntity practiceDataModel =
+          await practiceRepository.getById(event.practiceId);
+      PracticeViewModel practiceViewModel =
+          mapper.toPracticeViewModel(practiceDataModel);
 
-    emit(state.copyWith(
-      status: PracticeDetailStatus.success,
-      practice: practiceViewModel,
-    ));
+      emit(state.copyWith(
+        status: PracticeDetailStatus.success,
+        practice: practiceViewModel,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: PracticeDetailStatus.failure,
+        error: error,
+      ));
+    }
   }
 }

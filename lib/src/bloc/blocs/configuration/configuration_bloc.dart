@@ -34,22 +34,36 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
   }
 
   FutureOr<void> _onConfigLoad(event, emit) async {
-    emit(state.copyWith(
-      status: ConfigStatus.loading,
-    ));
-    await _loadConfig(emit);
+    try {
+      emit(state.copyWith(
+        status: ConfigStatus.loading,
+      ));
+      await _loadConfig(emit);
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: ConfigStatus.failure,
+        error: error,
+      ));
+    }
   }
 
   FutureOr<void> _onConfigChange(event, emit) async {
-    emit(state.copyWith(
-      status: ConfigStatus.loading,
-    ));
-    await _appPrefsRepository?.saveFileDir(await _getDefaultFileDirPath());
-    event.fileName != null
-        ? await _appPrefsRepository?.saveFileName(event.fileName!)
-        : await _appPrefsRepository?.deleteFileName();
+    try {
+      emit(state.copyWith(
+        status: ConfigStatus.loading,
+      ));
+      await _appPrefsRepository?.saveFileDir(await _getDefaultFileDirPath());
+      event.fileName != null
+          ? await _appPrefsRepository?.saveFileName(event.fileName!)
+          : await _appPrefsRepository?.deleteFileName();
 
-    await _loadConfig(emit);
+      await _loadConfig(emit);
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: ConfigStatus.failure,
+        error: error,
+      ));
+    }
   }
 
   Future<String> _getDefaultFileDirPath() async =>

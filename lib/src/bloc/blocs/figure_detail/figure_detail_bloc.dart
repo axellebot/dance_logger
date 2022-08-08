@@ -17,17 +17,25 @@ class FigureDetailBloc extends Bloc<FigureDetailEvent, FigureDetailState> {
   }
 
   FutureOr<void> _onFigureDetailLoad(event, emit) async {
-    emit(state.copyWith(
-      status: FigureDetailStatus.loading,
-    ));
+    try {
+      emit(state.copyWith(
+        status: FigureDetailStatus.loading,
+      ));
 
-    FigureEntity figureDataModel =
-        await figureRepository.getById(event.figureId);
-    FigureViewModel figureViewModel = mapper.toFigureViewModel(figureDataModel);
+      FigureEntity figureDataModel =
+          await figureRepository.getById(event.figureId);
+      FigureViewModel figureViewModel =
+          mapper.toFigureViewModel(figureDataModel);
 
-    emit(state.copyWith(
-      status: FigureDetailStatus.success,
-      figure: figureViewModel,
-    ));
+      emit(state.copyWith(
+        status: FigureDetailStatus.success,
+        figure: figureViewModel,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: FigureDetailStatus.failure,
+        error: error,
+      ));
+    }
   }
 }

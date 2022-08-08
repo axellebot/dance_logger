@@ -17,16 +17,23 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
   }
 
   FutureOr<void> _onVideoDetailLoad(event, emit) async {
-    emit(state.copyWith(
-      status: VideoDetailStatus.loading,
-    ));
+    try {
+      emit(state.copyWith(
+        status: VideoDetailStatus.loading,
+      ));
 
-    VideoEntity videoDataModel = await videoRepository.getById(event.videoId);
-    VideoViewModel videoViewModel = mapper.toVideoViewModel(videoDataModel);
+      VideoEntity videoDataModel = await videoRepository.getById(event.videoId);
+      VideoViewModel videoViewModel = mapper.toVideoViewModel(videoDataModel);
 
-    emit(state.copyWith(
-      status: VideoDetailStatus.success,
-      video: videoViewModel,
-    ));
+      emit(state.copyWith(
+        status: VideoDetailStatus.success,
+        video: videoViewModel,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: VideoDetailStatus.failure,
+        error: error,
+      ));
+    }
   }
 }

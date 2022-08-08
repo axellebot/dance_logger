@@ -19,22 +19,29 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
   }
 
   FutureOr<void> _onDanceListLoad(event, emit) async {
-    emit(state.copyWith(
-      status: DanceListStatus.loading,
-    ));
+    try {
+      emit(state.copyWith(
+        status: DanceListStatus.loading,
+      ));
 
-    final List<DanceViewModel> danceViewModels;
-    danceViewModels = await _fetchDances(
-      ofArtist: event.ofArtist,
-      offset: 0,
-    );
+      final List<DanceViewModel> danceViewModels;
+      danceViewModels = await _fetchDances(
+        ofArtist: event.ofArtist,
+        offset: 0,
+      );
 
-    emit(state.copyWith(
-      status: DanceListStatus.success,
-      ofArtist: event.ofArtist,
-      dances: danceViewModels,
-      hasReachedMax: danceViewModels.isEmpty,
-    ));
+      emit(state.copyWith(
+        status: DanceListStatus.success,
+        ofArtist: event.ofArtist,
+        dances: danceViewModels,
+        hasReachedMax: danceViewModels.isEmpty,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: DanceListStatus.failure,
+        error: error,
+      ));
+    }
   }
 
   FutureOr<void> _onDanceListLoadMore(event, emit) async {
