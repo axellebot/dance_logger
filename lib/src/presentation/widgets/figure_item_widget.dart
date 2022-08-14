@@ -14,9 +14,11 @@ class FigureItemTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(figure.name),
-      onTap: () => AutoRouter.of(context).push(
-        FigureDetailsRoute(figureId: figure.id),
-      ),
+      onTap: () {
+        AutoRouter.of(context).push(
+          FigureDetailsRoute(figureId: figure.id),
+        );
+      },
     );
   }
 }

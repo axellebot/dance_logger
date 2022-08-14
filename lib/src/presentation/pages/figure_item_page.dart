@@ -23,11 +23,13 @@ class FigureDetailsPage extends StatelessWidget implements AutoRouteWrapper {
           case FigureDetailStatus.success:
             return Scaffold(
               floatingActionButton: FloatingActionButton(
-                onPressed: () => AutoRouter.of(context).push(
-                  FigureEditRoute(
-                    figureBloc: BlocProvider.of<FigureDetailBloc>(context),
-                  ),
-                ),
+                onPressed: () {
+                  AutoRouter.of(context).push(
+                    FigureEditRoute(
+                      figureBloc: BlocProvider.of<FigureDetailBloc>(context),
+                    ),
+                  );
+                },
                 child: const Icon(Icons.edit),
               ),
               body: CustomScrollView(
@@ -85,12 +87,15 @@ class FigureDetailsPage extends StatelessWidget implements AutoRouteWrapper {
               children: [
                 SectionTile(
                   title: const Text('Artists'),
-                  onTap: () => AutoRouter.of(context).push(
-                    ArtistListRoute(
-                      ofFigure: figureId,
-                      artistListBloc: BlocProvider.of<ArtistListBloc>(context),
-                    ),
-                  ),
+                  onTap: () {
+                    AutoRouter.of(context).push(
+                      ArtistListRoute(
+                        ofFigure: figureId,
+                        artistListBloc:
+                            BlocProvider.of<ArtistListBloc>(context),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(
                   height: AppStyles.cardHeight,
@@ -115,12 +120,14 @@ class FigureDetailsPage extends StatelessWidget implements AutoRouteWrapper {
               children: [
                 SectionTile(
                   title: const Text('Videos'),
-                  onTap: () => AutoRouter.of(context).push(
-                    VideoListRoute(
-                      ofFigure: figureId,
-                      videoListBloc: BlocProvider.of<VideoListBloc>(context),
-                    ),
-                  ),
+                  onTap: () {
+                    AutoRouter.of(context).push(
+                      VideoListRoute(
+                        ofFigure: figureId,
+                        videoListBloc: BlocProvider.of<VideoListBloc>(context),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(
                   height: AppStyles.cardHeight,
@@ -146,13 +153,15 @@ class FigureDetailsPage extends StatelessWidget implements AutoRouteWrapper {
               children: [
                 SectionTile(
                   title: const Text('Practices'),
-                  onTap: () => AutoRouter.of(context).push(
-                    PracticeListRoute(
-                      ofFigure: figureId,
-                      practiceListBloc:
-                          BlocProvider.of<PracticeListBloc>(context),
-                    ),
-                  ),
+                  onTap: () {
+                    AutoRouter.of(context).push(
+                      PracticeListRoute(
+                        ofFigure: figureId,
+                        practiceListBloc:
+                            BlocProvider.of<PracticeListBloc>(context),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(
                   height: AppStyles.cardHeight,

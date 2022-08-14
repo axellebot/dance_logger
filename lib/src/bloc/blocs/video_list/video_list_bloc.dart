@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
@@ -19,6 +20,7 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
   }
 
   FutureOr<void> _onVideoListLoad(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onVideoListLoad');
     try {
       emit(state.copyWith(
         status: VideoListStatus.loading,
@@ -49,6 +51,7 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
   }
 
   FutureOr<void> _onVideoListLoadMore(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onVideoListLoadMore');
     if (state.status != VideoListStatus.success) return;
     try {
       List<VideoViewModel> videoViewModels;
@@ -78,6 +81,7 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
   }
 
   FutureOr<void> _onVideoListRefresh(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onVideoListRefresh');
     try {
       emit(state.copyWith(
         status: VideoListStatus.loading,
@@ -110,6 +114,7 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
     required int offset,
     int limit = 10,
   }) async {
+    if (kDebugMode) print('$runtimeType:_fetchVideos');
     List<VideoEntity> videoEntities;
 
     if (ofArtist != null) {

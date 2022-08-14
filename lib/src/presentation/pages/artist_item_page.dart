@@ -35,11 +35,13 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                 : null;
             return Scaffold(
               floatingActionButton: FloatingActionButton(
-                onPressed: () => AutoRouter.of(context).push(
-                  ArtistEditRoute(
-                    artistId: state.artist!.id,
-                  ),
-                ),
+                onPressed: () {
+                  AutoRouter.of(context).push(
+                    ArtistEditRoute(
+                      artistId: state.artist!.id,
+                    ),
+                  );
+                },
                 child: const Icon(Icons.edit),
               ),
               body: CustomScrollView(
@@ -98,12 +100,15 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
               children: [
                 SectionTile(
                   title: const Text('Figures'),
-                  onTap: () => AutoRouter.of(context).push(
-                    FigureListRoute(
-                      ofArtist: artistId,
-                      figureListBloc: BlocProvider.of<FigureListBloc>(context),
-                    ),
-                  ),
+                  onTap: () {
+                    AutoRouter.of(context).push(
+                      FigureListRoute(
+                        ofArtist: artistId,
+                        figureListBloc:
+                            BlocProvider.of<FigureListBloc>(context),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(
                   height: AppStyles.cardHeight,
@@ -127,12 +132,14 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
             children: [
               SectionTile(
                 title: const Text('Videos'),
-                onTap: () => AutoRouter.of(context).push(
-                  VideoListRoute(
-                    ofArtist: artistId,
-                    videoListBloc: BlocProvider.of<VideoListBloc>(context),
-                  ),
-                ),
+                onTap: () {
+                  AutoRouter.of(context).push(
+                    VideoListRoute(
+                      ofArtist: artistId,
+                      videoListBloc: BlocProvider.of<VideoListBloc>(context),
+                    ),
+                  );
+                },
               ),
               const SizedBox(
                 height: AppStyles.cardHeight,

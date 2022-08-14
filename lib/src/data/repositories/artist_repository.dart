@@ -5,8 +5,6 @@ import 'package:dance/domain.dart';
 import 'package:flutter/foundation.dart';
 
 class ImplArtistRepository extends ArtistRepository {
-  final String _tag = '$ImplArtistRepository';
-
   final ArtistDataStoreFactory factory;
 
   ImplArtistRepository({
@@ -24,14 +22,14 @@ class ImplArtistRepository extends ArtistRepository {
     String id, {
     bool force = false,
   }) async {
-    if (kDebugMode) print('$_tag:getById($id)');
+    if (kDebugMode) print('$runtimeType:getById($id)');
     final dataModel = await factory.databaseDataStore.getArtist(id);
     return dataModel;
   }
 
   @override
   FutureOr<void> deleteById(String id) async {
-    if (kDebugMode) print('$_tag:deleteById($id)');
+    if (kDebugMode) print('$runtimeType:deleteById($id)');
     await factory.databaseDataStore.deleteArtist(id);
   }
 
@@ -42,7 +40,7 @@ class ImplArtistRepository extends ArtistRepository {
     /// TODO: Add filters
     /// TODO: Add sort
   }) async {
-    if (kDebugMode) print('$_tag:getList()');
+    if (kDebugMode) print('$runtimeType:getList()');
     final dataModels = await factory.databaseDataStore.getArtists(
       offset: offset,
     );
@@ -57,7 +55,7 @@ class ImplArtistRepository extends ArtistRepository {
     /// TODO: Add filters
     /// TODO: Add sort
   }) async {
-    if (kDebugMode) print('$_tag:getArtistsOfDance($danceId)');
+    if (kDebugMode) print('$runtimeType:getArtistsOfDance($danceId)');
     final dataModels = await factory.databaseDataStore.getArtistsOfDance(
       danceId,
       offset: offset,
@@ -73,7 +71,7 @@ class ImplArtistRepository extends ArtistRepository {
     /// TODO: Add filters
     /// TODO: Add sort
   }) async {
-    if (kDebugMode) print('$_tag:getListFromVideo($videoId)');
+    if (kDebugMode) print('$runtimeType:getListFromVideo($videoId)');
     final dataModels = await factory.databaseDataStore.getArtistsOfVideo(
       videoId,
       offset: offset,
@@ -89,7 +87,7 @@ class ImplArtistRepository extends ArtistRepository {
     /// TODO: Add filters
     /// TODO: Add sort
   }) async {
-    if (kDebugMode) print('$_tag:getArtistsOfFigure($figureId)');
+    if (kDebugMode) print('$runtimeType:getArtistsOfFigure($figureId)');
     final dataModels = await factory.databaseDataStore.getArtistsOfFigure(
       figureId,
       offset: offset,
@@ -105,7 +103,7 @@ class ImplArtistRepository extends ArtistRepository {
     /// TODO: Add filters
     /// TODO: Add sort
   }) async {
-    if (kDebugMode) print('$_tag:getArtistsOfTime($timeId)');
+    if (kDebugMode) print('$runtimeType:getArtistsOfTime($timeId)');
     final dataModels = await factory.databaseDataStore.getArtistsOfMoment(
       timeId,
       offset: offset,

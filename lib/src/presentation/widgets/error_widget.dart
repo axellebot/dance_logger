@@ -179,7 +179,7 @@ class ErrorListView extends CustomErrorWidget {
   final Axis scrollDirection;
   final bool shrinkWrap;
   final ScrollPhysics? physics;
-  final EdgeInsets? padding;
+  final EdgeInsetsGeometry? padding;
 
   const ErrorListView({
     super.key,
@@ -213,14 +213,18 @@ class ErrorListView extends CustomErrorWidget {
 ///
 /// See [Scaffold] widget for more documentation
 class ErrorPage extends CustomErrorWidget {
+  final bool showAppBar;
+
   const ErrorPage({
     super.key,
+    this.showAppBar = true,
     required super.error,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: showAppBar ? AppBar() : null,
       body: Center(
         child: ErrorCard(
           error: error,

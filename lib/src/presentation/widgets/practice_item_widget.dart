@@ -14,9 +14,11 @@ class PracticeItemTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text('${practice.doneAt}'),
-      onTap: () => AutoRouter.of(context).push(
-        PracticeDetailsRoute(practiceId: practice.id),
-      ),
+      onTap: () {
+        AutoRouter.of(context).push(
+          PracticeDetailsRoute(practiceId: practice.id),
+        );
+      },
     );
   }
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
@@ -13,10 +14,12 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
     required this.danceRepository,
     required this.mapper,
   }) : super(const DanceDetailState()) {
-    on<DanceDetailLoad>(_onDanceDetailLoad);
+    on<DanceDetailLoaded>(_onDanceLoaded);
+    on<DanceDetailDeleted>(_onDanceDeleted);
   }
 
-  FutureOr<void> _onDanceDetailLoad(event, emit) async {
+  FutureOr<void> _onDanceLoaded(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onDanceLoaded');
     try {
       emit(state.copyWith(
         status: DanceDetailStatus.loading,
@@ -26,8 +29,29 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
       DanceViewModel danceViewModel = mapper.toDanceViewModel(danceDataModel);
 
       emit(state.copyWith(
-        status: DanceDetailStatus.success,
+        status: DanceDetailStatus.detailSuccess,
         dance: danceViewModel,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: DanceDetailStatus.failure,
+        error: error,
+      ));
+    }
+  }
+
+  FutureOr<void> _onDanceDeleted(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onDanceDeleted');
+    if (state.dance == null) return;
+    try {
+      emit(state.copyWith(
+        status: DanceDetailStatus.loading,
+      ));
+
+      await danceRepository.deleteById(state.dance!.id);
+
+      emit(const DanceDetailState(
+        status: DanceDetailStatus.deleteSuccess,
       ));
     } on Error catch (error) {
       emit(state.copyWith(

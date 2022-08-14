@@ -27,23 +27,35 @@ class LoadingApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: LoadingPage(),
+      home: LoadingPage(
+        showAppBar: false,
+        showAppName: true,
+      ),
     );
   }
 }
 
 class LoadingPage extends StatelessWidget {
-  const LoadingPage({super.key});
+  final bool showAppBar;
+  final bool showAppName;
+
+  const LoadingPage({
+    super.key,
+    this.showAppBar = true,
+    this.showAppName = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: showAppBar ? AppBar() : null,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const LoadingIndicator(),
-            Text(DanceLocalizations.of(context)?.appName ?? 'Dance'),
+            if (showAppName)
+              Text(DanceLocalizations.of(context)?.appName ?? 'Dance'),
           ],
         ),
       ),
@@ -53,11 +65,13 @@ class LoadingPage extends StatelessWidget {
 
 class LoadingListView extends StatelessWidget {
   final Axis scrollDirection;
-  final EdgeInsets? padding;
+  final ScrollPhysics? physics;
+  final EdgeInsetsGeometry? padding;
 
   const LoadingListView({
     super.key,
     this.scrollDirection = Axis.vertical,
+    this.physics,
     this.padding,
   });
 
@@ -65,7 +79,11 @@ class LoadingListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       scrollDirection: scrollDirection,
+      physics: physics,
       padding: padding,
+      children: const <Widget>[
+        LoadingTile(),
+      ],
     );
   }
 }

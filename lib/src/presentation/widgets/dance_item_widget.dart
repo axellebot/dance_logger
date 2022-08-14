@@ -14,9 +14,11 @@ class DanceItemTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(dance.name),
-      onTap: () => AutoRouter.of(context).push(
-        DanceDetailsRoute(danceId: dance.id),
-      ),
+      onTap: () {
+        AutoRouter.of(context).push(
+          DanceDetailsRoute(danceId: dance.id),
+        );
+      },
     );
   }
 }

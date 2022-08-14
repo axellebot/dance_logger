@@ -1,5 +1,4 @@
 import 'package:dance/bloc.dart';
-import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
 
 /// [DanceEditEvent] that must be dispatch to [DanceEditBloc]
@@ -26,18 +25,44 @@ class DanceEditStart extends DanceEditEvent {
   List<Object?> get props => [danceId];
 }
 
-class DanceEditValidation extends DanceEditEvent {
-  final DanceViewModel dance;
+class DanceEditChangeName extends DanceEditEvent {
+  final String danceName;
 
-  const DanceEditValidation({required this.dance}) : super();
+  const DanceEditChangeName({required this.danceName}) : super();
 
   @override
   String toString() {
-    return 'DanceEditValidation{'
-        'dance: $dance'
+    return 'DanceEditChangeName{'
+        'danceName: $danceName'
         '}';
   }
 
   @override
-  List<Object?> get props => [dance];
+  List<Object?> get props => [danceName];
+}
+
+class DanceEditSubmit extends DanceEditEvent {
+  const DanceEditSubmit() : super();
+
+  @override
+  String toString() {
+    return 'DanceEditSubmit{'
+        '}';
+  }
+
+  @override
+  List<Object?> get props => [];
+}
+
+class DanceEditDelete extends DanceEditEvent {
+  const DanceEditDelete() : super();
+
+  @override
+  String toString() {
+    return 'DanceEditDelete{'
+        '}';
+  }
+
+  @override
+  List<Object?> get props => [];
 }

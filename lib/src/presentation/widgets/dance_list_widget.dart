@@ -6,11 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DanceListView extends StatefulWidget {
   final Axis scrollDirection;
-  final EdgeInsets? padding;
+  final ScrollPhysics? physics;
+  final EdgeInsetsGeometry? padding;
 
   const DanceListView({
     super.key,
     this.scrollDirection = Axis.vertical,
+    this.physics,
     this.padding,
   });
 
@@ -31,7 +33,6 @@ class _DanceListViewState extends State<DanceListView> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Add pull down to refresh
     return BlocBuilder<DanceListBloc, DanceListState>(
       builder: (context, state) {
         switch (state.status) {
@@ -42,17 +43,20 @@ class _DanceListViewState extends State<DanceListView> {
             );
           case DanceListStatus.failure:
           case DanceListStatus.success:
+          case DanceListStatus.refreshing:
             if (state.dances.isEmpty) {
               return EmptyListView(
                 scrollDirection: widget.scrollDirection,
+                physics: widget.physics,
                 padding: widget.padding,
                 label: 'No Dances',
               );
             } else {
               return ListView.builder(
                 scrollDirection: widget.scrollDirection,
-                padding: widget.padding,
                 controller: _scrollController,
+                physics: widget.physics,
+                padding: widget.padding,
                 itemCount: state.hasReachedMax
                     ? state.dances.length
                     : state.dances.length + 1,
@@ -70,6 +74,7 @@ class _DanceListViewState extends State<DanceListView> {
           default:
             return ErrorListView(
               scrollDirection: widget.scrollDirection,
+              physics: widget.physics,
               padding: widget.padding,
               error: NotSupportedError(message: '${state.status}'),
             );

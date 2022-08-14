@@ -5,8 +5,6 @@ import 'package:dance/domain.dart';
 import 'package:flutter/foundation.dart';
 
 class ImplDanceRepository extends DanceRepository {
-  final String _tag = '$ImplDanceRepository';
-
   final DanceDataStoreFactory factory;
 
   ImplDanceRepository({required this.factory});
@@ -21,7 +19,7 @@ class ImplDanceRepository extends DanceRepository {
     String id, {
     bool force = false,
   }) async {
-    if (kDebugMode) print('$_tag:getById($id)');
+    if (kDebugMode) print('$runtimeType:getById($id)');
 
     DanceDataModel dataModel;
 
@@ -32,7 +30,7 @@ class ImplDanceRepository extends DanceRepository {
 
   @override
   FutureOr<void> deleteById(String id) async {
-    if (kDebugMode) print('$_tag:deleteById($id)');
+    if (kDebugMode) print('$runtimeType:deleteById($id)');
     await factory.databaseDataStore.deleteDance(id);
   }
 
@@ -43,7 +41,7 @@ class ImplDanceRepository extends DanceRepository {
     /// TODO: Add filters
     /// TODO: Add sort
   }) async {
-    if (kDebugMode) print('$_tag:getList()');
+    if (kDebugMode) print('$runtimeType:getList()');
     final dataModels = await factory.databaseDataStore.getDances(
       offset: offset,
     );
@@ -58,7 +56,7 @@ class ImplDanceRepository extends DanceRepository {
     /// TODO: Add filters
     /// TODO: Add sort
   }) async {
-    if (kDebugMode) print('$_tag:getDancesOfArtist($artistId)');
+    if (kDebugMode) print('$runtimeType:getDancesOfArtist($artistId)');
     final dataModels = await factory.databaseDataStore.getDancesOfArtist(
       artistId,
       offset: offset,

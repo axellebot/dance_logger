@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
@@ -19,6 +20,7 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
   }
 
   FutureOr<void> _onPracticeListLoad(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onPracticeListLoad');
     try {
       emit(state.copyWith(
         status: PracticeListStatus.loading,

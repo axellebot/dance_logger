@@ -51,11 +51,14 @@ class AppStyles {
   /// --------------------------------------------------------------------------
   ///                           Default dimensions
   /// --------------------------------------------------------------------------
+
+  static const EdgeInsets formPadding = EdgeInsets.all(15.0);
   static const EdgeInsets formInputPadding = EdgeInsets.all(15.0);
 
   /// --------------------------------------------------------------------------
   ///                          NavigationBar
   /// --------------------------------------------------------------------------
+
   static const double navigationBarElevation = 10.0;
   static const double navigationBarHeight = 65;
 

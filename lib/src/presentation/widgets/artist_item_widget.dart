@@ -22,9 +22,11 @@ class ArtistItemTile extends StatelessWidget {
               backgroundColor: Colors.transparent,
             )
           : null,
-      onTap: () => AutoRouter.of(context).push(
-        ArtistDetailsRoute(artistId: artist.id),
-      ),
+      onTap: () {
+        AutoRouter.of(context).push(
+          ArtistDetailsRoute(artistId: artist.id),
+        );
+      },
     );
   }
 }

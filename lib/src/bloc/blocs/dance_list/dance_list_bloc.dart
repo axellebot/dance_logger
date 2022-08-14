@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
@@ -19,6 +20,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
   }
 
   FutureOr<void> _onDanceListLoad(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onDanceListLoad');
     try {
       emit(state.copyWith(
         status: DanceListStatus.loading,
@@ -45,6 +47,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
   }
 
   FutureOr<void> _onDanceListLoadMore(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onDanceListLoadMore');
     if (state.status != DanceListStatus.success) return;
     try {
       final List<DanceViewModel> danceViewModels;
@@ -71,9 +74,10 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
   }
 
   FutureOr<void> _onDanceListRefresh(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onDanceListRefresh');
     try {
       emit(state.copyWith(
-        status: DanceListStatus.loading,
+        status: DanceListStatus.refreshing,
       ));
 
       List<DanceViewModel> danceViewModels = await _fetchDances(
@@ -99,6 +103,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     required int offset,
     int limit = 10,
   }) async {
+    if (kDebugMode) print('$runtimeType:_fetchDances');
     List<DanceEntity> danceEntities;
 
     if (ofArtist != null) {

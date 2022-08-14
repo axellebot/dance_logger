@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class FigureListPage extends StatelessWidget implements AutoRouteWrapper {
+  final bool showAppBar;
   final String? ofArtist;
   final String? ofDance;
   final String? ofVideo;
@@ -14,18 +15,21 @@ class FigureListPage extends StatelessWidget implements AutoRouteWrapper {
 
   const FigureListPage({
     super.key,
+    this.showAppBar = true,
     this.ofArtist,
     this.ofDance,
     this.ofVideo,
-    this.figureListBloc,
+  this.figureListBloc,
   });
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      appBar: AppBar(
-        title: const Text('Figures'),
-      ),
+    return Scaffold(
+      appBar: showAppBar
+          ? AppBar(
+              title: const Text('Figures'),
+            )
+          : null,
       body: const FigureListView(),
     );
   }
@@ -44,10 +48,10 @@ class FigureListPage extends StatelessWidget implements AutoRouteWrapper {
           figureRepository: repo,
           mapper: ModelMapper(),
         )..add(FigureListLoad(
-            ofArtist: ofArtist,
-            ofDance: ofDance,
-            ofVideo: ofVideo,
-          )),
+          ofArtist: ofArtist,
+          ofDance: ofDance,
+          ofVideo: ofVideo,
+        )),
         child: this,
       );
     }

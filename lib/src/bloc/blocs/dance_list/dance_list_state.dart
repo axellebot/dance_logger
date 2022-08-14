@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 import 'dance_list_params.dart';
 
-enum DanceListStatus { initial, loading, success, failure }
+enum DanceListStatus { initial, loading, refreshing, success, failure }
 
 class DanceListState extends Equatable implements DanceListParams {
   final DanceListStatus status;

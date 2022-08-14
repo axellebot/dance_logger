@@ -18,6 +18,7 @@ class ThemeTile extends StatelessWidget {
           case AppStatus.success:
             final int themeMode = state.themeMode;
             final bool themeUltraDark = state.themeUltraDark;
+
             return ListTile(
               leading: const Icon(MdiIcons.themeLightDark),
               title: Text(DanceLocalizations.of(context)!.settingsThemeModeCTA),
@@ -27,13 +28,14 @@ class ThemeTile extends StatelessWidget {
                 spacing: 10,
                 children: [
                   ToggleButtons(
-                    onPressed: (int index) =>
-                        BlocProvider.of<AppBloc>(context).add(
-                      AppThemeChange(
-                        themeMode: index,
-                        themeUltraDark: themeUltraDark,
-                      ),
-                    ),
+                    onPressed: (int index) {
+                      BlocProvider.of<AppBloc>(context).add(
+                        AppThemeChange(
+                          themeMode: index,
+                          themeUltraDark: themeUltraDark,
+                        ),
+                      );
+                    },
                     isSelected: <bool>[
                       themeMode == 0,
                       themeMode == 1,
@@ -58,12 +60,14 @@ class ThemeTile extends StatelessWidget {
                     ],
                   ),
                   ToggleButtons(
-                    onPressed: (int _) => BlocProvider.of<AppBloc>(context).add(
-                      AppThemeChange(
-                        themeMode: themeMode,
-                        themeUltraDark: !themeUltraDark,
-                      ),
-                    ),
+                    onPressed: (_) {
+                      BlocProvider.of<AppBloc>(context).add(
+                        AppThemeChange(
+                          themeMode: themeMode,
+                          themeUltraDark: !themeUltraDark,
+                        ),
+                      );
+                    },
                     isSelected: [
                       themeUltraDark == true,
                     ],

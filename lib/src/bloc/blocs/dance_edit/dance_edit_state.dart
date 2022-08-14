@@ -1,57 +1,57 @@
 import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
 
-enum DanceEditStatus { initial, loading, success, failure }
-
-abstract class DanceEditState extends Equatable {
-  const DanceEditState() : super();
-
-  @override
-  String toString() => 'DanceState{}';
+enum DanceEditStatus {
+  initial,
+  loading,
+  ready,
+  editSuccess,
+  deleteSuccess,
+  failure
 }
 
-class DanceEditUninitialized extends DanceEditState {
-  const DanceEditUninitialized();
+class DanceEditState extends Equatable {
+  final DanceEditStatus status;
+  final DanceViewModel? initialDance;
+  final String? danceName;
+  final Error? error;
 
-  @override
-  List<Object?> get props => [];
-}
-
-class DanceEditLoading extends DanceEditState {
-  const DanceEditLoading() : super();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class DanceEditLoaded extends DanceEditState {
-  final DanceViewModel dance;
-
-  const DanceEditLoaded({
-    required this.dance,
+  const DanceEditState({
+    this.status = DanceEditStatus.initial,
+    this.initialDance,
+    this.danceName,
+    this.error,
   }) : super();
 
   @override
-  List<Object?> get props => [dance];
+  List<Object?> get props => [
+        status,
+        initialDance,
+        danceName,
+        error,
+      ];
+
+  DanceEditState copyWith({
+    DanceEditStatus? status,
+    DanceViewModel? initialDance,
+    String? danceName,
+    Error? error,
+  }) {
+    return DanceEditState(
+      status: status ?? this.status,
+      initialDance: initialDance ?? this.initialDance,
+      danceName: danceName ?? this.danceName,
+      error: error ?? this.error,
+    );
+  }
 
   @override
   String toString() {
     return 'DanceEditLoaded{'
-        'dance: $dance'
+        'status: $status, '
+        'initialDance: $initialDance, '
+        'danceName: $danceName, '
+        'error: $error'
         '}';
   }
-}
-
-class DanceEditFailed extends DanceEditState {
-  final Error error;
-
-  const DanceEditFailed({required this.error}) : super();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  String toString() => 'DanceEditFailed {'
-      'error: $error'
-      '}';
 }

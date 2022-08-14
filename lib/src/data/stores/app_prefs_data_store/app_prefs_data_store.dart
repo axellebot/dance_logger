@@ -12,8 +12,13 @@ abstract class AppPrefsDataStore {
   /// Delete Application theme mode
   FutureOr<bool> deleteThemeMode();
 
+  /// Get Theme ultra dark
   FutureOr<bool?> getThemeUltraDark();
+
+  /// Set Theme ultra dark
   FutureOr<bool> setThemeUltraDark(bool themeUltraDark);
+
+  /// Delete Theme ultra dark
   FutureOr<bool> deleteThemeUltraDark();
 
   /// Get database file dir

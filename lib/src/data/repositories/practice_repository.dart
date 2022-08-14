@@ -5,8 +5,6 @@ import 'package:dance/domain.dart';
 import 'package:flutter/foundation.dart';
 
 class ImplPracticeRepository extends PracticeRepository {
-  final String _tag = '$ImplPracticeRepository';
-
   final PracticeDataStoreFactory factory;
 
   ImplPracticeRepository({required this.factory});
@@ -22,14 +20,14 @@ class ImplPracticeRepository extends PracticeRepository {
     String id, {
     bool force = false,
   }) async {
-    if (kDebugMode) print('$_tag:getById($id)');
+    if (kDebugMode) print('$runtimeType:getById($id)');
     final dataModel = await factory.databaseDataStore.getPractice(id);
     return dataModel;
   }
 
   @override
   FutureOr<void> deleteById(String id) async {
-    if (kDebugMode) print('$_tag:deleteById($id)');
+    if (kDebugMode) print('$runtimeType:deleteById($id)');
     await factory.databaseDataStore.deletePractice(id);
   }
 
@@ -40,7 +38,7 @@ class ImplPracticeRepository extends PracticeRepository {
     /// TODO: Add filters
     /// TODO: Add sort
   }) async {
-    if (kDebugMode) print('$_tag:getList()');
+    if (kDebugMode) print('$runtimeType:getList()');
     final dataModels = await factory.databaseDataStore.getPractices(
       offset: offset,
     );
@@ -55,7 +53,7 @@ class ImplPracticeRepository extends PracticeRepository {
     /// TODO: Add filters
     /// TODO: Add sort
   }) async {
-    if (kDebugMode) print('$_tag:getPracticesOfFigure($figureId)');
+    if (kDebugMode) print('$runtimeType:getPracticesOfFigure($figureId)');
     final dataModels = factory.databaseDataStore.getPracticesOfFigure(
       figureId,
       offset: offset,
@@ -71,7 +69,7 @@ class ImplPracticeRepository extends PracticeRepository {
     /// TODO: Add filters
     /// TODO: Add sort
   }) async {
-    if (kDebugMode) print('$_tag:getPracticesOfUser($userId)');
+    if (kDebugMode) print('$runtimeType:getPracticesOfUser($userId)');
     final dataModels = await factory.databaseDataStore.getPracticesOfUser(
       userId,
       offset: offset,

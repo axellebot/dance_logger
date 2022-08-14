@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
@@ -19,6 +20,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
   }
 
   FutureOr<void> _onArtistListLoad(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onArtistListLoad');
     try {
       emit(state.copyWith(
         status: ArtistListStatus.loading,
@@ -49,6 +51,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
   }
 
   FutureOr<void> _onArtistListLoadMore(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onArtistListLoadMore');
     if (state.status != ArtistListStatus.success) return;
     try {
       final List<ArtistViewModel> artistViewModels;
@@ -77,6 +80,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
   }
 
   FutureOr<void> _onArtistListRefresh(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onArtistListRefresh');
     try {
       emit(state.copyWith(
         status: ArtistListStatus.loading,
@@ -109,6 +113,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
     required int offset,
     int limit = 10,
   }) async {
+    if (kDebugMode) print('$runtimeType:_fetchArtists');
     List<ArtistEntity> artistEntities;
 
     if (ofDance != null) {

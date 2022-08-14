@@ -73,7 +73,9 @@ class _MainPageState extends State<MainPage> {
             mapper: ModelMapper(),
           )..add(const VideoListLoad());
         },
-        child: const VideoListView(),
+        child: const VideoListPage(
+          showAppBar: false,
+        ),
       );
     } else if (_selectedIndex == 1) {
       return BlocProvider<ArtistListBloc>(
@@ -85,7 +87,9 @@ class _MainPageState extends State<MainPage> {
             mapper: ModelMapper(),
           )..add(const ArtistListLoad());
         },
-        child: const ArtistListView(),
+        child: const ArtistListPage(
+          showAppBar: false,
+        ),
       );
     } else if (_selectedIndex == 2) {
       return BlocProvider<DanceListBloc>(
@@ -97,7 +101,9 @@ class _MainPageState extends State<MainPage> {
             mapper: ModelMapper(),
           )..add(const DanceListLoad());
         },
-        child: const DanceListView(),
+        child: const DanceListPage(
+          showAppBar: false,
+        ),
       );
     } else if (_selectedIndex == 3) {
       return BlocProvider<PracticeListBloc>(
@@ -109,7 +115,9 @@ class _MainPageState extends State<MainPage> {
             mapper: ModelMapper(),
           )..add(const PracticeListLoad());
         },
-        child: const PracticeListView(),
+        child: const PracticeListPage(
+          showAppBar: false,
+        ),
       );
     }
     return Container();

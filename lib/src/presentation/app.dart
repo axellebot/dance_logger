@@ -208,6 +208,7 @@ class App extends StatelessWidget {
     themeData = themeData.copyWith(
       inputDecorationTheme: themeData.inputDecorationTheme.copyWith(
         border: const OutlineInputBorder(),
+        floatingLabelBehavior: FloatingLabelBehavior.auto,
       ),
       bottomSheetTheme: themeData.bottomSheetTheme.copyWith(
         shape: const RoundedRectangleBorder(

@@ -9,10 +9,10 @@ abstract class DanceDetailEvent extends Equatable {
   String toString() => 'DanceDetailEvent{}';
 }
 
-class DanceDetailLoad extends DanceDetailEvent {
+class DanceDetailLoaded extends DanceDetailEvent {
   final String danceId;
 
-  const DanceDetailLoad({required this.danceId}) : super();
+  const DanceDetailLoaded({required this.danceId}) : super();
 
   @override
   String toString() {
@@ -23,4 +23,17 @@ class DanceDetailLoad extends DanceDetailEvent {
 
   @override
   List<Object?> get props => [danceId];
+}
+
+class DanceDetailDeleted extends DanceDetailEvent {
+  const DanceDetailDeleted() : super();
+
+  @override
+  String toString() {
+    return 'DanceDetailDeleted{'
+        '}';
+  }
+
+  @override
+  List<Object?> get props => [];
 }

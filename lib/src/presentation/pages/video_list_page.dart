@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class VideoListPage extends StatelessWidget implements AutoRouteWrapper {
+  final bool showAppBar;
   final String? ofArtist;
   final String? ofDance;
   final String? ofFigure;
@@ -14,18 +15,21 @@ class VideoListPage extends StatelessWidget implements AutoRouteWrapper {
 
   const VideoListPage({
     super.key,
+    this.showAppBar = true,
     this.ofArtist,
     this.ofDance,
     this.ofFigure,
-    this.videoListBloc,
+  this.videoListBloc,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Videos'),
-      ),
+      appBar: showAppBar
+          ? AppBar(
+              title: const Text('Videos'),
+            )
+          : null,
       body: const VideoListView(),
     );
   }
@@ -44,10 +48,10 @@ class VideoListPage extends StatelessWidget implements AutoRouteWrapper {
           videoRepository: repo,
           mapper: ModelMapper(),
         )..add(VideoListLoad(
-            ofArtist: ofArtist,
-            ofDance: ofDance,
-            ofFigure: ofFigure,
-          )),
+          ofArtist: ofArtist,
+          ofDance: ofDance,
+          ofFigure: ofFigure,
+        )),
         child: this,
       );
     }

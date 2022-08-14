@@ -4,6 +4,7 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
   final String danceId;
@@ -20,16 +21,10 @@ class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
         switch (state.status) {
           case DanceDetailStatus.loading:
             return const LoadingPage();
-          case DanceDetailStatus.success:
+          case DanceDetailStatus.detailSuccess:
+            final DanceDetailBloc danceDetailBloc =
+                BlocProvider.of<DanceDetailBloc>(context);
             return Scaffold(
-              floatingActionButton: FloatingActionButton(
-                onPressed: () => AutoRouter.of(context).push(
-                  DanceEditRoute(
-                    danceId: state.dance!.id,
-                  ),
-                ),
-                child: const Icon(Icons.edit),
-              ),
               body: CustomScrollView(
                 slivers: <Widget>[
                   SliverAppBar(
@@ -37,6 +32,34 @@ class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                     snap: false,
                     floating: false,
                     title: Text(state.dance!.name),
+                    actions: [
+                      IconButton(
+                        onPressed: () {
+                          AutoRouter.of(context).push(
+                            DanceEditRoute(
+                              danceId: state.dance!.id,
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.edit),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return DeleteDialog(
+                                onConfirmed: () {
+                                  danceDetailBloc
+                                      .add(const DanceDetailDeleted());
+                                },
+                              );
+                            },
+                          );
+                        },
+                        icon: const Icon(Icons.delete),
+                      )
+                    ],
                   ),
                   SliverList(
                     delegate: SliverChildListDelegate(
@@ -58,7 +81,7 @@ class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
           case DanceDetailStatus.failure:
             return ErrorPage(error: state.error);
           default:
-            return ErrorText(
+            return ErrorPage(
               error: NotSupportedError(message: '${state.status}'),
             );
         }
@@ -76,12 +99,14 @@ class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
             children: [
               SectionTile(
                 title: const Text('Artists'),
-                onTap: () => AutoRouter.of(context).push(
-                  ArtistListRoute(
-                    ofDance: danceId,
-                    artistListBloc: BlocProvider.of<ArtistListBloc>(context),
-                  ),
-                ),
+                onTap: () {
+                  AutoRouter.of(context).push(
+                    ArtistListRoute(
+                      ofDance: danceId,
+                      artistListBloc: BlocProvider.of<ArtistListBloc>(context),
+                    ),
+                  );
+                },
               ),
               const SizedBox(
                 height: AppStyles.cardHeight,
@@ -104,12 +129,14 @@ class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
             children: [
               SectionTile(
                 title: const Text('Figures'),
-                onTap: () => AutoRouter.of(context).push(
-                  FigureListRoute(
-                    ofDance: danceId,
-                    figureListBloc: BlocProvider.of<FigureListBloc>(context),
-                  ),
-                ),
+                onTap: () {
+                  AutoRouter.of(context).push(
+                    FigureListRoute(
+                      ofDance: danceId,
+                      figureListBloc: BlocProvider.of<FigureListBloc>(context),
+                    ),
+                  );
+                },
               ),
               const SizedBox(
                 height: AppStyles.cardHeight,
@@ -132,12 +159,14 @@ class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
             children: [
               SectionTile(
                 title: const Text('Videos'),
-                onTap: () => AutoRouter.of(context).push(
-                  VideoListRoute(
-                    ofDance: danceId,
-                    videoListBloc: BlocProvider.of<VideoListBloc>(context),
-                  ),
-                ),
+                onTap: () {
+                  AutoRouter.of(context).push(
+                    VideoListRoute(
+                      ofDance: danceId,
+                      videoListBloc: BlocProvider.of<VideoListBloc>(context),
+                    ),
+                  );
+                },
               ),
               const SizedBox(
                 height: AppStyles.cardHeight,
@@ -172,7 +201,7 @@ class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
         return DanceDetailBloc(
           danceRepository: RepositoryProvider.of<DanceRepository>(context),
           mapper: ModelMapper(),
-        )..add(DanceDetailLoad(danceId: danceId));
+        )..add(DanceDetailLoaded(danceId: danceId));
       },
       child: this,
     );
@@ -195,14 +224,79 @@ class DanceEditPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar:
-          AppBar(title: Text(_danceId != null ? "Edit Dance" : "Create Dance")),
-      floatingActionButton: const FloatingActionButton(
-        onPressed: null,
-        child: Icon(Icons.save),
-      ),
-      body: const Text('Dance Edit'),
+    return BlocBuilder<DanceEditBloc, DanceEditState>(
+      builder: (context, state) {
+        switch (state.status) {
+          case DanceEditStatus.loading:
+            return const LoadingPage();
+          case DanceEditStatus.failure:
+            return ErrorPage(error: state.error!);
+          case DanceEditStatus.ready:
+          case DanceEditStatus.editSuccess:
+            final danceEditBloc = BlocProvider.of<DanceEditBloc>(context);
+            return Scaffold(
+              appBar: AppBar(
+                leading: IconButton(
+                  onPressed: () {
+                    AutoRouter.of(context).pop();
+                  },
+                  icon: const Icon(Icons.close),
+                ),
+                title: Text(
+                  state.initialDance != null ? "Edit dance" : "Create dance",
+                ),
+                actions: <Widget>[
+                  SaveButton(
+                    onPressed: () {
+                      danceEditBloc.add(const DanceEditSubmit());
+                    },
+                  ),
+                  if (state.initialDance != null)
+                    IconButton(
+                      icon: const Icon(MdiIcons.delete),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return DeleteDialog(
+                              onConfirmed: () {
+                                danceEditBloc.add(const DanceEditDelete());
+                              },
+                            );
+                          },
+                        );
+                      },
+                    ),
+                ],
+              ),
+              body: SingleChildScrollView(
+                child: Container(
+                  padding: AppStyles.formPadding,
+                  child: Form(
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          decoration: const InputDecoration(
+                            hintText: 'Name',
+                          ),
+                          initialValue: state.initialDance?.name,
+                          onChanged: (danceName) {
+                            danceEditBloc
+                                .add(DanceEditChangeName(danceName: danceName));
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          default:
+            return ErrorPage(
+              error: NotSupportedError(message: '${state.status}'),
+            );
+        }
+      },
     );
   }
 

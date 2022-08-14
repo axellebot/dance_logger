@@ -7,11 +7,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class PracticeListPage extends StatelessWidget implements AutoRouteWrapper {
+  final bool showAppBar;
   final String? ofFigure;
   final PracticeListBloc? practiceListBloc;
 
   const PracticeListPage({
     super.key,
+    this.showAppBar = true,
     this.ofFigure,
     this.practiceListBloc,
   });
@@ -19,9 +21,11 @@ class PracticeListPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Practices'),
-      ),
+      appBar: showAppBar
+          ? AppBar(
+              title: const Text('Practices'),
+            )
+          : null,
       body: const PracticeListView(),
     );
   }
@@ -40,8 +44,8 @@ class PracticeListPage extends StatelessWidget implements AutoRouteWrapper {
           practiceRepository: repo,
           mapper: ModelMapper(),
         )..add(PracticeListLoad(
-            ofFigure: ofFigure,
-          )),
+          ofFigure: ofFigure,
+        )),
         child: this,
       );
     }

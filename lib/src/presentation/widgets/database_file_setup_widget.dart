@@ -34,7 +34,9 @@ class DatabaseFileSetupTile extends StatelessWidget {
                   Text('Filename: $fileName'),
                 ],
               ),
-              onTap: () => openFileSetting(context),
+              onTap: () {
+                openFileSetting(context);
+              },
             );
           case ConfigStatus.failure:
             return ErrorTile(error: state.error);

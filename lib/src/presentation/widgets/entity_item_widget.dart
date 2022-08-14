@@ -33,3 +33,55 @@ class EntityInfoListTile extends StatelessWidget {
     );
   }
 }
+
+class SaveButton extends StatelessWidget {
+  final VoidCallback? onPressed;
+
+  const SaveButton({
+    Key? key,
+    this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: FloatingActionButton.extended(
+        label: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 7.5),
+          child: Text('Save'),
+        ),
+        onPressed: onPressed,
+      ),
+    );
+  }
+}
+
+class DeleteDialog extends StatelessWidget {
+  final VoidCallback? onConfirmed;
+
+  const DeleteDialog({super.key, this.onConfirmed});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text("Are you sure ?"),
+      content: const Text("Deletion can't be reverted"),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text("Cancel"),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            onConfirmed!();
+          },
+          child: const Text("Delete"),
+        )
+      ],
+    );
+  }
+}

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
@@ -17,6 +18,7 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
   }
 
   FutureOr<void> _onVideoDetailLoad(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onVideoDetailLoad');
     try {
       emit(state.copyWith(
         status: VideoDetailStatus.loading,

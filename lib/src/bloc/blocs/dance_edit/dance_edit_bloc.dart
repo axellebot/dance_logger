@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uuid/uuid.dart';
 
 class DanceEditBloc extends Bloc<DanceEditEvent, DanceEditState> {
   final DanceRepository danceRepository;
@@ -13,32 +13,94 @@ class DanceEditBloc extends Bloc<DanceEditEvent, DanceEditState> {
   DanceEditBloc({
     required this.danceRepository,
     required this.mapper,
-  }) : super(const DanceEditUninitialized()) {
+  }) : super(const DanceEditState()) {
     on<DanceEditStart>(_onDanceEditStart);
+    on<DanceEditChangeName>(_onDanceEditChangeName);
+    on<DanceEditSubmit>(_onDanceEditSubmit);
+    on<DanceEditDelete>(_onDanceEditDelete);
   }
 
   FutureOr<void> _onDanceEditStart(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onDanceEditStart');
     try {
-      emit(const DanceEditLoading());
+      emit(state.copyWith(
+        status: DanceEditStatus.loading,
+      ));
+
+      DanceViewModel? danceViewModel;
+      if (event.danceId != null) {
+        DanceEntity danceEntity = await danceRepository.getById(event.danceId!);
+        danceViewModel = mapper.toDanceViewModel(danceEntity);
+      }
+
+      emit(state.copyWith(
+        status: DanceEditStatus.ready,
+        initialDance: danceViewModel,
+      ));
+    } on Error catch (error) {
+      emit(DanceEditState(
+        status: DanceEditStatus.failure,
+        error: error,
+      ));
+    }
+  }
+
+  FutureOr<void> _onDanceEditChangeName(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onDanceEditChangeName');
+    emit(state.copyWith(danceName: event.danceName!));
+  }
+
+  FutureOr<void> _onDanceEditSubmit(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onDanceEditSubmit');
+    try {
+      emit(state.copyWith(
+        status: DanceEditStatus.loading,
+      ));
       DanceViewModel danceViewModel;
 
-      if (event.danceId != null) {
-        DanceEntity danceDataModel =
-            await danceRepository.getById(event.danceId!);
-        danceViewModel = mapper.toDanceViewModel(danceDataModel);
+      if (state.initialDance != null) {
+        danceViewModel = state.initialDance!;
+        danceViewModel.change(
+          name: state.danceName,
+        );
       } else {
-        danceViewModel = DanceViewModel(
-          id: const Uuid().v4(),
-          name: '',
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          version: 1,
+        danceViewModel = DanceViewModel.createNew(
+          name: state.danceName!,
         );
       }
 
-      emit(DanceEditLoaded(dance: danceViewModel));
+      DanceEntity danceEntity =
+          await danceRepository.save(mapper.toDanceEntity(danceViewModel));
+      danceViewModel = mapper.toDanceViewModel(danceEntity);
+
+      emit(DanceEditState(
+        status: DanceEditStatus.editSuccess,
+        initialDance: danceViewModel,
+      ));
     } on Error catch (error) {
-      emit(DanceEditFailed(
+      emit(state.copyWith(
+        status: DanceEditStatus.failure,
+        error: error,
+      ));
+    }
+  }
+
+  FutureOr<void> _onDanceEditDelete(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onDanceEditDelete');
+    if (state.initialDance == null) return;
+    try {
+      emit(state.copyWith(
+        status: DanceEditStatus.loading,
+      ));
+
+      await danceRepository.deleteById(state.initialDance!.id);
+
+      emit(const DanceEditState(
+        status: DanceEditStatus.deleteSuccess,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: DanceEditStatus.failure,
         error: error,
       ));
     }

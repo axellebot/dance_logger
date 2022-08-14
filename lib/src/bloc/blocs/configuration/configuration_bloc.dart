@@ -5,6 +5,7 @@ import 'package:dance/bloc.dart';
 import 'package:dance/data.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/src/data/repositories/dance_repository.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -34,6 +35,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
   }
 
   FutureOr<void> _onConfigLoad(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onConfigLoad');
     try {
       emit(state.copyWith(
         status: ConfigStatus.loading,
@@ -48,6 +50,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
   }
 
   FutureOr<void> _onConfigChange(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onConfigChange');
     try {
       emit(state.copyWith(
         status: ConfigStatus.loading,
@@ -70,6 +73,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
       (await getApplicationDocumentsDirectory()).path;
 
   Future<void> _loadConfig(Emitter<ConfigState> emit) async {
+    if (kDebugMode) print('$runtimeType:_loadConfig');
     try {
       String? fileDirPath = await _appPrefsRepository?.getFileDir();
       String? fileName = await _appPrefsRepository?.getFileName();
@@ -90,7 +94,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
         final VideoDataStore databaseVideoDataStore = danceDatabaseManager!;
         final FigureDataStore databaseFigureDataStore = danceDatabaseManager!;
         final PracticeDataStore databasePracticeDataStore =
-            danceDatabaseManager!;
+        danceDatabaseManager!;
 
         // Data Store Factories
         final danceDataStoreFactory = DanceDataStoreFactory(
@@ -152,6 +156,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
 
   @override
   Future<void> close() async {
+    if (kDebugMode) print('$runtimeType:close()');
     await danceDatabaseManager?.close();
     return super.close();
   }

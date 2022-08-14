@@ -14,7 +14,7 @@ class ModelMapper {
     return _instance ?? _initState();
   }
 
-  /// [ArtistDataModel] to [ArtistViewModel]
+  /// [ArtistEntity] to [ArtistViewModel]
   ArtistViewModel toArtistViewModel(ArtistEntity dataModel) {
     return ArtistViewModel(
       id: dataModel.id,
@@ -26,7 +26,7 @@ class ModelMapper {
     );
   }
 
-  /// [DanceDataModel] to [DanceViewModel]
+  /// [DanceEntity] to [DanceViewModel]
   DanceViewModel toDanceViewModel(DanceEntity dataModel) {
     return DanceViewModel(
       id: dataModel.id,
@@ -34,6 +34,17 @@ class ModelMapper {
       createdAt: dataModel.createdAt,
       updatedAt: dataModel.updatedAt,
       version: dataModel.version,
+    );
+  }
+
+  /// [DanceViewModel] to [DanceEntity]
+  DanceEntity toDanceEntity(DanceViewModel entityModel) {
+    return DanceDataModel(
+      id: entityModel.id,
+      name: entityModel.name,
+      createdAt: entityModel.createdAt,
+      updatedAt: entityModel.updatedAt,
+      version: entityModel.version,
     );
   }
 
@@ -54,7 +65,7 @@ class ModelMapper {
       id: dataModel.id,
       doneAt: dataModel.doneAt,
       status: dataModel.status,
-      figureId:dataModel.figureId,
+      figureId: dataModel.figureId,
       createdAt: dataModel.createdAt,
       updatedAt: dataModel.updatedAt,
       version: dataModel.version,
@@ -62,7 +73,7 @@ class ModelMapper {
   }
 
   /// [MomentEntity] to [MomentViewModel]
-  MomentViewModel tomomentViewModel(MomentEntity dataModel) {
+  MomentViewModel toMomentViewModel(MomentEntity dataModel) {
     return MomentViewModel(
       id: dataModel.id,
       startTime: dataModel.startTime,

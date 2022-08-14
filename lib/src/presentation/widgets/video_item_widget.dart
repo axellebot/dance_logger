@@ -16,9 +16,11 @@ class VideoItemTile extends StatelessWidget {
       title: Text(video.name),
       leading: _buildVideoThumbnail(),
       subtitle: Text(video.url),
-      onTap: () => AutoRouter.of(context).push(
-        VideoDetailsRoute(videoId: video.id),
-      ),
+      onTap: () {
+        AutoRouter.of(context).push(
+          VideoDetailsRoute(videoId: video.id),
+        );
+      },
     );
   }
 

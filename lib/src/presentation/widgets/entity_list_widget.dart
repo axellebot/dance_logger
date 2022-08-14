@@ -4,12 +4,14 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 class EmptyListView extends StatelessWidget {
   final Axis scrollDirection;
-  final EdgeInsets? padding;
+  final ScrollPhysics? physics;
+  final EdgeInsetsGeometry? padding;
   final String label;
 
   const EmptyListView({
     super.key,
     this.scrollDirection = Axis.vertical,
+    this.physics,
     this.padding,
     required this.label,
   });
@@ -18,6 +20,7 @@ class EmptyListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       scrollDirection: scrollDirection,
+      physics: physics,
       padding: padding,
       children: [
         (scrollDirection == Axis.vertical)

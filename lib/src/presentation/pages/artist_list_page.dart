@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 class ArtistListPage extends StatelessWidget
     implements AutoRouteWrapper, ArtistListParams {
+  final bool showAppBar;
   @override
   final String? ofDance;
   @override
@@ -18,18 +19,21 @@ class ArtistListPage extends StatelessWidget
 
   const ArtistListPage({
     super.key,
+    this.showAppBar = true,
     this.ofDance,
     this.ofFigure,
     this.ofVideo,
-    this.artistListBloc,
+  this.artistListBloc,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Artists'),
-      ),
+      appBar: showAppBar
+          ? AppBar(
+              title: const Text('Artists'),
+            )
+          : null,
       body: const ArtistListView(),
     );
   }
@@ -48,10 +52,10 @@ class ArtistListPage extends StatelessWidget
           artistRepository: repo,
           mapper: ModelMapper(),
         )..add(ArtistListLoad(
-            ofDance: ofDance,
-            ofFigure: ofFigure,
-            ofVideo: ofVideo,
-          )),
+          ofDance: ofDance,
+          ofFigure: ofFigure,
+          ofVideo: ofVideo,
+        )),
         child: this,
       );
     }

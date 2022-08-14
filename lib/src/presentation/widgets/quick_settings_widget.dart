@@ -20,7 +20,9 @@ class QuickSettingsExtendableButton extends StatelessWidget {
                   TextButton.icon(
                     icon: const Icon(Icons.more_horiz),
                     label: const Text('Quick Settings'),
-                    onPressed: () => openQuickSettings(context),
+                    onPressed: () {
+                      openQuickSettings(context);
+                    },
                   ),
                 ],
               );
@@ -44,7 +46,9 @@ class QuickSettingsActionButton extends StatelessWidget {
     return Padding(
       padding: padding,
       child: IconButton(
-        onPressed: () => openQuickSettings(context),
+        onPressed: () {
+          openQuickSettings(context);
+        },
         icon: Icon(MediaQuery.of(context).orientation == Orientation.portrait
             ? Icons.more_vert_rounded
             : Icons.more_horiz_rounded),
@@ -69,7 +73,9 @@ class QuickSettingsBottomSheet extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.settings),
             title: Text(DanceLocalizations.of(context)!.settingsCTA),
-            onTap: () => navigateToSettings(context),
+            onTap: () {
+              navigateToSettings(context);
+            },
           ),
           const Divider(),
           Row(

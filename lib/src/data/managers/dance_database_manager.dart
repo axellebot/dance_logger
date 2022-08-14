@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dance/data.dart';
 import 'package:dance/domain.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -172,6 +173,7 @@ class DanceDatabaseManager
   }
 
   FutureOr delete() async {
+    if (kDebugMode) print('$runtimeType:delete()');
     await deleteDatabase(
       join(await getDatabasesPath(), filePath),
     );
@@ -192,53 +194,52 @@ class DanceDatabaseManager
         'artists',
         artistModel.toJson(),
       );
-      if (count == 0) {
-        throw DataNotCreatedError('Artist');
-      }
+      if (count == 0) throw DataNotCreatedError('Artist');
     } else {
       count = await db.update(
         'artists',
         artistModel.toJson(),
+        where: 'artist_id = ?',
+        whereArgs: [artistModel.id],
       );
-      if (count == 0) {
-        throw DataNotUpdatedError('Artist');
-      }
+      if (count == 0) throw DataNotUpdatedError('Artist');
     }
     return await getArtist(artistModel.id);
   }
 
   @override
   FutureOr<ArtistDataModel> getArtist(String artistId) async {
+    if (kDebugMode) print('$runtimeType:getArtist($artistId)');
+
     List results = await db.query(
       'artists',
       where: 'artist_id = ?',
       whereArgs: [artistId],
     );
-
-    if (results.isEmpty) {
-      throw DataNotFoundError('Artist');
-    }
-
+    if (results.isEmpty) throw DataNotFoundError('Artist');
     ArtistDataModel artist = ArtistDataModel.fromJson(results.first);
     return artist;
   }
 
   @override
   FutureOr<void> deleteArtist(String artistId) async {
+    if (kDebugMode) print('$runtimeType:deleteArtist($artistId)');
+
+    await getArtist(artistId); // throw error if doesn't exist
     int count = await db.delete(
       'artists',
       where: 'artist_id= ?',
       whereArgs: [artistId],
     );
-    if (count == 0) {
-      throw DataNotDeletedError('Artist');
-    }
+    if (count == 0) throw DataNotDeletedError('Artist');
   }
 
   @override
   FutureOr<List<ArtistDataModel>> getArtists({
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getArtists()');
+
     List results = await db.query(
       'artists',
       limit: offset.limit,
@@ -254,6 +255,8 @@ class DanceDatabaseManager
     String danceId, {
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getArtistsOfDance($danceId)');
+
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT a.* FROM artists a
@@ -274,7 +277,7 @@ class DanceDatabaseManager
       ],
     );
     List<ArtistDataModel> artists =
-        results.map((map) => ArtistDataModel.fromJson(map)).toList();
+    results.map((map) => ArtistDataModel.fromJson(map)).toList();
     return artists;
   }
 
@@ -283,6 +286,8 @@ class DanceDatabaseManager
     String figureId, {
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getArtistsOfFigure($figureId)');
+
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT a.* FROM artists a 
@@ -301,7 +306,7 @@ class DanceDatabaseManager
       ],
     );
     List<ArtistDataModel> artists =
-        results.map((map) => ArtistDataModel.fromJson(map)).toList();
+    results.map((map) => ArtistDataModel.fromJson(map)).toList();
     return artists;
   }
 
@@ -310,6 +315,8 @@ class DanceDatabaseManager
     String momentId, {
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getArtistsOfMoment($momentId)');
+
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT a.* FROM artists a
@@ -326,7 +333,7 @@ class DanceDatabaseManager
       ],
     );
     List<ArtistDataModel> artists =
-        results.map((map) => ArtistDataModel.fromJson(map)).toList();
+    results.map((map) => ArtistDataModel.fromJson(map)).toList();
     return artists;
   }
 
@@ -335,6 +342,8 @@ class DanceDatabaseManager
     String videoId, {
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getArtistsOfVideo($videoId)');
+
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT a.* FROM artists a
@@ -353,12 +362,14 @@ class DanceDatabaseManager
       ],
     );
     List<ArtistDataModel> artists =
-        results.map((map) => ArtistDataModel.fromJson(map)).toList();
+    results.map((map) => ArtistDataModel.fromJson(map)).toList();
     return artists;
   }
 
   @override
   FutureOr<DanceDataModel> saveDance(DanceDataModel danceModel) async {
+    if (kDebugMode) print('$runtimeType:saveDance($danceModel)');
+
     bool exists = true;
     try {
       await getDance(danceModel.id);
@@ -372,48 +383,52 @@ class DanceDatabaseManager
         'dances',
         danceModel.toJson(),
       );
-      if (count == 0) {
-        throw DataNotCreatedError('Dance');
-      }
+      if (count == 0) throw DataNotCreatedError('Dance');
     } else {
       count = await db.update(
         'dances',
         danceModel.toJson(),
+        where: 'dance_id = ?',
+        whereArgs: [danceModel.id],
       );
-      if (count == 0) {
-        throw DataNotUpdatedError('Dance');
-      }
+      if (count == 0) throw DataNotUpdatedError('Dance');
     }
     return await getDance(danceModel.id);
   }
 
   @override
   FutureOr<DanceDataModel> getDance(String danceId) async {
+    if (kDebugMode) print('$runtimeType:getDance($danceId)');
+
     List results = await db.query(
       'dances',
       where: 'dance_id = ?',
       whereArgs: [danceId],
     );
+    if (results.isEmpty) throw DataNotFoundError('Dance');
     DanceDataModel dance = DanceDataModel.fromJson(results.first);
     return dance;
   }
 
   @override
   FutureOr<void> deleteDance(String danceId) async {
+    if (kDebugMode) print('$runtimeType:deleteDance($danceId)');
+
+    await getDance(danceId); // throw error if doesn't exist
     int count = await db.delete(
       'dances',
       where: 'dance_id= ?',
       whereArgs: [danceId],
     );
-    if (count == 0) {
-      throw DataNotDeletedError('Dance');
-    }
+    if (count == 0) throw DataNotDeletedError('Dance');
   }
 
   @override
   FutureOr<List<DanceDataModel>> getDances({
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getDances()');
+
     List results = await db.query(
       'dances',
       limit: offset.limit,
@@ -429,6 +444,8 @@ class DanceDatabaseManager
     String artistId, {
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getDancesOfArtist($artistId)');
+
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT d.* FROM dances d
@@ -449,12 +466,14 @@ class DanceDatabaseManager
       ],
     );
     List<DanceDataModel> dances =
-        results.map((map) => DanceDataModel.fromJson(map)).toList();
+    results.map((map) => DanceDataModel.fromJson(map)).toList();
     return dances;
   }
 
   @override
   FutureOr<FigureDataModel> saveFigure(FigureDataModel figureModel) async {
+    if (kDebugMode) print('$runtimeType:saveFigure($figureModel)');
+
     bool exists = true;
     try {
       await getDance(figureModel.id);
@@ -468,53 +487,52 @@ class DanceDatabaseManager
         'figures',
         figureModel.toJson(),
       );
-      if (count == 0) {
-        throw DataNotCreatedError('Figure');
-      }
+      if (count == 0) throw DataNotCreatedError('Figure');
     } else {
       count = await db.update(
         'figures',
         figureModel.toJson(),
+        where: 'figure_id = ?',
+        whereArgs: [figureModel.id],
       );
-      if (count == 0) {
-        throw DataNotUpdatedError('Figure');
-      }
+      if (count == 0) throw DataNotUpdatedError('Figure');
     }
     return await getFigure(figureModel.id);
   }
 
   @override
   FutureOr<FigureDataModel> getFigure(String figureId) async {
+    if (kDebugMode) print('$runtimeType:getFigure($figureId)');
+
+    await getFigure(figureId); // throw error if doesn't exist
     List results = await db.query(
       'figures',
       where: 'figure_id = ?',
       whereArgs: [figureId],
     );
-
-    if (results.isEmpty) {
-      throw DataNotFoundError('Artist');
-    }
-
+    if (results.isEmpty) throw DataNotFoundError('Artist');
     FigureDataModel figure = FigureDataModel.fromJson(results.first);
     return figure;
   }
 
   @override
   FutureOr<void> deleteFigure(String figureId) async {
+    if (kDebugMode) print('$runtimeType:deleteFigure($figureId)');
+
     int count = await db.delete(
       'figures',
       where: 'figure_id= ?',
       whereArgs: [figureId],
     );
-    if (count == 0) {
-      throw DataNotDeletedError('Figure');
-    }
+    if (count == 0) throw DataNotDeletedError('Figure');
   }
 
   @override
   FutureOr<List<FigureDataModel>> getFigures({
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getFigures()');
+
     List results = await db.query(
       'figures',
       limit: offset.limit,
@@ -530,6 +548,8 @@ class DanceDatabaseManager
     String artistId, {
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getFiguresOfArtist($artistId)');
+
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT f.* FROM figures f
@@ -548,7 +568,7 @@ class DanceDatabaseManager
       ],
     );
     List<FigureDataModel> figures =
-        results.map((e) => FigureDataModel.fromJson(e)).toList();
+    results.map((e) => FigureDataModel.fromJson(e)).toList();
     return figures;
   }
 
@@ -557,6 +577,8 @@ class DanceDatabaseManager
     String danceId, {
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getFiguresOfDance($danceId)');
+
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT f.* FROM figures f
@@ -571,7 +593,7 @@ class DanceDatabaseManager
       ],
     );
     List<FigureDataModel> figures =
-        results.map((e) => FigureDataModel.fromJson(e)).toList();
+    results.map((e) => FigureDataModel.fromJson(e)).toList();
     return figures;
   }
 
@@ -580,6 +602,8 @@ class DanceDatabaseManager
     String videoId, {
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getFiguresOfVideo($videoId)');
+
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT f.* FROM figures f
@@ -596,7 +620,7 @@ class DanceDatabaseManager
       ],
     );
     List<FigureDataModel> figures =
-        results.map((e) => FigureDataModel.fromJson(e)).toList();
+    results.map((e) => FigureDataModel.fromJson(e)).toList();
     return figures;
   }
 
@@ -604,6 +628,8 @@ class DanceDatabaseManager
   FutureOr<PracticeDataModel> savePractice(
       PracticeDataModel practiceModel) async {
     bool exists = true;
+    if (kDebugMode) print('$runtimeType:savePractice($practiceModel)');
+
     try {
       await getPractice(practiceModel.id);
     } on DataNotFoundError {
@@ -616,53 +642,52 @@ class DanceDatabaseManager
         'practices',
         practiceModel.toJson(),
       );
-      if (count == 0) {
-        throw DataNotCreatedError('Practice');
-      }
+      if (count == 0) throw DataNotCreatedError('Practice');
     } else {
       count = await db.update(
         'practices',
         practiceModel.toJson(),
+        where: 'practice_id = ?',
+        whereArgs: [practiceModel.id],
       );
-      if (count == 0) {
-        throw DataNotUpdatedError('Practice');
-      }
+      if (count == 0) throw DataNotUpdatedError('Practice');
     }
     return await getPractice(practiceModel.id);
   }
 
   @override
   FutureOr<PracticeDataModel> getPractice(String practiceId) async {
+    if (kDebugMode) print('$runtimeType:getPractice($practiceId)');
+
     List results = await db.query(
       'practices',
       where: 'practice_id = ?',
       whereArgs: [practiceId],
     );
-
-    if (results.isEmpty) {
-      throw DataNotFoundError('Figure');
-    }
-
+    if (results.isEmpty) throw DataNotFoundError('Figure');
     PracticeDataModel practice = PracticeDataModel.fromJson(results.first);
     return practice;
   }
 
   @override
   FutureOr<void> deletePractice(String practiceId) async {
+    if (kDebugMode) print('$runtimeType:deletePractice($practiceId)');
+
+    await getPractice(practiceId); // throw error if doesn't exist
     int count = await db.delete(
       'practices',
       where: 'practice_id = ?',
       whereArgs: [practiceId],
     );
-    if (count == 0) {
-      throw DataNotDeletedError('Practice');
-    }
+    if (count == 0) throw DataNotDeletedError('Practice');
   }
 
   @override
   FutureOr<List<PracticeDataModel>> getPractices({
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getPractices()');
+
     List results = await db.query(
       'practices',
       limit: offset.limit,
@@ -678,6 +703,7 @@ class DanceDatabaseManager
     String figureId, {
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getPracticesOfFigure($figureId)');
     // TODO: implement getPracticesOfFigure
     throw UnimplementedError();
   }
@@ -706,60 +732,58 @@ class DanceDatabaseManager
         'videos',
         videoModel.toJson(),
       );
-      if (count == 0) {
-        throw DataNotCreatedError('Video');
-      }
+      if (count == 0) throw DataNotCreatedError('Video');
     } else {
       count = await db.update(
         'videos',
         videoModel.toJson(),
+        where: 'video_id = ?',
+        whereArgs: [videoModel.id],
       );
-      if (count == 0) {
-        throw DataNotUpdatedError('Video');
-      }
+      if (count == 0) throw DataNotUpdatedError('Video');
     }
     return await getVideo(videoModel.id);
   }
 
   @override
   FutureOr<VideoDataModel> getVideo(String videoId) async {
+    if (kDebugMode) print('$runtimeType:getVideo($videoId)');
+
     List results = await db.query(
       'videos',
       where: 'video_id = ?',
       whereArgs: [videoId],
     );
-
-    if (results.isEmpty) {
-      throw DataNotFoundError('Video');
-    }
-
+    if (results.isEmpty) throw DataNotFoundError('Video');
     VideoDataModel video = VideoDataModel.fromJson(results.first);
     return video;
   }
 
   @override
   FutureOr<void> deleteVideo(String videoId) async {
+    if (kDebugMode) print('$runtimeType:deleteVideo($videoId)');
+
+    await getVideo(videoId); // throw error if doesn't exist
     int count = await db.delete(
       'videos',
       where: 'video_id= ?',
       whereArgs: [videoId],
     );
-    if (count == 0) {
-      throw DataNotDeletedError('Video');
-    }
+    if (count == 0) throw DataNotDeletedError('Video');
   }
 
   @override
   FutureOr<List<VideoDataModel>> getVideos({
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getVideos()');
     List results = await db.query(
       'videos',
       limit: offset.limit,
       offset: offset.offset,
     );
     List<VideoDataModel> videos =
-        results.map((e) => VideoDataModel.fromJson(e)).toList();
+    results.map((e) => VideoDataModel.fromJson(e)).toList();
     return videos;
   }
 
@@ -768,6 +792,8 @@ class DanceDatabaseManager
     String artistId, {
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getVideosOfArtist($artistId)');
+
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT v.* FROM videos v
@@ -787,7 +813,7 @@ class DanceDatabaseManager
     );
 
     List<VideoDataModel> videos =
-        results.map((e) => VideoDataModel.fromJson(e)).toList();
+    results.map((e) => VideoDataModel.fromJson(e)).toList();
     return videos;
   }
 
@@ -796,6 +822,8 @@ class DanceDatabaseManager
     String danceId, {
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getVideosOfDance($danceId)');
+
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT v.* FROM videos v
@@ -815,7 +843,7 @@ class DanceDatabaseManager
     );
 
     List<VideoDataModel> videos =
-        results.map((e) => VideoDataModel.fromJson(e)).toList();
+    results.map((e) => VideoDataModel.fromJson(e)).toList();
     return videos;
   }
 
@@ -824,6 +852,8 @@ class DanceDatabaseManager
     String figureId, {
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getVideosOfFigure($figureId)');
+
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT f.* FROM figures f
@@ -841,12 +871,14 @@ class DanceDatabaseManager
     );
 
     List<VideoDataModel> videos =
-        results.map((e) => VideoDataModel.fromJson(e)).toList();
+    results.map((e) => VideoDataModel.fromJson(e)).toList();
     return videos;
   }
 
   @override
   FutureOr<MomentDataModel> saveMoment(MomentDataModel momentModel) async {
+    if (kDebugMode) print('$runtimeType:saveMoment($momentModel)');
+
     bool exists = true;
     try {
       await getDance(momentModel.id);
@@ -860,53 +892,52 @@ class DanceDatabaseManager
         'moments',
         momentModel.toJson(),
       );
-      if (count == 0) {
-        throw DataNotCreatedError('Moment');
-      }
+      if (count == 0) throw DataNotCreatedError('Moment');
     } else {
       count = await db.update(
         'moments',
         momentModel.toJson(),
+        where: 'moment_id = ?',
+        whereArgs: [momentModel.id],
       );
-      if (count == 0) {
-        throw DataNotUpdatedError('Moment');
-      }
+      if (count == 0) throw DataNotUpdatedError('Moment');
     }
     return await getMoment(momentModel.id);
   }
 
   @override
   FutureOr<MomentDataModel> getMoment(String momentId) async {
+    if (kDebugMode) print('$runtimeType:getMoment($momentId)');
+
     List results = await db.query(
       'moments',
       where: 'moment_id = ?',
       whereArgs: [momentId],
     );
-
-    if (results.isEmpty) {
-      throw DataNotFoundError('Moment');
-    }
-
+    if (results.isEmpty) throw DataNotFoundError('Moment');
     MomentDataModel moment = MomentDataModel.fromJson(results.first);
     return moment;
   }
 
   @override
   FutureOr<void> deleteMoment(String momentId) async {
+    if (kDebugMode) print('$runtimeType:deleteMoment($momentId)');
+
+    await getMoment(momentId); // throw error if doesn't exist
     int count = await db.delete(
       'moments',
       where: 'moment_id = ?',
       whereArgs: [momentId],
     );
-    if (count == 0) {
-      throw DataNotDeletedError('Moment');
-    }
+    if (count == 0) throw DataNotDeletedError('Moment');
   }
 
   @override
   FutureOr<List<MomentDataModel>> getMoments({
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getMoments()');
+
     List results = await db.query(
       'moments',
       limit: offset.limit,
@@ -923,6 +954,8 @@ class DanceDatabaseManager
     String figureId, {
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getMomentsOfFigure($figureId)');
+
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT m.* FROM moments m
@@ -936,9 +969,8 @@ class DanceDatabaseManager
         offset.offset,
       ],
     );
-
     List<MomentDataModel> moments =
-        results.map((result) => MomentDataModel.fromJson(result)).toList();
+    results.map((result) => MomentDataModel.fromJson(result)).toList();
     return moments;
   }
 
@@ -947,6 +979,8 @@ class DanceDatabaseManager
     String videoId, {
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getMomentsOfVideo($videoId)');
+
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT m.* FROM moments m
@@ -962,7 +996,7 @@ class DanceDatabaseManager
     );
 
     List<MomentDataModel> moments =
-        results.map((result) => MomentDataModel.fromJson(result)).toList();
+    results.map((result) => MomentDataModel.fromJson(result)).toList();
     return moments;
   }
 
@@ -971,6 +1005,8 @@ class DanceDatabaseManager
     String artistId, {
     required Offset offset,
   }) async {
+    if (kDebugMode) print('$runtimeType:getMomentsOfArtist($artistId)');
+
     List results = await db.rawQuery(
       '''
       SELECT DISTINCT m.* FROM moments m
@@ -986,9 +1022,8 @@ class DanceDatabaseManager
         offset.offset,
       ],
     );
-
     List<MomentDataModel> moments =
-        results.map((result) => MomentDataModel.fromJson(result)).toList();
+    results.map((result) => MomentDataModel.fromJson(result)).toList();
     return moments;
   }
 }

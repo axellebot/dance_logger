@@ -23,11 +23,13 @@ class PracticeDetailsPage extends StatelessWidget implements AutoRouteWrapper {
           case PracticeDetailStatus.success:
             return Scaffold(
               floatingActionButton: FloatingActionButton(
-                onPressed: () => AutoRouter.of(context).push(
-                  PracticeEditRoute(
-                    practiceId: state.practice!.id,
-                  ),
-                ),
+                onPressed: () {
+                  AutoRouter.of(context).push(
+                    PracticeEditRoute(
+                      practiceId: state.practice!.id,
+                    ),
+                  );
+                },
                 child: const Icon(Icons.edit),
               ),
               body: CustomScrollView(

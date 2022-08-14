@@ -4,9 +4,11 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 class DanceListPage extends StatelessWidget implements AutoRouteWrapper {
+  final bool showAppBar;
   final String? ofArtist;
   final String? ofFigure;
   final String? ofVideo;
@@ -14,19 +16,39 @@ class DanceListPage extends StatelessWidget implements AutoRouteWrapper {
 
   const DanceListPage({
     super.key,
+    this.showAppBar = true,
     this.ofArtist,
     this.ofFigure,
     this.ofVideo,
-    this.danceListBloc,
+  this.danceListBloc,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dances'),
+      appBar: showAppBar
+          ? AppBar(
+              title: const Text('Dances'),
+            )
+          : null,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          AutoRouter.of(context).push(DanceEditRoute());
+        },
+        child: const Icon(MdiIcons.plus),
       ),
-      body: const DanceListView(),
+      body: RefreshIndicator(
+        onRefresh: () {
+          final danceListBloc = BlocProvider.of<DanceListBloc>(context)
+            ..add(const DanceListRefresh());
+          return danceListBloc.stream
+              .firstWhere((e) => e.status != DanceListStatus.refreshing);
+        },
+        child: const DanceListView(
+          scrollDirection: Axis.vertical,
+          physics: AlwaysScrollableScrollPhysics(),
+        ),
+      ),
     );
   }
 
@@ -44,10 +66,10 @@ class DanceListPage extends StatelessWidget implements AutoRouteWrapper {
           danceRepository: repo,
           mapper: ModelMapper(),
         )..add(DanceListLoad(
-            ofArtist: ofArtist,
-            ofFigure: ofFigure,
-            ofVideo: ofVideo,
-          )),
+          ofArtist: ofArtist,
+          ofFigure: ofFigure,
+          ofVideo: ofVideo,
+        )),
         child: this,
       );
     }

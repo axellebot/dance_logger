@@ -5,8 +5,6 @@ import 'package:dance/domain.dart';
 import 'package:flutter/foundation.dart';
 
 class ImplVideoRepository extends VideoRepository {
-  final String _tag = '$ImplVideoRepository';
-
   final VideoDataStoreFactory factory;
 
   ImplVideoRepository({required this.factory});
@@ -21,7 +19,7 @@ class ImplVideoRepository extends VideoRepository {
     String id, {
     bool force = false,
   }) async {
-    if (kDebugMode) print('$_tag:getById($id)');
+    if (kDebugMode) print('$runtimeType:getById($id)');
 
     VideoDataModel dataModel;
 
@@ -32,7 +30,7 @@ class ImplVideoRepository extends VideoRepository {
 
   @override
   FutureOr<void> deleteById(String id) async {
-    if (kDebugMode) print('$_tag:deleteById($id)');
+    if (kDebugMode) print('$runtimeType:deleteById($id)');
     await factory.databaseDataStore.deleteVideo(id);
   }
 
@@ -43,7 +41,7 @@ class ImplVideoRepository extends VideoRepository {
     /// TODO: Add filters
     /// TODO: Add sort
   }) async {
-    if (kDebugMode) print('$_tag:getList()');
+    if (kDebugMode) print('$runtimeType:getList()');
     final dataModels = await factory.databaseDataStore.getVideos(
       offset: offset,
     );
@@ -58,7 +56,7 @@ class ImplVideoRepository extends VideoRepository {
     /// TODO: Add filters
     /// TODO: Add sort
   }) async {
-    if (kDebugMode) print('$_tag:getVideosOfArtist($artistId)');
+    if (kDebugMode) print('$runtimeType:getVideosOfArtist($artistId)');
     final dataModels = await factory.databaseDataStore.getVideosOfArtist(
       artistId,
       offset: offset,
@@ -74,7 +72,7 @@ class ImplVideoRepository extends VideoRepository {
     /// TODO: Add filters
     /// TODO: Add sort
   }) async {
-    if (kDebugMode) print('$_tag:getVideosOfFigure($figureId)');
+    if (kDebugMode) print('$runtimeType:getVideosOfFigure($figureId)');
     final dataModels = await factory.databaseDataStore.getVideosOfFigure(
       figureId,
       offset: offset,
@@ -85,7 +83,7 @@ class ImplVideoRepository extends VideoRepository {
   @override
   FutureOr<List<VideoEntity>> getVideosOfDance(String danceId,
       {required Offset offset}) async {
-    if (kDebugMode) print('$_tag:getVideosOfDance($danceId)');
+    if (kDebugMode) print('$runtimeType:getVideosOfDance($danceId)');
     final dataModels = await factory.databaseDataStore.getVideosOfDance(
       danceId,
       offset: offset,

@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/src/bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 
 /// Business Logic Component for Application behaviors
 /// Can manage theme
@@ -18,6 +19,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   FutureOr<void> _onAppLaunch(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onAppLaunch');
     try {
       final int themeMode = await appPreferencesRepository.getThemeMode() ?? 0;
       final bool themeUltraDark =
@@ -36,6 +38,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   FutureOr<void> _onThemeChange(event, emit) async {
+    if (kDebugMode) print('$runtimeType:_onThemeChange');
     try {
       await appPreferencesRepository.saveThemeMode(event.themeMode);
       await appPreferencesRepository.saveThemeUltraDark(event.themeUltraDark);

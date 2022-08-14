@@ -21,7 +21,9 @@ abstract class EntityRepository<T extends BaseEntity> {
   /// Delete the [T] identified by [id]
   ///
   /// Don't return anything
-  FutureOr<void> deleteById(String id,);
+  FutureOr<void> deleteById(
+    String id,
+  );
 
   /// Fetch [T] list
   ///

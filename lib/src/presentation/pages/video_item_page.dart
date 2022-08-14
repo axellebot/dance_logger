@@ -25,11 +25,13 @@ class VideoDetailsPage extends StatelessWidget implements AutoRouteWrapper {
           case VideoDetailStatus.success:
             return Scaffold(
               floatingActionButton: FloatingActionButton(
-                onPressed: () => AutoRouter.of(context).push(
-                  VideoEditRoute(
-                    videoId: state.video!.id,
-                  ),
-                ),
+                onPressed: () {
+                  AutoRouter.of(context).push(
+                    VideoEditRoute(
+                      videoId: state.video!.id,
+                    ),
+                  );
+                },
                 child: const Icon(Icons.edit),
               ),
               body: CustomScrollView(
@@ -52,13 +54,12 @@ class VideoDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                     delegate: SliverChildListDelegate(
                       <Widget>[
                         ListTile(
-                          title: Text(state.video!.url),
-                          trailing: const Icon(MdiIcons.contentCopy),
-                          onTap: () {
-                            Clipboard.setData(
-                                ClipboardData(text: state.video!.url));
-                          }
-                        ),
+                            title: Text(state.video!.url),
+                            trailing: const Icon(MdiIcons.contentCopy),
+                            onTap: () {
+                              Clipboard.setData(
+                                  ClipboardData(text: state.video!.url));
+                            }),
                         _buildFiguresSection(),
                         _buildArtistsSection(),
                         EntityInfoListTile(
@@ -94,12 +95,14 @@ class VideoDetailsPage extends StatelessWidget implements AutoRouteWrapper {
             children: [
               SectionTile(
                 title: const Text('Figures'),
-                onTap: () => AutoRouter.of(context).push(
-                  FigureListRoute(
-                    ofVideo: videoId,
-                    figureListBloc: BlocProvider.of<FigureListBloc>(context),
-                  ),
-                ),
+                onTap: () {
+                  AutoRouter.of(context).push(
+                    FigureListRoute(
+                      ofVideo: videoId,
+                      figureListBloc: BlocProvider.of<FigureListBloc>(context),
+                    ),
+                  );
+                },
               ),
               const SizedBox(
                 height: AppStyles.cardHeight,
@@ -159,7 +162,6 @@ class VideoCreatePage extends VideoEditPage {
 }
 
 class VideoEditPage extends StatelessWidget implements AutoRouteWrapper {
-  late final VideoDetailBloc? _videoBloc;
   late final String? _videoId;
 
   VideoEditPage({
