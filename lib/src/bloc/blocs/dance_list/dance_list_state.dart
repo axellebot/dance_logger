@@ -10,47 +10,51 @@ class DanceListState extends Equatable implements DanceListParams {
 
   @override
   final String? ofArtist;
+  @override
+  final String? ofVideo;
 
   final List<DanceViewModel> dances;
   final bool hasReachedMax;
-  final List<String> selected;
+  final List<String> selectedDances;
   final Error? error;
 
   const DanceListState({
     this.status = DanceListStatus.initial,
     this.ofArtist,
+    this.ofVideo,
     this.dances = const <DanceViewModel>[],
     this.hasReachedMax = false,
-    this.selected = const <String>[],
+    this.selectedDances = const <String>[],
     this.error,
   });
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props =>
+      [
         status,
         ofArtist,
         dances,
         hasReachedMax,
-        selected,
+        selectedDances,
         error,
       ];
 
   DanceListState copyWith({
     DanceListStatus? status,
     String? ofArtist,
-    String? ofFigure,
     String? ofVideo,
     List<DanceViewModel>? dances,
     bool? hasReachedMax,
-    List<String>? selected,
+    List<String>? selectedDances,
     Error? error,
   }) {
     return DanceListState(
       status: status ?? this.status,
       ofArtist: ofArtist ?? this.ofArtist,
+      ofVideo: ofVideo ?? this.ofVideo,
       dances: dances ?? this.dances,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-      selected: selected ?? this.selected,
+      selectedDances: selectedDances ?? this.selectedDances,
       error: error ?? this.error,
     );
   }
@@ -60,9 +64,10 @@ class DanceListState extends Equatable implements DanceListParams {
     return 'DanceListState{'
         'status: $status, '
         'ofArtist: $ofArtist, '
+        'ofVideo: $ofVideo, '
         'dances: $dances, '
         'hasReachedMax: $hasReachedMax, '
-        'selected: $selected, '
+        'selectedDances: $selectedDances, '
         'error: $error'
         '}';
   }

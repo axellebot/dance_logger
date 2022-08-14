@@ -1,26 +1,41 @@
 import 'package:dance/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-/// [ArtistEvent] that must be dispatch to [ArtistBloc]
-abstract class ArtistEvent extends Equatable {
-  const ArtistEvent() : super();
+/// [ArtistDetailEvent] that must be dispatch to [ArtistDetailBloc]
+abstract class ArtistDetailEvent extends Equatable {
+  const ArtistDetailEvent() : super();
 
   @override
-  String toString() => 'ArtistEvent{}';
+  String toString() => 'ArtistDetailEvent{}';
 }
 
-class ArtistLoad extends ArtistEvent {
+class ArtistDetailLoad extends ArtistDetailEvent {
   final String artistId;
 
-  const ArtistLoad({required this.artistId}) : super();
+  const ArtistDetailLoad({
+    required this.artistId,
+  }) : super();
 
   @override
   String toString() {
-    return 'ArtistLoad{'
+    return 'ArtistDetailLoad{'
         'artistId: $artistId'
         '}';
   }
 
   @override
   List<Object?> get props => [artistId];
+}
+
+class ArtistDetailDelete extends ArtistDetailEvent {
+  const ArtistDetailDelete() : super();
+
+  @override
+  String toString() {
+    return 'ArtistDetailDelete{'
+        '}';
+  }
+
+  @override
+  List<Object?> get props => [];
 }

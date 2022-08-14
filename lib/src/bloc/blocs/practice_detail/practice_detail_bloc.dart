@@ -18,7 +18,10 @@ class PracticeDetailBloc
     on<PracticeDetailLoad>(_onPracticeDetailLoad);
   }
 
-  FutureOr<void> _onPracticeDetailLoad(event, emit) async {
+  FutureOr<void> _onPracticeDetailLoad(
+    PracticeDetailLoad event,
+    Emitter<PracticeDetailState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onPracticeDetailLoad');
     try {
       emit(state.copyWith(
@@ -26,9 +29,9 @@ class PracticeDetailBloc
       ));
 
       PracticeEntity practiceDataModel =
-      await practiceRepository.getById(event.practiceId);
+          await practiceRepository.getById(event.practiceId);
       PracticeViewModel practiceViewModel =
-      mapper.toPracticeViewModel(practiceDataModel);
+          mapper.toPracticeViewModel(practiceDataModel);
 
       emit(state.copyWith(
         status: PracticeDetailStatus.success,

@@ -20,7 +20,10 @@ class DanceEditBloc extends Bloc<DanceEditEvent, DanceEditState> {
     on<DanceEditDelete>(_onDanceEditDelete);
   }
 
-  FutureOr<void> _onDanceEditStart(event, emit) async {
+  FutureOr<void> _onDanceEditStart(
+    DanceEditStart event,
+    Emitter<DanceEditState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onDanceEditStart');
     try {
       emit(state.copyWith(
@@ -45,12 +48,18 @@ class DanceEditBloc extends Bloc<DanceEditEvent, DanceEditState> {
     }
   }
 
-  FutureOr<void> _onDanceEditChangeName(event, emit) async {
+  FutureOr<void> _onDanceEditChangeName(
+    DanceEditChangeName event,
+    Emitter<DanceEditState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onDanceEditChangeName');
     emit(state.copyWith(danceName: event.danceName!));
   }
 
-  FutureOr<void> _onDanceEditSubmit(event, emit) async {
+  FutureOr<void> _onDanceEditSubmit(
+    DanceEditSubmit event,
+    Emitter<DanceEditState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onDanceEditSubmit');
     try {
       emit(state.copyWith(
@@ -85,7 +94,10 @@ class DanceEditBloc extends Bloc<DanceEditEvent, DanceEditState> {
     }
   }
 
-  FutureOr<void> _onDanceEditDelete(event, emit) async {
+  FutureOr<void> _onDanceEditDelete(
+    DanceEditDelete event,
+    Emitter<DanceEditState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onDanceEditDelete');
     if (state.initialDance == null) return;
     try {

@@ -68,7 +68,7 @@ class FigureDetailsPage extends StatelessWidget implements AutoRouteWrapper {
           case FigureDetailStatus.failure:
             return ErrorPage(error: state.error);
           default:
-            return ErrorText(
+            return ErrorPage(
               error: NotSupportedError(message: '${state.status}'),
             );
         }

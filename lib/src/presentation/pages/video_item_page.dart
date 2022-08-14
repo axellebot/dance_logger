@@ -76,7 +76,7 @@ class VideoDetailsPage extends StatelessWidget implements AutoRouteWrapper {
           case VideoDetailStatus.failure:
             return ErrorPage(error: state.error);
           default:
-            return ErrorText(
+            return ErrorPage(
               error: NotSupportedError(message: '${state.status}'),
             );
         }

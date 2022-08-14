@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 import 'artist_list_params.dart';
 
-enum ArtistListStatus { initial, loading, success, failure }
+enum ArtistListStatus { initial, loading, refreshing, success, failure }
 
 class ArtistListState extends Equatable implements ArtistListParams {
   final ArtistListStatus status;
@@ -17,6 +17,7 @@ class ArtistListState extends Equatable implements ArtistListParams {
 
   final List<ArtistViewModel> artists;
   final bool hasReachedMax;
+  final List<String> selectedArtists;
   final Error? error;
 
   const ArtistListState({
@@ -26,17 +27,20 @@ class ArtistListState extends Equatable implements ArtistListParams {
     this.ofVideo,
     this.artists = const <ArtistViewModel>[],
     this.hasReachedMax = false,
+    this.selectedArtists = const <String>[],
     this.error,
   });
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props =>
+      [
         status,
         ofDance,
         ofFigure,
         ofVideo,
         artists,
         hasReachedMax,
+        selectedArtists,
         error,
       ];
 
@@ -47,6 +51,7 @@ class ArtistListState extends Equatable implements ArtistListParams {
     String? ofVideo,
     List<ArtistViewModel>? artists,
     bool? hasReachedMax,
+    List<String>? selectedArtists,
     Error? error,
   }) {
     return ArtistListState(
@@ -56,6 +61,7 @@ class ArtistListState extends Equatable implements ArtistListParams {
       ofVideo: ofVideo ?? this.ofVideo,
       artists: artists ?? this.artists,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      selectedArtists: selectedArtists ?? this.selectedArtists,
       error: error ?? this.error,
     );
   }
@@ -69,6 +75,7 @@ class ArtistListState extends Equatable implements ArtistListParams {
         'ofVideo: $ofVideo, '
         'artists: $artists, '
         'hasReachedMax: $hasReachedMax, '
+        'selectedArtists: $selectedArtists, '
         'error: $error'
         '}';
   }

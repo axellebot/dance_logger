@@ -18,7 +18,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     on<AppThemeChange>(_onThemeChange);
   }
 
-  FutureOr<void> _onAppLaunch(event, emit) async {
+  FutureOr<void> _onAppLaunch(
+    AppLaunch event,
+    Emitter<AppState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onAppLaunch');
     try {
       final int themeMode = await appPreferencesRepository.getThemeMode() ?? 0;
@@ -37,7 +40,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     }
   }
 
-  FutureOr<void> _onThemeChange(event, emit) async {
+  FutureOr<void> _onThemeChange(
+    AppThemeChange event,
+    Emitter<AppState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onThemeChange');
     try {
       await appPreferencesRepository.saveThemeMode(event.themeMode);

@@ -26,6 +26,18 @@ class ModelMapper {
     );
   }
 
+  /// [ArtistViewModel] to [ArtistEntity]
+  ArtistEntity toArtistEntity(ArtistViewModel entityModel) {
+    return ArtistDataModel(
+      id: entityModel.id,
+      name: entityModel.name,
+      imageUrl: entityModel.imageUrl,
+      createdAt: entityModel.createdAt,
+      updatedAt: entityModel.updatedAt,
+      version: entityModel.version,
+    );
+  }
+
   /// [DanceEntity] to [DanceViewModel]
   DanceViewModel toDanceViewModel(DanceEntity dataModel) {
     return DanceViewModel(

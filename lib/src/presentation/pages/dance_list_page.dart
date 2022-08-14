@@ -7,20 +7,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
-class DanceListPage extends StatelessWidget implements AutoRouteWrapper {
+class DanceListPage extends StatelessWidget
+    implements AutoRouteWrapper, DanceListParams {
   final bool showAppBar;
-  final String? ofArtist;
-  final String? ofFigure;
-  final String? ofVideo;
   final DanceListBloc? danceListBloc;
+
+  /// Dance list params
+  @override
+  final String? ofArtist;
+  @override
+  final String? ofVideo;
 
   const DanceListPage({
     super.key,
     this.showAppBar = true,
-    this.ofArtist,
-    this.ofFigure,
-    this.ofVideo,
     this.danceListBloc,
+
+    /// Dance list params
+    this.ofArtist,
+    this.ofVideo,
   });
 
   @override
@@ -30,9 +35,9 @@ class DanceListPage extends StatelessWidget implements AutoRouteWrapper {
     return BlocBuilder<DanceListBloc, DanceListState>(
       builder: (context, state) {
         final PreferredSizeWidget? appBar;
-        if (state.selected.isNotEmpty) {
+        if (state.selectedDances.isNotEmpty) {
           appBar = SelectingAppBar(
-            count: state.selected.length,
+            count: state.selectedDances.length,
             onCanceled: () {
               danceListBloc.add(const DanceListUnselect());
             },
@@ -74,20 +79,19 @@ class DanceListPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    final repo = Provider.of<DanceRepository>(context, listen: false);
     if (danceListBloc != null) {
       return BlocProvider<DanceListBloc>.value(
         value: danceListBloc!,
         child: this,
       );
     } else {
+      final repo = Provider.of<DanceRepository>(context, listen: false);
       return BlocProvider<DanceListBloc>(
         create: (_) => DanceListBloc(
           danceRepository: repo,
           mapper: ModelMapper(),
         )..add(DanceListLoad(
             ofArtist: ofArtist,
-            ofFigure: ofFigure,
             ofVideo: ofVideo,
           )),
         child: this,

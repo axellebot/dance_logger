@@ -17,9 +17,15 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
     on<ArtistListLoad>(_onArtistListLoad);
     on<ArtistListLoadMore>(_onArtistListLoadMore);
     on<ArtistListRefresh>(_onArtistListRefresh);
+    on<ArtistListSelect>(_onArtistListSelect);
+    on<ArtistListUnselect>(_onArtistListUnselect);
+    on<ArtistListDelete>(_onArtistListDelete);
   }
 
-  FutureOr<void> _onArtistListLoad(event, emit) async {
+  FutureOr<void> _onArtistListLoad(
+    ArtistListLoad event,
+    Emitter<ArtistListState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onArtistListLoad');
     try {
       emit(state.copyWith(
@@ -50,7 +56,10 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
     }
   }
 
-  FutureOr<void> _onArtistListLoadMore(event, emit) async {
+  FutureOr<void> _onArtistListLoadMore(
+    ArtistListLoadMore event,
+    Emitter<ArtistListState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onArtistListLoadMore');
     if (state.status != ArtistListStatus.success) return;
     try {
@@ -79,7 +88,10 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
     }
   }
 
-  FutureOr<void> _onArtistListRefresh(event, emit) async {
+  FutureOr<void> _onArtistListRefresh(
+    ArtistListRefresh event,
+    Emitter<ArtistListState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onArtistListRefresh');
     try {
       emit(state.copyWith(
@@ -98,6 +110,57 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
         artists: artistViewModels,
         hasReachedMax: false,
       ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: ArtistListStatus.failure,
+        error: error,
+      ));
+    }
+  }
+
+  FutureOr<void> _onArtistListSelect(
+    ArtistListSelect event,
+    Emitter<ArtistListState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onArtistListSelect');
+
+    emit(state.copyWith(
+      selectedArtists: List.of(state.selectedArtists)..add(event.artistId),
+    ));
+  }
+
+  FutureOr<void> _onArtistListUnselect(
+    ArtistListUnselect event,
+    Emitter<ArtistListState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onArtistListUnselect');
+
+    emit((event.artistId != null)
+        ? state.copyWith(
+            selectedArtists: List.of(state.selectedArtists)
+              ..remove(event.artistId),
+          )
+        : state.copyWith(
+            selectedArtists: [],
+          ));
+  }
+
+  FutureOr<void> _onArtistListDelete(
+    ArtistListDelete event,
+    Emitter<ArtistListState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onArtistListSelect');
+    if (state.selectedArtists.isEmpty) return;
+
+    try {
+      for (String artistId in state.selectedArtists) {
+        await artistRepository.deleteById(artistId);
+        emit(state.copyWith(
+          artists: List.of(state.artists)
+            ..removeWhere((element) => element.id == artistId),
+          selectedArtists: List.of(state.selectedArtists)..remove(artistId),
+        ));
+      }
     } on Error catch (error) {
       emit(state.copyWith(
         status: ArtistListStatus.failure,

@@ -1,6 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+class DeleteIconButton extends StatelessWidget {
+  final VoidCallback onDeleted;
+
+  const DeleteIconButton({
+    super.key,
+    required this.onDeleted,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return IconButton(
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return DeleteDialog(
+              onConfirmed: onDeleted,
+            );
+          },
+        );
+      },
+      icon: const Icon(Icons.delete),
+    );
+  }
+}
+
 class EntityInfoListTile extends StatelessWidget {
   final DateTime? createdAt;
   final DateTime? updateAt;
@@ -35,11 +62,11 @@ class EntityInfoListTile extends StatelessWidget {
 }
 
 class SaveButton extends StatelessWidget {
-  final VoidCallback? onPressed;
+  final VoidCallback? onSaved;
 
   const SaveButton({
     Key? key,
-    this.onPressed,
+    this.onSaved,
   }) : super(key: key);
 
   @override
@@ -51,7 +78,7 @@ class SaveButton extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 7.5),
           child: Text('Save'),
         ),
-        onPressed: onPressed,
+        onPressed: onSaved,
       ),
     );
   }

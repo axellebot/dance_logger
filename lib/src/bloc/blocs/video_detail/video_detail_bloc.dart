@@ -17,7 +17,10 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
     on<VideoDetailLoad>(_onVideoDetailLoad);
   }
 
-  FutureOr<void> _onVideoDetailLoad(event, emit) async {
+  FutureOr<void> _onVideoDetailLoad(
+    VideoDetailLoad event,
+    Emitter<VideoDetailState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onVideoDetailLoad');
     try {
       emit(state.copyWith(

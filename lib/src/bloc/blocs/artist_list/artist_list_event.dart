@@ -56,3 +56,46 @@ class ArtistListRefresh extends ArtistListEvent {
   @override
   String toString() => 'ArtistListRefresh{}';
 }
+
+class ArtistListSelect extends ArtistListEvent {
+  final String artistId;
+
+  const ArtistListSelect({
+    required this.artistId,
+  });
+
+  @override
+  List<Object?> get props => [artistId];
+
+  @override
+  String toString() => 'ArtistListSelect{'
+      'artistId: $artistId'
+      '}';
+}
+
+class ArtistListUnselect extends ArtistListEvent {
+  final String? artistId;
+
+  const ArtistListUnselect({
+    this.artistId,
+  });
+
+  @override
+  List<Object?> get props => [artistId];
+
+  @override
+  String toString() => 'ArtistListUnselect{'
+      'artistId: $artistId'
+      '}';
+}
+
+class ArtistListDelete extends ArtistListEvent {
+  const ArtistListDelete();
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String toString() => 'ArtistListDelete{'
+      '}';
+}

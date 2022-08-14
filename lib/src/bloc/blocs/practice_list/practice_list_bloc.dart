@@ -19,7 +19,10 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
     on<PracticeListRefresh>(_onPracticeListRefresh);
   }
 
-  FutureOr<void> _onPracticeListLoad(event, emit) async {
+  FutureOr<void> _onPracticeListLoad(
+    PracticeListLoad event,
+    Emitter<PracticeListState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onPracticeListLoad');
     try {
       emit(state.copyWith(
@@ -49,7 +52,10 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
     }
   }
 
-  FutureOr<void> _onPracticeListLoadMore(event, emit) async {
+  FutureOr<void> _onPracticeListLoadMore(
+    PracticeListLoadMore event,
+    Emitter<PracticeListState> emit,
+  ) async {
     if (state.status != PracticeListStatus.success) return;
     try {
       final List<PracticeViewModel> practiceViewModels;
@@ -79,7 +85,10 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
     }
   }
 
-  FutureOr<void> _onPracticeListRefresh(event, emit) async {
+  FutureOr<void> _onPracticeListRefresh(
+    PracticeListRefresh event,
+    Emitter<PracticeListState> emit,
+  ) async {
     try {
       emit(state.copyWith(
         status: PracticeListStatus.loading,

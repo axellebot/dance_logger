@@ -39,6 +39,7 @@ class _DanceListViewState extends State<DanceListView> {
           case DanceListStatus.loading:
             return LoadingListView(
               scrollDirection: widget.scrollDirection,
+              physics: widget.physics,
               padding: widget.padding,
             );
           case DanceListStatus.failure:
@@ -62,12 +63,12 @@ class _DanceListViewState extends State<DanceListView> {
                     : state.dances.length + 1,
                 itemBuilder: (context, index) {
                   if (index < state.dances.length) {
-                    DanceViewModel dance = state.dances[index];
-                    DanceListBloc danceListBloc =
+                    final DanceViewModel dance = state.dances[index];
+                    final DanceListBloc danceListBloc =
                         BlocProvider.of<DanceListBloc>(context);
                     switch (widget.scrollDirection) {
                       case Axis.vertical:
-                        if (state.selected.isEmpty) {
+                        if (state.selectedDances.isEmpty) {
                           return DanceListTile(
                             dance: dance,
                             onLongPress: () {
@@ -79,7 +80,7 @@ class _DanceListViewState extends State<DanceListView> {
                         } else {
                           return CheckboxDanceListTile(
                             dance: dance,
-                            value: state.selected.contains(dance.id),
+                            value: state.selectedDances.contains(dance.id),
                             onChanged: (bool? value) {
                               danceListBloc.add(
                                 (value == true)

@@ -17,7 +17,10 @@ class FigureDetailBloc extends Bloc<FigureDetailEvent, FigureDetailState> {
     on<FigureDetailLoad>(_onFigureDetailLoad);
   }
 
-  FutureOr<void> _onFigureDetailLoad(event, emit) async {
+  FutureOr<void> _onFigureDetailLoad(
+    FigureDetailLoad event,
+    Emitter<FigureDetailState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onFigureDetailLoad');
     try {
       emit(state.copyWith(
@@ -25,9 +28,9 @@ class FigureDetailBloc extends Bloc<FigureDetailEvent, FigureDetailState> {
       ));
 
       FigureEntity figureDataModel =
-      await figureRepository.getById(event.figureId);
+          await figureRepository.getById(event.figureId);
       FigureViewModel figureViewModel =
-      mapper.toFigureViewModel(figureDataModel);
+          mapper.toFigureViewModel(figureDataModel);
 
       emit(state.copyWith(
         status: FigureDetailStatus.success,

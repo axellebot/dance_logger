@@ -6,32 +6,62 @@ import 'package:dance/presentation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ArtistBloc extends Bloc<ArtistEvent, ArtistDetailState> {
+class ArtistDetailBloc extends Bloc<ArtistDetailEvent, ArtistDetailState> {
   final ArtistRepository artistRepository;
   final ModelMapper mapper;
 
-  ArtistBloc({
+  ArtistDetailBloc({
     required this.artistRepository,
     required this.mapper,
   }) : super(const ArtistDetailState()) {
-    on<ArtistLoad>(_onArtistLoad);
+    on<ArtistDetailLoad>(_onArtistLoad);
+    on<ArtistDetailDelete>(_onArtistDelete);
   }
 
-  FutureOr<void> _onArtistLoad(event, emit) async {
+  FutureOr<void> _onArtistLoad(
+    ArtistDetailLoad event,
+    emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onArtistLoad');
+
     try {
       emit(state.copyWith(
         status: ArtistDetailStatus.loading,
       ));
 
       ArtistEntity artistDataModel =
-      await artistRepository.getById(event.artistId);
+          await artistRepository.getById(event.artistId);
       ArtistViewModel artistViewModel =
-      mapper.toArtistViewModel(artistDataModel);
+          mapper.toArtistViewModel(artistDataModel);
 
       emit(state.copyWith(
-        status: ArtistDetailStatus.success,
+        status: ArtistDetailStatus.detailSuccess,
         artist: artistViewModel,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: ArtistDetailStatus.failure,
+        error: error,
+      ));
+    }
+  }
+
+  FutureOr<void> _onArtistDelete(
+    ArtistDetailDelete event,
+    Emitter<ArtistDetailState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onDanceDeleted');
+
+    if (state.artist == null) return;
+    try {
+      emit(state.copyWith(
+        status: ArtistDetailStatus.loading,
+      ));
+
+      await artistRepository.deleteById(state.artist!.id);
+
+      emit(const ArtistDetailState(
+        status: ArtistDetailStatus.deleteSuccess,
       ));
     } on Error catch (error) {
       emit(state.copyWith(

@@ -2,12 +2,22 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 
-class ArtistItemTile extends StatelessWidget {
+class ArtistListTile extends StatelessWidget {
   final ArtistViewModel artist;
 
-  const ArtistItemTile({
+  /// ListTile options
+  final GestureTapCallback? onTap;
+  final GestureLongPressCallback? onLongPress;
+  final bool selected;
+
+  const ArtistListTile({
     super.key,
     required this.artist,
+
+    /// ListTile options
+    this.onTap,
+    this.onLongPress,
+    this.selected = false,
   });
 
   @override
@@ -22,19 +32,48 @@ class ArtistItemTile extends StatelessWidget {
               backgroundColor: Colors.transparent,
             )
           : null,
-      onTap: () {
-        AutoRouter.of(context).push(
-          ArtistDetailsRoute(artistId: artist.id),
-        );
-      },
+      onTap: onTap ??
+          () {
+            AutoRouter.of(context).push(
+              ArtistDetailsRoute(artistId: artist.id),
+            );
+          },
+      onLongPress: onLongPress,
+      selected: selected,
     );
   }
 }
 
-class ArtistItemCard extends StatelessWidget {
+class CheckboxArtistListTile extends StatelessWidget {
   final ArtistViewModel artist;
 
-  const ArtistItemCard({
+  /// CheckboxLitTile options
+  final bool? value;
+  final ValueChanged<bool?>? onChanged;
+
+  const CheckboxArtistListTile({
+    super.key,
+    required this.artist,
+
+    /// CheckboxLitTile options
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CheckboxListTile(
+      title: Text(artist.name),
+      value: value,
+      onChanged: onChanged,
+    );
+  }
+}
+
+class ArtistCard extends StatelessWidget {
+  final ArtistViewModel artist;
+
+  const ArtistCard({
     super.key,
     required this.artist,
   });

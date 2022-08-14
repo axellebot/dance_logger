@@ -19,7 +19,10 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     on<MomentListRefresh>(_onMomentListRefresh);
   }
 
-  FutureOr<void> _onMomentListLoad(event, emit) async {
+  FutureOr<void> _onMomentListLoad(
+    MomentListLoad event,
+    Emitter<MomentListState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onMomentListLoad');
     try {
       emit(state.copyWith(
@@ -49,7 +52,10 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     }
   }
 
-  FutureOr<void> _onMomentListLoadMore(event, emit) async {
+  FutureOr<void> _onMomentListLoadMore(
+    MomentListLoadMore event,
+    Emitter<MomentListState> emit,
+  ) async {
     if (state.status != MomentListStatus.success) return;
     try {
       final List<MomentViewModel> momentViewModels;
@@ -77,7 +83,10 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     }
   }
 
-  FutureOr<void> _onMomentListRefresh(event, emit) async {
+  FutureOr<void> _onMomentListRefresh(
+    MomentListRefresh event,
+    Emitter<MomentListState> emit,
+  ) async {
     try {
       emit(state.copyWith(
         status: MomentListStatus.loading,

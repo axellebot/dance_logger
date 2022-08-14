@@ -14,12 +14,16 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
     required this.danceRepository,
     required this.mapper,
   }) : super(const DanceDetailState()) {
-    on<DanceDetailLoaded>(_onDanceLoaded);
-    on<DanceDetailDeleted>(_onDanceDeleted);
+    on<DanceDetailLoad>(_onDanceLoad);
+    on<DanceDetailDelete>(_onDanceDelete);
   }
 
-  FutureOr<void> _onDanceLoaded(event, emit) async {
+  FutureOr<void> _onDanceLoad(
+    DanceDetailLoad event,
+    Emitter<DanceDetailState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onDanceLoaded');
+
     try {
       emit(state.copyWith(
         status: DanceDetailStatus.loading,
@@ -40,8 +44,12 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
     }
   }
 
-  FutureOr<void> _onDanceDeleted(event, emit) async {
+  FutureOr<void> _onDanceDelete(
+    DanceDetailDelete event,
+    Emitter<DanceDetailState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onDanceDeleted');
+
     if (state.dance == null) return;
     try {
       emit(state.copyWith(

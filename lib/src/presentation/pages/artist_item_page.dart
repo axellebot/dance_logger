@@ -15,12 +15,14 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ArtistBloc, ArtistDetailState>(
+    return BlocBuilder<ArtistDetailBloc, ArtistDetailState>(
       builder: (BuildContext context, ArtistDetailState state) {
         switch (state.status) {
           case ArtistDetailStatus.loading:
             return const LoadingPage();
-          case ArtistDetailStatus.success:
+          case ArtistDetailStatus.detailSuccess:
+            final ArtistDetailBloc artistDetailBloc =
+                BlocProvider.of<ArtistDetailBloc>(context);
             Widget? background = (state.artist!.imageUrl != null)
                 ? Stack(
                     fit: StackFit.expand,
@@ -34,16 +36,6 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                   )
                 : null;
             return Scaffold(
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  AutoRouter.of(context).push(
-                    ArtistEditRoute(
-                      artistId: state.artist!.id,
-                    ),
-                  );
-                },
-                child: const Icon(Icons.edit),
-              ),
               body: CustomScrollView(
                 slivers: <Widget>[
                   SliverAppBar(
@@ -61,6 +53,23 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                       title: Text(state.artist!.name),
                       background: background,
                     ),
+                    actions: [
+                      IconButton(
+                        onPressed: () {
+                          AutoRouter.of(context).push(
+                            ArtistEditRoute(
+                              artistId: state.artist!.id,
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.edit),
+                      ),
+                      DeleteIconButton(
+                        onDeleted: () {
+                          artistDetailBloc.add(const ArtistDetailDelete());
+                        },
+                      )
+                    ],
                   ),
                   SliverList(
                     delegate: SliverChildListDelegate(
@@ -79,9 +88,9 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
               ),
             );
           case ArtistDetailStatus.failure:
-            return ErrorPage(error: state.error!);
+            return ErrorPage(error: state.error);
           default:
-            return ErrorText(
+            return ErrorPage(
               error: NotSupportedError(message: '${state.status}'),
             );
         }
@@ -169,12 +178,12 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return BlocProvider<ArtistBloc>(
+    return BlocProvider<ArtistDetailBloc>(
       create: (BuildContext context) {
-        return ArtistBloc(
+        return ArtistDetailBloc(
           artistRepository: RepositoryProvider.of<ArtistRepository>(context),
           mapper: ModelMapper(),
-        )..add(ArtistLoad(artistId: artistId));
+        )..add(ArtistDetailLoad(artistId: artistId));
       },
       child: this,
     );
@@ -197,28 +206,89 @@ class ArtistEditPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_artistId != null ? "Edit Artist" : "New Artist"),
-      ),
-      floatingActionButton: const FloatingActionButton(
-        onPressed: null,
-        child: Icon(Icons.save),
-      ),
-      body: const Text('Artist Edit'),
+    return BlocBuilder<ArtistEditBloc, ArtistEditState>(
+      builder: (context, state) {
+        switch (state.status) {
+          case ArtistEditStatus.loading:
+            return const LoadingPage();
+          case ArtistEditStatus.failure:
+            return ErrorPage(error: state.error!);
+          case ArtistEditStatus.ready:
+          case ArtistEditStatus.editSuccess:
+            final artistEditBloc = BlocProvider.of<ArtistEditBloc>(context);
+            return Scaffold(
+              appBar: AppBar(
+                leading: IconButton(
+                  onPressed: () {
+                    AutoRouter.of(context).pop();
+                  },
+                  icon: const Icon(Icons.close),
+                ),
+                title: Text(
+                  state.initialArtist != null ? "Edit artist" : "Create artist",
+                ),
+                actions: <Widget>[
+                  SaveButton(
+                    onSaved: () {
+                      artistEditBloc.add(const ArtistEditSubmit());
+                    },
+                  ),
+                  if (state.initialArtist != null)
+                    DeleteIconButton(
+                      onDeleted: () {
+                        artistEditBloc.add(const ArtistEditDelete());
+                      },
+                    ),
+                ],
+              ),
+              body: SingleChildScrollView(
+                child: Container(
+                  padding: AppStyles.formPadding,
+                  child: Form(
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          decoration: const InputDecoration(
+                            hintText: 'Name',
+                          ),
+                          initialValue: state.initialArtist?.name,
+                          onChanged: (artistName) {
+                            artistEditBloc.add(
+                                ArtistEditChangeName(artistName: artistName));
+                          },
+                        ),
+                        TextFormField(
+                          decoration: const InputDecoration(
+                            hintText: 'Url',
+                          ),
+                          initialValue: state.initialArtist?.imageUrl,
+                          onChanged: (artistImageUrl) {
+                            artistEditBloc.add(ArtistEditChangeImageUrl(
+                                artistImageUrl: artistImageUrl));
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          default:
+            return ErrorPage(
+              error: NotSupportedError(message: '${state.status}'),
+            );
+        }
+      },
     );
   }
 
   @override
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider(
-      create: (_) => ArtistBloc(
+      create: (_) => ArtistEditBloc(
         artistRepository: RepositoryProvider.of<ArtistRepository>(context),
         mapper: ModelMapper(),
-      )
-      // TODO: Add event to load model
-      // ..add()
-      ,
+      )..add(ArtistEditStart(artistId: _artistId)),
       child: this,
     );
   }

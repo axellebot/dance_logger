@@ -19,7 +19,10 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
     on<FigureListRefresh>(_onFigureListRefresh);
   }
 
-  FutureOr<void> _onFigureListLoad(event, emit) async {
+  FutureOr<void> _onFigureListLoad(
+    FigureListLoad event,
+    Emitter<FigureListState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onFigureListLoad');
     try {
       emit(state.copyWith(
@@ -50,7 +53,10 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
     }
   }
 
-  FutureOr<void> _onFigureListLoadMore(event, emit) async {
+  FutureOr<void> _onFigureListLoadMore(
+    FigureListLoadMore event,
+    Emitter<FigureListState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onFigureListLoadMore');
     if (state.status != FigureListStatus.success) return;
     try {
@@ -80,7 +86,10 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
     }
   }
 
-  FutureOr<void> _onFigureListRefresh(event, emit) async {
+  FutureOr<void> _onFigureListRefresh(
+    FigureListRefresh event,
+    Emitter<FigureListState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onFigureListRefresh');
     try {
       emit(state.copyWith(

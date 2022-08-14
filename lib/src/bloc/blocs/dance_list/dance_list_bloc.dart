@@ -41,6 +41,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
       emit(state.copyWith(
         status: DanceListStatus.success,
         ofArtist: event.ofArtist,
+        ofVideo: event.ofVideo,
         dances: danceViewModels,
         hasReachedMax: danceViewModels.isEmpty,
       ));
@@ -117,7 +118,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     if (kDebugMode) print('$runtimeType:_onDanceListSelect');
 
     emit(state.copyWith(
-      selected: List.of(state.selected)..add(event.danceId),
+      selectedDances: List.of(state.selectedDances)..add(event.danceId),
     ));
   }
 
@@ -129,10 +130,11 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
 
     emit((event.danceId != null)
         ? state.copyWith(
-            selected: List.of(state.selected)..remove(event.danceId),
+      selectedDances: List.of(state.selectedDances)
+              ..remove(event.danceId),
           )
         : state.copyWith(
-            selected: [],
+      selectedDances: [],
           ));
   }
 
@@ -141,15 +143,15 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     Emitter<DanceListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onDanceListSelect');
-    if (state.selected.isEmpty) return;
+    if (state.selectedDances.isEmpty) return;
 
     try {
-      for (String danceId in state.selected) {
+      for (String danceId in state.selectedDances) {
         await danceRepository.deleteById(danceId);
         emit(state.copyWith(
           dances: List.of(state.dances)
             ..removeWhere((element) => element.id == danceId),
-          selected: List.of(state.selected)..remove(danceId),
+          selectedDances: List.of(state.selectedDances)..remove(danceId),
         ));
       }
     } on Error catch (error) {

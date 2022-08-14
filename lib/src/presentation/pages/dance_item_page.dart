@@ -4,7 +4,6 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
   final String danceId;
@@ -43,21 +42,10 @@ class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                         },
                         icon: const Icon(Icons.edit),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return DeleteDialog(
-                                onConfirmed: () {
-                                  danceDetailBloc
-                                      .add(const DanceDetailDeleted());
-                                },
-                              );
-                            },
-                          );
+                      DeleteIconButton(
+                        onDeleted: () {
+                          danceDetailBloc.add(const DanceDetailDelete());
                         },
-                        icon: const Icon(Icons.delete),
                       )
                     ],
                   ),
@@ -201,7 +189,7 @@ class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
         return DanceDetailBloc(
           danceRepository: RepositoryProvider.of<DanceRepository>(context),
           mapper: ModelMapper(),
-        )..add(DanceDetailLoaded(danceId: danceId));
+        )..add(DanceDetailLoad(danceId: danceId));
       },
       child: this,
     );
@@ -247,24 +235,14 @@ class DanceEditPage extends StatelessWidget implements AutoRouteWrapper {
                 ),
                 actions: <Widget>[
                   SaveButton(
-                    onPressed: () {
+                    onSaved: () {
                       danceEditBloc.add(const DanceEditSubmit());
                     },
                   ),
                   if (state.initialDance != null)
-                    IconButton(
-                      icon: const Icon(MdiIcons.delete),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return DeleteDialog(
-                              onConfirmed: () {
-                                danceEditBloc.add(const DanceEditDelete());
-                              },
-                            );
-                          },
-                        );
+                    DeleteIconButton(
+                      onDeleted: () {
+                        danceEditBloc.add(const DanceEditDelete());
                       },
                     ),
                 ],

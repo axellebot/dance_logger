@@ -14,24 +14,20 @@ class DanceListLoad extends DanceListEvent implements DanceListParams {
   @override
   final String? ofArtist;
   @override
-  final String? ofFigure;
-  @override
   final String? ofVideo;
 
   const DanceListLoad({
     this.ofArtist,
-    this.ofFigure,
     this.ofVideo,
   });
 
   @override
-  List<Object?> get props => [ofArtist, ofFigure, ofVideo];
+  List<Object?> get props => [ofArtist, ofVideo];
 
   @override
   String toString() {
     return 'DanceListLoad{'
         'ofArtist: $ofArtist, '
-        'ofFigure: $ofFigure, '
         'ofVideo: $ofVideo'
         '}';
   }
@@ -57,22 +53,6 @@ class DanceListRefresh extends DanceListEvent {
   String toString() => 'DanceListRefresh{}';
 }
 
-class DanceListToggleSelection extends DanceListEvent {
-  final bool selectionEnabled;
-
-  const DanceListToggleSelection({
-    required this.selectionEnabled,
-  });
-
-  @override
-  List<Object?> get props => [selectionEnabled];
-
-  @override
-  String toString() => 'DanceListToggleSelection{'
-      'selectionEnabled: $selectionEnabled'
-      '}';
-}
-
 class DanceListSelect extends DanceListEvent {
   final String danceId;
 
@@ -85,7 +65,7 @@ class DanceListSelect extends DanceListEvent {
 
   @override
   String toString() => 'DanceListSelect{'
-      'selectId: $danceId'
+      'danceId: $danceId'
       '}';
 }
 

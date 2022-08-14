@@ -19,7 +19,10 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
     on<VideoListRefresh>(_onVideoListRefresh);
   }
 
-  FutureOr<void> _onVideoListLoad(event, emit) async {
+  FutureOr<void> _onVideoListLoad(
+    VideoListLoad event,
+    Emitter<VideoListState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onVideoListLoad');
     try {
       emit(state.copyWith(
@@ -50,7 +53,10 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
     }
   }
 
-  FutureOr<void> _onVideoListLoadMore(event, emit) async {
+  FutureOr<void> _onVideoListLoadMore(
+    VideoListLoadMore event,
+    Emitter<VideoListState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onVideoListLoadMore');
     if (state.status != VideoListStatus.success) return;
     try {
@@ -80,7 +86,10 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
     }
   }
 
-  FutureOr<void> _onVideoListRefresh(event, emit) async {
+  FutureOr<void> _onVideoListRefresh(
+    VideoListRefresh event,
+    Emitter<VideoListState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onVideoListRefresh');
     try {
       emit(state.copyWith(

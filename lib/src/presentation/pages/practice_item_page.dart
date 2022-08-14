@@ -66,7 +66,7 @@ class PracticeDetailsPage extends StatelessWidget implements AutoRouteWrapper {
           case PracticeDetailStatus.failure:
             return ErrorPage(error: state.error);
           default:
-            return ErrorText(
+            return ErrorPage(
               error: NotSupportedError(message: '${state.status}'),
             );
         }

@@ -1,6 +1,7 @@
 /// Blocs + Events + States
 export './application/application.dart';
 export './artist_detail/artist_detail.dart';
+export './artist_edit/artist_edit.dart';
 export './artist_list/artist_list.dart';
 export './configuration/configuration.dart';
 export './dance_detail/dance_detail.dart';

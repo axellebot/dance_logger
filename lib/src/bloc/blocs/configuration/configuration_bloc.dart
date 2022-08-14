@@ -34,7 +34,10 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
     on<ConfigChange>(_onConfigChange);
   }
 
-  FutureOr<void> _onConfigLoad(event, emit) async {
+  FutureOr<void> _onConfigLoad(
+    ConfigLoad event,
+    Emitter<ConfigState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onConfigLoad');
     try {
       emit(state.copyWith(
@@ -49,7 +52,10 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
     }
   }
 
-  FutureOr<void> _onConfigChange(event, emit) async {
+  FutureOr<void> _onConfigChange(
+    ConfigChange event,
+    Emitter<ConfigState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onConfigChange');
     try {
       emit(state.copyWith(
@@ -94,7 +100,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
         final VideoDataStore databaseVideoDataStore = danceDatabaseManager!;
         final FigureDataStore databaseFigureDataStore = danceDatabaseManager!;
         final PracticeDataStore databasePracticeDataStore =
-        danceDatabaseManager!;
+            danceDatabaseManager!;
 
         // Data Store Factories
         final danceDataStoreFactory = DanceDataStoreFactory(

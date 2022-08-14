@@ -34,6 +34,7 @@ class _$AppRouter extends RootStackRouter {
           routeData: routeData,
           child: ArtistListPage(
               key: args.key,
+              showAppBar: args.showAppBar,
               ofDance: args.ofDance,
               ofFigure: args.ofFigure,
               ofVideo: args.ofVideo,
@@ -65,10 +66,10 @@ class _$AppRouter extends RootStackRouter {
           routeData: routeData,
           child: DanceListPage(
               key: args.key,
+              showAppBar: args.showAppBar,
+              danceListBloc: args.danceListBloc,
               ofArtist: args.ofArtist,
-              ofFigure: args.ofFigure,
-              ofVideo: args.ofVideo,
-              danceListBloc: args.danceListBloc));
+              ofVideo: args.ofVideo));
     },
     DanceCreateRoute.name: (routeData) {
       final args = routeData.argsAs<DanceCreateRouteArgs>(
@@ -96,6 +97,7 @@ class _$AppRouter extends RootStackRouter {
           routeData: routeData,
           child: FigureListPage(
               key: args.key,
+              showAppBar: args.showAppBar,
               ofArtist: args.ofArtist,
               ofDance: args.ofDance,
               ofVideo: args.ofVideo,
@@ -128,6 +130,7 @@ class _$AppRouter extends RootStackRouter {
           routeData: routeData,
           child: PracticeListPage(
               key: args.key,
+              showAppBar: args.showAppBar,
               ofFigure: args.ofFigure,
               practiceListBloc: args.practiceListBloc));
     },
@@ -158,6 +161,7 @@ class _$AppRouter extends RootStackRouter {
           routeData: routeData,
           child: VideoListPage(
               key: args.key,
+              showAppBar: args.showAppBar,
               ofArtist: args.ofArtist,
               ofDance: args.ofDance,
               ofFigure: args.ofFigure,
@@ -271,6 +275,7 @@ class SettingsRouteArgs {
 class ArtistListRoute extends PageRouteInfo<ArtistListRouteArgs> {
   ArtistListRoute(
       {Key? key,
+      bool showAppBar = true,
       String? ofDance,
       String? ofFigure,
       String? ofVideo,
@@ -279,6 +284,7 @@ class ArtistListRoute extends PageRouteInfo<ArtistListRouteArgs> {
             path: 'artists',
             args: ArtistListRouteArgs(
                 key: key,
+                showAppBar: showAppBar,
                 ofDance: ofDance,
                 ofFigure: ofFigure,
                 ofVideo: ofVideo,
@@ -290,12 +296,15 @@ class ArtistListRoute extends PageRouteInfo<ArtistListRouteArgs> {
 class ArtistListRouteArgs {
   const ArtistListRouteArgs(
       {this.key,
+      this.showAppBar = true,
       this.ofDance,
       this.ofFigure,
       this.ofVideo,
       this.artistListBloc});
 
   final Key? key;
+
+  final bool showAppBar;
 
   final String? ofDance;
 
@@ -307,7 +316,7 @@ class ArtistListRouteArgs {
 
   @override
   String toString() {
-    return 'ArtistListRouteArgs{key: $key, ofDance: $ofDance, ofFigure: $ofFigure, ofVideo: $ofVideo, artistListBloc: $artistListBloc}';
+    return 'ArtistListRouteArgs{key: $key, showAppBar: $showAppBar, ofDance: $ofDance, ofFigure: $ofFigure, ofVideo: $ofVideo, artistListBloc: $artistListBloc}';
   }
 }
 
@@ -385,18 +394,18 @@ class ArtistEditRouteArgs {
 class DanceListRoute extends PageRouteInfo<DanceListRouteArgs> {
   DanceListRoute(
       {Key? key,
+      bool showAppBar = true,
+      DanceListBloc? danceListBloc,
       String? ofArtist,
-      String? ofFigure,
-      String? ofVideo,
-      DanceListBloc? danceListBloc})
+      String? ofVideo})
       : super(DanceListRoute.name,
             path: 'dances',
             args: DanceListRouteArgs(
                 key: key,
+                showAppBar: showAppBar,
+                danceListBloc: danceListBloc,
                 ofArtist: ofArtist,
-                ofFigure: ofFigure,
-                ofVideo: ofVideo,
-                danceListBloc: danceListBloc));
+                ofVideo: ofVideo));
 
   static const String name = 'DanceListRoute';
 }
@@ -404,24 +413,24 @@ class DanceListRoute extends PageRouteInfo<DanceListRouteArgs> {
 class DanceListRouteArgs {
   const DanceListRouteArgs(
       {this.key,
+      this.showAppBar = true,
+      this.danceListBloc,
       this.ofArtist,
-      this.ofFigure,
-      this.ofVideo,
-      this.danceListBloc});
+      this.ofVideo});
 
   final Key? key;
 
-  final String? ofArtist;
-
-  final String? ofFigure;
-
-  final String? ofVideo;
+  final bool showAppBar;
 
   final DanceListBloc? danceListBloc;
 
+  final String? ofArtist;
+
+  final String? ofVideo;
+
   @override
   String toString() {
-    return 'DanceListRouteArgs{key: $key, ofArtist: $ofArtist, ofFigure: $ofFigure, ofVideo: $ofVideo, danceListBloc: $danceListBloc}';
+    return 'DanceListRouteArgs{key: $key, showAppBar: $showAppBar, danceListBloc: $danceListBloc, ofArtist: $ofArtist, ofVideo: $ofVideo}';
   }
 }
 
@@ -499,6 +508,7 @@ class DanceEditRouteArgs {
 class FigureListRoute extends PageRouteInfo<FigureListRouteArgs> {
   FigureListRoute(
       {Key? key,
+      bool showAppBar = true,
       String? ofArtist,
       String? ofDance,
       String? ofVideo,
@@ -507,6 +517,7 @@ class FigureListRoute extends PageRouteInfo<FigureListRouteArgs> {
             path: 'figures',
             args: FigureListRouteArgs(
                 key: key,
+                showAppBar: showAppBar,
                 ofArtist: ofArtist,
                 ofDance: ofDance,
                 ofVideo: ofVideo,
@@ -518,12 +529,15 @@ class FigureListRoute extends PageRouteInfo<FigureListRouteArgs> {
 class FigureListRouteArgs {
   const FigureListRouteArgs(
       {this.key,
+      this.showAppBar = true,
       this.ofArtist,
       this.ofDance,
       this.ofVideo,
       this.figureListBloc});
 
   final Key? key;
+
+  final bool showAppBar;
 
   final String? ofArtist;
 
@@ -535,7 +549,7 @@ class FigureListRouteArgs {
 
   @override
   String toString() {
-    return 'FigureListRouteArgs{key: $key, ofArtist: $ofArtist, ofDance: $ofDance, ofVideo: $ofVideo, figureListBloc: $figureListBloc}';
+    return 'FigureListRouteArgs{key: $key, showAppBar: $showAppBar, ofArtist: $ofArtist, ofDance: $ofDance, ofVideo: $ofVideo, figureListBloc: $figureListBloc}';
   }
 }
 
@@ -602,11 +616,16 @@ class FigureEditRouteArgs {
 /// generated route for
 /// [PracticeListPage]
 class PracticeListRoute extends PageRouteInfo<PracticeListRouteArgs> {
-  PracticeListRoute({Key? key, String? ofFigure, dynamic practiceListBloc})
+  PracticeListRoute(
+      {Key? key,
+      bool showAppBar = true,
+      String? ofFigure,
+      PracticeListBloc? practiceListBloc})
       : super(PracticeListRoute.name,
             path: 'practices',
             args: PracticeListRouteArgs(
                 key: key,
+                showAppBar: showAppBar,
                 ofFigure: ofFigure,
                 practiceListBloc: practiceListBloc));
 
@@ -614,17 +633,20 @@ class PracticeListRoute extends PageRouteInfo<PracticeListRouteArgs> {
 }
 
 class PracticeListRouteArgs {
-  const PracticeListRouteArgs({this.key, this.ofFigure, this.practiceListBloc});
+  const PracticeListRouteArgs(
+      {this.key, this.showAppBar = true, this.ofFigure, this.practiceListBloc});
 
   final Key? key;
 
+  final bool showAppBar;
+
   final String? ofFigure;
 
-  final dynamic practiceListBloc;
+  final PracticeListBloc? practiceListBloc;
 
   @override
   String toString() {
-    return 'PracticeListRouteArgs{key: $key, ofFigure: $ofFigure, practiceListBloc: $practiceListBloc}';
+    return 'PracticeListRouteArgs{key: $key, showAppBar: $showAppBar, ofFigure: $ofFigure, practiceListBloc: $practiceListBloc}';
   }
 }
 
@@ -702,6 +724,7 @@ class PracticeEditRouteArgs {
 class VideoListRoute extends PageRouteInfo<VideoListRouteArgs> {
   VideoListRoute(
       {Key? key,
+      bool showAppBar = true,
       String? ofArtist,
       String? ofDance,
       String? ofFigure,
@@ -710,6 +733,7 @@ class VideoListRoute extends PageRouteInfo<VideoListRouteArgs> {
             path: 'videos',
             args: VideoListRouteArgs(
                 key: key,
+                showAppBar: showAppBar,
                 ofArtist: ofArtist,
                 ofDance: ofDance,
                 ofFigure: ofFigure,
@@ -721,12 +745,15 @@ class VideoListRoute extends PageRouteInfo<VideoListRouteArgs> {
 class VideoListRouteArgs {
   const VideoListRouteArgs(
       {this.key,
+      this.showAppBar = true,
       this.ofArtist,
       this.ofDance,
       this.ofFigure,
       this.videoListBloc});
 
   final Key? key;
+
+  final bool showAppBar;
 
   final String? ofArtist;
 
@@ -738,7 +765,7 @@ class VideoListRouteArgs {
 
   @override
   String toString() {
-    return 'VideoListRouteArgs{key: $key, ofArtist: $ofArtist, ofDance: $ofDance, ofFigure: $ofFigure, videoListBloc: $videoListBloc}';
+    return 'VideoListRouteArgs{key: $key, showAppBar: $showAppBar, ofArtist: $ofArtist, ofDance: $ofDance, ofFigure: $ofFigure, videoListBloc: $videoListBloc}';
   }
 }
 

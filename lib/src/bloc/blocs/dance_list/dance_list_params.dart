@@ -1,5 +1,6 @@
 abstract class DanceListParams {
   final String? ofArtist;
+  final String? ofVideo;
 
-  DanceListParams(this.ofArtist);
+  DanceListParams(this.ofArtist, this.ofVideo);
 }
