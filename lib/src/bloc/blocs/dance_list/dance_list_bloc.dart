@@ -17,9 +17,15 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     on<DanceListLoad>(_onDanceListLoad);
     on<DanceListLoadMore>(_onDanceListLoadMore);
     on<DanceListRefresh>(_onDanceListRefresh);
+    on<DanceListSelect>(_onDanceListSelect);
+    on<DanceListUnselect>(_onDanceListUnselect);
+    on<DanceListDelete>(_onDanceListDelete);
   }
 
-  FutureOr<void> _onDanceListLoad(event, emit) async {
+  FutureOr<void> _onDanceListLoad(
+    DanceListLoad event,
+    Emitter<DanceListState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onDanceListLoad');
     try {
       emit(state.copyWith(
@@ -46,7 +52,10 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     }
   }
 
-  FutureOr<void> _onDanceListLoadMore(event, emit) async {
+  FutureOr<void> _onDanceListLoadMore(
+    DanceListLoadMore event,
+    Emitter<DanceListState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onDanceListLoadMore');
     if (state.status != DanceListStatus.success) return;
     try {
@@ -73,7 +82,10 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     }
   }
 
-  FutureOr<void> _onDanceListRefresh(event, emit) async {
+  FutureOr<void> _onDanceListRefresh(
+    DanceListRefresh event,
+    Emitter<DanceListState> emit,
+  ) async {
     if (kDebugMode) print('$runtimeType:_onDanceListRefresh');
     try {
       emit(state.copyWith(
@@ -90,6 +102,56 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
         dances: danceViewModels,
         hasReachedMax: false,
       ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: DanceListStatus.failure,
+        error: error,
+      ));
+    }
+  }
+
+  FutureOr<void> _onDanceListSelect(
+    DanceListSelect event,
+    Emitter<DanceListState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onDanceListSelect');
+
+    emit(state.copyWith(
+      selected: List.of(state.selected)..add(event.danceId),
+    ));
+  }
+
+  FutureOr<void> _onDanceListUnselect(
+    DanceListUnselect event,
+    Emitter<DanceListState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onDanceListUnselect');
+
+    emit((event.danceId != null)
+        ? state.copyWith(
+            selected: List.of(state.selected)..remove(event.danceId),
+          )
+        : state.copyWith(
+            selected: [],
+          ));
+  }
+
+  FutureOr<void> _onDanceListDelete(
+    DanceListDelete event,
+    Emitter<DanceListState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onDanceListSelect');
+    if (state.selected.isEmpty) return;
+
+    try {
+      for (String danceId in state.selected) {
+        await danceRepository.deleteById(danceId);
+        emit(state.copyWith(
+          dances: List.of(state.dances)
+            ..removeWhere((element) => element.id == danceId),
+          selected: List.of(state.selected)..remove(danceId),
+        ));
+      }
     } on Error catch (error) {
       emit(state.copyWith(
         status: DanceListStatus.failure,

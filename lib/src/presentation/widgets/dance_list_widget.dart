@@ -61,13 +61,45 @@ class _DanceListViewState extends State<DanceListView> {
                     ? state.dances.length
                     : state.dances.length + 1,
                 itemBuilder: (context, index) {
-                  return (index < state.dances.length)
-                      ? (widget.scrollDirection == Axis.vertical)
-                          ? DanceItemTile(dance: state.dances[index])
-                          : DanceItemChip(dance: state.dances[index])
-                      : (widget.scrollDirection == Axis.vertical)
-                          ? const BottomListLoadingIndicator()
-                          : const RightListLoadingIndicator();
+                  if (index < state.dances.length) {
+                    DanceViewModel dance = state.dances[index];
+                    DanceListBloc danceListBloc =
+                        BlocProvider.of<DanceListBloc>(context);
+                    switch (widget.scrollDirection) {
+                      case Axis.vertical:
+                        if (state.selected.isEmpty) {
+                          return DanceListTile(
+                            dance: dance,
+                            onLongPress: () {
+                              danceListBloc.add(
+                                DanceListSelect(danceId: dance.id),
+                              );
+                            },
+                          );
+                        } else {
+                          return CheckboxDanceListTile(
+                            dance: dance,
+                            value: state.selected.contains(dance.id),
+                            onChanged: (bool? value) {
+                              danceListBloc.add(
+                                (value == true)
+                                    ? DanceListSelect(danceId: dance.id)
+                                    : DanceListUnselect(danceId: dance.id),
+                              );
+                            },
+                          );
+                        }
+                      case Axis.horizontal:
+                        return DanceChip(dance: state.dances[index]);
+                    }
+                  } else {
+                    switch (widget.scrollDirection) {
+                      case Axis.vertical:
+                        return const BottomListLoadingIndicator();
+                      case Axis.horizontal:
+                        return const RightListLoadingIndicator();
+                    }
+                  }
                 },
               );
             }

@@ -13,6 +13,7 @@ class DanceListState extends Equatable implements DanceListParams {
 
   final List<DanceViewModel> dances;
   final bool hasReachedMax;
+  final List<String> selected;
   final Error? error;
 
   const DanceListState({
@@ -20,11 +21,19 @@ class DanceListState extends Equatable implements DanceListParams {
     this.ofArtist,
     this.dances = const <DanceViewModel>[],
     this.hasReachedMax = false,
+    this.selected = const <String>[],
     this.error,
   });
 
   @override
-  List<Object?> get props => [status, ofArtist, dances, hasReachedMax, error];
+  List<Object?> get props => [
+        status,
+        ofArtist,
+        dances,
+        hasReachedMax,
+        selected,
+        error,
+      ];
 
   DanceListState copyWith({
     DanceListStatus? status,
@@ -33,6 +42,7 @@ class DanceListState extends Equatable implements DanceListParams {
     String? ofVideo,
     List<DanceViewModel>? dances,
     bool? hasReachedMax,
+    List<String>? selected,
     Error? error,
   }) {
     return DanceListState(
@@ -40,6 +50,7 @@ class DanceListState extends Equatable implements DanceListParams {
       ofArtist: ofArtist ?? this.ofArtist,
       dances: dances ?? this.dances,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      selected: selected ?? this.selected,
       error: error ?? this.error,
     );
   }
@@ -51,6 +62,7 @@ class DanceListState extends Equatable implements DanceListParams {
         'ofArtist: $ofArtist, '
         'dances: $dances, '
         'hasReachedMax: $hasReachedMax, '
+        'selected: $selected, '
         'error: $error'
         '}';
   }

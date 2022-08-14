@@ -56,3 +56,62 @@ class DanceListRefresh extends DanceListEvent {
   @override
   String toString() => 'DanceListRefresh{}';
 }
+
+class DanceListToggleSelection extends DanceListEvent {
+  final bool selectionEnabled;
+
+  const DanceListToggleSelection({
+    required this.selectionEnabled,
+  });
+
+  @override
+  List<Object?> get props => [selectionEnabled];
+
+  @override
+  String toString() => 'DanceListToggleSelection{'
+      'selectionEnabled: $selectionEnabled'
+      '}';
+}
+
+class DanceListSelect extends DanceListEvent {
+  final String danceId;
+
+  const DanceListSelect({
+    required this.danceId,
+  });
+
+  @override
+  List<Object?> get props => [danceId];
+
+  @override
+  String toString() => 'DanceListSelect{'
+      'selectId: $danceId'
+      '}';
+}
+
+class DanceListUnselect extends DanceListEvent {
+  final String? danceId;
+
+  const DanceListUnselect({
+    this.danceId,
+  });
+
+  @override
+  List<Object?> get props => [danceId];
+
+  @override
+  String toString() => 'DanceListUnselect{'
+      'danceId: $danceId'
+      '}';
+}
+
+class DanceListDelete extends DanceListEvent {
+  const DanceListDelete();
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String toString() => 'DanceListDelete{'
+      '}';
+}

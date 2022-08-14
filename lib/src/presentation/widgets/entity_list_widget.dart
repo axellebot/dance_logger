@@ -2,6 +2,49 @@ import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+class SelectingAppBar extends StatelessWidget with PreferredSizeWidget {
+  final int count;
+  final VoidCallback? onCanceled;
+  final VoidCallback? onDeleted;
+
+  const SelectingAppBar({
+    super.key,
+    required this.count,
+    this.onCanceled,
+    this.onDeleted,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      leading: IconButton(
+        icon: const Icon(Icons.close),
+        onPressed: onCanceled,
+      ),
+      title: Text('$count selected'),
+      actions: [
+        if (onDeleted != null)
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return DeleteDialog(
+                    onConfirmed: onDeleted,
+                  );
+                },
+              );
+            },
+          )
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
 class EmptyListView extends StatelessWidget {
   final Axis scrollDirection;
   final ScrollPhysics? physics;

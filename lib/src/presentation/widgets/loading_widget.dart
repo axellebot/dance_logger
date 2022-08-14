@@ -82,7 +82,7 @@ class LoadingListView extends StatelessWidget {
       physics: physics,
       padding: padding,
       children: const <Widget>[
-        LoadingTile(),
+        LoadingIndicator(),
       ],
     );
   }

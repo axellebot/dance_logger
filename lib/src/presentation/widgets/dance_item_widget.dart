@@ -2,31 +2,70 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 
-class DanceItemTile extends StatelessWidget {
+class DanceListTile extends StatelessWidget {
   final DanceViewModel dance;
 
-  const DanceItemTile({
+  /// ListTile options
+  final GestureTapCallback? onTap;
+  final GestureLongPressCallback? onLongPress;
+  final bool selected;
+
+  const DanceListTile({
     super.key,
     required this.dance,
+
+    /// ListTile options
+    this.onTap,
+    this.onLongPress,
+    this.selected = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(dance.name),
-      onTap: () {
-        AutoRouter.of(context).push(
-          DanceDetailsRoute(danceId: dance.id),
-        );
-      },
+      onTap: onTap ??
+          () {
+            AutoRouter.of(context).push(
+              DanceDetailsRoute(danceId: dance.id),
+            );
+          },
+      onLongPress: onLongPress,
+      selected: selected,
     );
   }
 }
 
-class DanceItemChip extends StatelessWidget {
+class CheckboxDanceListTile extends StatelessWidget {
   final DanceViewModel dance;
 
-  const DanceItemChip({
+  /// CheckboxLitTile options
+  final bool? value;
+  final ValueChanged<bool?>? onChanged;
+
+  const CheckboxDanceListTile({
+    super.key,
+    required this.dance,
+
+    /// CheckboxLitTile options
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CheckboxListTile(
+      title: Text(dance.name),
+      value: value,
+      onChanged: onChanged,
+    );
+  }
+}
+
+class DanceChip extends StatelessWidget {
+  final DanceViewModel dance;
+
+  const DanceChip({
     super.key,
     required this.dance,
   });

@@ -20,35 +20,55 @@ class DanceListPage extends StatelessWidget implements AutoRouteWrapper {
     this.ofArtist,
     this.ofFigure,
     this.ofVideo,
-  this.danceListBloc,
+    this.danceListBloc,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: showAppBar
-          ? AppBar(
-              title: const Text('Dances'),
-            )
-          : null,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          AutoRouter.of(context).push(DanceEditRoute());
-        },
-        child: const Icon(MdiIcons.plus),
-      ),
-      body: RefreshIndicator(
-        onRefresh: () {
-          final danceListBloc = BlocProvider.of<DanceListBloc>(context)
-            ..add(const DanceListRefresh());
-          return danceListBloc.stream
-              .firstWhere((e) => e.status != DanceListStatus.refreshing);
-        },
-        child: const DanceListView(
-          scrollDirection: Axis.vertical,
-          physics: AlwaysScrollableScrollPhysics(),
-        ),
-      ),
+    final danceListBloc = BlocProvider.of<DanceListBloc>(context);
+
+    return BlocBuilder<DanceListBloc, DanceListState>(
+      builder: (context, state) {
+        final PreferredSizeWidget? appBar;
+        if (state.selected.isNotEmpty) {
+          appBar = SelectingAppBar(
+            count: state.selected.length,
+            onCanceled: () {
+              danceListBloc.add(const DanceListUnselect());
+            },
+            onDeleted: () {
+              danceListBloc.add(const DanceListDelete());
+            },
+          );
+        } else {
+          appBar = (showAppBar)
+              ? AppBar(
+                  title: const Text('Dances'),
+                )
+              : null;
+        }
+
+        return Scaffold(
+          appBar: appBar,
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              AutoRouter.of(context).push(DanceEditRoute());
+            },
+            child: const Icon(MdiIcons.plus),
+          ),
+          body: RefreshIndicator(
+            onRefresh: () {
+              danceListBloc.add(const DanceListRefresh());
+              return danceListBloc.stream
+                  .firstWhere((e) => e.status != DanceListStatus.refreshing);
+            },
+            child: const DanceListView(
+              scrollDirection: Axis.vertical,
+              physics: AlwaysScrollableScrollPhysics(),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -66,10 +86,10 @@ class DanceListPage extends StatelessWidget implements AutoRouteWrapper {
           danceRepository: repo,
           mapper: ModelMapper(),
         )..add(DanceListLoad(
-          ofArtist: ofArtist,
-          ofFigure: ofFigure,
-          ofVideo: ofVideo,
-        )),
+            ofArtist: ofArtist,
+            ofFigure: ofFigure,
+            ofVideo: ofVideo,
+          )),
         child: this,
       );
     }
