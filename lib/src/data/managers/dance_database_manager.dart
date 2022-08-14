@@ -277,7 +277,7 @@ class DanceDatabaseManager
       ],
     );
     List<ArtistDataModel> artists =
-    results.map((map) => ArtistDataModel.fromJson(map)).toList();
+        results.map((map) => ArtistDataModel.fromJson(map)).toList();
     return artists;
   }
 
@@ -306,7 +306,7 @@ class DanceDatabaseManager
       ],
     );
     List<ArtistDataModel> artists =
-    results.map((map) => ArtistDataModel.fromJson(map)).toList();
+        results.map((map) => ArtistDataModel.fromJson(map)).toList();
     return artists;
   }
 
@@ -333,7 +333,7 @@ class DanceDatabaseManager
       ],
     );
     List<ArtistDataModel> artists =
-    results.map((map) => ArtistDataModel.fromJson(map)).toList();
+        results.map((map) => ArtistDataModel.fromJson(map)).toList();
     return artists;
   }
 
@@ -362,7 +362,7 @@ class DanceDatabaseManager
       ],
     );
     List<ArtistDataModel> artists =
-    results.map((map) => ArtistDataModel.fromJson(map)).toList();
+        results.map((map) => ArtistDataModel.fromJson(map)).toList();
     return artists;
   }
 
@@ -466,7 +466,7 @@ class DanceDatabaseManager
       ],
     );
     List<DanceDataModel> dances =
-    results.map((map) => DanceDataModel.fromJson(map)).toList();
+        results.map((map) => DanceDataModel.fromJson(map)).toList();
     return dances;
   }
 
@@ -504,13 +504,12 @@ class DanceDatabaseManager
   FutureOr<FigureDataModel> getFigure(String figureId) async {
     if (kDebugMode) print('$runtimeType:getFigure($figureId)');
 
-    await getFigure(figureId); // throw error if doesn't exist
     List results = await db.query(
       'figures',
       where: 'figure_id = ?',
       whereArgs: [figureId],
     );
-    if (results.isEmpty) throw DataNotFoundError('Artist');
+    if (results.isEmpty) throw DataNotFoundError('Figure');
     FigureDataModel figure = FigureDataModel.fromJson(results.first);
     return figure;
   }
@@ -519,6 +518,7 @@ class DanceDatabaseManager
   FutureOr<void> deleteFigure(String figureId) async {
     if (kDebugMode) print('$runtimeType:deleteFigure($figureId)');
 
+    await getFigure(figureId); // throw error if doesn't exist
     int count = await db.delete(
       'figures',
       where: 'figure_id= ?',
@@ -568,7 +568,7 @@ class DanceDatabaseManager
       ],
     );
     List<FigureDataModel> figures =
-    results.map((e) => FigureDataModel.fromJson(e)).toList();
+        results.map((e) => FigureDataModel.fromJson(e)).toList();
     return figures;
   }
 
@@ -593,7 +593,7 @@ class DanceDatabaseManager
       ],
     );
     List<FigureDataModel> figures =
-    results.map((e) => FigureDataModel.fromJson(e)).toList();
+        results.map((e) => FigureDataModel.fromJson(e)).toList();
     return figures;
   }
 
@@ -620,7 +620,7 @@ class DanceDatabaseManager
       ],
     );
     List<FigureDataModel> figures =
-    results.map((e) => FigureDataModel.fromJson(e)).toList();
+        results.map((e) => FigureDataModel.fromJson(e)).toList();
     return figures;
   }
 
@@ -783,7 +783,7 @@ class DanceDatabaseManager
       offset: offset.offset,
     );
     List<VideoDataModel> videos =
-    results.map((e) => VideoDataModel.fromJson(e)).toList();
+        results.map((e) => VideoDataModel.fromJson(e)).toList();
     return videos;
   }
 
@@ -813,7 +813,7 @@ class DanceDatabaseManager
     );
 
     List<VideoDataModel> videos =
-    results.map((e) => VideoDataModel.fromJson(e)).toList();
+        results.map((e) => VideoDataModel.fromJson(e)).toList();
     return videos;
   }
 
@@ -843,7 +843,7 @@ class DanceDatabaseManager
     );
 
     List<VideoDataModel> videos =
-    results.map((e) => VideoDataModel.fromJson(e)).toList();
+        results.map((e) => VideoDataModel.fromJson(e)).toList();
     return videos;
   }
 
@@ -871,7 +871,7 @@ class DanceDatabaseManager
     );
 
     List<VideoDataModel> videos =
-    results.map((e) => VideoDataModel.fromJson(e)).toList();
+        results.map((e) => VideoDataModel.fromJson(e)).toList();
     return videos;
   }
 
@@ -970,7 +970,7 @@ class DanceDatabaseManager
       ],
     );
     List<MomentDataModel> moments =
-    results.map((result) => MomentDataModel.fromJson(result)).toList();
+        results.map((result) => MomentDataModel.fromJson(result)).toList();
     return moments;
   }
 
@@ -996,7 +996,7 @@ class DanceDatabaseManager
     );
 
     List<MomentDataModel> moments =
-    results.map((result) => MomentDataModel.fromJson(result)).toList();
+        results.map((result) => MomentDataModel.fromJson(result)).toList();
     return moments;
   }
 
@@ -1023,7 +1023,7 @@ class DanceDatabaseManager
       ],
     );
     List<MomentDataModel> moments =
-    results.map((result) => MomentDataModel.fromJson(result)).toList();
+        results.map((result) => MomentDataModel.fromJson(result)).toList();
     return moments;
   }
 }
