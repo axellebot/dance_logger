@@ -20,10 +20,12 @@ class ArtistViewModel extends BaseViewModel {
 
   factory ArtistViewModel.createNew({
     String name = '',
+    String? imageUrl,
   }) {
     return ArtistViewModel(
       id: const Uuid().v4(),
       name: name,
+      imageUrl: imageUrl,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       version: 1,

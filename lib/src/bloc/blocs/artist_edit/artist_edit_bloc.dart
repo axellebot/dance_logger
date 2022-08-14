@@ -86,6 +86,7 @@ class ArtistEditBloc extends Bloc<ArtistEditEvent, ArtistEditState> {
       } else {
         artistViewModel = ArtistViewModel.createNew(
           name: state.artistName!,
+          imageUrl: state.artistImageUrl,
         );
       }
 
