@@ -22,3 +22,16 @@ class VideoDetailLoad extends VideoDetailEvent {
   @override
   List<Object?> get props => [videoId];
 }
+
+class VideoDetailDelete extends VideoDetailEvent {
+  const VideoDetailDelete() : super();
+
+  @override
+  String toString() {
+    return 'VideoDetailDeleted{'
+        '}';
+  }
+
+  @override
+  List<Object?> get props => [];
+}

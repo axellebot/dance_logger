@@ -6,11 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VideoListView extends StatefulWidget {
   final Axis scrollDirection;
+  final ScrollPhysics? physics;
   final EdgeInsets? padding;
 
   const VideoListView({
     super.key,
     this.scrollDirection = Axis.vertical,
+    this.physics,
     this.padding,
   });
 
@@ -32,11 +34,12 @@ class _VideoListViewState extends State<VideoListView> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<VideoListBloc, VideoListState>(
-      builder: (context, state) {
+      builder: (BuildContext context, VideoListState state) {
         switch (state.status) {
           case VideoListStatus.loading:
             return LoadingListView(
               scrollDirection: widget.scrollDirection,
+              physics: widget.physics,
               padding: widget.padding,
             );
           case VideoListStatus.failure:
@@ -44,23 +47,59 @@ class _VideoListViewState extends State<VideoListView> {
             if (state.videos.isEmpty) {
               return EmptyListView(
                 scrollDirection: widget.scrollDirection,
+                physics: widget.physics,
                 padding: widget.padding,
                 label: 'No Videos',
               );
             } else {
               return ListView.builder(
                 scrollDirection: widget.scrollDirection,
+                physics: widget.physics,
                 padding: widget.padding,
                 controller: _scrollController,
                 itemCount: state.hasReachedMax
                     ? state.videos.length
                     : state.videos.length + 1,
                 itemBuilder: (context, index) {
-                  return (index < state.videos.length)
-                      ? (widget.scrollDirection == Axis.vertical)
-                          ? VideoItemTile(video: state.videos[index])
-                          : VideoItemCard(video: state.videos[index])
-                      : const RightListLoadingIndicator();
+                  if (index < state.videos.length) {
+                    final VideoViewModel video = state.videos[index];
+                    final VideoListBloc videoListBloc =
+                        BlocProvider.of<VideoListBloc>(context);
+                    switch (widget.scrollDirection) {
+                      case Axis.vertical:
+                        if (state.selectedVideos.isEmpty) {
+                          return VideoListTile(
+                            video: video,
+                            onLongPress: () {
+                              videoListBloc.add(
+                                VideoListSelect(videoId: video.id),
+                              );
+                            },
+                          );
+                        } else {
+                          return CheckboxVideoListTile(
+                            video: video,
+                            value: state.selectedVideos.contains(video.id),
+                            onChanged: (bool? value) {
+                              videoListBloc.add(
+                                (value == true)
+                                    ? VideoListSelect(videoId: video.id)
+                                    : VideoListUnselect(videoId: video.id),
+                              );
+                            },
+                          );
+                        }
+                      case Axis.horizontal:
+                        return VideoCard(video: video);
+                    }
+                  } else {
+                    switch (widget.scrollDirection) {
+                      case Axis.vertical:
+                        return const BottomListLoadingIndicator();
+                      case Axis.horizontal:
+                        return const RightListLoadingIndicator();
+                    }
+                  }
                 },
               );
             }

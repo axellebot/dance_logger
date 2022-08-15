@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 import 'practice_list_params.dart';
 
-enum PracticeListStatus { initial, loading, success, failure }
+enum PracticeListStatus { initial, loading, refreshing, success, failure }
 
 class PracticeListState extends Equatable implements PracticeListParams {
   final PracticeListStatus status;

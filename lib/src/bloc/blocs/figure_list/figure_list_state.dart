@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 import 'figure_list_params.dart';
 
-enum FigureListStatus { initial, loading, success, failure }
+enum FigureListStatus { initial, loading, refreshing, success, failure }
 
 class FigureListState extends Equatable implements FigureListParams {
   final FigureListStatus status;

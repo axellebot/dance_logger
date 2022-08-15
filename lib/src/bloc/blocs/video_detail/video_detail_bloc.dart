@@ -31,7 +31,7 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
       VideoViewModel videoViewModel = mapper.toVideoViewModel(videoDataModel);
 
       emit(state.copyWith(
-        status: VideoDetailStatus.success,
+        status: VideoDetailStatus.detailSuccess,
         video: videoViewModel,
       ));
     } on Error catch (error) {

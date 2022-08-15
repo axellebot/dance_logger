@@ -95,7 +95,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
     if (kDebugMode) print('$runtimeType:_onArtistListRefresh');
     try {
       emit(state.copyWith(
-        status: ArtistListStatus.loading,
+        status: ArtistListStatus.refreshing,
       ));
 
       List<ArtistViewModel> artistViewModels = await _fetchArtists(

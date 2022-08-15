@@ -13,4 +13,5 @@ export './moment_list/moment_list.dart';
 export './practice_detail/practice_detail.dart';
 export './practice_list/practice_list.dart';
 export './video_detail/video_detail.dart';
+export './video_edit/video_edit.dart';
 export './video_list/video_list.dart';

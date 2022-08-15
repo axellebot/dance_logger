@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:dance/bloc.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ArtistListTile extends StatelessWidget {
   final ArtistViewModel artist;
@@ -145,35 +147,47 @@ class ArtistCard extends StatelessWidget {
       : const SizedBox();
 }
 
-class ArtistForm extends StatefulWidget {
+class ArtistForm extends StatelessWidget {
   const ArtistForm({super.key});
 
   @override
-  State<StatefulWidget> createState() => _ArtistFormState();
-}
-
-class _ArtistFormState extends State<ArtistForm> {
-  TextEditingController nameController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    nameController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Form(
-      child: Column(
-        children: [
-          TextFormField(controller: nameController),
-        ],
-      ),
+    final ArtistEditBloc artistEditBloc =
+        BlocProvider.of<ArtistEditBloc>(context);
+    return BlocBuilder<ArtistEditBloc, ArtistEditState>(
+      builder: (BuildContext context, ArtistEditState state) {
+        return Form(
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                  hintText: 'Name',
+                ),
+                initialValue: state.initialArtist?.name,
+                onChanged: (artistName) {
+                  artistEditBloc
+                      .add(ArtistEditChangeName(artistName: artistName));
+                },
+              ),
+              const SizedBox(
+                height: AppStyles.formInputVerticalSpacing,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Image url',
+                  hintText: 'http://image.com/myimage',
+                ),
+                initialValue: state.initialArtist?.imageUrl,
+                onChanged: (artistImageUrl) {
+                  artistEditBloc.add(
+                      ArtistEditChangeImageUrl(artistImageUrl: artistImageUrl));
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:dance/bloc.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DanceListTile extends StatelessWidget {
   final DanceViewModel dance;
@@ -76,6 +78,35 @@ class DanceChip extends StatelessWidget {
       child: Chip(
         label: Text(dance.name),
       ),
+    );
+  }
+}
+
+class DanceForm extends StatelessWidget {
+  const DanceForm({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final DanceEditBloc danceEditBloc = BlocProvider.of<DanceEditBloc>(context);
+    return BlocBuilder<DanceEditBloc, DanceEditState>(
+      builder: (BuildContext context, DanceEditState state) {
+        return Form(
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                  hintText: 'Name',
+                ),
+                initialValue: state.initialDance?.name,
+                onChanged: (danceName) {
+                  danceEditBloc.add(DanceEditChangeName(danceName: danceName));
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

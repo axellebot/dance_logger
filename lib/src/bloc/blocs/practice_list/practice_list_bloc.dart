@@ -91,7 +91,7 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
   ) async {
     try {
       emit(state.copyWith(
-        status: PracticeListStatus.loading,
+        status: PracticeListStatus.refreshing,
       ));
 
       List<PracticeViewModel> practiceViewModels = await _fetchPractices(

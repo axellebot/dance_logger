@@ -93,7 +93,7 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
     if (kDebugMode) print('$runtimeType:_onFigureListRefresh');
     try {
       emit(state.copyWith(
-        status: FigureListStatus.loading,
+        status: FigureListStatus.refreshing,
       ));
 
       List<FigureViewModel> figureViewModels = await _fetchFigures(

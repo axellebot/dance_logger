@@ -53,7 +53,7 @@ class DanceEditBloc extends Bloc<DanceEditEvent, DanceEditState> {
     Emitter<DanceEditState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onDanceEditChangeName');
-    emit(state.copyWith(danceName: event.danceName!));
+    emit(state.copyWith(danceName: event.danceName));
   }
 
   FutureOr<void> _onDanceEditSubmit(

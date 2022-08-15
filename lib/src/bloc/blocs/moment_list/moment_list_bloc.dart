@@ -89,7 +89,7 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
   ) async {
     try {
       emit(state.copyWith(
-        status: MomentListStatus.loading,
+        status: MomentListStatus.refreshing,
       ));
 
       List<MomentViewModel> momentViewModels = await _fetchMoments(

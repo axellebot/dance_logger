@@ -22,33 +22,34 @@ class VideoDetailsPage extends StatelessWidget implements AutoRouteWrapper {
         switch (state.status) {
           case VideoDetailStatus.loading:
             return const LoadingPage();
-          case VideoDetailStatus.success:
+          case VideoDetailStatus.detailSuccess:
+            final VideoDetailBloc videoDetailBloc =
+                BlocProvider.of<VideoDetailBloc>(context);
             return Scaffold(
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  AutoRouter.of(context).push(
-                    VideoEditRoute(
-                      videoId: state.video!.id,
-                    ),
-                  );
-                },
-                child: const Icon(Icons.edit),
-              ),
               body: CustomScrollView(
                 slivers: <Widget>[
                   SliverAppBar(
                     pinned: true,
                     snap: false,
                     floating: false,
-                    stretch: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                      stretchModes: const [
-                        StretchMode.fadeTitle,
-                        StretchMode.blurBackground,
-                        StretchMode.zoomBackground,
-                      ],
-                      title: Text(state.video!.name),
-                    ),
+                    title: Text(state.video!.name),
+                    actions: [
+                      IconButton(
+                        onPressed: () {
+                          AutoRouter.of(context).push(
+                            VideoEditRoute(
+                              videoId: state.video!.id,
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.edit),
+                      ),
+                      DeleteIconButton(
+                        onDeleted: () {
+                          videoDetailBloc.add(const VideoDetailDelete());
+                        },
+                      )
+                    ],
                   ),
                   SliverList(
                     delegate: SliverChildListDelegate(
@@ -161,6 +162,7 @@ class VideoCreatePage extends VideoEditPage {
   VideoCreatePage({super.key});
 }
 
+/// TODO : Force name and url
 class VideoEditPage extends StatelessWidget implements AutoRouteWrapper {
   late final String? _videoId;
 
@@ -173,22 +175,65 @@ class VideoEditPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      floatingActionButton: const FloatingActionButton(
-        onPressed: null,
-        child: Icon(Icons.save),
-      ),
-      body: const Text('Video Edit'),
+    return BlocBuilder<VideoEditBloc, VideoEditState>(
+      builder: (context, VideoEditState state) {
+        switch (state.status) {
+          case VideoEditStatus.loading:
+            return const LoadingPage();
+          case VideoEditStatus.failure:
+            return ErrorPage(error: state.error!);
+          case VideoEditStatus.ready:
+          case VideoEditStatus.editSuccess:
+            final VideoEditBloc videoEditBloc =
+                BlocProvider.of<VideoEditBloc>(context);
+            return Scaffold(
+              appBar: AppBar(
+                leading: IconButton(
+                  onPressed: () {
+                    AutoRouter.of(context).pop();
+                  },
+                  icon: const Icon(Icons.close),
+                ),
+                title: Text(
+                  state.initialVideo != null ? "Edit video" : "Create video",
+                ),
+                actions: <Widget>[
+                  SaveButton(
+                    onSaved: () {
+                      videoEditBloc.add(const VideoEditSubmit());
+                    },
+                  ),
+                  if (state.initialVideo != null)
+                    DeleteIconButton(
+                      onDeleted: () {
+                        videoEditBloc.add(const VideoEditDelete());
+                      },
+                    ),
+                ],
+              ),
+              body: SingleChildScrollView(
+                child: Container(
+                  padding: AppStyles.formPadding,
+                  child: VideoForm(),
+                ),
+              ),
+            );
+          default:
+            return ErrorPage(
+              error: NotSupportedError(message: '${state.status}'),
+            );
+        }
+      },
     );
   }
 
   @override
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider(
-      create: (_) => VideoDetailBloc(
-          videoRepository: RepositoryProvider.of<VideoRepository>(context),
-          mapper: ModelMapper()),
+      create: (_) => VideoEditBloc(
+        videoRepository: RepositoryProvider.of<VideoRepository>(context),
+        mapper: ModelMapper(),
+      )..add(VideoEditStart(videoId: _videoId)),
       child: this,
     );
   }

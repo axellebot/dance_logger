@@ -53,7 +53,7 @@ class AppStyles {
   /// --------------------------------------------------------------------------
 
   static const EdgeInsets formPadding = EdgeInsets.all(15.0);
-  static const EdgeInsets formInputPadding = EdgeInsets.all(15.0);
+  static const double formInputVerticalSpacing = 12.0;
 
   /// --------------------------------------------------------------------------
   ///                          NavigationBar

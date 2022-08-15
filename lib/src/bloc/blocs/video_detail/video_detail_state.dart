@@ -1,7 +1,13 @@
 import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
 
-enum VideoDetailStatus { initial, loading, success, failure }
+enum VideoDetailStatus {
+  initial,
+  loading,
+  detailSuccess,
+  deleteSuccess,
+  failure,
+}
 
 class VideoDetailState extends Equatable {
   final VideoDetailStatus status;

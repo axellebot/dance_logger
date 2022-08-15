@@ -2,7 +2,7 @@ import 'package:dance/presentation.dart';
 import 'package:dance/src/bloc/blocs/video_list/video_list_params.dart';
 import 'package:equatable/equatable.dart';
 
-enum VideoListStatus { initial, loading, success, failure }
+enum VideoListStatus { initial, loading, refreshing, success, failure }
 
 class VideoListState extends Equatable implements VideoListParams {
   final VideoListStatus status;
@@ -16,6 +16,7 @@ class VideoListState extends Equatable implements VideoListParams {
 
   final List<VideoViewModel> videos;
   final bool hasReachedMax;
+  final List<String> selectedVideos;
   final Error? error;
 
   const VideoListState({
@@ -25,6 +26,7 @@ class VideoListState extends Equatable implements VideoListParams {
     this.ofFigure,
     this.videos = const <VideoViewModel>[],
     this.hasReachedMax = false,
+    this.selectedVideos = const <String>[],
     this.error,
   });
 
@@ -36,6 +38,7 @@ class VideoListState extends Equatable implements VideoListParams {
         ofFigure,
         videos,
         hasReachedMax,
+        selectedVideos,
         error,
       ];
 
@@ -46,6 +49,7 @@ class VideoListState extends Equatable implements VideoListParams {
     String? ofFigure,
     List<VideoViewModel>? videos,
     bool? hasReachedMax,
+    List<String>? selectedVideos,
     Error? error,
   }) {
     return VideoListState(
@@ -55,6 +59,7 @@ class VideoListState extends Equatable implements VideoListParams {
       ofFigure: ofFigure ?? this.ofFigure,
       videos: videos ?? this.videos,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      selectedVideos: selectedVideos ?? this.selectedVideos,
       error: error ?? this.error,
     );
   }
@@ -68,6 +73,7 @@ class VideoListState extends Equatable implements VideoListParams {
         'ofFigure: $ofFigure, '
         'videos: $videos, '
         'hasReachedMax: $hasReachedMax, '
+        'selectedVideos: $selectedVideos, '
         'error: $error'
         '}';
   }

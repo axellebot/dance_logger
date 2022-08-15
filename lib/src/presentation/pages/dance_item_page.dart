@@ -167,21 +167,6 @@ class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
         }),
       );
 
-  Widget _buildGradient() {
-    return Positioned.fill(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: const [0.6, 0.95],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider<DanceDetailBloc>(
@@ -213,7 +198,7 @@ class DanceEditPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DanceEditBloc, DanceEditState>(
-      builder: (context, state) {
+      builder: (context, DanceEditState state) {
         switch (state.status) {
           case DanceEditStatus.loading:
             return const LoadingPage();
@@ -250,22 +235,7 @@ class DanceEditPage extends StatelessWidget implements AutoRouteWrapper {
               body: SingleChildScrollView(
                 child: Container(
                   padding: AppStyles.formPadding,
-                  child: Form(
-                    child: Column(
-                      children: <Widget>[
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            hintText: 'Name',
-                          ),
-                          initialValue: state.initialDance?.name,
-                          onChanged: (danceName) {
-                            danceEditBloc
-                                .add(DanceEditChangeName(danceName: danceName));
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+                  child: DanceForm(),
                 ),
               ),
             );

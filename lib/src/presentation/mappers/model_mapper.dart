@@ -15,96 +15,108 @@ class ModelMapper {
   }
 
   /// [ArtistEntity] to [ArtistViewModel]
-  ArtistViewModel toArtistViewModel(ArtistEntity dataModel) {
+  ArtistViewModel toArtistViewModel(ArtistEntity entity) {
     return ArtistViewModel(
-      id: dataModel.id,
-      name: dataModel.name,
-      imageUrl: dataModel.imageUrl,
-      createdAt: dataModel.createdAt,
-      updatedAt: dataModel.updatedAt,
-      version: dataModel.version,
+      id: entity.id,
+      name: entity.name,
+      imageUrl: entity.imageUrl,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      version: entity.version,
     );
   }
 
   /// [ArtistViewModel] to [ArtistEntity]
-  ArtistEntity toArtistEntity(ArtistViewModel entityModel) {
+  ArtistEntity toArtistEntity(ArtistViewModel viewModel) {
     return ArtistDataModel(
-      id: entityModel.id,
-      name: entityModel.name,
-      imageUrl: entityModel.imageUrl,
-      createdAt: entityModel.createdAt,
-      updatedAt: entityModel.updatedAt,
-      version: entityModel.version,
+      id: viewModel.id,
+      name: viewModel.name,
+      imageUrl: viewModel.imageUrl,
+      createdAt: viewModel.createdAt,
+      updatedAt: viewModel.updatedAt,
+      version: viewModel.version,
     );
   }
 
   /// [DanceEntity] to [DanceViewModel]
-  DanceViewModel toDanceViewModel(DanceEntity dataModel) {
+  DanceViewModel toDanceViewModel(DanceEntity entity) {
     return DanceViewModel(
-      id: dataModel.id,
-      name: dataModel.name,
-      createdAt: dataModel.createdAt,
-      updatedAt: dataModel.updatedAt,
-      version: dataModel.version,
+      id: entity.id,
+      name: entity.name,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      version: entity.version,
     );
   }
 
   /// [DanceViewModel] to [DanceEntity]
-  DanceEntity toDanceEntity(DanceViewModel entityModel) {
+  DanceEntity toDanceEntity(DanceViewModel viewModel) {
     return DanceDataModel(
-      id: entityModel.id,
-      name: entityModel.name,
-      createdAt: entityModel.createdAt,
-      updatedAt: entityModel.updatedAt,
-      version: entityModel.version,
+      id: viewModel.id,
+      name: viewModel.name,
+      createdAt: viewModel.createdAt,
+      updatedAt: viewModel.updatedAt,
+      version: viewModel.version,
     );
   }
 
   /// [FigureEntity] to [FigureViewModel]
-  FigureViewModel toFigureViewModel(FigureEntity dataModel) {
+  FigureViewModel toFigureViewModel(FigureEntity entity) {
     return FigureViewModel(
-      id: dataModel.id,
-      name: dataModel.name,
-      createdAt: dataModel.createdAt,
-      updatedAt: dataModel.updatedAt,
-      version: dataModel.version,
+      id: entity.id,
+      name: entity.name,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      version: entity.version,
     );
   }
 
   /// [PracticeEntity] to [PracticeViewModel]
-  PracticeViewModel toPracticeViewModel(PracticeEntity dataModel) {
+  PracticeViewModel toPracticeViewModel(PracticeEntity entity) {
     return PracticeViewModel(
-      id: dataModel.id,
-      doneAt: dataModel.doneAt,
-      status: dataModel.status,
-      figureId: dataModel.figureId,
-      createdAt: dataModel.createdAt,
-      updatedAt: dataModel.updatedAt,
-      version: dataModel.version,
+      id: entity.id,
+      doneAt: entity.doneAt,
+      status: entity.status,
+      figureId: entity.figureId,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      version: entity.version,
     );
   }
 
   /// [MomentEntity] to [MomentViewModel]
-  MomentViewModel toMomentViewModel(MomentEntity dataModel) {
+  MomentViewModel toMomentViewModel(MomentEntity entity) {
     return MomentViewModel(
-      id: dataModel.id,
-      startTime: dataModel.startTime,
-      endTime: dataModel.endTime,
-      createdAt: dataModel.createdAt,
-      updatedAt: dataModel.updatedAt,
-      version: dataModel.version,
+      id: entity.id,
+      startTime: entity.startTime,
+      endTime: entity.endTime,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      version: entity.version,
     );
   }
 
   /// [VideoEntity] to [VideoViewModel]
-  VideoViewModel toVideoViewModel(VideoEntity dataModel) {
+  VideoViewModel toVideoViewModel(VideoEntity entity) {
     return VideoViewModel(
-      id: dataModel.id,
-      name: dataModel.name,
-      url: dataModel.url,
-      createdAt: dataModel.createdAt,
-      updatedAt: dataModel.updatedAt,
-      version: dataModel.version,
+      id: entity.id,
+      name: entity.name,
+      url: entity.url,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      version: entity.version,
+    );
+  }
+
+  /// [VideoViewModel] to [VideoEntity]
+  VideoEntity toVideoEntity(VideoViewModel viewModel) {
+    return VideoDataModel(
+      id: viewModel.id,
+      name: viewModel.name,
+      url: viewModel.url,
+      createdAt: viewModel.createdAt,
+      updatedAt: viewModel.updatedAt,
+      version: viewModel.version,
     );
   }
 

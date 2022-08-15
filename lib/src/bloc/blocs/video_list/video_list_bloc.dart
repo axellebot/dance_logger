@@ -17,6 +17,9 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
     on<VideoListLoad>(_onVideoListLoad);
     on<VideoListLoadMore>(_onVideoListLoadMore);
     on<VideoListRefresh>(_onVideoListRefresh);
+    on<VideoListSelect>(_onVideoListSelect);
+    on<VideoListUnselect>(_onVideoListUnselect);
+    on<VideoListDelete>(_onVideoListDelete);
   }
 
   FutureOr<void> _onVideoListLoad(
@@ -93,7 +96,7 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
     if (kDebugMode) print('$runtimeType:_onVideoListRefresh');
     try {
       emit(state.copyWith(
-        status: VideoListStatus.loading,
+        status: VideoListStatus.refreshing,
       ));
 
       List<VideoViewModel> videoViewModels = await _fetchVideos(
@@ -108,6 +111,57 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
         videos: videoViewModels,
         hasReachedMax: false,
       ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: VideoListStatus.failure,
+        error: error,
+      ));
+    }
+  }
+
+  FutureOr<void> _onVideoListSelect(
+    VideoListSelect event,
+    Emitter<VideoListState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onVideoListSelect');
+
+    emit(state.copyWith(
+      selectedVideos: List.of(state.selectedVideos)..add(event.videoId),
+    ));
+  }
+
+  FutureOr<void> _onVideoListUnselect(
+    VideoListUnselect event,
+    Emitter<VideoListState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onVideoListUnselect');
+
+    emit((event.videoId != null)
+        ? state.copyWith(
+            selectedVideos: List.of(state.selectedVideos)
+              ..remove(event.videoId),
+          )
+        : state.copyWith(
+            selectedVideos: [],
+          ));
+  }
+
+  FutureOr<void> _onVideoListDelete(
+    VideoListDelete event,
+    Emitter<VideoListState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onVideoListSelect');
+    if (state.selectedVideos.isEmpty) return;
+
+    try {
+      for (String videoId in state.selectedVideos) {
+        await videoRepository.deleteById(videoId);
+        emit(state.copyWith(
+          videos: List.of(state.videos)
+            ..removeWhere((element) => element.id == videoId),
+          selectedVideos: List.of(state.selectedVideos)..remove(videoId),
+        ));
+      }
     } on Error catch (error) {
       emit(state.copyWith(
         status: VideoListStatus.failure,

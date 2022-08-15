@@ -2,7 +2,7 @@ import 'package:dance/presentation.dart';
 import 'package:dance/src/bloc/blocs/moment_list/moment_list_params.dart';
 import 'package:equatable/equatable.dart';
 
-enum MomentListStatus { initial, loading, success, failure }
+enum MomentListStatus { initial, loading, refreshing, success, failure }
 
 class MomentListState extends Equatable implements MomentListParams {
   final MomentListStatus status;

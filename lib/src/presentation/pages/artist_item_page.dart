@@ -244,32 +244,7 @@ class ArtistEditPage extends StatelessWidget implements AutoRouteWrapper {
               body: SingleChildScrollView(
                 child: Container(
                   padding: AppStyles.formPadding,
-                  child: Form(
-                    child: Column(
-                      children: <Widget>[
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            hintText: 'Name',
-                          ),
-                          initialValue: state.initialArtist?.name,
-                          onChanged: (artistName) {
-                            artistEditBloc.add(
-                                ArtistEditChangeName(artistName: artistName));
-                          },
-                        ),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            hintText: 'Url',
-                          ),
-                          initialValue: state.initialArtist?.imageUrl,
-                          onChanged: (artistImageUrl) {
-                            artistEditBloc.add(ArtistEditChangeImageUrl(
-                                artistImageUrl: artistImageUrl));
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+                  child: const ArtistForm(),
                 ),
               ),
             );
