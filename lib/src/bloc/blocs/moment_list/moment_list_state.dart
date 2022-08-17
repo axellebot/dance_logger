@@ -16,6 +16,7 @@ class MomentListState extends Equatable implements MomentListParams {
 
   final List<MomentViewModel> moments;
   final bool hasReachedMax;
+  final List<String> selectedMoments;
   final Error? error;
 
   const MomentListState({
@@ -25,12 +26,21 @@ class MomentListState extends Equatable implements MomentListParams {
     this.ofVideo,
     this.moments = const <MomentViewModel>[],
     this.hasReachedMax = false,
+    this.selectedMoments = const <String>[],
     this.error,
   });
 
   @override
-  List<Object?> get props =>
-      [status, ofArtist, ofFigure, ofVideo, moments, hasReachedMax, error];
+  List<Object?> get props => [
+        status,
+        ofArtist,
+        ofFigure,
+        ofVideo,
+        moments,
+        hasReachedMax,
+        selectedMoments,
+        error,
+      ];
 
   MomentListState copyWith({
     MomentListStatus? status,
@@ -39,6 +49,7 @@ class MomentListState extends Equatable implements MomentListParams {
     String? ofVideo,
     List<MomentViewModel>? moments,
     bool? hasReachedMax,
+    List<String>? selectedMoments,
     Error? error,
   }) {
     return MomentListState(
@@ -48,6 +59,7 @@ class MomentListState extends Equatable implements MomentListParams {
       ofVideo: ofVideo ?? this.ofVideo,
       moments: moments ?? this.moments,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      selectedMoments: selectedMoments ?? this.selectedMoments,
       error: error ?? this.error,
     );
   }
@@ -61,6 +73,7 @@ class MomentListState extends Equatable implements MomentListParams {
         'ofVideo: $ofVideo, '
         'moments: $moments, '
         'hasReachedMax: $hasReachedMax, '
+        'selectedMoments: $selectedMoments, '
         'error: $error'
         '}';
   }

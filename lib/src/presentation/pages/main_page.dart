@@ -32,7 +32,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(DanceLocalizations.of(context)?.homeTitle ?? 'Dance'),
+        title: Text(AppLocalizations.of(context)?.homeTitle ?? 'Dance'),
         actions: [
           MediaQuery.of(context).orientation == Orientation.portrait
               ? const QuickSettingsActionButton()

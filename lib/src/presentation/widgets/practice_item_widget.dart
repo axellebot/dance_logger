@@ -2,31 +2,70 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 
-class PracticeItemTile extends StatelessWidget {
+class PracticeListTile extends StatelessWidget {
   final PracticeViewModel practice;
 
-  const PracticeItemTile({
+  /// ListTile options
+  final GestureTapCallback? onTap;
+  final GestureLongPressCallback? onLongPress;
+  final bool selected;
+
+  const PracticeListTile({
     super.key,
     required this.practice,
+
+    /// ListTile options
+    this.onTap,
+    this.onLongPress,
+    this.selected = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: Text('${practice.doneAt}'),
-      onTap: () {
-        AutoRouter.of(context).push(
-          PracticeDetailsRoute(practiceId: practice.id),
-        );
-      },
+      onTap: onTap ??
+          () {
+            AutoRouter.of(context).push(
+              PracticeDetailsRoute(practiceId: practice.id),
+            );
+          },
+      onLongPress: onLongPress,
+      selected: selected,
     );
   }
 }
 
-class PracticeItemCard extends StatelessWidget {
+class CheckboxPracticeListTile extends StatelessWidget {
   final PracticeViewModel practice;
 
-  const PracticeItemCard({
+  /// CheckboxLitTile options
+  final bool? value;
+  final ValueChanged<bool?>? onChanged;
+
+  const CheckboxPracticeListTile({
+    super.key,
+    required this.practice,
+
+    /// CheckboxLitTile options
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CheckboxListTile(
+      title: Text('${practice.doneAt}'),
+      value: value,
+      onChanged: onChanged,
+    );
+  }
+}
+
+class PracticeCard extends StatelessWidget {
+  final PracticeViewModel practice;
+
+  const PracticeCard({
     super.key,
     required this.practice,
   });

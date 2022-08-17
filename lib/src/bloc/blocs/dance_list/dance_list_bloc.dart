@@ -130,7 +130,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
 
     emit((event.danceId != null)
         ? state.copyWith(
-      selectedDances: List.of(state.selectedDances)
+            selectedDances: List.of(state.selectedDances)
               ..remove(event.danceId),
           )
         : state.copyWith(

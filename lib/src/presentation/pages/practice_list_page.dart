@@ -4,48 +4,104 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
-class PracticeListPage extends StatelessWidget implements AutoRouteWrapper {
+class PracticeListPage extends StatelessWidget
+    implements AutoRouteWrapper, PracticeListParams {
   final bool showAppBar;
-  final String? ofFigure;
   final PracticeListBloc? practiceListBloc;
+
+  /// Practice list params
+  @override
+  final String? ofArtist;
+  @override
+  final String? ofDance;
+  @override
+  final String? ofFigure;
+  @override
+  final String? ofVideo;
 
   const PracticeListPage({
     super.key,
     this.showAppBar = true,
-    this.ofFigure,
     this.practiceListBloc,
+
+    /// Practice list params
+    this.ofArtist,
+    this.ofDance,
+    this.ofFigure,
+    this.ofVideo,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: showAppBar
-          ? AppBar(
-              title: const Text('Practices'),
-            )
-          : null,
-      body: const PracticeListView(),
+    final practiceListBloc = BlocProvider.of<PracticeListBloc>(context);
+
+    return BlocBuilder<PracticeListBloc, PracticeListState>(
+      builder: (context, state) {
+        final PreferredSizeWidget? appBar;
+        if (state.selectedPractices.isNotEmpty) {
+          appBar = SelectingAppBar(
+            count: state.selectedPractices.length,
+            onCanceled: () {
+              practiceListBloc.add(const PracticeListUnselect());
+            },
+            onDeleted: () {
+              practiceListBloc.add(const PracticeListDelete());
+            },
+          );
+        } else {
+          appBar = (showAppBar)
+              ? AppBar(
+                  title: const Text('Practices'),
+                )
+              : null;
+        }
+
+        return Scaffold(
+          appBar: appBar,
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              AutoRouter.of(context).push(PracticeEditRoute());
+            },
+            child: const Icon(MdiIcons.plus),
+          ),
+          body: RefreshIndicator(
+            onRefresh: () {
+              practiceListBloc.add(const PracticeListRefresh());
+              return practiceListBloc.stream
+                  .firstWhere((e) => e.status != PracticeListStatus.refreshing);
+            },
+            child: const PracticeListView(
+              scrollDirection: Axis.vertical,
+              physics: AlwaysScrollableScrollPhysics(),
+            ),
+          ),
+        );
+      },
     );
   }
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    final repo = Provider.of<PracticeRepository>(context, listen: false);
     if (practiceListBloc != null) {
       return BlocProvider<PracticeListBloc>.value(
         value: practiceListBloc!,
         child: this,
       );
     } else {
+      final repo = Provider.of<PracticeRepository>(context, listen: false);
       return BlocProvider<PracticeListBloc>(
         create: (_) => PracticeListBloc(
           practiceRepository: repo,
           mapper: ModelMapper(),
         )..add(PracticeListLoad(
-          ofFigure: ofFigure,
-        )),
+            ofArtist: ofArtist,
+            ofDance: ofDance,
+            ofFigure: ofFigure,
+            ofVideo: ofVideo,
+          )),
         child: this,
       );
     }

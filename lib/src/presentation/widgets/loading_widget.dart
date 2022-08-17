@@ -55,7 +55,7 @@ class LoadingPage extends StatelessWidget {
           children: <Widget>[
             const LoadingIndicator(),
             if (showAppName)
-              Text(DanceLocalizations.of(context)?.appName ?? 'Dance'),
+              Text(AppLocalizations.of(context)?.appName ?? 'Dance'),
           ],
         ),
       ),

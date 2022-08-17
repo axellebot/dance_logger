@@ -21,7 +21,7 @@ class ThemeTile extends StatelessWidget {
 
             return ListTile(
               leading: const Icon(MdiIcons.themeLightDark),
-              title: Text(DanceLocalizations.of(context)!.settingsThemeModeCTA),
+              title: Text(AppLocalizations.of(context)!.settingsThemeModeCTA),
               trailing: Wrap(
                 direction: Axis.horizontal,
                 crossAxisAlignment: WrapCrossAlignment.center,
@@ -44,17 +44,17 @@ class ThemeTile extends StatelessWidget {
                     children: [
                       Tooltip(
                         message:
-                            DanceLocalizations.of(context)!.settingsThemeSystem,
+                            AppLocalizations.of(context)!.settingsThemeSystem,
                         child: const Icon(Icons.settings),
                       ),
                       Tooltip(
                         message:
-                            DanceLocalizations.of(context)!.settingsThemeLight,
+                            AppLocalizations.of(context)!.settingsThemeLight,
                         child: const Icon(Icons.light_mode),
                       ),
                       Tooltip(
                         message:
-                            DanceLocalizations.of(context)!.settingsThemeDark,
+                            AppLocalizations.of(context)!.settingsThemeDark,
                         child: const Icon(Icons.dark_mode),
                       ),
                     ],
@@ -73,7 +73,7 @@ class ThemeTile extends StatelessWidget {
                     ],
                     children: [
                       Tooltip(
-                        message: DanceLocalizations.of(context)!
+                        message: AppLocalizations.of(context)!
                             .settingsThemeDarkUltra,
                         child: const Icon(MdiIcons.batteryHeartVariant),
                       ),

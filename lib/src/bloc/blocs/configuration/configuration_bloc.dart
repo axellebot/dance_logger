@@ -18,8 +18,9 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
 
   DanceRepository? _danceRepository;
   ArtistRepository? _artistRepository;
-  PracticeRepository? _practiceRepository;
   FigureRepository? _figureRepository;
+  MomentRepository? _momentRepository;
+  PracticeRepository? _practiceRepository;
   VideoRepository? _videoRepository;
 
   ConfigurationBloc() : super(const ConfigState()) {
@@ -97,43 +98,50 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
         // Data Stores
         final DanceDataStore databaseDanceDataStore = danceDatabaseManager!;
         final ArtistDataStore databaseArtistDataStore = danceDatabaseManager!;
-        final VideoDataStore databaseVideoDataStore = danceDatabaseManager!;
         final FigureDataStore databaseFigureDataStore = danceDatabaseManager!;
+        final MomentDataStore databaseMomentDataStore = danceDatabaseManager!;
         final PracticeDataStore databasePracticeDataStore =
             danceDatabaseManager!;
+        final VideoDataStore databaseVideoDataStore = danceDatabaseManager!;
 
         // Data Store Factories
-        final danceDataStoreFactory = DanceDataStoreFactory(
-          databaseDataStore: databaseDanceDataStore,
-        );
         final artistDataStoreFactory = ArtistDataStoreFactory(
           databaseDataStore: databaseArtistDataStore,
         );
-        final videoDataStoreFactory = VideoDataStoreFactory(
-          databaseDataStore: databaseVideoDataStore,
+        final danceDataStoreFactory = DanceDataStoreFactory(
+          databaseDataStore: databaseDanceDataStore,
         );
         final figureDataStoreFactory = FigureDataStoreFactory(
           databaseDataStore: databaseFigureDataStore,
         );
+        final momentDataStoreFactory = MomentDataStoreFactory(
+          databaseDataStore: databaseMomentDataStore,
+        );
         final practiceDataStoreFactory = PracticeDataStoreFactory(
           databaseDataStore: databasePracticeDataStore,
         );
+        final videoDataStoreFactory = VideoDataStoreFactory(
+          databaseDataStore: databaseVideoDataStore,
+        );
 
         // Repositories
-        _danceRepository = ImplDanceRepository(
-          factory: danceDataStoreFactory,
-        );
         _artistRepository = ImplArtistRepository(
           factory: artistDataStoreFactory,
         );
-        _videoRepository = ImplVideoRepository(
-          factory: videoDataStoreFactory,
+        _danceRepository = ImplDanceRepository(
+          factory: danceDataStoreFactory,
+        );
+        _figureRepository = ImplFigureRepository(
+          factory: figureDataStoreFactory,
+        );
+        _momentRepository = ImplMomentRepository(
+          factory: momentDataStoreFactory,
         );
         _practiceRepository = ImplPracticeRepository(
           factory: practiceDataStoreFactory,
         );
-        _figureRepository = ImplFigureRepository(
-          factory: figureDataStoreFactory,
+        _videoRepository = ImplVideoRepository(
+          factory: videoDataStoreFactory,
         );
 
         emit(state.copyWith(
@@ -141,11 +149,12 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
           fileDir: fileDirPath,
           fileName: fileName,
           appPrefsRepository: _appPrefsRepository!,
-          danceRepository: _danceRepository!,
           artistRepository: _artistRepository!,
-          videoRepository: _videoRepository!,
+          danceRepository: _danceRepository!,
           figureRepository: _figureRepository!,
+          momentRepository: _momentRepository!,
           practiceRepository: _practiceRepository!,
+          videoRepository: _videoRepository!,
         ));
       } else {
         emit(state.copyWith(
@@ -153,9 +162,10 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
           appPrefsRepository: _appPrefsRepository!,
         ));
       }
-    } on Error {
+    } on Error catch (error) {
       emit(state.copyWith(
         status: ConfigStatus.failure,
+        error: error,
       ));
     }
   }

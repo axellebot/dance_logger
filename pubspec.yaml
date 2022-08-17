@@ -67,7 +67,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
+  generate: true
   uses-material-design: true
 
   fonts:
@@ -78,3 +78,5 @@ flutter:
           weight: 500
         - asset: assets/fonts/GoogleSans-Bold.ttf
           weight: 700
+flutter_intl:
+  enabled: true

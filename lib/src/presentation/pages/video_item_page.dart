@@ -61,8 +61,9 @@ class VideoDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                               Clipboard.setData(
                                   ClipboardData(text: state.video!.url));
                             }),
-                        _buildFiguresSection(),
-                        _buildArtistsSection(),
+                        MomentsSection(ofVideo: videoId),
+                        FiguresSection(ofVideo: videoId),
+                        ArtistsSection(ofVideo: videoId),
                         EntityInfoListTile(
                           createdAt: state.video!.createdAt,
                           updateAt: state.video!.updatedAt,
@@ -84,65 +85,6 @@ class VideoDetailsPage extends StatelessWidget implements AutoRouteWrapper {
       },
     );
   }
-
-  Widget _buildFiguresSection() => BlocProvider<FigureListBloc>(
-        create: (context) => FigureListBloc(
-          figureRepository: RepositoryProvider.of<FigureRepository>(context),
-          mapper: ModelMapper(),
-        )..add(FigureListLoad(ofVideo: videoId)),
-        child: Builder(builder: (context) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SectionTile(
-                title: const Text('Figures'),
-                onTap: () {
-                  AutoRouter.of(context).push(
-                    FigureListRoute(
-                      ofVideo: videoId,
-                      figureListBloc: BlocProvider.of<FigureListBloc>(context),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(
-                height: AppStyles.cardHeight,
-                child: FigureListView(
-                  scrollDirection: Axis.horizontal,
-                ),
-              ),
-            ],
-          );
-        }),
-      );
-
-  Widget _buildArtistsSection() => BlocProvider<ArtistListBloc>(
-        create: (context) => ArtistListBloc(
-          artistRepository: RepositoryProvider.of<ArtistRepository>(context),
-          mapper: ModelMapper(),
-        )..add(ArtistListLoad(ofVideo: videoId)),
-        child: Builder(builder: (context) {
-          return Column(
-            children: [
-              SectionTile(
-                title: const Text('Artists'),
-                onTap: () => AutoRouter.of(context).push(
-                  ArtistListRoute(
-                    ofVideo: videoId,
-                    artistListBloc: BlocProvider.of<ArtistListBloc>(context),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: AppStyles.cardHeight,
-                child: ArtistListView(
-                  scrollDirection: Axis.horizontal,
-                ),
-              ),
-            ],
-          );
-        }),
-      );
 
   @override
   Widget wrappedRoute(BuildContext context) {
@@ -214,7 +156,7 @@ class VideoEditPage extends StatelessWidget implements AutoRouteWrapper {
               body: SingleChildScrollView(
                 child: Container(
                   padding: AppStyles.formPadding,
-                  child: VideoForm(),
+                  child: const VideoForm(),
                 ),
               ),
             );

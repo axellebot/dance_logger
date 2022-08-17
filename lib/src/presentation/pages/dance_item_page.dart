@@ -52,9 +52,9 @@ class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                   SliverList(
                     delegate: SliverChildListDelegate(
                       <Widget>[
-                        _buildArtistsSection(),
-                        _buildFiguresSection(),
-                        _buildVideosSection(),
+                        ArtistsSection(ofDance: danceId),
+                        FiguresSection(ofDance: danceId),
+                        VideosSection(ofDance: danceId),
                         EntityInfoListTile(
                           createdAt: state.dance!.createdAt,
                           updateAt: state.dance!.updatedAt,
@@ -76,96 +76,6 @@ class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
       },
     );
   }
-
-  Widget _buildArtistsSection() => BlocProvider<ArtistListBloc>(
-        create: (context) => ArtistListBloc(
-          artistRepository: RepositoryProvider.of<ArtistRepository>(context),
-          mapper: ModelMapper(),
-        )..add(ArtistListLoad(ofDance: danceId)),
-        child: Builder(builder: (context) {
-          return Column(
-            children: [
-              SectionTile(
-                title: const Text('Artists'),
-                onTap: () {
-                  AutoRouter.of(context).push(
-                    ArtistListRoute(
-                      ofDance: danceId,
-                      artistListBloc: BlocProvider.of<ArtistListBloc>(context),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(
-                height: AppStyles.cardHeight,
-                child: ArtistListView(
-                  scrollDirection: Axis.horizontal,
-                ),
-              ),
-            ],
-          );
-        }),
-      );
-
-  Widget _buildFiguresSection() => BlocProvider<FigureListBloc>(
-        create: (context) => FigureListBloc(
-          figureRepository: RepositoryProvider.of<FigureRepository>(context),
-          mapper: ModelMapper(),
-        )..add(FigureListLoad(ofDance: danceId)),
-        child: Builder(builder: (context) {
-          return Column(
-            children: [
-              SectionTile(
-                title: const Text('Figures'),
-                onTap: () {
-                  AutoRouter.of(context).push(
-                    FigureListRoute(
-                      ofDance: danceId,
-                      figureListBloc: BlocProvider.of<FigureListBloc>(context),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(
-                height: AppStyles.cardHeight,
-                child: FigureListView(
-                  scrollDirection: Axis.horizontal,
-                ),
-              ),
-            ],
-          );
-        }),
-      );
-
-  Widget _buildVideosSection() => BlocProvider<VideoListBloc>(
-        create: (context) => VideoListBloc(
-          videoRepository: RepositoryProvider.of<VideoRepository>(context),
-          mapper: ModelMapper(),
-        )..add(VideoListLoad(ofDance: danceId)),
-        child: Builder(builder: (context) {
-          return Column(
-            children: [
-              SectionTile(
-                title: const Text('Videos'),
-                onTap: () {
-                  AutoRouter.of(context).push(
-                    VideoListRoute(
-                      ofDance: danceId,
-                      videoListBloc: BlocProvider.of<VideoListBloc>(context),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(
-                height: AppStyles.cardHeight,
-                child: VideoListView(
-                  scrollDirection: Axis.horizontal,
-                ),
-              ),
-            ],
-          );
-        }),
-      );
 
   @override
   Widget wrappedRoute(BuildContext context) {
@@ -235,7 +145,7 @@ class DanceEditPage extends StatelessWidget implements AutoRouteWrapper {
               body: SingleChildScrollView(
                 child: Container(
                   padding: AppStyles.formPadding,
-                  child: DanceForm(),
+                  child: const DanceForm(),
                 ),
               ),
             );

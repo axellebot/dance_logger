@@ -17,6 +17,9 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
     on<PracticeListLoad>(_onPracticeListLoad);
     on<PracticeListLoadMore>(_onPracticeListLoadMore);
     on<PracticeListRefresh>(_onPracticeListRefresh);
+    on<PracticeListSelect>(_onPracticeListSelect);
+    on<PracticeListUnselect>(_onPracticeListUnselect);
+    on<PracticeListDelete>(_onPracticeListDelete);
   }
 
   FutureOr<void> _onPracticeListLoad(
@@ -107,6 +110,59 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
         practices: practiceViewModels,
         hasReachedMax: false,
       ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: PracticeListStatus.failure,
+        error: error,
+      ));
+    }
+  }
+
+  FutureOr<void> _onPracticeListSelect(
+    PracticeListSelect event,
+    Emitter<PracticeListState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onPracticeListSelect');
+
+    emit(state.copyWith(
+      selectedPractices: List.of(state.selectedPractices)
+        ..add(event.practiceId),
+    ));
+  }
+
+  FutureOr<void> _onPracticeListUnselect(
+    PracticeListUnselect event,
+    Emitter<PracticeListState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onPracticeListUnselect');
+
+    emit((event.practiceId != null)
+        ? state.copyWith(
+            selectedPractices: List.of(state.selectedPractices)
+              ..remove(event.practiceId),
+          )
+        : state.copyWith(
+            selectedPractices: [],
+          ));
+  }
+
+  FutureOr<void> _onPracticeListDelete(
+    PracticeListDelete event,
+    Emitter<PracticeListState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onPracticeListSelect');
+    if (state.selectedPractices.isEmpty) return;
+
+    try {
+      for (String practiceId in state.selectedPractices) {
+        await practiceRepository.deleteById(practiceId);
+        emit(state.copyWith(
+          practices: List.of(state.practices)
+            ..removeWhere((element) => element.id == practiceId),
+          selectedPractices: List.of(state.selectedPractices)
+            ..remove(practiceId),
+        ));
+      }
     } on Error catch (error) {
       emit(state.copyWith(
         status: PracticeListStatus.failure,

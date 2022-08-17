@@ -74,8 +74,8 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                   SliverList(
                     delegate: SliverChildListDelegate(
                       <Widget>[
-                        _buildFiguresSection(),
-                        _buildVideosSection(),
+                        FiguresSection(ofArtist: artistId),
+                        VideosSection(ofArtist: artistId),
                         EntityInfoListTile(
                           createdAt: state.artist!.createdAt,
                           updateAt: state.artist!.updatedAt,
@@ -97,69 +97,6 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
       },
     );
   }
-
-  Widget _buildFiguresSection() => BlocProvider<FigureListBloc>(
-        create: (context) => FigureListBloc(
-          figureRepository: RepositoryProvider.of<FigureRepository>(context),
-          mapper: ModelMapper(),
-        )..add(FigureListLoad(ofArtist: artistId)),
-        child: Builder(
-          builder: (context) {
-            return Column(
-              children: [
-                SectionTile(
-                  title: const Text('Figures'),
-                  onTap: () {
-                    AutoRouter.of(context).push(
-                      FigureListRoute(
-                        ofArtist: artistId,
-                        figureListBloc:
-                            BlocProvider.of<FigureListBloc>(context),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(
-                  height: AppStyles.cardHeight,
-                  child: FigureListView(
-                    scrollDirection: Axis.horizontal,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      );
-
-  Widget _buildVideosSection() => BlocProvider<VideoListBloc>(
-        create: (context) => VideoListBloc(
-          videoRepository: RepositoryProvider.of<VideoRepository>(context),
-          mapper: ModelMapper(),
-        )..add(VideoListLoad(ofArtist: artistId)),
-        child: Builder(builder: (context) {
-          return Column(
-            children: [
-              SectionTile(
-                title: const Text('Videos'),
-                onTap: () {
-                  AutoRouter.of(context).push(
-                    VideoListRoute(
-                      ofArtist: artistId,
-                      videoListBloc: BlocProvider.of<VideoListBloc>(context),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(
-                height: AppStyles.cardHeight,
-                child: VideoListView(
-                  scrollDirection: Axis.horizontal,
-                ),
-              ),
-            ],
-          );
-        }),
-      );
 
   Widget _buildGradient() {
     return Positioned.fill(

@@ -17,6 +17,9 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     on<MomentListLoad>(_onMomentListLoad);
     on<MomentListLoadMore>(_onMomentListLoadMore);
     on<MomentListRefresh>(_onMomentListRefresh);
+    on<MomentListSelect>(_onMomentListSelect);
+    on<MomentListUnselect>(_onMomentListUnselect);
+    on<MomentListDelete>(_onMomentListDelete);
   }
 
   FutureOr<void> _onMomentListLoad(
@@ -56,6 +59,7 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     MomentListLoadMore event,
     Emitter<MomentListState> emit,
   ) async {
+    if (kDebugMode) print('$runtimeType:_onMomentListLoadMore');
     if (state.status != MomentListStatus.success) return;
     try {
       final List<MomentViewModel> momentViewModels;
@@ -87,6 +91,7 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     MomentListRefresh event,
     Emitter<MomentListState> emit,
   ) async {
+    if (kDebugMode) print('$runtimeType:_onMomentListRefresh');
     try {
       emit(state.copyWith(
         status: MomentListStatus.refreshing,
@@ -112,6 +117,57 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     }
   }
 
+  FutureOr<void> _onMomentListSelect(
+    MomentListSelect event,
+    Emitter<MomentListState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onMomentListSelect');
+
+    emit(state.copyWith(
+      selectedMoments: List.of(state.selectedMoments)..add(event.momentId),
+    ));
+  }
+
+  FutureOr<void> _onMomentListUnselect(
+    MomentListUnselect event,
+    Emitter<MomentListState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onMomentListUnselect');
+
+    emit((event.momentId != null)
+        ? state.copyWith(
+            selectedMoments: List.of(state.selectedMoments)
+              ..remove(event.momentId),
+          )
+        : state.copyWith(
+            selectedMoments: [],
+          ));
+  }
+
+  FutureOr<void> _onMomentListDelete(
+    MomentListDelete event,
+    Emitter<MomentListState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onMomentListSelect');
+    if (state.selectedMoments.isEmpty) return;
+
+    try {
+      for (String momentId in state.selectedMoments) {
+        await momentRepository.deleteById(momentId);
+        emit(state.copyWith(
+          moments: List.of(state.moments)
+            ..removeWhere((element) => element.id == momentId),
+          selectedMoments: List.of(state.selectedMoments)..remove(momentId),
+        ));
+      }
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: MomentListStatus.failure,
+        error: error,
+      ));
+    }
+  }
+
   Future<List<MomentViewModel>> _fetchMoments({
     String? ofArtist,
     String? ofFigure,
@@ -119,6 +175,7 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     required int offset,
     int limit = 10,
   }) async {
+    if (kDebugMode) print('$runtimeType:_fetchMoments');
     List<MomentEntity> momentEntities;
 
     if (ofArtist != null) {
@@ -156,7 +213,7 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
 
     List<MomentViewModel> momentViewModels = momentEntities
         .map<MomentViewModel>(
-            (timeEntity) => mapper.toMomentViewModel(timeEntity))
+            (momentEntity) => mapper.toMomentViewModel(momentEntity))
         .toList();
     return momentViewModels;
   }

@@ -20,7 +20,7 @@ abstract class ArtistRepository extends EntityRepository<ArtistEntity> {
     /// TODO: Add sort
   });
 
-  FutureOr<List<ArtistEntity>> getArtistsOfTime(
+  FutureOr<List<ArtistEntity>> getArtistsOfMoment(
     String timeId, {
     required Offset offset,
 
@@ -28,7 +28,7 @@ abstract class ArtistRepository extends EntityRepository<ArtistEntity> {
     /// TODO: Add sort
   });
 
-  FutureOr<List<ArtistEntity>> getArtistOfVideo(
+  FutureOr<List<ArtistEntity>> getArtistsOfVideo(
     String videoId, {
     required Offset offset,
 

@@ -64,14 +64,14 @@ class ImplArtistRepository extends ArtistRepository {
   }
 
   @override
-  FutureOr<List<ArtistEntity>> getArtistOfVideo(
+  FutureOr<List<ArtistEntity>> getArtistsOfVideo(
     String videoId, {
     required Offset offset,
 
     /// TODO: Add filters
     /// TODO: Add sort
   }) async {
-    if (kDebugMode) print('$runtimeType:getListFromVideo($videoId)');
+    if (kDebugMode) print('$runtimeType:getArtistsOfVideo($videoId)');
     final dataModels = await factory.databaseDataStore.getArtistsOfVideo(
       videoId,
       offset: offset,
@@ -96,14 +96,14 @@ class ImplArtistRepository extends ArtistRepository {
   }
 
   @override
-  FutureOr<List<ArtistEntity>> getArtistsOfTime(
+  FutureOr<List<ArtistEntity>> getArtistsOfMoment(
     String timeId, {
     required Offset offset,
 
     /// TODO: Add filters
     /// TODO: Add sort
   }) async {
-    if (kDebugMode) print('$runtimeType:getArtistsOfTime($timeId)');
+    if (kDebugMode) print('$runtimeType:getArtistsOfMoment($timeId)');
     final dataModels = await factory.databaseDataStore.getArtistsOfMoment(
       timeId,
       offset: offset,

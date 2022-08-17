@@ -52,17 +52,20 @@ class RepoWrapper extends StatelessWidget {
                 RepositoryProvider<ArtistRepository>.value(
                   value: state.artistRepository!,
                 ),
+                RepositoryProvider<DanceRepository>.value(
+                  value: state.danceRepository!,
+                ),
                 RepositoryProvider<FigureRepository>.value(
                   value: state.figureRepository!,
                 ),
-                RepositoryProvider<VideoRepository>.value(
-                  value: state.videoRepository!,
+                RepositoryProvider<MomentRepository>.value(
+                  value: state.momentRepository!,
                 ),
                 RepositoryProvider<PracticeRepository>.value(
                   value: state.practiceRepository!,
                 ),
-                RepositoryProvider<DanceRepository>.value(
-                  value: state.danceRepository!,
+                RepositoryProvider<VideoRepository>.value(
+                  value: state.videoRepository!,
                 ),
               ];
             }
@@ -126,7 +129,7 @@ class App extends StatelessWidget {
               routerDelegate: appRouter.delegate(),
               routeInformationParser: appRouter.defaultRouteParser(),
               onGenerateTitle: (BuildContext context) =>
-                  DanceLocalizations.of(context)?.appName ?? 'Dance',
+                  AppLocalizations.of(context)?.appName ?? 'Dance',
               theme: _buildTheme(
                 darkMode: false,
                 ultraDark: state.themeUltraDark,
@@ -137,9 +140,10 @@ class App extends StatelessWidget {
               ),
               themeMode: themeMode,
               localizationsDelegates: const [
-                DanceLocalizationsDelegate(),
+                AppLocalizations.delegate,
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
               ],
               supportedLocales: const [
                 Locale('en', ''),

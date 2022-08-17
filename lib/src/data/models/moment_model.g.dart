@@ -11,7 +11,7 @@ MomentDataModel _$MomentDataModelFromJson(Map<String, dynamic> json) =>
       id: json['moment_id'] as String,
       videoId: json['video_id'] as String,
       startTime: json['start_time'] as int,
-      endTime: json['end_time'] as int,
+      endTime: json['end_time'] as int?,
       figureId: json['figure_id'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),

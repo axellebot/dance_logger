@@ -32,8 +32,7 @@ class ArtistListState extends Equatable implements ArtistListParams {
   });
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         status,
         ofDance,
         ofFigure,

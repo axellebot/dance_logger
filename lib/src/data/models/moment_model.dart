@@ -19,7 +19,7 @@ class MomentDataModel implements MomentEntity {
 
   @override
   @JsonKey(name: 'end_time')
-  int endTime;
+  int? endTime;
 
   @override
   @JsonKey(name: 'figure_id')
@@ -41,7 +41,7 @@ class MomentDataModel implements MomentEntity {
     required this.id,
     required this.videoId,
     required this.startTime,
-    required this.endTime,
+    this.endTime,
     required this.figureId,
     required this.createdAt,
     required this.updatedAt,

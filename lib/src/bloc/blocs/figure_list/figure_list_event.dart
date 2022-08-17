@@ -56,3 +56,46 @@ class FigureListRefresh extends FigureListEvent {
   @override
   String toString() => 'FigureListRefresh{}';
 }
+
+class FigureListSelect extends FigureListEvent {
+  final String figureId;
+
+  const FigureListSelect({
+    required this.figureId,
+  });
+
+  @override
+  List<Object?> get props => [figureId];
+
+  @override
+  String toString() => 'FigureListSelect{'
+      'figureId: $figureId'
+      '}';
+}
+
+class FigureListUnselect extends FigureListEvent {
+  final String? figureId;
+
+  const FigureListUnselect({
+    this.figureId,
+  });
+
+  @override
+  List<Object?> get props => [figureId];
+
+  @override
+  String toString() => 'FigureListUnselect{'
+      'figureId: $figureId'
+      '}';
+}
+
+class FigureListDelete extends FigureListEvent {
+  const FigureListDelete();
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String toString() => 'FigureListDelete{'
+      '}';
+}

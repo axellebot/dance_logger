@@ -188,7 +188,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
         ),
       );
     } else if (ofVideo != null) {
-      artistEntities = await artistRepository.getArtistOfVideo(
+      artistEntities = await artistRepository.getArtistsOfVideo(
         ofVideo,
         offset: Offset(
           offset: offset,

@@ -19,6 +19,7 @@ class PracticeListState extends Equatable implements PracticeListParams {
 
   final List<PracticeViewModel> practices;
   final bool hasReachedMax;
+  final List<String> selectedPractices;
   final Error? error;
 
   const PracticeListState({
@@ -29,11 +30,13 @@ class PracticeListState extends Equatable implements PracticeListParams {
     this.ofVideo,
     this.practices = const <PracticeViewModel>[],
     this.hasReachedMax = false,
+    this.selectedPractices = const <String>[],
     this.error,
   });
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props =>
+      [
         status,
         ofArtist,
         ofDance,
@@ -41,6 +44,7 @@ class PracticeListState extends Equatable implements PracticeListParams {
         ofVideo,
         practices,
         hasReachedMax,
+        selectedPractices,
         error,
       ];
 
@@ -52,6 +56,7 @@ class PracticeListState extends Equatable implements PracticeListParams {
     String? ofVideo,
     List<PracticeViewModel>? practices,
     bool? hasReachedMax,
+    List<String>? selectedPractices,
     Error? error,
   }) {
     return PracticeListState(
@@ -62,6 +67,7 @@ class PracticeListState extends Equatable implements PracticeListParams {
       ofVideo: ofVideo ?? this.ofVideo,
       practices: practices ?? this.practices,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      selectedPractices: selectedPractices ?? this.selectedPractices,
       error: error ?? this.error,
     );
   }
@@ -76,6 +82,7 @@ class PracticeListState extends Equatable implements PracticeListParams {
         'ofVideo: $ofVideo, '
         'practices: $practices, '
         'hasReachedMax: $hasReachedMax, '
+        'selectedPractices: $selectedPractices, '
         'error: $error'
         '}';
   }

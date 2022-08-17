@@ -72,7 +72,7 @@ class QuickSettingsBottomSheet extends StatelessWidget {
           const ThemeTile(),
           ListTile(
             leading: const Icon(Icons.settings),
-            title: Text(DanceLocalizations.of(context)!.settingsCTA),
+            title: Text(AppLocalizations.of(context)!.settingsCTA),
             onTap: () {
               navigateToSettings(context);
             },
@@ -83,12 +83,12 @@ class QuickSettingsBottomSheet extends StatelessWidget {
             children: <Widget>[
               MaterialButton(
                 onPressed: null,
-                child: Text(DanceLocalizations.of(context)!.menuPPCTA),
+                child: Text(AppLocalizations.of(context)!.menuPPCTA),
               ),
               const Text('·'),
               MaterialButton(
                 onPressed: null,
-                child: Text(DanceLocalizations.of(context)!.menuToSCTA),
+                child: Text(AppLocalizations.of(context)!.menuToSCTA),
               ),
             ],
           )

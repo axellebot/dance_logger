@@ -1,16 +1,15 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PracticeListView extends StatefulWidget {
+class MomentListView extends StatefulWidget {
   final Axis scrollDirection;
   final ScrollPhysics? physics;
   final EdgeInsets? padding;
 
-  const PracticeListView({
+  const MomentListView({
     super.key,
     this.scrollDirection = Axis.vertical,
     this.physics,
@@ -18,13 +17,13 @@ class PracticeListView extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _PracticeListViewState();
+  State<StatefulWidget> createState() => _MomentListViewState();
 }
 
-class _PracticeListViewState extends State<PracticeListView> {
+class _MomentListViewState extends State<MomentListView> {
   final _scrollController = ScrollController();
 
-  _PracticeListViewState();
+  _MomentListViewState();
 
   @override
   void initState() {
@@ -34,24 +33,24 @@ class _PracticeListViewState extends State<PracticeListView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PracticeListBloc, PracticeListState>(
-      builder: (BuildContext context, PracticeListState state) {
+    return BlocBuilder<MomentListBloc, MomentListState>(
+      builder: (BuildContext context, MomentListState state) {
         switch (state.status) {
-          case PracticeListStatus.loading:
+          case MomentListStatus.loading:
             return LoadingListView(
               scrollDirection: widget.scrollDirection,
               physics: widget.physics,
               padding: widget.padding,
             );
-          case PracticeListStatus.failure:
-          case PracticeListStatus.success:
-          case PracticeListStatus.refreshing:
-            if (state.practices.isEmpty) {
+          case MomentListStatus.failure:
+          case MomentListStatus.success:
+          case MomentListStatus.refreshing:
+            if (state.moments.isEmpty) {
               return EmptyListView(
                 scrollDirection: widget.scrollDirection,
                 physics: widget.physics,
                 padding: widget.padding,
-                label: 'No Practices',
+                label: 'No Moments',
               );
             } else {
               return ListView.builder(
@@ -60,42 +59,39 @@ class _PracticeListViewState extends State<PracticeListView> {
                 padding: widget.padding,
                 controller: _scrollController,
                 itemCount: state.hasReachedMax
-                    ? state.practices.length
-                    : state.practices.length + 1,
+                    ? state.moments.length
+                    : state.moments.length + 1,
                 itemBuilder: (context, index) {
-                  if (index < state.practices.length) {
-                    final PracticeViewModel practice = state.practices[index];
-                    final PracticeListBloc practiceListBloc =
-                        BlocProvider.of<PracticeListBloc>(context);
+                  if (index < state.moments.length) {
+                    final MomentViewModel moment = state.moments[index];
+                    final MomentListBloc momentListBloc =
+                        BlocProvider.of<MomentListBloc>(context);
                     switch (widget.scrollDirection) {
                       case Axis.vertical:
-                        if (state.selectedPractices.isEmpty) {
-                          return PracticeListTile(
-                            practice: practice,
+                        if (state.selectedMoments.isEmpty) {
+                          return MomentListTile(
+                            moment: moment,
                             onLongPress: () {
-                              practiceListBloc.add(
-                                PracticeListSelect(practiceId: practice.id),
+                              momentListBloc.add(
+                                MomentListSelect(momentId: moment.id),
                               );
                             },
                           );
                         } else {
-                          return CheckboxPracticeListTile(
-                            practice: practice,
-                            value:
-                                state.selectedPractices.contains(practice.id),
+                          return CheckboxMomentListTile(
+                            moment: moment,
+                            value: state.selectedMoments.contains(moment.id),
                             onChanged: (bool? value) {
-                              practiceListBloc.add(
+                              momentListBloc.add(
                                 (value == true)
-                                    ? PracticeListSelect(
-                                        practiceId: practice.id)
-                                    : PracticeListUnselect(
-                                        practiceId: practice.id),
+                                    ? MomentListSelect(momentId: moment.id)
+                                    : MomentListUnselect(momentId: moment.id),
                               );
                             },
                           );
                         }
                       case Axis.horizontal:
-                        return PracticeCard(practice: practice);
+                        return MomentChip(moment: moment);
                     }
                   } else {
                     switch (widget.scrollDirection) {
@@ -122,7 +118,7 @@ class _PracticeListViewState extends State<PracticeListView> {
 
   void _onScroll() {
     if (_shouldLoadMore) {
-      context.read<PracticeListBloc>().add(const PracticeListLoadMore());
+      context.read<MomentListBloc>().add(const MomentListLoadMore());
     }
   }
 
@@ -143,63 +139,54 @@ class _PracticeListViewState extends State<PracticeListView> {
   }
 }
 
-class PracticeSection extends StatelessWidget implements PracticeListParams {
-  /// Practice list params
+class MomentsSection extends StatelessWidget implements MomentListParams {
+  final MomentListBloc? momentListBloc;
+
+  /// Moment list params
   @override
   final String? ofArtist;
-  @override
-  final String? ofDance;
   @override
   final String? ofFigure;
   @override
   final String? ofVideo;
 
-  const PracticeSection({
+  const MomentsSection({
     super.key,
+    this.momentListBloc,
 
-    /// Practice list params
+    /// Moment list params
     this.ofArtist,
-    this.ofDance,
     this.ofFigure,
     this.ofVideo,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PracticeListBloc>(
-      create: (context) => PracticeListBloc(
-        practiceRepository: RepositoryProvider.of<PracticeRepository>(context),
+    return BlocProvider<MomentListBloc>(
+      create: (context) => MomentListBloc(
+        momentRepository: RepositoryProvider.of<MomentRepository>(context),
         mapper: ModelMapper(),
-      )..add(PracticeListLoad(ofFigure: ofFigure)),
-      child: Builder(
-        builder: (context) {
-          return Column(
-            children: [
-              SectionTile(
-                title: const Text('Practices'),
-                onTap: () {
-                  AutoRouter.of(context).push(
-                    PracticeListRoute(
-                      ofArtist: ofArtist,
-                      ofDance: ofDance,
-                      ofFigure: ofFigure,
-                      ofVideo: ofVideo,
-                      practiceListBloc:
-                          BlocProvider.of<PracticeListBloc>(context),
-                    ),
-                  );
-                },
+      )..add(MomentListLoad(
+          ofArtist: ofArtist,
+          ofFigure: ofFigure,
+          ofVideo: ofVideo,
+        )),
+      child: Builder(builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            SectionTile(
+              title: Text('Moments'),
+            ),
+            SizedBox(
+              height: AppStyles.cardHeight,
+              child: MomentListView(
+                scrollDirection: Axis.horizontal,
               ),
-              const SizedBox(
-                height: AppStyles.cardHeight,
-                child: PracticeListView(
-                  scrollDirection: Axis.horizontal,
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+            ),
+          ],
+        );
+      }),
     );
   }
 }

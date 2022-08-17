@@ -10,11 +10,12 @@ class ConfigState extends Equatable {
   final String? fileName;
 
   final AppPrefsRepository? appPrefsRepository;
-  final DanceRepository? danceRepository;
   final ArtistRepository? artistRepository;
-  final VideoRepository? videoRepository;
+  final DanceRepository? danceRepository;
   final FigureRepository? figureRepository;
+  final MomentRepository? momentRepository;
   final PracticeRepository? practiceRepository;
+  final VideoRepository? videoRepository;
 
   final Error? error;
 
@@ -23,16 +24,18 @@ class ConfigState extends Equatable {
     this.fileDir,
     this.fileName,
     this.appPrefsRepository,
-    this.danceRepository,
     this.artistRepository,
-    this.videoRepository,
+    this.danceRepository,
     this.figureRepository,
+    this.momentRepository,
     this.practiceRepository,
+    this.videoRepository,
     this.error,
   });
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props =>
+      [
         status,
         fileDir,
         fileName,
@@ -40,6 +43,7 @@ class ConfigState extends Equatable {
         artistRepository,
         danceRepository,
         figureRepository,
+        momentRepository,
         practiceRepository,
         videoRepository,
         error,
@@ -53,6 +57,7 @@ class ConfigState extends Equatable {
     ArtistRepository? artistRepository,
     DanceRepository? danceRepository,
     FigureRepository? figureRepository,
+    MomentRepository? momentRepository,
     PracticeRepository? practiceRepository,
     VideoRepository? videoRepository,
     Error? error,
@@ -66,6 +71,7 @@ class ConfigState extends Equatable {
       danceRepository: danceRepository ?? this.danceRepository,
       figureRepository: figureRepository ?? this.figureRepository,
       practiceRepository: practiceRepository ?? this.practiceRepository,
+      momentRepository: momentRepository ?? this.momentRepository,
       videoRepository: videoRepository ?? this.videoRepository,
       error: error ?? this.error,
     );
@@ -73,6 +79,18 @@ class ConfigState extends Equatable {
 
   @override
   String toString() {
-    return 'ConfigurationState{status: $status, fileDir: $fileDir, fileName: $fileName, appPrefsRepository: $appPrefsRepository, danceRepository: $danceRepository, artistRepository: $artistRepository, videoRepository: $videoRepository, figureRepository: $figureRepository, practiceRepository: $practiceRepository, error: $error}';
+    return 'ConfigurationState{'
+        'status: $status, '
+        'fileDir: $fileDir, '
+        'fileName: $fileName, '
+        'appPrefsRepository: $appPrefsRepository, '
+        'danceRepository: $danceRepository, '
+        'artistRepository: $artistRepository, '
+        'figureRepository: $figureRepository, '
+        'momentRepository: $momentRepository, '
+        'practiceRepository: $practiceRepository, '
+        'videoRepository: $videoRepository, '
+        'error: $error'
+        '}';
   }
 }

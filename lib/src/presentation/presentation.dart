@@ -1,7 +1,8 @@
+export 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 export './app.dart';
 export './commons/paths.dart';
 export './commons/styles.dart';
-export './localizations/dance_localization.dart';
 export './mappers/model_mapper.dart';
 export './models/models.dart';
 export './pages/pages.dart';

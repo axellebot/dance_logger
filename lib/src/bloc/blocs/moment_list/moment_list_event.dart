@@ -1,8 +1,6 @@
 import 'package:dance/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import 'moment_list_params.dart';
-
 /// [MomentListEvent] that must be dispatch to [MomentListBloc]
 abstract class MomentListEvent extends Equatable {
   const MomentListEvent();
@@ -56,4 +54,47 @@ class MomentListRefresh extends MomentListEvent {
 
   @override
   String toString() => 'MomentListRefresh{}';
+}
+
+class MomentListSelect extends MomentListEvent {
+  final String momentId;
+
+  const MomentListSelect({
+    required this.momentId,
+  });
+
+  @override
+  List<Object?> get props => [momentId];
+
+  @override
+  String toString() => 'MomentListSelect{'
+      'momentId: $momentId'
+      '}';
+}
+
+class MomentListUnselect extends MomentListEvent {
+  final String? momentId;
+
+  const MomentListUnselect({
+    this.momentId,
+  });
+
+  @override
+  List<Object?> get props => [momentId];
+
+  @override
+  String toString() => 'MomentListUnselect{'
+      'momentId: $momentId'
+      '}';
+}
+
+class MomentListDelete extends MomentListEvent {
+  const MomentListDelete();
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String toString() => 'MomentListDelete{'
+      '}';
 }

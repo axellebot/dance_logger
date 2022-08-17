@@ -10,16 +10,6 @@ abstract class PracticeListEvent extends Equatable {
   String toString() => 'PracticeListEvent{}';
 }
 
-class PracticeListRefresh extends PracticeListEvent {
-  const PracticeListRefresh();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  String toString() => 'PracticeListRefresh{}';
-}
-
 class PracticeListLoad extends PracticeListEvent implements PracticeListParams {
   @override
   final String? ofArtist;
@@ -59,4 +49,57 @@ class PracticeListLoadMore extends PracticeListEvent {
 
   @override
   String toString() => 'PracticeListLoadMore{}';
+}
+
+class PracticeListRefresh extends PracticeListEvent {
+  const PracticeListRefresh();
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String toString() => 'PracticeListRefresh{}';
+}
+
+class PracticeListSelect extends PracticeListEvent {
+  final String practiceId;
+
+  const PracticeListSelect({
+    required this.practiceId,
+  });
+
+  @override
+  List<Object?> get props => [practiceId];
+
+  @override
+  String toString() => 'PracticeListSelect{'
+      'practiceId: $practiceId'
+      '}';
+}
+
+class PracticeListUnselect extends PracticeListEvent {
+  final String? practiceId;
+
+  const PracticeListUnselect({
+    this.practiceId,
+  });
+
+  @override
+  List<Object?> get props => [practiceId];
+
+  @override
+  String toString() => 'PracticeListUnselect{'
+      'practiceId: $practiceId'
+      '}';
+}
+
+class PracticeListDelete extends PracticeListEvent {
+  const PracticeListDelete();
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String toString() => 'PracticeListDelete{'
+      '}';
 }

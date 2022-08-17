@@ -246,7 +246,7 @@ class DanceDatabaseManager
       offset: offset.offset,
     );
     List<ArtistDataModel> artists =
-        results.map((map) => ArtistDataModel.fromJson(map)).toList();
+        results.map((result) => ArtistDataModel.fromJson(result)).toList();
     return artists;
   }
 
@@ -277,7 +277,7 @@ class DanceDatabaseManager
       ],
     );
     List<ArtistDataModel> artists =
-        results.map((map) => ArtistDataModel.fromJson(map)).toList();
+        results.map((result) => ArtistDataModel.fromJson(result)).toList();
     return artists;
   }
 
@@ -306,7 +306,7 @@ class DanceDatabaseManager
       ],
     );
     List<ArtistDataModel> artists =
-        results.map((map) => ArtistDataModel.fromJson(map)).toList();
+        results.map((result) => ArtistDataModel.fromJson(result)).toList();
     return artists;
   }
 
@@ -333,7 +333,7 @@ class DanceDatabaseManager
       ],
     );
     List<ArtistDataModel> artists =
-        results.map((map) => ArtistDataModel.fromJson(map)).toList();
+        results.map((result) => ArtistDataModel.fromJson(result)).toList();
     return artists;
   }
 
@@ -361,8 +361,9 @@ class DanceDatabaseManager
         offset.offset,
       ],
     );
+
     List<ArtistDataModel> artists =
-        results.map((map) => ArtistDataModel.fromJson(map)).toList();
+        results.map((result) => ArtistDataModel.fromJson(result)).toList();
     return artists;
   }
 
@@ -435,7 +436,7 @@ class DanceDatabaseManager
       offset: offset.offset,
     );
     List<DanceDataModel> dances =
-        results.map((map) => DanceDataModel.fromJson(map)).toList();
+        results.map((result) => DanceDataModel.fromJson(result)).toList();
     return dances;
   }
 
@@ -466,7 +467,7 @@ class DanceDatabaseManager
       ],
     );
     List<DanceDataModel> dances =
-        results.map((map) => DanceDataModel.fromJson(map)).toList();
+        results.map((result) => DanceDataModel.fromJson(result)).toList();
     return dances;
   }
 
@@ -539,7 +540,7 @@ class DanceDatabaseManager
       offset: offset.offset,
     );
     List<FigureDataModel> figures =
-        results.map((e) => FigureDataModel.fromJson(e)).toList();
+        results.map((result) => FigureDataModel.fromJson(result)).toList();
     return figures;
   }
 
@@ -568,7 +569,7 @@ class DanceDatabaseManager
       ],
     );
     List<FigureDataModel> figures =
-        results.map((e) => FigureDataModel.fromJson(e)).toList();
+        results.map((result) => FigureDataModel.fromJson(result)).toList();
     return figures;
   }
 
@@ -593,7 +594,7 @@ class DanceDatabaseManager
       ],
     );
     List<FigureDataModel> figures =
-        results.map((e) => FigureDataModel.fromJson(e)).toList();
+        results.map((result) => FigureDataModel.fromJson(result)).toList();
     return figures;
   }
 
@@ -620,7 +621,7 @@ class DanceDatabaseManager
       ],
     );
     List<FigureDataModel> figures =
-        results.map((e) => FigureDataModel.fromJson(e)).toList();
+        results.map((result) => FigureDataModel.fromJson(result)).toList();
     return figures;
   }
 
@@ -783,7 +784,7 @@ class DanceDatabaseManager
       offset: offset.offset,
     );
     List<VideoDataModel> videos =
-        results.map((e) => VideoDataModel.fromJson(e)).toList();
+        results.map((result) => VideoDataModel.fromJson(result)).toList();
     return videos;
   }
 
@@ -813,7 +814,7 @@ class DanceDatabaseManager
     );
 
     List<VideoDataModel> videos =
-        results.map((e) => VideoDataModel.fromJson(e)).toList();
+        results.map((result) => VideoDataModel.fromJson(result)).toList();
     return videos;
   }
 
@@ -843,7 +844,7 @@ class DanceDatabaseManager
     );
 
     List<VideoDataModel> videos =
-        results.map((e) => VideoDataModel.fromJson(e)).toList();
+        results.map((result) => VideoDataModel.fromJson(result)).toList();
     return videos;
   }
 
@@ -871,7 +872,7 @@ class DanceDatabaseManager
     );
 
     List<VideoDataModel> videos =
-        results.map((e) => VideoDataModel.fromJson(e)).toList();
+        results.map((result) => VideoDataModel.fromJson(result)).toList();
     return videos;
   }
 

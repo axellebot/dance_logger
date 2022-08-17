@@ -10,6 +10,8 @@ export './error_widget.dart';
 export './figure_item_widget.dart';
 export './figure_list_widget.dart';
 export './loading_widget.dart';
+export './moment_item_widget.dart';
+export './moment_list_widget.dart';
 export './practice_item_widget.dart';
 export './practice_list_widget.dart';
 export './quick_settings_widget.dart';

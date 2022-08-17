@@ -99,7 +99,7 @@ class PracticeDetailsPage extends StatelessWidget implements AutoRouteWrapper {
           builder: (context, state) {
             switch (state.status) {
               case FigureDetailStatus.success:
-                return FigureItemTile(figure: state.figure!);
+                return FigureListTile(figure: state.figure!);
               default:
                 return ErrorTile(
                   error: NotImplementedYetError('${state.status}'),

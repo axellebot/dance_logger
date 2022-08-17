@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
@@ -64,7 +65,7 @@ class _VideoListViewState extends State<VideoListView> {
                   if (index < state.videos.length) {
                     final VideoViewModel video = state.videos[index];
                     final VideoListBloc videoListBloc =
-                        BlocProvider.of<VideoListBloc>(context);
+                    BlocProvider.of<VideoListBloc>(context);
                     switch (widget.scrollDirection) {
                       case Axis.vertical:
                         if (state.selectedVideos.isEmpty) {
@@ -134,5 +135,65 @@ class _VideoListViewState extends State<VideoListView> {
       ..removeListener(_onScroll)
       ..dispose();
     super.dispose();
+  }
+}
+
+class VideosSection extends StatelessWidget implements VideoListParams {
+  /// Video list params
+  @override
+  final String? ofArtist;
+  @override
+  final String? ofDance;
+  @override
+  final String? ofFigure;
+
+  const VideosSection({
+    super.key,
+
+    /// Video list params
+    this.ofArtist,
+    this.ofDance,
+    this.ofFigure,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<VideoListBloc>(
+      create: (context) => VideoListBloc(
+        videoRepository: RepositoryProvider.of<VideoRepository>(context),
+        mapper: ModelMapper(),
+      )..add(VideoListLoad(
+          ofArtist: ofArtist,
+          ofDance: ofDance,
+          ofFigure: ofFigure,
+        )),
+      child: Builder(
+        builder: (context) {
+          return Column(
+            children: [
+              SectionTile(
+                title: const Text('Videos'),
+                onTap: () {
+                  AutoRouter.of(context).push(
+                    VideoListRoute(
+                      ofArtist: ofArtist,
+                      ofDance: ofDance,
+                      ofFigure: ofFigure,
+                      videoListBloc: BlocProvider.of<VideoListBloc>(context),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(
+                height: AppStyles.cardHeight,
+                child: VideoListView(
+                  scrollDirection: Axis.horizontal,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 }

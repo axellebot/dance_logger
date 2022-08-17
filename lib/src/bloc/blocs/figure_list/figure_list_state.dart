@@ -17,6 +17,7 @@ class FigureListState extends Equatable implements FigureListParams {
 
   final List<FigureViewModel> figures;
   final bool hasReachedMax;
+  final List<String> selectedFigures;
   final Error? error;
 
   const FigureListState({
@@ -26,12 +27,21 @@ class FigureListState extends Equatable implements FigureListParams {
     this.ofVideo,
     this.figures = const <FigureViewModel>[],
     this.hasReachedMax = false,
+    this.selectedFigures = const <String>[],
     this.error,
   });
 
   @override
-  List<Object?> get props =>
-      [status, ofArtist, ofDance, ofVideo, figures, hasReachedMax, error];
+  List<Object?> get props => [
+        status,
+        ofArtist,
+        ofDance,
+        ofVideo,
+        figures,
+        hasReachedMax,
+        selectedFigures,
+        error,
+      ];
 
   FigureListState copyWith({
     FigureListStatus? status,
@@ -40,6 +50,7 @@ class FigureListState extends Equatable implements FigureListParams {
     String? ofVideo,
     List<FigureViewModel>? figures,
     bool? hasReachedMax,
+    List<String>? selectedFigures,
     Error? error,
   }) {
     return FigureListState(
@@ -49,6 +60,7 @@ class FigureListState extends Equatable implements FigureListParams {
       ofVideo: ofVideo ?? this.ofVideo,
       figures: figures ?? this.figures,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      selectedFigures: selectedFigures ?? this.selectedFigures,
       error: error ?? this.error,
     );
   }
@@ -62,6 +74,7 @@ class FigureListState extends Equatable implements FigureListParams {
         'ofVideo: $ofVideo, '
         'figures: $figures, '
         'hasReachedMax: $hasReachedMax, '
+        'selectedFigures: $selectedFigures, '
         'error: $error'
         '}';
   }

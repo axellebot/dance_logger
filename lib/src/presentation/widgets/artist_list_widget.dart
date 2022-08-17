@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
@@ -65,7 +66,7 @@ class _ArtistListViewState extends State<ArtistListView> {
                   if (index < state.artists.length) {
                     final ArtistViewModel artist = state.artists[index];
                     final ArtistListBloc artistListBloc =
-                        BlocProvider.of<ArtistListBloc>(context);
+                    BlocProvider.of<ArtistListBloc>(context);
                     switch (widget.scrollDirection) {
                       case Axis.vertical:
                         if (state.selectedArtists.isEmpty) {
@@ -136,5 +137,61 @@ class _ArtistListViewState extends State<ArtistListView> {
       ..removeListener(_onScroll)
       ..dispose();
     super.dispose();
+  }
+}
+
+class ArtistsSection extends StatelessWidget implements ArtistListParams {
+  /// Artist list params
+  @override
+  final String? ofDance;
+  @override
+  final String? ofFigure;
+  @override
+  final String? ofVideo;
+
+  const ArtistsSection({
+    super.key,
+
+    /// Artist list params
+    this.ofDance,
+    this.ofFigure,
+    this.ofVideo,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<ArtistListBloc>(
+      create: (context) => ArtistListBloc(
+        artistRepository: RepositoryProvider.of<ArtistRepository>(context),
+        mapper: ModelMapper(),
+      )..add(ArtistListLoad(
+          ofDance: ofDance,
+          ofFigure: ofFigure,
+          ofVideo: ofVideo,
+        )),
+      child: Builder(builder: (context) {
+        return Column(
+          children: [
+            SectionTile(
+              title: const Text('Artists'),
+              onTap: () => AutoRouter.of(context).push(
+                ArtistListRoute(
+                  ofDance: ofDance,
+                  ofFigure: ofFigure,
+                  ofVideo: ofVideo,
+                  artistListBloc: BlocProvider.of<ArtistListBloc>(context),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: AppStyles.cardHeight,
+              child: ArtistListView(
+                scrollDirection: Axis.horizontal,
+              ),
+            ),
+          ],
+        );
+      }),
+    );
   }
 }

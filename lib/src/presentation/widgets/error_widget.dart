@@ -129,8 +129,8 @@ class ErrorTile extends CustomErrorWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: const ErrorIcon(),
-      title: Text(
-          DanceLocalizations.of(context)?.errorOccurred ?? 'Error occurred'),
+      title:
+          Text(AppLocalizations.of(context)?.errorOccurred ?? 'Error occurred'),
       subtitle: ErrorText(
         error: error,
         textAlign: TextAlign.left,

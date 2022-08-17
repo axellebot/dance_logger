@@ -51,9 +51,9 @@ class FigureDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                   SliverList(
                     delegate: SliverChildListDelegate(
                       <Widget>[
-                        _buildArtistListView(),
-                        _buildVideoListView(),
-                        _buildPracticeListView(),
+                        ArtistsSection(ofFigure: figureId),
+                        VideosSection(ofFigure: figureId),
+                        PracticeSection(ofFigure: figureId),
                         EntityInfoListTile(
                           createdAt: state.figure!.createdAt,
                           updateAt: state.figure!.updatedAt,
@@ -75,105 +75,6 @@ class FigureDetailsPage extends StatelessWidget implements AutoRouteWrapper {
       },
     );
   }
-
-  Widget _buildArtistListView() => BlocProvider<ArtistListBloc>(
-        create: (context) => ArtistListBloc(
-          artistRepository: RepositoryProvider.of<ArtistRepository>(context),
-          mapper: ModelMapper(),
-        )..add(ArtistListLoad(ofFigure: figureId)),
-        child: Builder(
-          builder: (context) {
-            return Column(
-              children: [
-                SectionTile(
-                  title: const Text('Artists'),
-                  onTap: () {
-                    AutoRouter.of(context).push(
-                      ArtistListRoute(
-                        ofFigure: figureId,
-                        artistListBloc:
-                            BlocProvider.of<ArtistListBloc>(context),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(
-                  height: AppStyles.cardHeight,
-                  child: ArtistListView(
-                    scrollDirection: Axis.horizontal,
-                  ),
-                )
-              ],
-            );
-          },
-        ),
-      );
-
-  Widget _buildVideoListView() => BlocProvider<VideoListBloc>(
-        create: (context) => VideoListBloc(
-          videoRepository: RepositoryProvider.of<VideoRepository>(context),
-          mapper: ModelMapper(),
-        )..add(VideoListLoad(ofFigure: figureId)),
-        child: Builder(
-          builder: (context) {
-            return Column(
-              children: [
-                SectionTile(
-                  title: const Text('Videos'),
-                  onTap: () {
-                    AutoRouter.of(context).push(
-                      VideoListRoute(
-                        ofFigure: figureId,
-                        videoListBloc: BlocProvider.of<VideoListBloc>(context),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(
-                  height: AppStyles.cardHeight,
-                  child: VideoListView(
-                    scrollDirection: Axis.horizontal,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      );
-
-  Widget _buildPracticeListView() => BlocProvider<PracticeListBloc>(
-        create: (context) => PracticeListBloc(
-          practiceRepository:
-              RepositoryProvider.of<PracticeRepository>(context),
-          mapper: ModelMapper(),
-        )..add(PracticeListLoad(ofFigure: figureId)),
-        child: Builder(
-          builder: (context) {
-            return Column(
-              children: [
-                SectionTile(
-                  title: const Text('Practices'),
-                  onTap: () {
-                    AutoRouter.of(context).push(
-                      PracticeListRoute(
-                        ofFigure: figureId,
-                        practiceListBloc:
-                            BlocProvider.of<PracticeListBloc>(context),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(
-                  height: AppStyles.cardHeight,
-                  child: PracticeListView(
-                    scrollDirection: Axis.horizontal,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      );
 
   @override
   Widget wrappedRoute(BuildContext context) {
@@ -213,7 +114,7 @@ class FigureEditPage extends StatelessWidget implements AutoRouteWrapper {
     super.key,
     FigureDetailBloc? figureBloc,
     String? figureId,
-  }) : assert(figureBloc != null || figureId != null, 'Either ') {
+  }) : assert(figureBloc != null || figureId != null) {
     _figureId = figureId;
     _figureBloc = figureBloc;
   }
