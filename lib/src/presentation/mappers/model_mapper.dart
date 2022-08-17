@@ -88,8 +88,9 @@ class ModelMapper {
   MomentViewModel toMomentViewModel(MomentEntity entity) {
     return MomentViewModel(
       id: entity.id,
-      startTime: entity.startTime,
-      endTime: entity.endTime,
+      startTime: Duration(seconds: entity.startTime),
+      endTime:
+          entity.endTime != null ? Duration(seconds: entity.endTime!) : null,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       version: entity.version,

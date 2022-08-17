@@ -9,10 +9,13 @@ import 'package:provider/provider.dart';
 
 class VideoListPage extends StatelessWidget
     implements AutoRouteWrapper, VideoListParams {
+  /// Page params
   final bool showAppBar;
+
+  /// ListBloc params
   final VideoListBloc? videoListBloc;
 
-  /// Video list params
+  /// VideoListParams
   @override
   final String? ofArtist;
   @override
@@ -25,7 +28,7 @@ class VideoListPage extends StatelessWidget
     this.showAppBar = true,
     this.videoListBloc,
 
-    /// Video list params
+    /// VideoListParams
     this.ofArtist,
     this.ofDance,
     this.ofFigure,
@@ -70,9 +73,10 @@ class VideoListPage extends StatelessWidget
               return videoListBloc.stream
                   .firstWhere((e) => e.status != VideoListStatus.refreshing);
             },
-            child: const VideoListView(
+            child: VideoListView(
+              videoListBloc: videoListBloc,
               scrollDirection: Axis.vertical,
-              physics: AlwaysScrollableScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(),
             ),
           ),
         );
@@ -82,24 +86,22 @@ class VideoListPage extends StatelessWidget
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    if (videoListBloc != null) {
-      return BlocProvider<VideoListBloc>.value(
-        value: videoListBloc!,
-        child: this,
-      );
-    } else {
-      final repo = Provider.of<VideoRepository>(context, listen: false);
-      return BlocProvider<VideoListBloc>(
-        create: (_) => VideoListBloc(
-          videoRepository: repo,
-          mapper: ModelMapper(),
-        )..add(VideoListLoad(
-            ofArtist: ofArtist,
-            ofDance: ofDance,
-            ofFigure: ofFigure,
-          )),
-        child: this,
-      );
-    }
+    return (videoListBloc != null)
+        ? BlocProvider<VideoListBloc>.value(
+            value: videoListBloc!,
+            child: this,
+          )
+        : BlocProvider<VideoListBloc>(
+            create: (context) => VideoListBloc(
+              videoRepository:
+                  Provider.of<VideoRepository>(context, listen: false),
+              mapper: ModelMapper(),
+            )..add(VideoListLoad(
+                ofArtist: ofArtist,
+                ofDance: ofDance,
+                ofFigure: ofFigure,
+              )),
+            child: this,
+          );
   }
 }

@@ -64,6 +64,44 @@ class CheckboxDanceListTile extends StatelessWidget {
   }
 }
 
+class DanceCard extends StatelessWidget {
+  final DanceViewModel dance;
+
+  const DanceCard({
+    super.key,
+    required this.dance,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: AppStyles.cardWidth,
+      height: AppStyles.cardHeight,
+      child: Card(
+        elevation: AppStyles.cardElevation,
+        child: GestureDetector(
+          onTap: () {
+            AutoRouter.of(context).push(
+              DanceDetailsRoute(danceId: dance.id),
+            );
+          },
+          child: Container(
+            padding: AppStyles.cardPadding,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(dance.name),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class DanceChip extends StatelessWidget {
   final DanceViewModel dance;
 

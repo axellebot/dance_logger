@@ -1,16 +1,37 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
-class DanceListView extends StatefulWidget {
+class DanceListView extends StatefulWidget implements DanceListParams {
+  /// ListBloc params
+  final DanceListBloc? danceListBloc;
+
+  /// DanceListParams
+  @override
+  final String? ofArtist;
+  @override
+  final String? ofVideo;
+
+  /// ListView params
   final Axis scrollDirection;
   final ScrollPhysics? physics;
   final EdgeInsetsGeometry? padding;
 
   const DanceListView({
     super.key,
+
+    /// ListBloc params
+    this.danceListBloc,
+
+    /// ArtistListParams
+    this.ofArtist,
+    this.ofVideo,
+
+    /// ListView params
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
@@ -33,7 +54,7 @@ class _DanceListViewState extends State<DanceListView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DanceListBloc, DanceListState>(
+    final Widget mainContent = BlocBuilder<DanceListBloc, DanceListState>(
       builder: (context, state) {
         switch (state.status) {
           case DanceListStatus.loading:
@@ -65,7 +86,7 @@ class _DanceListViewState extends State<DanceListView> {
                   if (index < state.dances.length) {
                     final DanceViewModel dance = state.dances[index];
                     final DanceListBloc danceListBloc =
-                        BlocProvider.of<DanceListBloc>(context);
+                    BlocProvider.of<DanceListBloc>(context);
                     switch (widget.scrollDirection) {
                       case Axis.vertical:
                         if (state.selectedDances.isEmpty) {
@@ -91,7 +112,7 @@ class _DanceListViewState extends State<DanceListView> {
                           );
                         }
                       case Axis.horizontal:
-                        return DanceChip(dance: state.dances[index]);
+                        return DanceCard(dance: dance);
                     }
                   } else {
                     switch (widget.scrollDirection) {
@@ -114,6 +135,23 @@ class _DanceListViewState extends State<DanceListView> {
         }
       },
     );
+
+    return (widget.danceListBloc != null)
+        ? BlocProvider<DanceListBloc>.value(
+            value: widget.danceListBloc!,
+            child: mainContent,
+          )
+        : BlocProvider(
+            create: (context) => DanceListBloc(
+              danceRepository:
+                  Provider.of<DanceRepository>(context, listen: false),
+              mapper: ModelMapper(),
+            )..add(DanceListLoad(
+                ofArtist: widget.ofArtist,
+                ofVideo: widget.ofVideo,
+              )),
+            child: mainContent,
+          );
   }
 
   void _onScroll() {
@@ -136,5 +174,73 @@ class _DanceListViewState extends State<DanceListView> {
       ..removeListener(_onScroll)
       ..dispose();
     super.dispose();
+  }
+}
+
+class DancesSection extends StatelessWidget implements DanceListParams {
+  /// ListBloc params
+  final DanceListBloc? danceListBloc;
+
+  /// DanceListParams
+  @override
+  final String? ofArtist;
+  @override
+  final String? ofVideo;
+
+  const DancesSection({
+    super.key,
+
+    /// ListBloc params
+    this.danceListBloc,
+
+    /// DanceListParams
+    this.ofArtist,
+    this.ofVideo,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final Widget mainContent = Builder(
+      builder: (context) {
+        return Column(
+          children: [
+            SectionTile(
+              title: const Text('Dances'),
+              onTap: () {
+                AutoRouter.of(context).push(
+                  DanceListRoute(
+                    danceListBloc: BlocProvider.of<DanceListBloc>(context),
+                  ),
+                );
+              },
+            ),
+            SizedBox(
+              height: AppStyles.cardHeight,
+              child: DanceListView(
+                danceListBloc: BlocProvider.of<DanceListBloc>(context),
+                scrollDirection: Axis.horizontal,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    return (danceListBloc != null)
+        ? BlocProvider<DanceListBloc>.value(
+            value: danceListBloc!,
+            child: mainContent,
+          )
+        : BlocProvider(
+            create: (context) => DanceListBloc(
+              danceRepository:
+                  Provider.of<DanceRepository>(context, listen: false),
+              mapper: ModelMapper(),
+            )..add(DanceListLoad(
+                ofArtist: ofArtist,
+                ofVideo: ofVideo,
+              )),
+            child: mainContent,
+          );
   }
 }

@@ -134,7 +134,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
               ..remove(event.danceId),
           )
         : state.copyWith(
-      selectedDances: [],
+            selectedDances: [],
           ));
   }
 

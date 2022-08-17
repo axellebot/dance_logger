@@ -1,7 +1,6 @@
+import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
-
-import 'dance_list_params.dart';
 
 enum DanceListStatus { initial, loading, refreshing, success, failure }
 
@@ -30,13 +29,13 @@ class DanceListState extends Equatable implements DanceListParams {
 
   @override
   List<Object?> get props => [
-        status,
-        ofArtist,
-        dances,
-        hasReachedMax,
-        selectedDances,
-        error,
-      ];
+    status,
+    ofArtist,
+    dances,
+    hasReachedMax,
+    selectedDances,
+    error,
+  ];
 
   DanceListState copyWith({
     DanceListStatus? status,

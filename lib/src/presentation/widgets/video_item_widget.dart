@@ -95,9 +95,11 @@ class VideoCard extends StatelessWidget {
       child: Card(
         elevation: AppStyles.cardElevation,
         child: GestureDetector(
-          onTap: () => AutoRouter.of(context).push(
-            VideoDetailsRoute(videoId: video.id),
-          ),
+          onTap: () {
+            AutoRouter.of(context).push(
+              VideoDetailsRoute(videoId: video.id),
+            );
+          },
           child: Container(
             padding: AppStyles.cardPadding,
             child: Column(

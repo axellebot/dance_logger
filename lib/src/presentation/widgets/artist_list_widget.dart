@@ -4,14 +4,37 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
-class ArtistListView extends StatefulWidget {
+class ArtistListView extends StatefulWidget implements ArtistListParams {
+  /// ListBloc params
+  final ArtistListBloc? artistListBloc;
+
+  /// ArtistListParams
+  @override
+  final String? ofDance;
+  @override
+  final String? ofFigure;
+  @override
+  final String? ofVideo;
+
+  /// ListView params
   final Axis scrollDirection;
   final ScrollPhysics? physics;
   final EdgeInsets? padding;
 
   const ArtistListView({
     super.key,
+
+    /// ListBloc params
+    this.artistListBloc,
+
+    /// ArtistListParams
+    this.ofDance,
+    this.ofFigure,
+    this.ofVideo,
+
+    /// ListView params
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
@@ -34,7 +57,7 @@ class _ArtistListViewState extends State<ArtistListView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ArtistListBloc, ArtistListState>(
+    final Widget mainContent = BlocBuilder<ArtistListBloc, ArtistListState>(
       builder: (BuildContext context, ArtistListState state) {
         switch (state.status) {
           case ArtistListStatus.loading:
@@ -66,7 +89,7 @@ class _ArtistListViewState extends State<ArtistListView> {
                   if (index < state.artists.length) {
                     final ArtistViewModel artist = state.artists[index];
                     final ArtistListBloc artistListBloc =
-                    BlocProvider.of<ArtistListBloc>(context);
+                        BlocProvider.of<ArtistListBloc>(context);
                     switch (widget.scrollDirection) {
                       case Axis.vertical:
                         if (state.selectedArtists.isEmpty) {
@@ -115,6 +138,24 @@ class _ArtistListViewState extends State<ArtistListView> {
         }
       },
     );
+
+    return (widget.artistListBloc != null)
+        ? BlocProvider<ArtistListBloc>.value(
+            value: widget.artistListBloc!,
+            child: mainContent,
+          )
+        : BlocProvider(
+            create: (context) => ArtistListBloc(
+              artistRepository:
+                  Provider.of<ArtistRepository>(context, listen: false),
+              mapper: ModelMapper(),
+            )..add(ArtistListLoad(
+                ofDance: widget.ofDance,
+                ofFigure: widget.ofFigure,
+                ofVideo: widget.ofVideo,
+              )),
+            child: mainContent,
+          );
   }
 
   void _onScroll() {
@@ -141,7 +182,10 @@ class _ArtistListViewState extends State<ArtistListView> {
 }
 
 class ArtistsSection extends StatelessWidget implements ArtistListParams {
-  /// Artist list params
+  /// ListBloc params
+  final ArtistListBloc? artistListBloc;
+
+  /// ArtistListParams
   @override
   final String? ofDance;
   @override
@@ -152,7 +196,10 @@ class ArtistsSection extends StatelessWidget implements ArtistListParams {
   const ArtistsSection({
     super.key,
 
-    /// Artist list params
+    /// ListBloc params
+    this.artistListBloc,
+
+    /// ArtistListParams
     this.ofDance,
     this.ofFigure,
     this.ofVideo,
@@ -160,38 +207,48 @@ class ArtistsSection extends StatelessWidget implements ArtistListParams {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ArtistListBloc>(
-      create: (context) => ArtistListBloc(
-        artistRepository: RepositoryProvider.of<ArtistRepository>(context),
-        mapper: ModelMapper(),
-      )..add(ArtistListLoad(
-          ofDance: ofDance,
-          ofFigure: ofFigure,
-          ofVideo: ofVideo,
-        )),
-      child: Builder(builder: (context) {
+    final Widget mainContent = Builder(
+      builder: (context) {
         return Column(
           children: [
             SectionTile(
               title: const Text('Artists'),
-              onTap: () => AutoRouter.of(context).push(
-                ArtistListRoute(
-                  ofDance: ofDance,
-                  ofFigure: ofFigure,
-                  ofVideo: ofVideo,
-                  artistListBloc: BlocProvider.of<ArtistListBloc>(context),
-                ),
-              ),
+              onTap: () {
+                AutoRouter.of(context).push(
+                  ArtistListRoute(
+                    artistListBloc: BlocProvider.of<ArtistListBloc>(context),
+                  ),
+                );
+              },
             ),
-            const SizedBox(
+            SizedBox(
               height: AppStyles.cardHeight,
               child: ArtistListView(
+                artistListBloc: BlocProvider.of<ArtistListBloc>(context),
                 scrollDirection: Axis.horizontal,
               ),
             ),
           ],
         );
-      }),
+      },
     );
+
+    return (artistListBloc != null)
+        ? BlocProvider<ArtistListBloc>.value(
+            value: artistListBloc!,
+            child: mainContent,
+          )
+        : BlocProvider(
+            create: (context) => ArtistListBloc(
+              artistRepository:
+                  Provider.of<ArtistRepository>(context, listen: false),
+              mapper: ModelMapper(),
+            )..add(ArtistListLoad(
+                ofDance: ofDance,
+                ofFigure: ofFigure,
+                ofVideo: ofVideo,
+              )),
+            child: mainContent,
+          );
   }
 }

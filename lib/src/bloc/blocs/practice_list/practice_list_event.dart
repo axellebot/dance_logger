@@ -1,6 +1,5 @@
+import 'package:dance/domain.dart';
 import 'package:equatable/equatable.dart';
-
-import 'practice_list_params.dart';
 
 /// [PracticeListEvent] that must be dispatch to [PracticeListBloc]
 abstract class PracticeListEvent extends Equatable {
@@ -11,6 +10,7 @@ abstract class PracticeListEvent extends Equatable {
 }
 
 class PracticeListLoad extends PracticeListEvent implements PracticeListParams {
+  /// PracticeList params
   @override
   final String? ofArtist;
   @override
@@ -21,6 +21,7 @@ class PracticeListLoad extends PracticeListEvent implements PracticeListParams {
   final String? ofVideo;
 
   const PracticeListLoad({
+    /// PracticeList params
     this.ofArtist,
     this.ofDance,
     this.ofFigure,

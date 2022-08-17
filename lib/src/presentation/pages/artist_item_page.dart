@@ -74,6 +74,7 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                   SliverList(
                     delegate: SliverChildListDelegate(
                       <Widget>[
+                        DancesSection(ofArtist: artistId),
                         FiguresSection(ofArtist: artistId),
                         VideosSection(ofArtist: artistId),
                         EntityInfoListTile(

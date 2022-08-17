@@ -3,14 +3,37 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
-class MomentListView extends StatefulWidget {
+class MomentListView extends StatefulWidget implements MomentListParams {
+  /// ListBloc params
+  final MomentListBloc? momentListBloc;
+
+  /// MomentListParams
+  @override
+  final String? ofArtist;
+  @override
+  final String? ofFigure;
+  @override
+  final String? ofVideo;
+
+  /// ListView params
   final Axis scrollDirection;
   final ScrollPhysics? physics;
   final EdgeInsets? padding;
 
   const MomentListView({
     super.key,
+
+    /// ListBloc params
+    this.momentListBloc,
+
+    /// ArtistListParams
+    this.ofArtist,
+    this.ofFigure,
+    this.ofVideo,
+
+    /// ListView params
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
@@ -33,7 +56,7 @@ class _MomentListViewState extends State<MomentListView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MomentListBloc, MomentListState>(
+    final Widget mainContent = BlocBuilder<MomentListBloc, MomentListState>(
       builder: (BuildContext context, MomentListState state) {
         switch (state.status) {
           case MomentListStatus.loading:
@@ -114,6 +137,24 @@ class _MomentListViewState extends State<MomentListView> {
         }
       },
     );
+
+    return (widget.momentListBloc != null)
+        ? BlocProvider<MomentListBloc>.value(
+            value: widget.momentListBloc!,
+            child: mainContent,
+          )
+        : BlocProvider(
+            create: (context) => MomentListBloc(
+              momentRepository:
+                  Provider.of<MomentRepository>(context, listen: false),
+              mapper: ModelMapper(),
+            )..add(MomentListLoad(
+                ofArtist: widget.ofArtist,
+                ofFigure: widget.ofFigure,
+                ofVideo: widget.ofVideo,
+              )),
+            child: mainContent,
+          );
   }
 
   void _onScroll() {
@@ -140,9 +181,10 @@ class _MomentListViewState extends State<MomentListView> {
 }
 
 class MomentsSection extends StatelessWidget implements MomentListParams {
+  /// ListBloc params
   final MomentListBloc? momentListBloc;
 
-  /// Moment list params
+  /// MomentListParams
   @override
   final String? ofArtist;
   @override
@@ -152,9 +194,11 @@ class MomentsSection extends StatelessWidget implements MomentListParams {
 
   const MomentsSection({
     super.key,
+
+    /// ListBloc params
     this.momentListBloc,
 
-    /// Moment list params
+    /// MomentListParams
     this.ofArtist,
     this.ofFigure,
     this.ofVideo,
@@ -162,31 +206,41 @@ class MomentsSection extends StatelessWidget implements MomentListParams {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<MomentListBloc>(
-      create: (context) => MomentListBloc(
-        momentRepository: RepositoryProvider.of<MomentRepository>(context),
-        mapper: ModelMapper(),
-      )..add(MomentListLoad(
-          ofArtist: ofArtist,
-          ofFigure: ofFigure,
-          ofVideo: ofVideo,
-        )),
-      child: Builder(builder: (context) {
+    final Widget mainContent = Builder(
+      builder: (context) {
         return Column(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            SectionTile(
+          children: [
+            const SectionTile(
               title: Text('Moments'),
             ),
             SizedBox(
-              height: AppStyles.cardHeight,
+              height: AppStyles.chipHeight,
               child: MomentListView(
+                momentListBloc: BlocProvider.of<MomentListBloc>(context),
                 scrollDirection: Axis.horizontal,
               ),
             ),
           ],
         );
-      }),
+      },
     );
+
+    return (momentListBloc != null)
+        ? BlocProvider<MomentListBloc>.value(
+            value: momentListBloc!,
+            child: mainContent,
+          )
+        : BlocProvider(
+            create: (context) => MomentListBloc(
+              momentRepository:
+                  Provider.of<MomentRepository>(context, listen: false),
+              mapper: ModelMapper(),
+            )..add(MomentListLoad(
+                ofArtist: ofArtist,
+                ofVideo: ofVideo,
+              )),
+            child: mainContent,
+          );
   }
 }

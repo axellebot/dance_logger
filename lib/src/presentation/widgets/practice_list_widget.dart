@@ -4,14 +4,40 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
-class PracticeListView extends StatefulWidget {
+class PracticeListView extends StatefulWidget implements PracticeListParams {
+  /// ListBloc params
+  final PracticeListBloc? practiceListBloc;
+
+  /// PracticeListParams
+  @override
+  final String? ofArtist;
+  @override
+  final String? ofDance;
+  @override
+  final String? ofFigure;
+  @override
+  final String? ofVideo;
+
+  /// ListView params
   final Axis scrollDirection;
   final ScrollPhysics? physics;
   final EdgeInsets? padding;
 
   const PracticeListView({
     super.key,
+
+    /// ListBloc params
+    this.practiceListBloc,
+
+    /// PracticeListParams
+    this.ofArtist,
+    this.ofDance,
+    this.ofFigure,
+    this.ofVideo,
+
+    /// ListView params
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
@@ -34,7 +60,7 @@ class _PracticeListViewState extends State<PracticeListView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PracticeListBloc, PracticeListState>(
+    final Widget mainContent = BlocBuilder<PracticeListBloc, PracticeListState>(
       builder: (BuildContext context, PracticeListState state) {
         switch (state.status) {
           case PracticeListStatus.loading:
@@ -118,6 +144,24 @@ class _PracticeListViewState extends State<PracticeListView> {
         }
       },
     );
+    return (widget.practiceListBloc != null)
+        ? BlocProvider<PracticeListBloc>.value(
+            value: widget.practiceListBloc!,
+            child: mainContent,
+          )
+        : BlocProvider(
+            create: (context) => PracticeListBloc(
+              practiceRepository:
+                  Provider.of<PracticeRepository>(context, listen: false),
+              mapper: ModelMapper(),
+            )..add(PracticeListLoad(
+                ofArtist: widget.ofArtist,
+                ofDance: widget.ofDance,
+                ofFigure: widget.ofFigure,
+                ofVideo: widget.ofVideo,
+              )),
+            child: mainContent,
+          );
   }
 
   void _onScroll() {
@@ -143,8 +187,11 @@ class _PracticeListViewState extends State<PracticeListView> {
   }
 }
 
-class PracticeSection extends StatelessWidget implements PracticeListParams {
-  /// Practice list params
+class PracticesSection extends StatelessWidget implements PracticeListParams {
+  /// ListBloc params
+  final PracticeListBloc? practiceListBloc;
+
+  /// PracticeListParams
   @override
   final String? ofArtist;
   @override
@@ -154,10 +201,13 @@ class PracticeSection extends StatelessWidget implements PracticeListParams {
   @override
   final String? ofVideo;
 
-  const PracticeSection({
+  const PracticesSection({
     super.key,
 
-    /// Practice list params
+    /// ListBloc params
+    this.practiceListBloc,
+
+    /// PracticeListParams
     this.ofArtist,
     this.ofDance,
     this.ofFigure,
@@ -166,40 +216,54 @@ class PracticeSection extends StatelessWidget implements PracticeListParams {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PracticeListBloc>(
-      create: (context) => PracticeListBloc(
-        practiceRepository: RepositoryProvider.of<PracticeRepository>(context),
-        mapper: ModelMapper(),
-      )..add(PracticeListLoad(ofFigure: ofFigure)),
-      child: Builder(
-        builder: (context) {
-          return Column(
-            children: [
-              SectionTile(
-                title: const Text('Practices'),
-                onTap: () {
-                  AutoRouter.of(context).push(
-                    PracticeListRoute(
-                      ofArtist: ofArtist,
-                      ofDance: ofDance,
-                      ofFigure: ofFigure,
-                      ofVideo: ofVideo,
-                      practiceListBloc:
-                          BlocProvider.of<PracticeListBloc>(context),
-                    ),
-                  );
-                },
+    final Widget mainContent = Builder(
+      builder: (context) {
+        return Column(
+          children: [
+            SectionTile(
+              title: const Text('Practices'),
+              onTap: () {
+                AutoRouter.of(context).push(
+                  PracticeListRoute(
+                    practiceListBloc:
+                        BlocProvider.of<PracticeListBloc>(context),
+                  ),
+                );
+              },
+            ),
+            SizedBox(
+              height: AppStyles.cardHeight,
+              child: PracticeListView(
+                practiceListBloc: BlocProvider.of<PracticeListBloc>(context),
+                ofArtist: ofArtist,
+                ofDance: ofDance,
+                ofFigure: ofFigure,
+                ofVideo: ofVideo,
+                scrollDirection: Axis.horizontal,
               ),
-              const SizedBox(
-                height: AppStyles.cardHeight,
-                child: PracticeListView(
-                  scrollDirection: Axis.horizontal,
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+            ),
+          ],
+        );
+      },
     );
+
+    return (practiceListBloc != null)
+        ? BlocProvider<PracticeListBloc>.value(
+            value: practiceListBloc!,
+            child: mainContent,
+          )
+        : BlocProvider(
+            create: (context) => PracticeListBloc(
+              practiceRepository:
+                  Provider.of<PracticeRepository>(context, listen: false),
+              mapper: ModelMapper(),
+            )..add(PracticeListLoad(
+                ofArtist: ofArtist,
+                ofDance: ofDance,
+                ofFigure: ofFigure,
+                ofVideo: ofVideo,
+              )),
+            child: mainContent,
+          );
   }
 }

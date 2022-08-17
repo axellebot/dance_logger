@@ -4,14 +4,37 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
-class FigureListView extends StatefulWidget {
+class FigureListView extends StatefulWidget implements FigureListParams {
+  /// ListBloc params
+  final FigureListBloc? figureListBloc;
+
+  /// FigureListParams
+  @override
+  final String? ofArtist;
+  @override
+  final String? ofDance;
+  @override
+  final String? ofVideo;
+
+  /// ListView params
   final Axis scrollDirection;
   final ScrollPhysics? physics;
   final EdgeInsets? padding;
 
   const FigureListView({
     super.key,
+
+    /// ListBloc params
+    this.figureListBloc,
+
+    /// ArtistListParams
+    this.ofArtist,
+    this.ofDance,
+    this.ofVideo,
+
+    /// ListView params
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
@@ -34,7 +57,7 @@ class _FigureListViewState extends State<FigureListView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FigureListBloc, FigureListState>(
+    final Widget mainContent = BlocBuilder<FigureListBloc, FigureListState>(
       builder: (context, state) {
         switch (state.status) {
           case FigureListStatus.loading:
@@ -114,6 +137,23 @@ class _FigureListViewState extends State<FigureListView> {
         }
       },
     );
+    return (widget.figureListBloc != null)
+        ? BlocProvider<FigureListBloc>.value(
+            value: widget.figureListBloc!,
+            child: mainContent,
+          )
+        : BlocProvider(
+            create: (context) => FigureListBloc(
+              figureRepository:
+                  Provider.of<FigureRepository>(context, listen: false),
+              mapper: ModelMapper(),
+            )..add(FigureListLoad(
+                ofArtist: widget.ofArtist,
+                ofDance: widget.ofDance,
+                ofVideo: widget.ofVideo,
+              )),
+            child: mainContent,
+          );
   }
 
   void _onScroll() {
@@ -140,7 +180,10 @@ class _FigureListViewState extends State<FigureListView> {
 }
 
 class FiguresSection extends StatelessWidget implements FigureListParams {
-  /// Figure list params
+  /// ListBloc params
+  final FigureListBloc? figureListBloc;
+
+  /// FigureListParams
   @override
   final String? ofArtist;
   @override
@@ -151,7 +194,10 @@ class FiguresSection extends StatelessWidget implements FigureListParams {
   const FiguresSection({
     super.key,
 
-    /// Figure list params
+    /// ListBloc params
+    this.figureListBloc,
+
+    /// FigureListParams
     this.ofArtist,
     this.ofDance,
     this.ofVideo,
@@ -159,16 +205,8 @@ class FiguresSection extends StatelessWidget implements FigureListParams {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<FigureListBloc>(
-      create: (context) => FigureListBloc(
-        figureRepository: RepositoryProvider.of<FigureRepository>(context),
-        mapper: ModelMapper(),
-      )..add(FigureListLoad(
-          ofArtist: ofArtist,
-          ofDance: ofDance,
-          ofVideo: ofVideo,
-        )),
-      child: Builder(builder: (context) {
+    final Widget mainContent = Builder(
+      builder: (context) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -177,23 +215,39 @@ class FiguresSection extends StatelessWidget implements FigureListParams {
               onTap: () {
                 AutoRouter.of(context).push(
                   FigureListRoute(
-                    ofArtist: ofArtist,
-                    ofDance: ofDance,
-                    ofVideo: ofVideo,
                     figureListBloc: BlocProvider.of<FigureListBloc>(context),
                   ),
                 );
               },
             ),
-            const SizedBox(
+            SizedBox(
               height: AppStyles.cardHeight,
               child: FigureListView(
+                figureListBloc: BlocProvider.of<FigureListBloc>(context),
                 scrollDirection: Axis.horizontal,
               ),
             ),
           ],
         );
-      }),
+      },
     );
+
+    return (figureListBloc != null)
+        ? BlocProvider<FigureListBloc>.value(
+            value: figureListBloc!,
+            child: mainContent,
+          )
+        : BlocProvider(
+            create: (context) => FigureListBloc(
+              figureRepository:
+                  Provider.of<FigureRepository>(context, listen: false),
+              mapper: ModelMapper(),
+            )..add(FigureListLoad(
+                ofArtist: ofArtist,
+                ofDance: ofDance,
+                ofVideo: ofVideo,
+              )),
+            child: mainContent,
+          );
   }
 }

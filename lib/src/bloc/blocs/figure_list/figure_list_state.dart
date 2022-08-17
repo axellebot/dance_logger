@@ -1,7 +1,6 @@
+import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
-
-import 'figure_list_params.dart';
 
 enum FigureListStatus { initial, loading, refreshing, success, failure }
 
@@ -33,15 +32,15 @@ class FigureListState extends Equatable implements FigureListParams {
 
   @override
   List<Object?> get props => [
-        status,
-        ofArtist,
-        ofDance,
-        ofVideo,
-        figures,
-        hasReachedMax,
-        selectedFigures,
-        error,
-      ];
+    status,
+    ofArtist,
+    ofDance,
+    ofVideo,
+    figures,
+    hasReachedMax,
+    selectedFigures,
+    error,
+  ];
 
   FigureListState copyWith({
     FigureListStatus? status,

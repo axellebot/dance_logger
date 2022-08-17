@@ -1,6 +1,5 @@
+import 'package:dance/domain.dart';
 import 'package:equatable/equatable.dart';
-
-import 'figure_list_params.dart';
 
 /// [FigureListEvent] that must be dispatch to [FigureListBloc]
 abstract class FigureListEvent extends Equatable {
@@ -11,6 +10,7 @@ abstract class FigureListEvent extends Equatable {
 }
 
 class FigureListLoad extends FigureListEvent implements FigureListParams {
+  /// FigureList params
   @override
   final String? ofArtist;
   @override
@@ -19,6 +19,7 @@ class FigureListLoad extends FigureListEvent implements FigureListParams {
   final String? ofVideo;
 
   const FigureListLoad({
+    /// FigureList params
     this.ofArtist,
     this.ofDance,
     this.ofVideo,

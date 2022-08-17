@@ -9,10 +9,13 @@ import 'package:provider/provider.dart';
 
 class PracticeListPage extends StatelessWidget
     implements AutoRouteWrapper, PracticeListParams {
+  /// Page params
   final bool showAppBar;
+
+  /// ListBloc params
   final PracticeListBloc? practiceListBloc;
 
-  /// Practice list params
+  /// PracticeListParams
   @override
   final String? ofArtist;
   @override
@@ -24,10 +27,14 @@ class PracticeListPage extends StatelessWidget
 
   const PracticeListPage({
     super.key,
+
+    /// Page params
     this.showAppBar = true,
+
+    /// ListBloc params
     this.practiceListBloc,
 
-    /// Practice list params
+    /// PracticeListParams
     this.ofArtist,
     this.ofDance,
     this.ofFigure,
@@ -73,9 +80,10 @@ class PracticeListPage extends StatelessWidget
               return practiceListBloc.stream
                   .firstWhere((e) => e.status != PracticeListStatus.refreshing);
             },
-            child: const PracticeListView(
+            child: PracticeListView(
+              practiceListBloc: practiceListBloc,
               scrollDirection: Axis.vertical,
-              physics: AlwaysScrollableScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(),
             ),
           ),
         );
@@ -85,25 +93,23 @@ class PracticeListPage extends StatelessWidget
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    if (practiceListBloc != null) {
-      return BlocProvider<PracticeListBloc>.value(
-        value: practiceListBloc!,
-        child: this,
-      );
-    } else {
-      final repo = Provider.of<PracticeRepository>(context, listen: false);
-      return BlocProvider<PracticeListBloc>(
-        create: (_) => PracticeListBloc(
-          practiceRepository: repo,
-          mapper: ModelMapper(),
-        )..add(PracticeListLoad(
-            ofArtist: ofArtist,
-            ofDance: ofDance,
-            ofFigure: ofFigure,
-            ofVideo: ofVideo,
-          )),
-        child: this,
-      );
-    }
+    return (practiceListBloc != null)
+        ? BlocProvider<PracticeListBloc>.value(
+            value: practiceListBloc!,
+            child: this,
+          )
+        : BlocProvider<PracticeListBloc>(
+            create: (context) => PracticeListBloc(
+              practiceRepository:
+                  Provider.of<PracticeRepository>(context, listen: false),
+              mapper: ModelMapper(),
+            )..add(PracticeListLoad(
+                ofArtist: ofArtist,
+                ofDance: ofDance,
+                ofFigure: ofFigure,
+                ofVideo: ofVideo,
+              )),
+            child: this,
+          );
   }
 }

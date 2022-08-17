@@ -1,7 +1,6 @@
+import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
-
-import 'practice_list_params.dart';
 
 enum PracticeListStatus { initial, loading, refreshing, success, failure }
 
@@ -35,8 +34,7 @@ class PracticeListState extends Equatable implements PracticeListParams {
   });
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         status,
         ofArtist,
         ofDance,

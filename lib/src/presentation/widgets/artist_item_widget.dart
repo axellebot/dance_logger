@@ -88,9 +88,11 @@ class ArtistCard extends StatelessWidget {
       child: Card(
         elevation: AppStyles.cardElevation,
         child: GestureDetector(
-          onTap: () => AutoRouter.of(context).push(
-            ArtistDetailsRoute(artistId: artist.id),
-          ),
+          onTap: () {
+            AutoRouter.of(context).push(
+              ArtistDetailsRoute(artistId: artist.id),
+            );
+          },
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[

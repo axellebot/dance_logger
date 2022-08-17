@@ -1,5 +1,5 @@
+import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
-import 'package:dance/src/bloc/blocs/video_list/video_list_params.dart';
 import 'package:equatable/equatable.dart';
 
 enum VideoListStatus { initial, loading, refreshing, success, failure }
@@ -32,15 +32,15 @@ class VideoListState extends Equatable implements VideoListParams {
 
   @override
   List<Object?> get props => [
-        status,
-        ofArtist,
-        ofDance,
-        ofFigure,
-        videos,
-        hasReachedMax,
-        selectedVideos,
-        error,
-      ];
+    status,
+    ofArtist,
+    ofDance,
+    ofFigure,
+    videos,
+    hasReachedMax,
+    selectedVideos,
+    error,
+  ];
 
   VideoListState copyWith({
     VideoListStatus? status,

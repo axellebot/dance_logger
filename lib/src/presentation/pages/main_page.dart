@@ -64,7 +64,7 @@ class _MainPageState extends State<MainPage> {
               ],
             )
           : Center(
-        child: _MainContent(selectedIndex: _selectedIndex),
+              child: _MainContent(selectedIndex: _selectedIndex),
             ),
       bottomNavigationBar:
           MediaQuery.of(context).orientation == Orientation.portrait

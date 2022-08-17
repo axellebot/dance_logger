@@ -78,9 +78,11 @@ class FigureCard extends StatelessWidget {
       child: Card(
         elevation: AppStyles.cardElevation,
         child: GestureDetector(
-          onTap: () => AutoRouter.of(context).push(
-            FigureDetailsRoute(figureId: figure.id),
-          ),
+          onTap: () {
+            AutoRouter.of(context).push(
+              FigureDetailsRoute(figureId: figure.id),
+            );
+          },
           child: Container(
             padding: AppStyles.cardPadding,
             child: Center(

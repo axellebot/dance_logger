@@ -53,7 +53,7 @@ class FigureDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                       <Widget>[
                         ArtistsSection(ofFigure: figureId),
                         VideosSection(ofFigure: figureId),
-                        PracticeSection(ofFigure: figureId),
+                        PracticesSection(ofFigure: figureId),
                         EntityInfoListTile(
                           createdAt: state.figure!.createdAt,
                           updateAt: state.figure!.updatedAt,

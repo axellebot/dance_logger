@@ -1,6 +1,5 @@
+import 'package:dance/domain.dart';
 import 'package:equatable/equatable.dart';
-
-import 'artist_list_params.dart';
 
 /// [ArtistListEvent] that must be dispatch to [ArtistListBloc]
 abstract class ArtistListEvent extends Equatable {
@@ -11,6 +10,7 @@ abstract class ArtistListEvent extends Equatable {
 }
 
 class ArtistListLoad extends ArtistListEvent implements ArtistListParams {
+  /// ArtistList params
   @override
   final String? ofDance;
   @override
@@ -19,6 +19,7 @@ class ArtistListLoad extends ArtistListEvent implements ArtistListParams {
   final String? ofVideo;
 
   const ArtistListLoad({
+    /// ArtistList params
     this.ofDance,
     this.ofFigure,
     this.ofVideo,

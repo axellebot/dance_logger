@@ -9,10 +9,13 @@ import 'package:provider/provider.dart';
 
 class ArtistListPage extends StatelessWidget
     implements AutoRouteWrapper, ArtistListParams {
+  /// Page params
   final bool showAppBar;
+
+  /// ListBloc params
   final ArtistListBloc? artistListBloc;
 
-  /// Artist list params
+  /// ArtistListParams
   @override
   final String? ofDance;
   @override
@@ -22,10 +25,14 @@ class ArtistListPage extends StatelessWidget
 
   const ArtistListPage({
     super.key,
+
+    /// Page params
     this.showAppBar = true,
+
+    /// ListBloc params
     this.artistListBloc,
 
-    /// Artist list params
+    /// ArtistListParams
     this.ofDance,
     this.ofFigure,
     this.ofVideo,
@@ -70,9 +77,10 @@ class ArtistListPage extends StatelessWidget
               return artistListBloc.stream
                   .firstWhere((e) => e.status != ArtistListStatus.refreshing);
             },
-            child: const ArtistListView(
+            child: ArtistListView(
+              artistListBloc: artistListBloc,
               scrollDirection: Axis.vertical,
-              physics: AlwaysScrollableScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(),
             ),
           ),
         );
@@ -82,24 +90,22 @@ class ArtistListPage extends StatelessWidget
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    if (artistListBloc != null) {
-      return BlocProvider<ArtistListBloc>.value(
-        value: artistListBloc!,
-        child: this,
-      );
-    } else {
-      final repo = Provider.of<ArtistRepository>(context, listen: false);
-      return BlocProvider<ArtistListBloc>(
-        create: (_) => ArtistListBloc(
-          artistRepository: repo,
-          mapper: ModelMapper(),
-        )..add(ArtistListLoad(
-            ofDance: ofDance,
-            ofFigure: ofFigure,
-            ofVideo: ofVideo,
-          )),
-        child: this,
-      );
-    }
+    return (artistListBloc != null)
+        ? BlocProvider<ArtistListBloc>.value(
+            value: artistListBloc!,
+            child: this,
+          )
+        : BlocProvider<ArtistListBloc>(
+            create: (_) => ArtistListBloc(
+              artistRepository:
+                  Provider.of<ArtistRepository>(context, listen: false),
+              mapper: ModelMapper(),
+            )..add(ArtistListLoad(
+                ofDance: ofDance,
+                ofFigure: ofFigure,
+                ofVideo: ofVideo,
+              )),
+            child: this,
+          );
   }
 }

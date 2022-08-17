@@ -9,10 +9,13 @@ import 'package:provider/provider.dart';
 
 class FigureListPage extends StatelessWidget
     implements AutoRouteWrapper, FigureListParams {
+  /// Page params
   final bool showAppBar;
+
+  /// ListBloc params
   final FigureListBloc? figureListBloc;
 
-  /// Figure list params
+  /// FigureListParams
   @override
   final String? ofArtist;
   @override
@@ -22,10 +25,14 @@ class FigureListPage extends StatelessWidget
 
   const FigureListPage({
     super.key,
+
+    /// Page params
     this.showAppBar = true,
+
+    /// ListBloc params
     this.figureListBloc,
 
-    /// Figure list params
+    /// FigureListParams
     this.ofArtist,
     this.ofDance,
     this.ofVideo,
@@ -70,9 +77,10 @@ class FigureListPage extends StatelessWidget
               return figureListBloc.stream
                   .firstWhere((e) => e.status != FigureListStatus.refreshing);
             },
-            child: const FigureListView(
+            child: FigureListView(
+              figureListBloc: figureListBloc,
               scrollDirection: Axis.vertical,
-              physics: AlwaysScrollableScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(),
             ),
           ),
         );
@@ -82,24 +90,22 @@ class FigureListPage extends StatelessWidget
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    if (figureListBloc != null) {
-      return BlocProvider<FigureListBloc>.value(
-        value: figureListBloc!,
-        child: this,
-      );
-    } else {
-      final repo = Provider.of<FigureRepository>(context, listen: false);
-      return BlocProvider<FigureListBloc>(
-        create: (_) => FigureListBloc(
-          figureRepository: repo,
-          mapper: ModelMapper(),
-        )..add(FigureListLoad(
-            ofArtist: ofArtist,
-            ofDance: ofDance,
-            ofVideo: ofVideo,
-          )),
-        child: this,
-      );
-    }
+    return (figureListBloc != null)
+        ? BlocProvider<FigureListBloc>.value(
+            value: figureListBloc!,
+            child: this,
+          )
+        : BlocProvider<FigureListBloc>(
+            create: (_) => FigureListBloc(
+              figureRepository:
+                  Provider.of<FigureRepository>(context, listen: false),
+              mapper: ModelMapper(),
+            )..add(FigureListLoad(
+                ofArtist: ofArtist,
+                ofDance: ofDance,
+                ofVideo: ofVideo,
+              )),
+            child: this,
+          );
   }
 }

@@ -68,7 +68,10 @@ class MomentChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Chip(
-        label: Text('${moment.startTime}-${moment.endTime}'),
+        label: (moment.endTime != null)
+            ? Text(
+                '${printDuration(moment.startTime)}-${printDuration(moment.endTime!)}')
+            : Text(printDuration(moment.startTime)),
       ),
     );
   }

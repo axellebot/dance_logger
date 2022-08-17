@@ -47,3 +47,15 @@ EdgeInsets calculateDefaultPadding(BuildContext context) {
     //   return const EdgeInsets.symmetric(vertical: 20);
   }
 }
+
+String printDuration(Duration duration) {
+  String twoDigits(int n) => n.toString().padLeft(2, "0");
+  String twoDigitHours = twoDigits(duration.inHours);
+  String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+  String tmp = '$twoDigitMinutes:$twoDigitSeconds';
+  if (twoDigitHours != '00') {
+    tmp = '$twoDigitHours:$tmp';
+  }
+  return tmp;
+}

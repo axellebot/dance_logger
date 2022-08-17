@@ -78,9 +78,11 @@ class PracticeCard extends StatelessWidget {
       child: Card(
         elevation: AppStyles.cardElevation,
         child: GestureDetector(
-          onTap: () => AutoRouter.of(context).push(
-            PracticeDetailsRoute(practiceId: practice.id),
-          ),
+          onTap: () {
+            AutoRouter.of(context).push(
+              PracticeDetailsRoute(practiceId: practice.id),
+            );
+          },
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[

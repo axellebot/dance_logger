@@ -4,14 +4,37 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
-class VideoListView extends StatefulWidget {
+class VideoListView extends StatefulWidget implements VideoListParams {
+  /// ListBloc params
+  final VideoListBloc? videoListBloc;
+
+  /// VideoListParams
+  @override
+  final String? ofArtist;
+  @override
+  final String? ofDance;
+  @override
+  final String? ofFigure;
+
+  /// ListView params
   final Axis scrollDirection;
   final ScrollPhysics? physics;
   final EdgeInsets? padding;
 
   const VideoListView({
     super.key,
+
+    /// ListBloc params
+    this.videoListBloc,
+
+    /// VideoListParams
+    this.ofArtist,
+    this.ofDance,
+    this.ofFigure,
+
+    /// ListView params
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
@@ -34,7 +57,7 @@ class _VideoListViewState extends State<VideoListView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<VideoListBloc, VideoListState>(
+    final Widget mainContent = BlocBuilder<VideoListBloc, VideoListState>(
       builder: (BuildContext context, VideoListState state) {
         switch (state.status) {
           case VideoListStatus.loading:
@@ -65,7 +88,7 @@ class _VideoListViewState extends State<VideoListView> {
                   if (index < state.videos.length) {
                     final VideoViewModel video = state.videos[index];
                     final VideoListBloc videoListBloc =
-                    BlocProvider.of<VideoListBloc>(context);
+                        BlocProvider.of<VideoListBloc>(context);
                     switch (widget.scrollDirection) {
                       case Axis.vertical:
                         if (state.selectedVideos.isEmpty) {
@@ -113,6 +136,24 @@ class _VideoListViewState extends State<VideoListView> {
         }
       },
     );
+
+    return (widget.videoListBloc != null)
+        ? BlocProvider<VideoListBloc>.value(
+            value: widget.videoListBloc!,
+            child: mainContent,
+          )
+        : BlocProvider(
+            create: (context) => VideoListBloc(
+              videoRepository:
+                  Provider.of<VideoRepository>(context, listen: false),
+              mapper: ModelMapper(),
+            )..add(VideoListLoad(
+                ofArtist: widget.ofArtist,
+                ofDance: widget.ofDance,
+                ofFigure: widget.ofFigure,
+              )),
+            child: mainContent,
+          );
   }
 
   void _onScroll() {
@@ -139,7 +180,10 @@ class _VideoListViewState extends State<VideoListView> {
 }
 
 class VideosSection extends StatelessWidget implements VideoListParams {
-  /// Video list params
+  /// ListBloc params
+  final VideoListBloc? videoListBloc;
+
+  /// VideoListParams
   @override
   final String? ofArtist;
   @override
@@ -150,7 +194,10 @@ class VideosSection extends StatelessWidget implements VideoListParams {
   const VideosSection({
     super.key,
 
-    /// Video list params
+    /// ListBloc params
+    this.videoListBloc,
+
+    /// VideoListParams
     this.ofArtist,
     this.ofDance,
     this.ofFigure,
@@ -158,42 +205,48 @@ class VideosSection extends StatelessWidget implements VideoListParams {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<VideoListBloc>(
-      create: (context) => VideoListBloc(
-        videoRepository: RepositoryProvider.of<VideoRepository>(context),
-        mapper: ModelMapper(),
-      )..add(VideoListLoad(
-          ofArtist: ofArtist,
-          ofDance: ofDance,
-          ofFigure: ofFigure,
-        )),
-      child: Builder(
-        builder: (context) {
-          return Column(
-            children: [
-              SectionTile(
-                title: const Text('Videos'),
-                onTap: () {
-                  AutoRouter.of(context).push(
-                    VideoListRoute(
-                      ofArtist: ofArtist,
-                      ofDance: ofDance,
-                      ofFigure: ofFigure,
-                      videoListBloc: BlocProvider.of<VideoListBloc>(context),
-                    ),
-                  );
-                },
+    final Widget mainContent = Builder(
+      builder: (context) {
+        return Column(
+          children: [
+            SectionTile(
+              title: const Text('Videos'),
+              onTap: () {
+                AutoRouter.of(context).push(
+                  VideoListRoute(
+                    videoListBloc: BlocProvider.of<VideoListBloc>(context),
+                  ),
+                );
+              },
+            ),
+            SizedBox(
+              height: AppStyles.cardHeight,
+              child: VideoListView(
+                videoListBloc: BlocProvider.of<VideoListBloc>(context),
+                scrollDirection: Axis.horizontal,
               ),
-              const SizedBox(
-                height: AppStyles.cardHeight,
-                child: VideoListView(
-                  scrollDirection: Axis.horizontal,
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+            ),
+          ],
+        );
+      },
     );
+
+    return (videoListBloc != null)
+        ? BlocProvider<VideoListBloc>.value(
+            value: videoListBloc!,
+            child: mainContent,
+          )
+        : BlocProvider(
+            create: (context) => VideoListBloc(
+              videoRepository:
+                  Provider.of<VideoRepository>(context, listen: false),
+              mapper: ModelMapper(),
+            )..add(VideoListLoad(
+                ofArtist: ofArtist,
+                ofDance: ofDance,
+                ofFigure: ofFigure,
+              )),
+            child: mainContent,
+          );
   }
 }
