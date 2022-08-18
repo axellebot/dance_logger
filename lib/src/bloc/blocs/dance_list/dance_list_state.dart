@@ -29,13 +29,13 @@ class DanceListState extends Equatable implements DanceListParams {
 
   @override
   List<Object?> get props => [
-    status,
-    ofArtist,
-    dances,
-    hasReachedMax,
-    selectedDances,
-    error,
-  ];
+        status,
+        ofArtist,
+        dances,
+        hasReachedMax,
+        selectedDances,
+        error,
+      ];
 
   DanceListState copyWith({
     DanceListStatus? status,

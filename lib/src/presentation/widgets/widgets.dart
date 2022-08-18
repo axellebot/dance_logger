@@ -1,3 +1,4 @@
+export './app_bar_widget.dart';
 export './artist_item_widget.dart';
 export './artist_list_widget.dart';
 export './dance_item_widget.dart';

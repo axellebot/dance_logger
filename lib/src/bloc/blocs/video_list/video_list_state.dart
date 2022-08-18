@@ -32,15 +32,15 @@ class VideoListState extends Equatable implements VideoListParams {
 
   @override
   List<Object?> get props => [
-    status,
-    ofArtist,
-    ofDance,
-    ofFigure,
-    videos,
-    hasReachedMax,
-    selectedVideos,
-    error,
-  ];
+        status,
+        ofArtist,
+        ofDance,
+        ofFigure,
+        videos,
+        hasReachedMax,
+        selectedVideos,
+        error,
+      ];
 
   VideoListState copyWith({
     VideoListStatus? status,

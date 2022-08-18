@@ -32,15 +32,15 @@ class FigureListState extends Equatable implements FigureListParams {
 
   @override
   List<Object?> get props => [
-    status,
-    ofArtist,
-    ofDance,
-    ofVideo,
-    figures,
-    hasReachedMax,
-    selectedFigures,
-    error,
-  ];
+        status,
+        ofArtist,
+        ofDance,
+        ofVideo,
+        figures,
+        hasReachedMax,
+        selectedFigures,
+        error,
+      ];
 
   FigureListState copyWith({
     FigureListStatus? status,

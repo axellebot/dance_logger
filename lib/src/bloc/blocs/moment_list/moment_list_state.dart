@@ -32,15 +32,15 @@ class MomentListState extends Equatable implements MomentListParams {
 
   @override
   List<Object?> get props => [
-    status,
-    ofArtist,
-    ofFigure,
-    ofVideo,
-    moments,
-    hasReachedMax,
-    selectedMoments,
-    error,
-  ];
+        status,
+        ofArtist,
+        ofFigure,
+        ofVideo,
+        moments,
+        hasReachedMax,
+        selectedMoments,
+        error,
+      ];
 
   MomentListState copyWith({
     MomentListStatus? status,

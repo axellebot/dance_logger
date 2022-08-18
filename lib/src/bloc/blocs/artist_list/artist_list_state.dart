@@ -32,15 +32,15 @@ class ArtistListState extends Equatable implements ArtistListParams {
 
   @override
   List<Object?> get props => [
-    status,
-    ofDance,
-    ofFigure,
-    ofVideo,
-    artists,
-    hasReachedMax,
-    selectedArtists,
-    error,
-  ];
+        status,
+        ofDance,
+        ofFigure,
+        ofVideo,
+        artists,
+        hasReachedMax,
+        selectedArtists,
+        error,
+      ];
 
   ArtistListState copyWith({
     ArtistListStatus? status,

@@ -183,62 +183,25 @@ class _MainContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (selectedIndex == 0) {
-      return BlocProvider<VideoListBloc>(
-        create: (context) {
-          VideoRepository videoRepository =
-              RepositoryProvider.of<VideoRepository>(context);
-          return VideoListBloc(
-            videoRepository: videoRepository,
-            mapper: ModelMapper(),
-          )..add(const VideoListLoad());
-        },
-        child: const VideoListPage(
+    switch (selectedIndex) {
+      case 0:
+        return const VideoListPage(
           showAppBar: false,
-        ),
-      );
-    } else if (selectedIndex == 1) {
-      return BlocProvider<ArtistListBloc>(
-        create: (context) {
-          ArtistRepository artistRepository =
-              RepositoryProvider.of<ArtistRepository>(context);
-          return ArtistListBloc(
-            artistRepository: artistRepository,
-            mapper: ModelMapper(),
-          )..add(const ArtistListLoad());
-        },
-        child: const ArtistListPage(
+        );
+      case 1:
+        return const ArtistListPage(
           showAppBar: false,
-        ),
-      );
-    } else if (selectedIndex == 2) {
-      return BlocProvider<DanceListBloc>(
-        create: (context) {
-          DanceRepository danceRepository =
-              RepositoryProvider.of<DanceRepository>(context);
-          return DanceListBloc(
-            danceRepository: danceRepository,
-            mapper: ModelMapper(),
-          )..add(const DanceListLoad());
-        },
-        child: const DanceListPage(
+        );
+      case 2:
+        return const DanceListPage(
           showAppBar: false,
-        ),
-      );
-    } else if (selectedIndex == 3) {
-      return BlocProvider<PracticeListBloc>(
-        create: (context) {
-          PracticeRepository practiceRepository =
-              RepositoryProvider.of<PracticeRepository>(context);
-          return PracticeListBloc(
-            practiceRepository: practiceRepository,
-            mapper: ModelMapper(),
-          )..add(const PracticeListLoad());
-        },
-        child: const PracticeListPage(
+        );
+      case 3:
+        return const PracticeListPage(
           showAppBar: false,
-        ),
-      );
+        );
+      default:
+        return Container();
     }
     return Container();
   }
