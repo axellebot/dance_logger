@@ -3,7 +3,7 @@ import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 
 void navigateToSettings(BuildContext context) {
-  AutoRouter.of(context).push(SettingsRoute());
+  AutoRouter.of(context).push(const SettingsRoute());
 }
 
 void openQuickSettings(BuildContext context) {

@@ -35,6 +35,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
       final List<DanceViewModel> danceViewModels;
       danceViewModels = await _fetchDances(
         ofArtist: event.ofArtist,
+        ofVideo: event.ofVideo,
         offset: 0,
       );
 
@@ -63,6 +64,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
       final List<DanceViewModel> danceViewModels;
       danceViewModels = await _fetchDances(
         ofArtist: state.ofArtist,
+        ofVideo: state.ofVideo,
         offset: state.dances.length,
       );
       if (danceViewModels.isNotEmpty) {
@@ -95,6 +97,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
 
       List<DanceViewModel> danceViewModels = await _fetchDances(
         ofArtist: state.ofArtist,
+        ofVideo: state.ofVideo,
         offset: 0,
       );
 
@@ -164,6 +167,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
 
   Future<List<DanceViewModel>> _fetchDances({
     String? ofArtist,
+    String? ofVideo,
     required int offset,
     int limit = 10,
   }) async {
@@ -173,6 +177,14 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     if (ofArtist != null) {
       danceEntities = await danceRepository.getDancesOfArtist(
         ofArtist,
+        offset: Offset(
+          offset: offset,
+          limit: limit,
+        ),
+      );
+    } else if (ofVideo != null) {
+      danceEntities = await danceRepository.getDancesOfVideo(
+        ofVideo,
         offset: Offset(
           offset: offset,
           limit: limit,

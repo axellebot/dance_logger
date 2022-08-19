@@ -56,8 +56,8 @@ class FigureListPage extends StatelessWidget implements FigureListWidgetParams {
             );
           } else {
             appBar = (showAppBar)
-                ? AppBar(
-                    title: const Text('Figures'),
+                ? const DanceAppBar(
+                    title: Text('Figures'),
                   )
                 : null;
           }
@@ -66,7 +66,7 @@ class FigureListPage extends StatelessWidget implements FigureListWidgetParams {
             appBar: appBar,
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                AutoRouter.of(context).push(FigureEditRoute());
+                AutoRouter.of(context).push(const FigureCreateRoute());
               },
               child: const Icon(MdiIcons.plus),
             ),

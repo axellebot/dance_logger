@@ -56,8 +56,8 @@ class ArtistListPage extends StatelessWidget implements ArtistListWidgetParams {
             );
           } else {
             appBar = (showAppBar)
-                ? AppBar(
-                    title: const Text('Artists'),
+                ? const DanceAppBar(
+                    title: Text('Artists'),
                   )
                 : null;
           }
@@ -66,7 +66,7 @@ class ArtistListPage extends StatelessWidget implements ArtistListWidgetParams {
             appBar: appBar,
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                AutoRouter.of(context).push(ArtistEditRoute());
+                AutoRouter.of(context).push(ArtistCreateRoute());
               },
               child: const Icon(MdiIcons.plus),
             ),

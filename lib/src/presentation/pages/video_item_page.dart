@@ -64,6 +64,7 @@ class VideoDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                         MomentsSection(ofVideo: videoId),
                         FiguresSection(ofVideo: videoId),
                         ArtistsSection(ofVideo: videoId),
+                        DancesSection(ofVideo: videoId),
                         EntityInfoListTile(
                           createdAt: state.video!.createdAt,
                           updateAt: state.video!.updatedAt,

@@ -113,6 +113,13 @@ class AppStyles {
   static const double profileAvatarMax = 50.0;
   static const double profileAvatarElevation = 2.0;
 
+  /// --------------------------------------------------------------------------
+  ///                              Video
+  /// --------------------------------------------------------------------------
+
+  static double videoThumbnailRadius = 10.0;
+  static double artistThumbnailRadius = 20.0;
+
   /// Sort
   static const double sortDialogWidth = 200.0;
   static const double sortDialogHeight = 300.0;

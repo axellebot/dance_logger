@@ -11,4 +11,12 @@ abstract class DanceRepository extends EntityRepository<DanceEntity> {
     /// TODO: Add filters
     /// TODO: Add sort
   });
+
+  FutureOr<List<DanceEntity>> getDancesOfVideo(
+    String videoId, {
+    required Offset offset,
+
+    /// TODO: Add filters
+    /// TODO: Add sort
+  });
 }

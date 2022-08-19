@@ -63,4 +63,20 @@ class ImplDanceRepository extends DanceRepository {
     );
     return dataModels;
   }
+
+  @override
+  FutureOr<List<DanceEntity>> getDancesOfVideo(
+    String videoId, {
+    required Offset offset,
+
+    /// TODO: Add filters
+    /// TODO: Add sort
+  }) async {
+    if (kDebugMode) print('$runtimeType:getDancesOfVideo($videoId)');
+    final dataModels = await factory.databaseDataStore.getDancesOfVideo(
+      videoId,
+      offset: offset,
+    );
+    return dataModels;
+  }
 }

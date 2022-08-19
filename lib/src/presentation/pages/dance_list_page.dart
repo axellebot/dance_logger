@@ -51,8 +51,8 @@ class DanceListPage extends StatelessWidget implements DanceListWidgetParams {
             );
           } else {
             appBar = (showAppBar)
-                ? AppBar(
-                    title: const Text('Dances'),
+                ? const DanceAppBar(
+                    title: Text('Dances'),
                   )
                 : null;
           }
@@ -61,7 +61,7 @@ class DanceListPage extends StatelessWidget implements DanceListWidgetParams {
             appBar: appBar,
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                AutoRouter.of(context).push(DanceEditRoute());
+                AutoRouter.of(context).push(DanceCreateRoute());
               },
               child: const Icon(MdiIcons.plus),
             ),

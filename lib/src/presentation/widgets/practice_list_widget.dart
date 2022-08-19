@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 abstract class PracticeListWidgetParams implements PracticeListParams {
+  /// ListBloc params
   final PracticeListBloc? practiceListBloc;
 
   PracticeListWidgetParams(this.practiceListBloc);
@@ -127,6 +128,7 @@ class _PracticeListViewState extends State<PracticeListView> {
   @override
   Widget build(BuildContext context) {
     return PracticeListBlocProvider(
+      practiceListBloc: widget.practiceListBloc,
       ofArtist: widget.ofArtist,
       ofDance: widget.ofDance,
       ofFigure: widget.ofFigure,
@@ -163,7 +165,7 @@ class _PracticeListViewState extends State<PracticeListView> {
                     if (index < state.practices.length) {
                       final PracticeViewModel practice = state.practices[index];
                       final PracticeListBloc practiceListBloc =
-                          BlocProvider.of<PracticeListBloc>(context);
+                      BlocProvider.of<PracticeListBloc>(context);
                       switch (widget.scrollDirection) {
                         case Axis.vertical:
                           if (state.selectedPractices.isEmpty) {
@@ -179,14 +181,14 @@ class _PracticeListViewState extends State<PracticeListView> {
                             return CheckboxPracticeListTile(
                               practice: practice,
                               value:
-                                  state.selectedPractices.contains(practice.id),
+                              state.selectedPractices.contains(practice.id),
                               onChanged: (bool? value) {
                                 practiceListBloc.add(
                                   (value == true)
                                       ? PracticeListSelect(
-                                          practiceId: practice.id)
+                                      practiceId: practice.id)
                                       : PracticeListUnselect(
-                                          practiceId: practice.id),
+                                      practiceId: practice.id),
                                 );
                               },
                             );
@@ -273,6 +275,7 @@ class PracticesSection extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return PracticeListBlocProvider(
+      practiceListBloc: practiceListBloc,
       ofArtist: ofArtist,
       ofDance: ofDance,
       ofFigure: ofFigure,
@@ -287,7 +290,7 @@ class PracticesSection extends StatelessWidget
                   AutoRouter.of(context).push(
                     PracticeListRoute(
                       practiceListBloc:
-                          BlocProvider.of<PracticeListBloc>(context),
+                      BlocProvider.of<PracticeListBloc>(context),
                     ),
                   );
                 },
@@ -296,10 +299,6 @@ class PracticesSection extends StatelessWidget
                 height: AppStyles.cardHeight,
                 child: PracticeListView(
                   practiceListBloc: BlocProvider.of<PracticeListBloc>(context),
-                  ofArtist: ofArtist,
-                  ofDance: ofDance,
-                  ofFigure: ofFigure,
-                  ofVideo: ofVideo,
                   scrollDirection: Axis.horizontal,
                 ),
               ),

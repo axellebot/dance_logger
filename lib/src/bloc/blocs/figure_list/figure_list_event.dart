@@ -10,7 +10,7 @@ abstract class FigureListEvent extends Equatable {
 }
 
 class FigureListLoad extends FigureListEvent implements FigureListParams {
-  /// FigureList params
+  /// FigureListParams
   @override
   final String? ofArtist;
   @override
@@ -19,7 +19,7 @@ class FigureListLoad extends FigureListEvent implements FigureListParams {
   final String? ofVideo;
 
   const FigureListLoad({
-    /// FigureList params
+    /// FigureListParams
     this.ofArtist,
     this.ofDance,
     this.ofVideo,

@@ -10,14 +10,14 @@ abstract class DanceListEvent extends Equatable {
 }
 
 class DanceListLoad extends DanceListEvent implements DanceListParams {
-  /// DanceList params
+  /// DanceListParams
   @override
   final String? ofArtist;
   @override
   final String? ofVideo;
 
   const DanceListLoad({
-    /// DanceList params
+    /// DanceListParams
     this.ofArtist,
     this.ofVideo,
   });

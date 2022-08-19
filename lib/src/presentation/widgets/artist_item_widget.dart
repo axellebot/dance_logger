@@ -28,10 +28,10 @@ class ArtistListTile extends StatelessWidget {
       title: Text(artist.name),
       leading: (artist.imageUrl != null)
           ? CircleAvatar(
-              backgroundImage: NetworkImage(
+              foregroundImage: NetworkImage(
                 artist.imageUrl!,
               ),
-              backgroundColor: Colors.transparent,
+              radius: AppStyles.artistThumbnailRadius,
             )
           : null,
       onTap: onTap ??
@@ -86,6 +86,7 @@ class ArtistCard extends StatelessWidget {
       height: AppStyles.cardHeight,
       width: AppStyles.cardWidth,
       child: Card(
+        clipBehavior: Clip.antiAlias,
         elevation: AppStyles.cardElevation,
         child: GestureDetector(
           onTap: () {

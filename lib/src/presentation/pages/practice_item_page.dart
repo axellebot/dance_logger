@@ -113,18 +113,16 @@ class PracticeDetailsPage extends StatelessWidget implements AutoRouteWrapper {
 }
 
 class PracticeCreatePage extends PracticeEditPage {
-  PracticeCreatePage({super.key});
+  const PracticeCreatePage({super.key});
 }
 
 class PracticeEditPage extends StatelessWidget implements AutoRouteWrapper {
-  late final String? _practiceId;
+  final String? practiceId;
 
-  PracticeEditPage({
+  const PracticeEditPage({
     super.key,
-    String? practiceId,
-  }) {
-    _practiceId = practiceId;
-  }
+    this.practiceId,
+  });
 
   @override
   Widget build(BuildContext context) {

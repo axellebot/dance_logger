@@ -27,7 +27,12 @@ class VideoListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(video.name),
-      leading: _buildVideoThumbnail(),
+      leading: (isYoutube(video.url))
+          ? VideoThumbnail(
+              url:
+                  'https://img.youtube.com/vi/${getYoutubeId(video.url)}/mqdefault.jpg',
+            )
+          : null,
       subtitle: Text(video.url),
       onTap: () {
         AutoRouter.of(context).push(
@@ -38,17 +43,25 @@ class VideoListTile extends StatelessWidget {
       selected: selected,
     );
   }
+}
 
-  ClipRRect? _buildVideoThumbnail() {
-    return (isYoutube(video.url))
-        ? ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: Image.network(
-              'https://img.youtube.com/vi/${getYoutubeId(video.url)}/mqdefault.jpg',
-              fit: BoxFit.cover,
-            ),
-          )
-        : null;
+class VideoThumbnail extends StatelessWidget {
+  final String url;
+
+  const VideoThumbnail({
+    super.key,
+    required this.url,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppStyles.videoThumbnailRadius),
+      child: Image.network(
+        url,
+        fit: BoxFit.cover,
+      ),
+    );
   }
 }
 

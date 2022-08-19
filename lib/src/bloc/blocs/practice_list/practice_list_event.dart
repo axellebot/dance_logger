@@ -10,7 +10,7 @@ abstract class PracticeListEvent extends Equatable {
 }
 
 class PracticeListLoad extends PracticeListEvent implements PracticeListParams {
-  /// PracticeList params
+  /// PracticeListParams
   @override
   final String? ofArtist;
   @override
@@ -21,7 +21,7 @@ class PracticeListLoad extends PracticeListEvent implements PracticeListParams {
   final String? ofVideo;
 
   const PracticeListLoad({
-    /// PracticeList params
+    /// PracticeListParams
     this.ofArtist,
     this.ofDance,
     this.ofFigure,

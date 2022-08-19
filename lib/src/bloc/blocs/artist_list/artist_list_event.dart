@@ -10,7 +10,7 @@ abstract class ArtistListEvent extends Equatable {
 }
 
 class ArtistListLoad extends ArtistListEvent implements ArtistListParams {
-  /// ArtistList params
+  /// ArtistListParams
   @override
   final String? ofDance;
   @override
@@ -19,7 +19,7 @@ class ArtistListLoad extends ArtistListEvent implements ArtistListParams {
   final String? ofVideo;
 
   const ArtistListLoad({
-    /// ArtistList params
+    /// ArtistListParams
     this.ofDance,
     this.ofFigure,
     this.ofVideo,

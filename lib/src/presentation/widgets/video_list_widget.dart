@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 abstract class VideoListWidgetParams implements VideoListParams {
+  /// ListBloc params
   final VideoListBloc? videoListBloc;
 
   VideoListWidgetParams(this.videoListBloc);

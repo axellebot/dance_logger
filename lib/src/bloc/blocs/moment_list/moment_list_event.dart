@@ -11,7 +11,7 @@ abstract class MomentListEvent extends Equatable {
 }
 
 class MomentListLoad extends MomentListEvent implements MomentListParams {
-  /// MomentList params
+  /// MomentListParams
   @override
   final String? ofArtist;
   @override
@@ -20,7 +20,7 @@ class MomentListLoad extends MomentListEvent implements MomentListParams {
   final String? ofVideo;
 
   const MomentListLoad({
-    /// MomentList params
+    /// MomentListParams
     this.ofArtist,
     this.ofFigure,
     this.ofVideo,

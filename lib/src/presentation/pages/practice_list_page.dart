@@ -43,6 +43,7 @@ class PracticeListPage extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return PracticeListBlocProvider(
+      practiceListBloc: practiceListBloc,
       ofArtist: ofArtist,
       ofDance: ofDance,
       ofFigure: ofFigure,
@@ -63,8 +64,8 @@ class PracticeListPage extends StatelessWidget
             );
           } else {
             appBar = (showAppBar)
-                ? AppBar(
-                    title: const Text('Practices'),
+                ? const DanceAppBar(
+                    title: Text('Practices'),
                   )
                 : null;
           }
@@ -81,7 +82,7 @@ class PracticeListPage extends StatelessWidget
               onRefresh: () {
                 practiceListBloc.add(const PracticeListRefresh());
                 return practiceListBloc.stream.firstWhere(
-                    (e) => e.status != PracticeListStatus.refreshing);
+                        (e) => e.status != PracticeListStatus.refreshing);
               },
               child: PracticeListView(
                 practiceListBloc: practiceListBloc,

@@ -54,8 +54,8 @@ class VideoListPage extends StatelessWidget implements VideoListWidgetParams {
             );
           } else {
             appBar = (showAppBar)
-                ? AppBar(
-                    title: const Text('Videos'),
+                ? const DanceAppBar(
+                    title: Text('Videos'),
                   )
                 : null;
           }
@@ -64,7 +64,7 @@ class VideoListPage extends StatelessWidget implements VideoListWidgetParams {
             appBar: appBar,
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                AutoRouter.of(context).push(VideoEditRoute());
+                AutoRouter.of(context).push(VideoCreateRoute());
               },
               child: const Icon(MdiIcons.plus),
             ),

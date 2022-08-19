@@ -23,4 +23,12 @@ abstract class DanceDataStore {
     /// TODO: Add sort
     required Offset offset,
   });
+
+  FutureOr<List<DanceDataModel>> getDancesOfVideo(
+    String videoId, {
+
+    /// TODO: Add filters
+    /// TODO: Add sort
+    required Offset offset,
+  });
 }

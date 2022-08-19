@@ -472,6 +472,35 @@ class DanceDatabaseManager
   }
 
   @override
+  FutureOr<List<DanceDataModel>> getDancesOfVideo(
+    String videoId, {
+    required Offset offset,
+  }) async {
+    if (kDebugMode) print('$runtimeType:getDancesOfVideo($videoId)');
+
+    List results = await db.rawQuery(
+      '''
+      SELECT DISTINCT d.* FROM dances d
+      INNER JOIN figures f
+      ON d.dance_id = f.dance_id
+        INNER JOIN moments m
+        ON f.figure_id = m.figure_id 
+      WHERE m.video_id = ?
+      LIMIT ?
+      OFFSET ?
+    ''',
+      [
+        videoId,
+        offset.limit,
+        offset.offset,
+      ],
+    );
+    List<DanceDataModel> dances =
+        results.map((result) => DanceDataModel.fromJson(result)).toList();
+    return dances;
+  }
+
+  @override
   FutureOr<FigureDataModel> saveFigure(FigureDataModel figureModel) async {
     if (kDebugMode) print('$runtimeType:saveFigure($figureModel)');
 

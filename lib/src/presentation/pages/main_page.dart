@@ -1,9 +1,6 @@
-import 'package:dance/bloc.dart';
-import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -31,14 +28,14 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)?.homeTitle ?? 'Dance'),
-        actions: [
-          MediaQuery.of(context).orientation == Orientation.portrait
-              ? const QuickSettingsActionButton()
-              : const SizedBox(),
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: Text(AppLocalizations.of(context)?.homeTitle ?? 'Dance'),
+      //   actions: [
+      //     MediaQuery.of(context).orientation == Orientation.portrait
+      //         ? const QuickSettingsActionButton()
+      //         : const SizedBox(),
+      //   ],
+      // ),
       body: MediaQuery.of(context).orientation == Orientation.landscape
           ? Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -186,23 +183,22 @@ class _MainContent extends StatelessWidget {
     switch (selectedIndex) {
       case 0:
         return const VideoListPage(
-          showAppBar: false,
+          showAppBar: true,
         );
       case 1:
         return const ArtistListPage(
-          showAppBar: false,
+          showAppBar: true,
         );
       case 2:
         return const DanceListPage(
-          showAppBar: false,
+          showAppBar: true,
         );
       case 3:
         return const PracticeListPage(
-          showAppBar: false,
+          showAppBar: true,
         );
       default:
         return Container();
     }
-    return Container();
   }
 }
