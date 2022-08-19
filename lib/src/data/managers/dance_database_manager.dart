@@ -886,10 +886,10 @@ class DanceDatabaseManager
 
     List results = await db.rawQuery(
       '''
-      SELECT DISTINCT f.* FROM figures f
+      SELECT DISTINCT v.* FROM videos v
       INNER JOIN moments m
-      ON f.figure_id = m.figure_id
-      WHERE m.video_id = ?
+      ON v.video_id = m.video_id
+      WHERE m.figure_id = ?
       LIMIT ?
       OFFSET ?
     ''',
