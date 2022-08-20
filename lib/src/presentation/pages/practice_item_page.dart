@@ -18,6 +18,7 @@ class PracticeDetailsPage extends StatelessWidget implements AutoRouteWrapper {
     return BlocBuilder<PracticeDetailBloc, PracticeDetailState>(
       builder: (BuildContext context, PracticeDetailState state) {
         switch (state.status) {
+          case PracticeDetailStatus.initial:
           case PracticeDetailStatus.loading:
             return const LoadingPage();
           case PracticeDetailStatus.success:

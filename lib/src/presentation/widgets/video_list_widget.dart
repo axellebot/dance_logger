@@ -19,6 +19,8 @@ class VideoListBlocProvider extends StatelessWidget
   @override
   final VideoListBloc? videoListBloc;
   @override
+  final String? ofSearch;
+  @override
   final String? ofArtist;
   @override
   final String? ofDance;
@@ -33,6 +35,7 @@ class VideoListBlocProvider extends StatelessWidget
 
     /// VideoListWidgetParams
     this.videoListBloc,
+    this.ofSearch,
     this.ofArtist,
     this.ofDance,
     this.ofFigure,
@@ -40,6 +43,7 @@ class VideoListBlocProvider extends StatelessWidget
     /// Widget params
     required this.child,
   }) : assert(videoListBloc == null ||
+            ofSearch == null ||
             (ofArtist == null && ofDance == null && ofFigure == null));
 
   @override
@@ -55,6 +59,7 @@ class VideoListBlocProvider extends StatelessWidget
                   Provider.of<VideoRepository>(context, listen: false),
               mapper: ModelMapper(),
             )..add(VideoListLoad(
+              ofSearch: ofSearch,
                 ofArtist: ofArtist,
                 ofDance: ofDance,
                 ofFigure: ofFigure,
@@ -68,6 +73,8 @@ class VideoListView extends StatefulWidget implements VideoListWidgetParams {
   /// VideoListWidgetParams
   @override
   final VideoListBloc? videoListBloc;
+  @override
+  final String? ofSearch;
   @override
   final String? ofArtist;
   @override
@@ -85,6 +92,7 @@ class VideoListView extends StatefulWidget implements VideoListWidgetParams {
 
     /// VideoListWidgetParams
     this.videoListBloc,
+    this.ofSearch,
     this.ofArtist,
     this.ofDance,
     this.ofFigure,
@@ -94,6 +102,7 @@ class VideoListView extends StatefulWidget implements VideoListWidgetParams {
     this.physics,
     this.padding,
   }) : assert(videoListBloc == null ||
+            ofSearch == null ||
             (ofArtist == null && ofDance == null && ofFigure == null));
 
   @override
@@ -115,12 +124,14 @@ class _VideoListViewState extends State<VideoListView> {
   Widget build(BuildContext context) {
     return VideoListBlocProvider(
       videoListBloc: widget.videoListBloc,
+      ofSearch: widget.ofSearch,
       ofArtist: widget.ofArtist,
       ofDance: widget.ofDance,
       ofFigure: widget.ofFigure,
       child: BlocBuilder<VideoListBloc, VideoListState>(
         builder: (BuildContext context, VideoListState state) {
           switch (state.status) {
+            case VideoListStatus.initial:
             case VideoListStatus.loading:
               return LoadingListView(
                 scrollDirection: widget.scrollDirection,
@@ -223,10 +234,19 @@ class _VideoListViewState extends State<VideoListView> {
   }
 }
 
-class VideosSection extends StatelessWidget implements VideoListWidgetParams {
+class VideosSection extends StatelessWidget
+    implements EntitiesSectionWidgetParams, VideoListWidgetParams {
+  /// EntitiesSectionWidgetParams
+  @override
+  final String? label;
+  @override
+  final VoidCallback? onTap;
+
   /// VideoListWidgetParams
   @override
   final VideoListBloc? videoListBloc;
+  @override
+  final String? ofSearch;
   @override
   final String? ofArtist;
   @override
@@ -237,18 +257,26 @@ class VideosSection extends StatelessWidget implements VideoListWidgetParams {
   const VideosSection({
     super.key,
 
+    /// EntitiesSectionWidgetParams
+    this.label = 'Videos',
+    this.onTap,
+
     /// VideoListWidgetParams
     this.videoListBloc,
+    this.ofSearch,
     this.ofArtist,
     this.ofDance,
     this.ofFigure,
-  }) : assert(videoListBloc == null ||
+  })  : assert(label != null),
+        assert(videoListBloc == null ||
+            ofSearch == null ||
             (ofArtist == null && ofDance == null && ofFigure == null));
 
   @override
   Widget build(BuildContext context) {
     return VideoListBlocProvider(
       videoListBloc: videoListBloc,
+      ofSearch: ofSearch,
       ofArtist: ofArtist,
       ofDance: ofDance,
       ofFigure: ofFigure,
@@ -257,14 +285,16 @@ class VideosSection extends StatelessWidget implements VideoListWidgetParams {
           return Column(
             children: [
               SectionTile(
-                title: const Text('Videos'),
-                onTap: () {
-                  AutoRouter.of(context).push(
-                    VideoListRoute(
-                      videoListBloc: BlocProvider.of<VideoListBloc>(context),
-                    ),
-                  );
-                },
+                title: Text(label!),
+                onTap: onTap ??
+                    () {
+                      AutoRouter.of(context).push(
+                        VideoListRoute(
+                          videoListBloc:
+                              BlocProvider.of<VideoListBloc>(context),
+                        ),
+                      );
+                    },
               ),
               SizedBox(
                 height: AppStyles.cardHeight,

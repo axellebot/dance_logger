@@ -2,6 +2,7 @@ export './artist_item_page.dart';
 export './artist_list_page.dart';
 export './dance_item_page.dart';
 export './dance_list_page.dart';
+export './entity_list_page.dart';
 export './figure_item_page.dart';
 export './figure_list_page.dart';
 export './main_page.dart';

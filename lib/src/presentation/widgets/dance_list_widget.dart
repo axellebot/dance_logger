@@ -19,6 +19,8 @@ class DanceListBlocProvider extends StatelessWidget
   @override
   final DanceListBloc? danceListBloc;
   @override
+  final String? ofSearch;
+  @override
   final String? ofArtist;
   @override
   final String? ofVideo;
@@ -30,13 +32,16 @@ class DanceListBlocProvider extends StatelessWidget
     super.key,
 
     /// DanceListWidgetParams
+    this.ofSearch,
     this.danceListBloc,
     this.ofArtist,
     this.ofVideo,
 
     /// Widget params
     required this.child,
-  }) : assert(danceListBloc == null || (ofArtist == null && ofVideo == null));
+  }) : assert(danceListBloc == null ||
+            ofSearch == null ||
+            (ofArtist == null && ofVideo == null));
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +56,7 @@ class DanceListBlocProvider extends StatelessWidget
                   Provider.of<DanceRepository>(context, listen: false),
               mapper: ModelMapper(),
             )..add(DanceListLoad(
+              ofSearch: ofSearch,
                 ofArtist: ofArtist,
                 ofVideo: ofVideo,
               )),
@@ -63,6 +69,8 @@ class DanceListView extends StatefulWidget implements DanceListWidgetParams {
   /// DanceListWidgetParams
   @override
   final DanceListBloc? danceListBloc;
+  @override
+  final String? ofSearch;
   @override
   final String? ofArtist;
   @override
@@ -78,6 +86,7 @@ class DanceListView extends StatefulWidget implements DanceListWidgetParams {
 
     /// DanceListWidgetParams
     this.danceListBloc,
+    this.ofSearch,
     this.ofArtist,
     this.ofVideo,
 
@@ -85,7 +94,9 @@ class DanceListView extends StatefulWidget implements DanceListWidgetParams {
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
-  }) : assert(danceListBloc == null || (ofArtist == null && ofVideo == null));
+  }) : assert(danceListBloc == null ||
+            ofSearch == null ||
+            (ofArtist == null && ofVideo == null));
 
   @override
   State<StatefulWidget> createState() => _DanceListViewState();
@@ -106,11 +117,13 @@ class _DanceListViewState extends State<DanceListView> {
   Widget build(BuildContext context) {
     return DanceListBlocProvider(
       danceListBloc: widget.danceListBloc,
+      ofSearch: widget.ofSearch,
       ofArtist: widget.ofArtist,
       ofVideo: widget.ofVideo,
       child: BlocBuilder<DanceListBloc, DanceListState>(
         builder: (context, state) {
           switch (state.status) {
+            case DanceListStatus.initial:
             case DanceListStatus.loading:
               return LoadingListView(
                 scrollDirection: widget.scrollDirection,
@@ -215,10 +228,19 @@ class _DanceListViewState extends State<DanceListView> {
   }
 }
 
-class DancesSection extends StatelessWidget implements DanceListWidgetParams {
+class DancesSection extends StatelessWidget
+    implements EntitiesSectionWidgetParams, DanceListWidgetParams {
+  /// EntitiesSectionWidgetParams
+  @override
+  final String? label;
+  @override
+  final VoidCallback? onTap;
+
   /// DanceListWidgetParams
   @override
   final DanceListBloc? danceListBloc;
+  @override
+  final String? ofSearch;
   @override
   final String? ofArtist;
   @override
@@ -227,16 +249,24 @@ class DancesSection extends StatelessWidget implements DanceListWidgetParams {
   const DancesSection({
     super.key,
 
+    /// EntitiesSectionWidgetParams
+    this.label,
+    this.onTap,
+
     /// DanceListWidgetParams
     this.danceListBloc,
+    this.ofSearch,
     this.ofArtist,
     this.ofVideo,
-  }) : assert(danceListBloc == null || (ofArtist == null && ofVideo == null));
+  }) : assert(danceListBloc == null ||
+            ofSearch == null ||
+            (ofArtist == null && ofVideo == null));
 
   @override
   Widget build(BuildContext context) {
     return DanceListBlocProvider(
       danceListBloc: danceListBloc,
+      ofSearch: ofSearch,
       ofArtist: ofArtist,
       ofVideo: ofVideo,
       child: Builder(
@@ -244,14 +274,16 @@ class DancesSection extends StatelessWidget implements DanceListWidgetParams {
           return Column(
             children: [
               SectionTile(
-                title: const Text('Dances'),
-                onTap: () {
-                  AutoRouter.of(context).push(
-                    DanceListRoute(
-                      danceListBloc: BlocProvider.of<DanceListBloc>(context),
-                    ),
-                  );
-                },
+                title: Text(label ?? 'Dances'),
+                onTap: onTap ??
+                    () {
+                      AutoRouter.of(context).push(
+                        DanceListRoute(
+                          danceListBloc:
+                              BlocProvider.of<DanceListBloc>(context),
+                        ),
+                      );
+                    },
               ),
               SizedBox(
                 height: AppStyles.cardHeight,

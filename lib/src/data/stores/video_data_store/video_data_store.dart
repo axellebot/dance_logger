@@ -16,6 +16,14 @@ abstract class VideoDataStore {
     required Offset offset,
   });
 
+  FutureOr<List<VideoDataModel>> getVideosOfSearch(
+    String search, {
+
+    /// TODO: Add filters
+    /// TODO: Add sort
+    required Offset offset,
+  });
+
   FutureOr<List<VideoDataModel>> getVideosOfArtist(
     String artistId, {
 

@@ -179,6 +179,10 @@ class DanceDatabaseManager
     );
   }
 
+  /// --------------------------------------------------------------------------
+  /// Artists
+  /// --------------------------------------------------------------------------
+
   @override
   FutureOr<ArtistDataModel> saveArtist(ArtistDataModel artistModel) async {
     bool exists = true;
@@ -251,6 +255,32 @@ class DanceDatabaseManager
   }
 
   @override
+  FutureOr<List<ArtistDataModel>> getArtistsOfSearch(
+    String search, {
+    required Offset offset,
+  }) async {
+    if (kDebugMode) print('$runtimeType:getArtistsOfSearch($search)');
+
+    List results = await db.rawQuery(
+      '''
+      SELECT DISTINCT a.*
+      FROM artists a
+      WHERE a.name LIKE ?
+      LIMIT ?
+      OFFSET ?
+    ''',
+      [
+        '%$search%',
+        offset.limit,
+        offset.offset,
+      ],
+    );
+    List<ArtistDataModel> artists =
+        results.map((result) => ArtistDataModel.fromJson(result)).toList();
+    return artists;
+  }
+
+  @override
   FutureOr<List<ArtistDataModel>> getArtistsOfDance(
     String danceId, {
     required Offset offset,
@@ -259,13 +289,14 @@ class DanceDatabaseManager
 
     List results = await db.rawQuery(
       '''
-      SELECT DISTINCT a.* FROM artists a
-      INNER JOIN moments_artists m_a
-      ON a.artist_id = m_a.artist_id
-        INNER JOIN moments m
-        ON m_a.moment_id = m.moment_id
-          INNER JOIN figures f
-          ON m.figure_id = f.figure_id
+      SELECT DISTINCT a.*
+      FROM artists a
+        INNER JOIN moments_artists m_a
+        ON a.artist_id = m_a.artist_id
+          INNER JOIN moments m
+          ON m_a.moment_id = m.moment_id
+            INNER JOIN figures f
+            ON m.figure_id = f.figure_id
       WHERE f.dance_id=?
       LIMIT ?
       OFFSET ?
@@ -290,11 +321,12 @@ class DanceDatabaseManager
 
     List results = await db.rawQuery(
       '''
-      SELECT DISTINCT a.* FROM artists a 
-      INNER JOIN moments_artists m_a 
-      ON a.artist_id = m_a.artist_id 
-        INNER JOIN moments m 
-        ON m_a.moment_id = m.moment_id
+      SELECT DISTINCT a.*
+      FROM artists a 
+        INNER JOIN moments_artists m_a 
+        ON a.artist_id = m_a.artist_id 
+          INNER JOIN moments m 
+          ON m_a.moment_id = m.moment_id
       WHERE m.figure_id = ?
       LIMIT ?
       OFFSET ?
@@ -319,9 +351,10 @@ class DanceDatabaseManager
 
     List results = await db.rawQuery(
       '''
-      SELECT DISTINCT a.* FROM artists a
-      INNER JOIN moments_artists m_a
-      ON a.artist_id = m_a.artist_id
+      SELECT DISTINCT a.*
+      FROM artists a
+        INNER JOIN moments_artists m_a
+        ON a.artist_id = m_a.artist_id
       WHERE m_a.moment_id = ?
       LIMIT ?
       OFFSET ?
@@ -346,11 +379,12 @@ class DanceDatabaseManager
 
     List results = await db.rawQuery(
       '''
-      SELECT DISTINCT a.* FROM artists a
-      INNER JOIN moments_artists m_a 
-      ON a.artist_id=m_a.artist_id 
-        INNER JOIN moments m 
-        ON m_a.moment_id=m.moment_id
+      SELECT DISTINCT a.*
+      FROM artists a
+        INNER JOIN moments_artists m_a 
+        ON a.artist_id=m_a.artist_id 
+          INNER JOIN moments m 
+          ON m_a.moment_id=m.moment_id
       WHERE m.video_id = ?
       LIMIT ?
       OFFSET ?
@@ -366,6 +400,10 @@ class DanceDatabaseManager
         results.map((result) => ArtistDataModel.fromJson(result)).toList();
     return artists;
   }
+
+  /// --------------------------------------------------------------------------
+  /// Dance
+  /// --------------------------------------------------------------------------
 
   @override
   FutureOr<DanceDataModel> saveDance(DanceDataModel danceModel) async {
@@ -441,6 +479,32 @@ class DanceDatabaseManager
   }
 
   @override
+  FutureOr<List<DanceDataModel>> getDancesOfSearch(
+    String search, {
+    required Offset offset,
+  }) async {
+    if (kDebugMode) print('$runtimeType:getDancesOfSearch($search)');
+
+    List results = await db.rawQuery(
+      '''
+      SELECT DISTINCT d.*
+      FROM dances d
+      WHERE d.name LIKE ?
+      LIMIT ?
+      OFFSET ?
+    ''',
+      [
+        '%$search%',
+        offset.limit,
+        offset.offset,
+      ],
+    );
+    List<DanceDataModel> dances =
+        results.map((result) => DanceDataModel.fromJson(result)).toList();
+    return dances;
+  }
+
+  @override
   FutureOr<List<DanceDataModel>> getDancesOfArtist(
     String artistId, {
     required Offset offset,
@@ -449,13 +513,14 @@ class DanceDatabaseManager
 
     List results = await db.rawQuery(
       '''
-      SELECT DISTINCT d.* FROM dances d
-      INNER JOIN figures f
-      ON d.dance_id = f.dance_id
-        INNER JOIN moments m
-        ON f.figure_id = m.figure_id 
-          INNER JOIN moments_artists m_a
-          ON m.moment_id = m_a.moment_id
+      SELECT DISTINCT d.*
+      FROM dances d
+        INNER JOIN figures f
+        ON d.dance_id = f.dance_id
+          INNER JOIN moments m
+          ON f.figure_id = m.figure_id 
+            INNER JOIN moments_artists m_a
+            ON m.moment_id = m_a.moment_id
       WHERE m_a.artist_id = ?
       LIMIT ?
       OFFSET ?
@@ -480,11 +545,12 @@ class DanceDatabaseManager
 
     List results = await db.rawQuery(
       '''
-      SELECT DISTINCT d.* FROM dances d
-      INNER JOIN figures f
-      ON d.dance_id = f.dance_id
-        INNER JOIN moments m
-        ON f.figure_id = m.figure_id 
+      SELECT DISTINCT d.*
+      FROM dances d
+        INNER JOIN figures f
+        ON d.dance_id = f.dance_id
+          INNER JOIN moments m
+          ON f.figure_id = m.figure_id 
       WHERE m.video_id = ?
       LIMIT ?
       OFFSET ?
@@ -499,6 +565,10 @@ class DanceDatabaseManager
         results.map((result) => DanceDataModel.fromJson(result)).toList();
     return dances;
   }
+
+  /// --------------------------------------------------------------------------
+  /// Figures
+  /// --------------------------------------------------------------------------
 
   @override
   FutureOr<FigureDataModel> saveFigure(FigureDataModel figureModel) async {
@@ -582,11 +652,12 @@ class DanceDatabaseManager
 
     List results = await db.rawQuery(
       '''
-      SELECT DISTINCT f.* FROM figures f
-      INNER JOIN moments m
-      ON f.figure_id = m.figure_id
-        INNER JOIN moments_artists m_a
-        ON m.moment_id = m_a.moment_id
+      SELECT DISTINCT f.*
+      FROM figures f
+        INNER JOIN moments m
+        ON f.figure_id = m.figure_id
+          INNER JOIN moments_artists m_a
+          ON m.moment_id = m_a.moment_id
       WHERE m_a.artist_id = ?
       LIMIT ?
       OFFSET ?
@@ -611,7 +682,8 @@ class DanceDatabaseManager
 
     List results = await db.rawQuery(
       '''
-      SELECT DISTINCT f.* FROM figures f
+      SELECT DISTINCT f.*
+      FROM figures f
       WHERE f.dance_id = ?
       LIMIT ?
       OFFSET ?
@@ -636,9 +708,10 @@ class DanceDatabaseManager
 
     List results = await db.rawQuery(
       '''
-      SELECT DISTINCT f.* FROM figures f
-      INNER JOIN moments m
-      ON f.figure_id = m.figure_id
+      SELECT DISTINCT f.*
+      FROM figures f
+        INNER JOIN moments m
+        ON f.figure_id = m.figure_id
       WHERE m.video_id = ?
       LIMIT ?
       OFFSET ?
@@ -653,6 +726,169 @@ class DanceDatabaseManager
         results.map((result) => FigureDataModel.fromJson(result)).toList();
     return figures;
   }
+
+  /// --------------------------------------------------------------------------
+  /// Moments
+  /// --------------------------------------------------------------------------
+
+  @override
+  FutureOr<MomentDataModel> saveMoment(MomentDataModel momentModel) async {
+    if (kDebugMode) print('$runtimeType:saveMoment($momentModel)');
+
+    bool exists = true;
+    try {
+      await getDance(momentModel.id);
+    } on DataNotFoundError {
+      exists = false;
+    }
+
+    int count;
+    if (!exists) {
+      count = await db.insert(
+        'moments',
+        momentModel.toJson(),
+      );
+      if (count == 0) throw DataNotCreatedError('Moment');
+    } else {
+      count = await db.update(
+        'moments',
+        momentModel.toJson(),
+        where: 'moment_id = ?',
+        whereArgs: [momentModel.id],
+      );
+      if (count == 0) throw DataNotUpdatedError('Moment');
+    }
+    return await getMoment(momentModel.id);
+  }
+
+  @override
+  FutureOr<MomentDataModel> getMoment(String momentId) async {
+    if (kDebugMode) print('$runtimeType:getMoment($momentId)');
+
+    List results = await db.query(
+      'moments',
+      where: 'moment_id = ?',
+      whereArgs: [momentId],
+    );
+    if (results.isEmpty) throw DataNotFoundError('Moment');
+    MomentDataModel moment = MomentDataModel.fromJson(results.first);
+    return moment;
+  }
+
+  @override
+  FutureOr<void> deleteMoment(String momentId) async {
+    if (kDebugMode) print('$runtimeType:deleteMoment($momentId)');
+
+    await getMoment(momentId); // throw error if doesn't exist
+    int count = await db.delete(
+      'moments',
+      where: 'moment_id = ?',
+      whereArgs: [momentId],
+    );
+    if (count == 0) throw DataNotDeletedError('Moment');
+  }
+
+  @override
+  FutureOr<List<MomentDataModel>> getMoments({
+    required Offset offset,
+  }) async {
+    if (kDebugMode) print('$runtimeType:getMoments()');
+
+    List results = await db.query(
+      'moments',
+      limit: offset.limit,
+      offset: offset.offset,
+    );
+
+    List<MomentDataModel> moments =
+        results.map((result) => MomentDataModel.fromJson(result)).toList();
+    return moments;
+  }
+
+  @override
+  FutureOr<List<MomentDataModel>> getMomentsOfFigure(
+    String figureId, {
+    required Offset offset,
+  }) async {
+    if (kDebugMode) print('$runtimeType:getMomentsOfFigure($figureId)');
+
+    List results = await db.rawQuery(
+      '''
+      SELECT DISTINCT m.*
+      FROM moments m
+      WHERE m.figure_id = ?
+      LIMIT ?
+      OFFSET ?
+    ''',
+      [
+        figureId,
+        offset.limit,
+        offset.offset,
+      ],
+    );
+    List<MomentDataModel> moments =
+        results.map((result) => MomentDataModel.fromJson(result)).toList();
+    return moments;
+  }
+
+  @override
+  FutureOr<List<MomentDataModel>> getMomentsOfVideo(
+    String videoId, {
+    required Offset offset,
+  }) async {
+    if (kDebugMode) print('$runtimeType:getMomentsOfVideo($videoId)');
+
+    List results = await db.rawQuery(
+      '''
+      SELECT DISTINCT m.*
+      FROM moments m
+      WHERE m.video_id = ?
+      LIMIT ?
+      OFFSET ?
+    ''',
+      [
+        videoId,
+        offset.limit,
+        offset.offset,
+      ],
+    );
+
+    List<MomentDataModel> moments =
+        results.map((result) => MomentDataModel.fromJson(result)).toList();
+    return moments;
+  }
+
+  @override
+  FutureOr<List<MomentDataModel>> getMomentsOfArtist(
+    String artistId, {
+    required Offset offset,
+  }) async {
+    if (kDebugMode) print('$runtimeType:getMomentsOfArtist($artistId)');
+
+    List results = await db.rawQuery(
+      '''
+      SELECT DISTINCT m.*
+      FROM moments m
+        INNER JOIN moments_artists m_a
+        ON m.moment_id = m_a.moment_id
+      WHERE m_a.artist_id = ?
+      LIMIT ?
+      OFFSET ?
+    ''',
+      [
+        artistId,
+        offset.limit,
+        offset.offset,
+      ],
+    );
+    List<MomentDataModel> moments =
+        results.map((result) => MomentDataModel.fromJson(result)).toList();
+    return moments;
+  }
+
+  /// --------------------------------------------------------------------------
+  /// Practices
+  /// --------------------------------------------------------------------------
 
   @override
   FutureOr<PracticeDataModel> savePractice(
@@ -747,6 +983,10 @@ class DanceDatabaseManager
     throw UnimplementedError();
   }
 
+  /// --------------------------------------------------------------------------
+  /// Videos
+  /// --------------------------------------------------------------------------
+
   @override
   FutureOr<VideoDataModel> saveVideo(VideoDataModel videoModel) async {
     bool exists = true;
@@ -818,6 +1058,33 @@ class DanceDatabaseManager
   }
 
   @override
+  FutureOr<List<VideoDataModel>> getVideosOfSearch(
+    String search, {
+    required Offset offset,
+  }) async {
+    if (kDebugMode) print('$runtimeType:getVideosOfSearch($search)');
+
+    List results = await db.rawQuery(
+      '''
+      SELECT DISTINCT v.*
+      FROM videos v
+      WHERE v.name LIKE ?
+      LIMIT ?
+      OFFSET ?
+    ''',
+      [
+        '%$search%',
+        offset.limit,
+        offset.offset,
+      ],
+    );
+
+    List<VideoDataModel> videos =
+        results.map((result) => VideoDataModel.fromJson(result)).toList();
+    return videos;
+  }
+
+  @override
   FutureOr<List<VideoDataModel>> getVideosOfArtist(
     String artistId, {
     required Offset offset,
@@ -826,11 +1093,12 @@ class DanceDatabaseManager
 
     List results = await db.rawQuery(
       '''
-      SELECT DISTINCT v.* FROM videos v
-      INNER JOIN moments m
-      ON v.video_id = m.video_id
-        INNER JOIN moments_artists m_a
-        ON m.moment_id = m_a.moment_id
+      SELECT DISTINCT v.*
+      FROM videos v
+        INNER JOIN moments m
+        ON v.video_id = m.video_id
+          INNER JOIN moments_artists m_a
+          ON m.moment_id = m_a.moment_id
       WHERE m_a.artist_id = ?
       LIMIT ?
       OFFSET ?
@@ -856,11 +1124,12 @@ class DanceDatabaseManager
 
     List results = await db.rawQuery(
       '''
-      SELECT DISTINCT v.* FROM videos v
-      INNER JOIN moments m
-      ON v.video_id = m.video_id
-        INNER JOIN figures f
-        ON f.figure_id = m.figure_id
+      SELECT DISTINCT v.*
+      FROM videos v
+        INNER JOIN moments m
+        ON v.video_id = m.video_id
+          INNER JOIN figures f
+          ON f.figure_id = m.figure_id
       WHERE f.dance_id = ?
       LIMIT ?
       OFFSET ?
@@ -886,9 +1155,10 @@ class DanceDatabaseManager
 
     List results = await db.rawQuery(
       '''
-      SELECT DISTINCT v.* FROM videos v
-      INNER JOIN moments m
-      ON v.video_id = m.video_id
+      SELECT DISTINCT v.*
+      FROM videos v
+        INNER JOIN moments m
+        ON v.video_id = m.video_id
       WHERE m.figure_id = ?
       LIMIT ?
       OFFSET ?
@@ -903,157 +1173,5 @@ class DanceDatabaseManager
     List<VideoDataModel> videos =
         results.map((result) => VideoDataModel.fromJson(result)).toList();
     return videos;
-  }
-
-  @override
-  FutureOr<MomentDataModel> saveMoment(MomentDataModel momentModel) async {
-    if (kDebugMode) print('$runtimeType:saveMoment($momentModel)');
-
-    bool exists = true;
-    try {
-      await getDance(momentModel.id);
-    } on DataNotFoundError {
-      exists = false;
-    }
-
-    int count;
-    if (!exists) {
-      count = await db.insert(
-        'moments',
-        momentModel.toJson(),
-      );
-      if (count == 0) throw DataNotCreatedError('Moment');
-    } else {
-      count = await db.update(
-        'moments',
-        momentModel.toJson(),
-        where: 'moment_id = ?',
-        whereArgs: [momentModel.id],
-      );
-      if (count == 0) throw DataNotUpdatedError('Moment');
-    }
-    return await getMoment(momentModel.id);
-  }
-
-  @override
-  FutureOr<MomentDataModel> getMoment(String momentId) async {
-    if (kDebugMode) print('$runtimeType:getMoment($momentId)');
-
-    List results = await db.query(
-      'moments',
-      where: 'moment_id = ?',
-      whereArgs: [momentId],
-    );
-    if (results.isEmpty) throw DataNotFoundError('Moment');
-    MomentDataModel moment = MomentDataModel.fromJson(results.first);
-    return moment;
-  }
-
-  @override
-  FutureOr<void> deleteMoment(String momentId) async {
-    if (kDebugMode) print('$runtimeType:deleteMoment($momentId)');
-
-    await getMoment(momentId); // throw error if doesn't exist
-    int count = await db.delete(
-      'moments',
-      where: 'moment_id = ?',
-      whereArgs: [momentId],
-    );
-    if (count == 0) throw DataNotDeletedError('Moment');
-  }
-
-  @override
-  FutureOr<List<MomentDataModel>> getMoments({
-    required Offset offset,
-  }) async {
-    if (kDebugMode) print('$runtimeType:getMoments()');
-
-    List results = await db.query(
-      'moments',
-      limit: offset.limit,
-      offset: offset.offset,
-    );
-
-    List<MomentDataModel> moments =
-        results.map((result) => MomentDataModel.fromJson(result)).toList();
-    return moments;
-  }
-
-  @override
-  FutureOr<List<MomentDataModel>> getMomentsOfFigure(
-    String figureId, {
-    required Offset offset,
-  }) async {
-    if (kDebugMode) print('$runtimeType:getMomentsOfFigure($figureId)');
-
-    List results = await db.rawQuery(
-      '''
-      SELECT DISTINCT m.* FROM moments m
-      WHERE m.figure_id = ?
-      LIMIT ?
-      OFFSET ?
-    ''',
-      [
-        figureId,
-        offset.limit,
-        offset.offset,
-      ],
-    );
-    List<MomentDataModel> moments =
-        results.map((result) => MomentDataModel.fromJson(result)).toList();
-    return moments;
-  }
-
-  @override
-  FutureOr<List<MomentDataModel>> getMomentsOfVideo(
-    String videoId, {
-    required Offset offset,
-  }) async {
-    if (kDebugMode) print('$runtimeType:getMomentsOfVideo($videoId)');
-
-    List results = await db.rawQuery(
-      '''
-      SELECT DISTINCT m.* FROM moments m
-      WHERE m.video_id = ?
-      LIMIT ?
-      OFFSET ?
-    ''',
-      [
-        videoId,
-        offset.limit,
-        offset.offset,
-      ],
-    );
-
-    List<MomentDataModel> moments =
-        results.map((result) => MomentDataModel.fromJson(result)).toList();
-    return moments;
-  }
-
-  @override
-  FutureOr<List<MomentDataModel>> getMomentsOfArtist(
-    String artistId, {
-    required Offset offset,
-  }) async {
-    if (kDebugMode) print('$runtimeType:getMomentsOfArtist($artistId)');
-
-    List results = await db.rawQuery(
-      '''
-      SELECT DISTINCT m.* FROM moments m
-      INNER JOIN moments_artists m_a
-      ON m.moment_id = m_a.moment_id
-      WHERE m_a.artist_id = ?
-      LIMIT ?
-      OFFSET ?
-    ''',
-      [
-        artistId,
-        offset.limit,
-        offset.offset,
-      ],
-    );
-    List<MomentDataModel> moments =
-        results.map((result) => MomentDataModel.fromJson(result)).toList();
-    return moments;
   }
 }

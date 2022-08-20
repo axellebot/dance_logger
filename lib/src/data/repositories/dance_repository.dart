@@ -7,7 +7,9 @@ import 'package:flutter/foundation.dart';
 class ImplDanceRepository extends DanceRepository {
   final DanceDataStoreFactory factory;
 
-  ImplDanceRepository({required this.factory});
+  ImplDanceRepository({
+    required this.factory,
+  });
 
   @override
   FutureOr<DanceEntity> save(DanceEntity entity) async {
@@ -20,11 +22,8 @@ class ImplDanceRepository extends DanceRepository {
     bool force = false,
   }) async {
     if (kDebugMode) print('$runtimeType:getById($id)');
-
     DanceDataModel dataModel;
-
     dataModel = await factory.databaseDataStore.getDance(id);
-
     return dataModel;
   }
 
@@ -43,6 +42,22 @@ class ImplDanceRepository extends DanceRepository {
   }) async {
     if (kDebugMode) print('$runtimeType:getList()');
     final dataModels = await factory.databaseDataStore.getDances(
+      offset: offset,
+    );
+    return dataModels;
+  }
+
+  @override
+  FutureOr<List<DanceEntity>> getListOfSearch(
+    String search, {
+    required Offset offset,
+
+    /// TODO: Add filters
+    /// TODO: Add sort
+  }) async {
+    if (kDebugMode) print('$runtimeType:getListOfSearch($search)');
+    final dataModels = await factory.databaseDataStore.getDancesOfSearch(
+      search,
       offset: offset,
     );
     return dataModels;

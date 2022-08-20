@@ -32,19 +32,18 @@ class QuickSettingsExtendableButton extends StatelessWidget {
 }
 
 class QuickSettingsActionButton extends StatelessWidget {
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   const QuickSettingsActionButton({
     super.key,
-    this.padding = const EdgeInsets.symmetric(
-      vertical: AppStyles.menuButtonVerticalPadding,
-    ),
+    this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: padding,
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppStyles.appBarIconHorizontalPadding),
       child: IconButton(
         onPressed: () {
           openQuickSettings(context);

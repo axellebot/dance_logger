@@ -19,6 +19,8 @@ class ArtistListBlocProvider extends StatelessWidget
   @override
   final ArtistListBloc? artistListBloc;
   @override
+  final String? ofSearch;
+  @override
   final String? ofDance;
   @override
   final String? ofFigure;
@@ -33,6 +35,7 @@ class ArtistListBlocProvider extends StatelessWidget
 
     /// ArtistListWidgetParams
     this.artistListBloc,
+    this.ofSearch,
     this.ofDance,
     this.ofFigure,
     this.ofVideo,
@@ -40,6 +43,7 @@ class ArtistListBlocProvider extends StatelessWidget
     /// Widget params
     required this.child,
   }) : assert(artistListBloc == null ||
+            ofSearch == null ||
             (ofDance == null && ofFigure == null && ofVideo == null));
 
   @override
@@ -55,6 +59,7 @@ class ArtistListBlocProvider extends StatelessWidget
                   Provider.of<ArtistRepository>(context, listen: false),
               mapper: ModelMapper(),
             )..add(ArtistListLoad(
+              ofSearch: ofSearch,
                 ofDance: ofDance,
                 ofFigure: ofFigure,
                 ofVideo: ofVideo,
@@ -68,6 +73,8 @@ class ArtistListView extends StatefulWidget implements ArtistListWidgetParams {
   /// ArtistListWidgetParams
   @override
   final ArtistListBloc? artistListBloc;
+  @override
+  final String? ofSearch;
   @override
   final String? ofDance;
   @override
@@ -85,6 +92,7 @@ class ArtistListView extends StatefulWidget implements ArtistListWidgetParams {
 
     /// ArtistListWidgetParams
     this.artistListBloc,
+    this.ofSearch,
     this.ofDance,
     this.ofFigure,
     this.ofVideo,
@@ -94,6 +102,7 @@ class ArtistListView extends StatefulWidget implements ArtistListWidgetParams {
     this.physics,
     this.padding,
   }) : assert(artistListBloc == null ||
+            ofSearch == null ||
             (ofDance == null && ofFigure == null && ofVideo == null));
 
   @override
@@ -115,12 +124,14 @@ class _ArtistListViewState extends State<ArtistListView> {
   Widget build(BuildContext context) {
     return ArtistListBlocProvider(
       artistListBloc: widget.artistListBloc,
+      ofSearch: widget.ofSearch,
       ofDance: widget.ofDance,
       ofFigure: widget.ofFigure,
       ofVideo: widget.ofVideo,
       child: BlocBuilder<ArtistListBloc, ArtistListState>(
         builder: (BuildContext context, ArtistListState state) {
           switch (state.status) {
+            case ArtistListStatus.initial:
             case ArtistListStatus.loading:
               return LoadingListView(
                 scrollDirection: widget.scrollDirection,
@@ -225,10 +236,19 @@ class _ArtistListViewState extends State<ArtistListView> {
   }
 }
 
-class ArtistsSection extends StatelessWidget implements ArtistListWidgetParams {
+class ArtistsSection extends StatelessWidget
+    implements EntitiesSectionWidgetParams, ArtistListWidgetParams {
+  /// EntitiesSectionWidgetParams
+  @override
+  final String? label;
+  @override
+  final VoidCallback? onTap;
+
   /// ArtistListWidgetParams
   @override
   final ArtistListBloc? artistListBloc;
+  @override
+  final String? ofSearch;
   @override
   final String? ofDance;
   @override
@@ -239,18 +259,25 @@ class ArtistsSection extends StatelessWidget implements ArtistListWidgetParams {
   const ArtistsSection({
     super.key,
 
+    /// EntitiesSectionWidgetParams
+    this.label,
+    this.onTap,
+
     /// ArtistListWidgetParams
     this.artistListBloc,
+    this.ofSearch,
     this.ofDance,
     this.ofFigure,
     this.ofVideo,
   }) : assert(artistListBloc == null ||
+            ofSearch == null ||
             (ofDance == null && ofFigure == null && ofVideo == null));
 
   @override
   Widget build(BuildContext context) {
     return ArtistListBlocProvider(
       artistListBloc: artistListBloc,
+      ofSearch: ofSearch,
       ofDance: ofDance,
       ofFigure: ofFigure,
       ofVideo: ofVideo,
@@ -259,14 +286,16 @@ class ArtistsSection extends StatelessWidget implements ArtistListWidgetParams {
           return Column(
             children: [
               SectionTile(
-                title: const Text('Artists'),
-                onTap: () {
-                  AutoRouter.of(context).push(
-                    ArtistListRoute(
-                      artistListBloc: BlocProvider.of<ArtistListBloc>(context),
-                    ),
-                  );
-                },
+                title: Text(label ?? 'Artists'),
+                onTap: onTap ??
+                    () {
+                      AutoRouter.of(context).push(
+                        ArtistListRoute(
+                          artistListBloc:
+                              BlocProvider.of<ArtistListBloc>(context),
+                        ),
+                      );
+                    },
               ),
               SizedBox(
                 height: AppStyles.cardHeight,

@@ -95,7 +95,7 @@ class AppStyles {
   ///                                App
   /// --------------------------------------------------------------------------
 
-  static const double menuButtonVerticalPadding = 3.0;
+  static const double appBarIconHorizontalPadding = 16;
 
   /// --------------------------------------------------------------------------
   ///                                Auth

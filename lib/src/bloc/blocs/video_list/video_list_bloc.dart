@@ -34,6 +34,7 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
 
       final List<VideoViewModel> videoViewModels;
       videoViewModels = await _fetchVideos(
+        ofSearch: event.ofSearch,
         ofArtist: event.ofArtist,
         ofDance: event.ofDance,
         ofFigure: event.ofFigure,
@@ -42,6 +43,7 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
 
       emit(state.copyWith(
         status: VideoListStatus.success,
+        ofSearch: event.ofSearch,
         ofArtist: event.ofArtist,
         ofDance: event.ofDance,
         ofFigure: event.ofFigure,
@@ -66,6 +68,7 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
       List<VideoViewModel> videoViewModels;
 
       videoViewModels = await _fetchVideos(
+        ofSearch: state.ofSearch,
         ofArtist: state.ofArtist,
         ofDance: state.ofDance,
         ofFigure: state.ofFigure,
@@ -100,6 +103,7 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
       ));
 
       List<VideoViewModel> videoViewModels = await _fetchVideos(
+        ofSearch: state.ofSearch,
         ofArtist: state.ofArtist,
         ofDance: state.ofDance,
         ofFigure: state.ofFigure,
@@ -171,16 +175,26 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
   }
 
   Future<List<VideoViewModel>> _fetchVideos({
+    String? ofSearch,
     String? ofArtist,
     String? ofDance,
     String? ofFigure,
     required int offset,
     int limit = 10,
   }) async {
+    assert(ofSearch == null ||
+        (ofArtist == null && ofDance == null && ofFigure == null));
     if (kDebugMode) print('$runtimeType:_fetchVideos');
     List<VideoEntity> videoEntities;
-
-    if (ofArtist != null) {
+    if (ofSearch != null) {
+      videoEntities = await videoRepository.getListOfSearch(
+        ofSearch,
+        offset: Offset(
+          offset: offset,
+          limit: limit,
+        ),
+      );
+    } else if (ofArtist != null) {
       videoEntities = await videoRepository.getVideosOfArtist(
         ofArtist,
         offset: Offset(

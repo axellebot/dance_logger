@@ -121,6 +121,7 @@ class _FigureListViewState extends State<FigureListView> {
       child: BlocBuilder<FigureListBloc, FigureListState>(
         builder: (context, state) {
           switch (state.status) {
+            case FigureListStatus.initial:
             case FigureListStatus.loading:
               return LoadingListView(
                 scrollDirection: widget.scrollDirection,
@@ -224,7 +225,14 @@ class _FigureListViewState extends State<FigureListView> {
   }
 }
 
-class FiguresSection extends StatelessWidget implements FigureListWidgetParams {
+class FiguresSection extends StatelessWidget
+    implements EntitiesSectionWidgetParams, FigureListWidgetParams {
+  /// EntitiesSectionWidgetParams
+  @override
+  final String? label;
+  @override
+  final VoidCallback? onTap;
+
   /// FigureListWidgetParams
   @override
   final FigureListBloc? figureListBloc;
@@ -238,12 +246,17 @@ class FiguresSection extends StatelessWidget implements FigureListWidgetParams {
   const FiguresSection({
     super.key,
 
+    /// EntitiesSectionWidgetParams
+    this.label = 'Figures',
+    this.onTap,
+
     /// FigureListWidgetParams
     this.figureListBloc,
     this.ofArtist,
     this.ofDance,
     this.ofVideo,
-  }) : assert(figureListBloc == null ||
+  })  : assert(label != null),
+        assert(figureListBloc == null ||
             (ofArtist == null && ofDance == null && ofVideo == null));
 
   @override
@@ -259,14 +272,16 @@ class FiguresSection extends StatelessWidget implements FigureListWidgetParams {
             mainAxisSize: MainAxisSize.min,
             children: [
               SectionTile(
-                title: const Text('Figures'),
-                onTap: () {
-                  AutoRouter.of(context).push(
-                    FigureListRoute(
-                      figureListBloc: BlocProvider.of<FigureListBloc>(context),
-                    ),
-                  );
-                },
+                title: Text(label!),
+                onTap: onTap ??
+                    () {
+                      AutoRouter.of(context).push(
+                        FigureListRoute(
+                          figureListBloc:
+                              BlocProvider.of<FigureListBloc>(context),
+                        ),
+                      );
+                    },
               ),
               SizedBox(
                 height: AppStyles.cardHeight,

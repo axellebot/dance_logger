@@ -16,6 +16,14 @@ abstract class DanceDataStore {
     required Offset offset,
   });
 
+  FutureOr<List<DanceDataModel>> getDancesOfSearch(
+    String search, {
+
+    /// TODO: Add filters
+    /// TODO: Add sort
+    required Offset offset,
+  });
+
   FutureOr<List<DanceDataModel>> getDancesOfArtist(
     String artistId, {
 

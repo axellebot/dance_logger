@@ -12,6 +12,8 @@ abstract class ArtistListEvent extends Equatable {
 class ArtistListLoad extends ArtistListEvent implements ArtistListParams {
   /// ArtistListParams
   @override
+  final String? ofSearch;
+  @override
   final String? ofDance;
   @override
   final String? ofFigure;
@@ -20,17 +22,20 @@ class ArtistListLoad extends ArtistListEvent implements ArtistListParams {
 
   const ArtistListLoad({
     /// ArtistListParams
+    this.ofSearch,
     this.ofDance,
     this.ofFigure,
     this.ofVideo,
-  });
+  }) : assert(ofSearch == null ||
+            (ofDance == null && ofFigure == null && ofVideo == null));
 
   @override
-  List<Object?> get props => [ofDance, ofFigure, ofVideo];
+  List<Object?> get props => [ofSearch, ofDance, ofFigure, ofVideo];
 
   @override
   String toString() {
     return 'ArtistListLoad{'
+        'ofSearch: $ofSearch, '
         'ofDance: $ofDance, '
         'ofFigure: $ofFigure, '
         'ofVideo: $ofVideo'

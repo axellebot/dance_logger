@@ -1,4 +1,6 @@
-abstract class ArtistListParams {
+import 'package:dance/domain.dart';
+
+abstract class ArtistListParams implements SearchListParams {
   final String? ofDance;
   final String? ofFigure;
   final String? ofVideo;

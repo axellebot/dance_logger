@@ -13,6 +13,7 @@ class DatabaseFileSetupTile extends StatelessWidget {
     return BlocBuilder<ConfigurationBloc, ConfigState>(
       builder: (context, state) {
         switch (state.status) {
+          case ConfigStatus.initial:
           case ConfigStatus.loading:
             return const LoadingTile();
           case ConfigStatus.notReady:

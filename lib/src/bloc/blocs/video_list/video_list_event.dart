@@ -12,6 +12,8 @@ abstract class VideoListEvent extends Equatable {
 class VideoListLoad extends VideoListEvent implements VideoListParams {
   /// VideoListParams
   @override
+  final String? ofSearch;
+  @override
   final String? ofArtist;
   @override
   final String? ofDance;
@@ -20,17 +22,20 @@ class VideoListLoad extends VideoListEvent implements VideoListParams {
 
   const VideoListLoad({
     /// VideoListParams
+    this.ofSearch,
     this.ofArtist,
     this.ofDance,
     this.ofFigure,
-  });
+  }) : assert(ofSearch == null ||
+            (ofArtist == null && ofDance == null && ofFigure == null));
 
   @override
-  List<Object?> get props => [ofArtist, ofDance, ofFigure];
+  List<Object?> get props => [ofSearch, ofArtist, ofDance, ofFigure];
 
   @override
   String toString() {
     return 'VideoListLoad{'
+        'ofSearch: $ofSearch, '
         'ofArtist: $ofArtist, '
         'ofDance: $ofDance, '
         'ofFigure: $ofFigure'

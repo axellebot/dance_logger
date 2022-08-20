@@ -120,6 +120,7 @@ class _MomentListViewState extends State<MomentListView> {
       child: BlocBuilder<MomentListBloc, MomentListState>(
         builder: (BuildContext context, MomentListState state) {
           switch (state.status) {
+            case MomentListStatus.initial:
             case MomentListStatus.loading:
               return LoadingListView(
                 scrollDirection: widget.scrollDirection,
@@ -224,7 +225,14 @@ class _MomentListViewState extends State<MomentListView> {
   }
 }
 
-class MomentsSection extends StatelessWidget implements MomentListWidgetParams {
+class MomentsSection extends StatelessWidget
+    implements EntitiesSectionWidgetParams, MomentListWidgetParams {
+  /// EntitiesSectionWidgetParams
+  @override
+  final String? label;
+  @override
+  final VoidCallback? onTap;
+
   /// MomentListWidgetParams
   @override
   final MomentListBloc? momentListBloc;
@@ -238,12 +246,17 @@ class MomentsSection extends StatelessWidget implements MomentListWidgetParams {
   const MomentsSection({
     super.key,
 
+    /// EntitiesSectionWidgetParams
+    this.label = 'Moments',
+    this.onTap,
+
     /// MomentListWidgetParams
     this.momentListBloc,
     this.ofArtist,
     this.ofFigure,
     this.ofVideo,
-  }) : assert(momentListBloc == null ||
+  })  : assert(label != null),
+        assert(momentListBloc == null ||
             (ofArtist == null && ofFigure == null && ofVideo == null));
 
   @override
@@ -258,8 +271,8 @@ class MomentsSection extends StatelessWidget implements MomentListWidgetParams {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SectionTile(
-                title: Text('Moments'),
+              SectionTile(
+                title: Text(label!),
               ),
               SizedBox(
                 height: AppStyles.chipHeight,

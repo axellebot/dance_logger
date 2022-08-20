@@ -36,4 +36,18 @@ abstract class EntityRepository<T extends BaseEntity> {
     /// TODO: Add filters
     /// TODO: Add sort
   });
+
+  /// Fetch [T] list
+  ///
+  /// [Offset] can be used to choose the offset and the limit
+  ///
+  /// Must return a [List] of [T]
+// TODO: Add getListOfSearch
+// FutureOr<List<T>> getListOfSearch(
+//   String search, {
+//   required Offset offset, // Pagination
+//
+//   /// TODO: Add filters
+//   /// TODO: Add sort
+// });
 }

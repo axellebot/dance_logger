@@ -18,6 +18,7 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
     return BlocBuilder<ArtistDetailBloc, ArtistDetailState>(
       builder: (BuildContext context, ArtistDetailState state) {
         switch (state.status) {
+          case ArtistDetailStatus.initial:
           case ArtistDetailStatus.loading:
             return const LoadingPage();
           case ArtistDetailStatus.detailSuccess:
@@ -74,9 +75,18 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                   SliverList(
                     delegate: SliverChildListDelegate(
                       <Widget>[
-                        DancesSection(ofArtist: artistId),
-                        FiguresSection(ofArtist: artistId),
-                        VideosSection(ofArtist: artistId),
+                        DancesSection(
+                          // label: 'Dances of ${state.artist!.name}',
+                          ofArtist: state.artist!.id,
+                        ),
+                        FiguresSection(
+                          // label: 'Figures of ${state.artist!.name}',
+                          ofArtist: state.artist!.id,
+                        ),
+                        VideosSection(
+                          // label: 'Videos of ${state.artist!.name}',
+                          ofArtist: state.artist!.id,
+                        ),
                         EntityInfoListTile(
                           createdAt: state.artist!.createdAt,
                           updateAt: state.artist!.updatedAt,
@@ -147,6 +157,7 @@ class ArtistEditPage extends StatelessWidget implements AutoRouteWrapper {
     return BlocBuilder<ArtistEditBloc, ArtistEditState>(
       builder: (context, state) {
         switch (state.status) {
+          case ArtistEditStatus.initial:
           case ArtistEditStatus.loading:
             return const LoadingPage();
           case ArtistEditStatus.failure:

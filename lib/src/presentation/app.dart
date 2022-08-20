@@ -78,6 +78,7 @@ class RepoWrapper extends StatelessWidget {
                 child: App(),
               ),
             );
+          case ConfigStatus.initial:
           case ConfigStatus.loading:
             return const LoadingApp();
           case ConfigStatus.failure:
@@ -108,6 +109,7 @@ class App extends StatelessWidget {
     return BlocBuilder<AppBloc, AppState>(
       builder: (BuildContext context, AppState state) {
         switch (state.status) {
+          case AppStatus.initial:
           case AppStatus.loading:
             return const LoadingApp();
           case AppStatus.success:

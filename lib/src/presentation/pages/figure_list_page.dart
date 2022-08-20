@@ -5,9 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class FigureListPage extends StatelessWidget implements FigureListWidgetParams {
-  /// Page params
+class FigureListPage extends StatelessWidget
+    implements EntityListPageParams, FigureListWidgetParams {
+  /// EntityListPageParams
+  @override
   final bool showAppBar;
+  @override
+  final String? titleText;
 
   /// FigureListWidgetParams
   @override
@@ -24,6 +28,7 @@ class FigureListPage extends StatelessWidget implements FigureListWidgetParams {
 
     /// Page params
     this.showAppBar = true,
+    this.titleText,
 
     /// FigureListParams
     this.figureListBloc,
@@ -43,23 +48,25 @@ class FigureListPage extends StatelessWidget implements FigureListWidgetParams {
       child: BlocBuilder<FigureListBloc, FigureListState>(
         builder: (context, state) {
           final figureListBloc = BlocProvider.of<FigureListBloc>(context);
-          final PreferredSizeWidget? appBar;
-          if (state.selectedFigures.isNotEmpty) {
-            appBar = SelectingAppBar(
-              count: state.selectedFigures.length,
-              onCanceled: () {
-                figureListBloc.add(const FigureListUnselect());
-              },
-              onDeleted: () {
-                figureListBloc.add(const FigureListDelete());
-              },
-            );
-          } else {
-            appBar = (showAppBar)
-                ? const DanceAppBar(
-                    title: Text('Figures'),
-                  )
-                : null;
+          PreferredSizeWidget? appBar;
+          if (showAppBar) {
+            if (state.selectedFigures.isEmpty) {
+              appBar = SearchAppBar(
+                title:
+                    (titleText != null) ? Text(titleText ?? 'Figures') : null,
+                hintText: (titleText == null) ? 'Search figures' : null,
+              );
+            } else {
+              appBar = SelectionAppBar(
+                count: state.selectedFigures.length,
+                onCanceled: () {
+                  figureListBloc.add(const FigureListUnselect());
+                },
+                onDeleted: () {
+                  figureListBloc.add(const FigureListDelete());
+                },
+              );
+            }
           }
 
           return Scaffold(

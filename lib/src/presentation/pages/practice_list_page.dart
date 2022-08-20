@@ -6,9 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class PracticeListPage extends StatelessWidget
-    implements PracticeListWidgetParams {
-  /// Page params
+    implements EntityListPageParams, PracticeListWidgetParams {
+  /// EntityListPageParams
+  @override
   final bool showAppBar;
+  @override
+  final String? titleText;
 
   /// PracticeListWidgetParams
   @override
@@ -27,6 +30,7 @@ class PracticeListPage extends StatelessWidget
 
     /// Page params
     this.showAppBar = true,
+    this.titleText,
 
     /// PracticeListWidgetParams
     this.practiceListBloc,
@@ -51,23 +55,25 @@ class PracticeListPage extends StatelessWidget
       child: BlocBuilder<PracticeListBloc, PracticeListState>(
         builder: (context, state) {
           final practiceListBloc = BlocProvider.of<PracticeListBloc>(context);
-          final PreferredSizeWidget? appBar;
-          if (state.selectedPractices.isNotEmpty) {
-            appBar = SelectingAppBar(
-              count: state.selectedPractices.length,
-              onCanceled: () {
-                practiceListBloc.add(const PracticeListUnselect());
-              },
-              onDeleted: () {
-                practiceListBloc.add(const PracticeListDelete());
-              },
-            );
-          } else {
-            appBar = (showAppBar)
-                ? const DanceAppBar(
-                    title: Text('Practices'),
-                  )
-                : null;
+          PreferredSizeWidget? appBar;
+          if (showAppBar) {
+            if (state.selectedPractices.isEmpty) {
+              appBar = SearchAppBar(
+                title:
+                    (titleText != null) ? Text(titleText ?? 'Practices') : null,
+                hintText: (titleText == null) ? 'Search practices' : null,
+              );
+            } else {
+              appBar = SelectionAppBar(
+                count: state.selectedPractices.length,
+                onCanceled: () {
+                  practiceListBloc.add(const PracticeListUnselect());
+                },
+                onDeleted: () {
+                  practiceListBloc.add(const PracticeListDelete());
+                },
+              );
+            }
           }
 
           return Scaffold(
@@ -82,7 +88,7 @@ class PracticeListPage extends StatelessWidget
               onRefresh: () {
                 practiceListBloc.add(const PracticeListRefresh());
                 return practiceListBloc.stream.firstWhere(
-                        (e) => e.status != PracticeListStatus.refreshing);
+                    (e) => e.status != PracticeListStatus.refreshing);
               },
               child: PracticeListView(
                 practiceListBloc: practiceListBloc,

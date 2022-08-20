@@ -136,6 +136,7 @@ class _PracticeListViewState extends State<PracticeListView> {
       child: BlocBuilder<PracticeListBloc, PracticeListState>(
         builder: (BuildContext context, PracticeListState state) {
           switch (state.status) {
+            case PracticeListStatus.initial:
             case PracticeListStatus.loading:
               return LoadingListView(
                 scrollDirection: widget.scrollDirection,
@@ -165,7 +166,7 @@ class _PracticeListViewState extends State<PracticeListView> {
                     if (index < state.practices.length) {
                       final PracticeViewModel practice = state.practices[index];
                       final PracticeListBloc practiceListBloc =
-                      BlocProvider.of<PracticeListBloc>(context);
+                          BlocProvider.of<PracticeListBloc>(context);
                       switch (widget.scrollDirection) {
                         case Axis.vertical:
                           if (state.selectedPractices.isEmpty) {
@@ -181,14 +182,14 @@ class _PracticeListViewState extends State<PracticeListView> {
                             return CheckboxPracticeListTile(
                               practice: practice,
                               value:
-                              state.selectedPractices.contains(practice.id),
+                                  state.selectedPractices.contains(practice.id),
                               onChanged: (bool? value) {
                                 practiceListBloc.add(
                                   (value == true)
                                       ? PracticeListSelect(
-                                      practiceId: practice.id)
+                                          practiceId: practice.id)
                                       : PracticeListUnselect(
-                                      practiceId: practice.id),
+                                          practiceId: practice.id),
                                 );
                               },
                             );
@@ -244,7 +245,13 @@ class _PracticeListViewState extends State<PracticeListView> {
 }
 
 class PracticesSection extends StatelessWidget
-    implements PracticeListWidgetParams {
+    implements EntitiesSectionWidgetParams, PracticeListWidgetParams {
+  /// EntitiesSectionWidgetParams
+  @override
+  final String? label;
+  @override
+  final VoidCallback? onTap;
+
   /// PracticeListWidgetParams
   @override
   final PracticeListBloc? practiceListBloc;
@@ -260,13 +267,18 @@ class PracticesSection extends StatelessWidget
   const PracticesSection({
     super.key,
 
+    /// EntitiesSectionWidgetParams
+    this.label = 'Practices',
+    this.onTap,
+
     /// PracticeListWidgetParams
     this.practiceListBloc,
     this.ofArtist,
     this.ofDance,
     this.ofFigure,
     this.ofVideo,
-  }) : assert(practiceListBloc == null ||
+  })  : assert(label != null),
+        assert(practiceListBloc == null ||
             (ofArtist == null &&
                 ofDance == null &&
                 ofFigure == null &&
@@ -285,15 +297,16 @@ class PracticesSection extends StatelessWidget
           return Column(
             children: [
               SectionTile(
-                title: const Text('Practices'),
-                onTap: () {
-                  AutoRouter.of(context).push(
-                    PracticeListRoute(
-                      practiceListBloc:
-                      BlocProvider.of<PracticeListBloc>(context),
-                    ),
-                  );
-                },
+                title: Text(label!),
+                onTap: onTap ??
+                    () {
+                      AutoRouter.of(context).push(
+                        PracticeListRoute(
+                          practiceListBloc:
+                              BlocProvider.of<PracticeListBloc>(context),
+                        ),
+                      );
+                    },
               ),
               SizedBox(
                 height: AppStyles.cardHeight,

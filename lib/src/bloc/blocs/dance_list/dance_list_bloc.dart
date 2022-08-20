@@ -34,6 +34,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
 
       final List<DanceViewModel> danceViewModels;
       danceViewModels = await _fetchDances(
+        ofSearch: event.ofSearch,
         ofArtist: event.ofArtist,
         ofVideo: event.ofVideo,
         offset: 0,
@@ -41,6 +42,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
 
       emit(state.copyWith(
         status: DanceListStatus.success,
+        ofSearch: event.ofSearch,
         ofArtist: event.ofArtist,
         ofVideo: event.ofVideo,
         dances: danceViewModels,
@@ -63,6 +65,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     try {
       final List<DanceViewModel> danceViewModels;
       danceViewModels = await _fetchDances(
+        ofSearch: state.ofSearch,
         ofArtist: state.ofArtist,
         ofVideo: state.ofVideo,
         offset: state.dances.length,
@@ -96,6 +99,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
       ));
 
       List<DanceViewModel> danceViewModels = await _fetchDances(
+        ofSearch: state.ofSearch,
         ofArtist: state.ofArtist,
         ofVideo: state.ofVideo,
         offset: 0,
@@ -166,15 +170,25 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
   }
 
   Future<List<DanceViewModel>> _fetchDances({
+    String? ofSearch,
     String? ofArtist,
     String? ofVideo,
     required int offset,
     int limit = 10,
   }) async {
+    assert(ofSearch == null || (ofArtist == null && ofVideo == null));
     if (kDebugMode) print('$runtimeType:_fetchDances');
     List<DanceEntity> danceEntities;
 
-    if (ofArtist != null) {
+    if (ofSearch != null) {
+      danceEntities = await danceRepository.getListOfSearch(
+        ofSearch,
+        offset: Offset(
+          offset: offset,
+          limit: limit,
+        ),
+      );
+    } else if (ofArtist != null) {
       danceEntities = await danceRepository.getDancesOfArtist(
         ofArtist,
         offset: Offset(

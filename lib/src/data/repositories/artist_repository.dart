@@ -48,6 +48,22 @@ class ImplArtistRepository extends ArtistRepository {
   }
 
   @override
+  FutureOr<List<ArtistEntity>> getListOfSearch(
+    String search, {
+    required Offset offset,
+
+    /// TODO: Add filters
+    /// TODO: Add sort
+  }) async {
+    if (kDebugMode) print('$runtimeType:getListOfSearch($search)');
+    final dataModels = await factory.databaseDataStore.getArtistsOfSearch(
+      search,
+      offset: offset,
+    );
+    return dataModels;
+  }
+
+  @override
   FutureOr<List<ArtistEntity>> getArtistsOfDance(
     String danceId, {
     required Offset offset,

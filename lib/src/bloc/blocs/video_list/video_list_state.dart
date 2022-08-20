@@ -8,6 +8,8 @@ class VideoListState extends Equatable implements VideoListParams {
   final VideoListStatus status;
 
   @override
+  final String? ofSearch;
+  @override
   final String? ofArtist;
   @override
   final String? ofDance;
@@ -21,6 +23,7 @@ class VideoListState extends Equatable implements VideoListParams {
 
   const VideoListState({
     this.status = VideoListStatus.initial,
+    this.ofSearch,
     this.ofArtist,
     this.ofDance,
     this.ofFigure,
@@ -28,11 +31,14 @@ class VideoListState extends Equatable implements VideoListParams {
     this.hasReachedMax = false,
     this.selectedVideos = const <String>[],
     this.error,
-  });
+  }) : assert(ofSearch == null ||
+            (ofArtist == null && ofDance == null && ofFigure == null));
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props =>
+      [
         status,
+        ofSearch,
         ofArtist,
         ofDance,
         ofFigure,
@@ -44,6 +50,7 @@ class VideoListState extends Equatable implements VideoListParams {
 
   VideoListState copyWith({
     VideoListStatus? status,
+    String? ofSearch,
     String? ofArtist,
     String? ofDance,
     String? ofFigure,
@@ -54,6 +61,7 @@ class VideoListState extends Equatable implements VideoListParams {
   }) {
     return VideoListState(
       status: status ?? this.status,
+      ofSearch: ofSearch ?? this.ofSearch,
       ofArtist: ofArtist ?? this.ofArtist,
       ofDance: ofDance ?? this.ofDance,
       ofFigure: ofFigure ?? this.ofFigure,
@@ -68,6 +76,7 @@ class VideoListState extends Equatable implements VideoListParams {
   String toString() {
     return 'VideoListState{'
         'status: $status, '
+        'ofSearch: $ofSearch, '
         'ofArtist: $ofArtist, '
         'ofDance: $ofDance, '
         'ofFigure: $ofFigure, '

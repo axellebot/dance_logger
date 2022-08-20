@@ -20,6 +20,7 @@ class VideoDetailsPage extends StatelessWidget implements AutoRouteWrapper {
     return BlocBuilder<VideoDetailBloc, VideoDetailState>(
       builder: (BuildContext context, VideoDetailState state) {
         switch (state.status) {
+          case VideoDetailStatus.initial:
           case VideoDetailStatus.loading:
             return const LoadingPage();
           case VideoDetailStatus.detailSuccess:
@@ -61,10 +62,22 @@ class VideoDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                               Clipboard.setData(
                                   ClipboardData(text: state.video!.url));
                             }),
-                        MomentsSection(ofVideo: videoId),
-                        FiguresSection(ofVideo: videoId),
-                        ArtistsSection(ofVideo: videoId),
-                        DancesSection(ofVideo: videoId),
+                        MomentsSection(
+                          // label: 'Moments of ${state.video!.name}',
+                          ofVideo: state.video!.id,
+                        ),
+                        FiguresSection(
+                          // label: 'Figures of ${state.video!.name}',
+                          ofVideo: state.video!.id,
+                        ),
+                        ArtistsSection(
+                          // label: 'Artists of ${state.video!.name}',
+                          ofVideo: state.video!.id,
+                        ),
+                        DancesSection(
+                          // label: 'Dances of ${state.video!.name}',
+                          ofVideo: state.video!.id,
+                        ),
                         EntityInfoListTile(
                           createdAt: state.video!.createdAt,
                           updateAt: state.video!.updatedAt,
@@ -121,6 +134,7 @@ class VideoEditPage extends StatelessWidget implements AutoRouteWrapper {
     return BlocBuilder<VideoEditBloc, VideoEditState>(
       builder: (context, VideoEditState state) {
         switch (state.status) {
+          case VideoEditStatus.initial:
           case VideoEditStatus.loading:
             return const LoadingPage();
           case VideoEditStatus.failure:

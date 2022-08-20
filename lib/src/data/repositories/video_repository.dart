@@ -49,6 +49,22 @@ class ImplVideoRepository extends VideoRepository {
   }
 
   @override
+  FutureOr<List<VideoEntity>> getListOfSearch(
+    String search, {
+    required Offset offset,
+
+    /// TODO: Add filters
+    /// TODO: Add sort
+  }) async {
+    if (kDebugMode) print('$runtimeType:getListOfSearch($search)');
+    final dataModels = await factory.databaseDataStore.getVideosOfSearch(
+      search,
+      offset: offset,
+    );
+    return dataModels;
+  }
+
+  @override
   FutureOr<List<VideoEntity>> getVideosOfArtist(
     String artistId, {
     required Offset offset,

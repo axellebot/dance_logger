@@ -5,11 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class DanceListPage extends StatelessWidget implements DanceListWidgetParams {
-  /// Page params
+class DanceListPage extends StatelessWidget
+    implements EntityListPageParams, DanceListWidgetParams {
+  /// EntityListPageParams
+  @override
   final bool showAppBar;
+  @override
+  final String? titleText;
 
   /// DanceListWidgetParams
+  @override
+  final String? ofSearch;
   @override
   final DanceListBloc? danceListBloc;
   @override
@@ -22,39 +28,53 @@ class DanceListPage extends StatelessWidget implements DanceListWidgetParams {
 
     /// Page params
     this.showAppBar = true,
+    this.titleText,
 
     /// DanceListWidgetParams
     this.danceListBloc,
+    this.ofSearch,
     this.ofArtist,
     this.ofVideo,
-  }) : assert(danceListBloc == null || (ofArtist == null && ofVideo == null));
+  }) : assert(danceListBloc == null ||
+            ofSearch == null ||
+            (ofArtist == null && ofVideo == null));
 
   @override
   Widget build(BuildContext context) {
     return DanceListBlocProvider(
       danceListBloc: danceListBloc,
+      ofSearch: ofSearch,
       ofArtist: ofArtist,
       ofVideo: ofVideo,
       child: BlocBuilder<DanceListBloc, DanceListState>(
         builder: (context, state) {
           final danceListBloc = BlocProvider.of<DanceListBloc>(context);
-          final PreferredSizeWidget? appBar;
-          if (state.selectedDances.isNotEmpty) {
-            appBar = SelectingAppBar(
-              count: state.selectedDances.length,
-              onCanceled: () {
-                danceListBloc.add(const DanceListUnselect());
-              },
-              onDeleted: () {
-                danceListBloc.add(const DanceListDelete());
-              },
-            );
-          } else {
-            appBar = (showAppBar)
-                ? const DanceAppBar(
-                    title: Text('Dances'),
-                  )
-                : null;
+          PreferredSizeWidget? appBar;
+          if (showAppBar) {
+            if (state.selectedDances.isEmpty) {
+              appBar = SearchAppBar(
+                title: (titleText != null) ? Text(titleText ?? 'Dances') : null,
+                hintText: (titleText == null) ? 'Search dances' : null,
+                onSearch: () {
+                  showSearch(
+                    context: context,
+                    delegate: DancesSearchDelegate(
+                      searchFieldLabel: 'Search dances',
+                    ),
+                  );
+                },
+              );
+            } else {
+              appBar = SelectionAppBar(
+                count: state.selectedDances.length,
+                onCanceled: () {
+                  danceListBloc.add(const DanceListUnselect());
+                },
+                onDeleted: () {
+                  danceListBloc.add(const DanceListDelete());
+                },
+              );
+            }
           }
 
           return Scaffold(

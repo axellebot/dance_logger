@@ -34,6 +34,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
 
       final List<ArtistViewModel> artistViewModels;
       artistViewModels = await _fetchArtists(
+        ofSearch: event.ofSearch,
         ofDance: event.ofDance,
         ofFigure: event.ofFigure,
         ofVideo: event.ofVideo,
@@ -42,6 +43,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
 
       emit(state.copyWith(
         status: ArtistListStatus.success,
+        ofSearch: state.ofSearch,
         ofDance: event.ofDance,
         ofFigure: event.ofFigure,
         ofVideo: event.ofVideo,
@@ -65,6 +67,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
     try {
       final List<ArtistViewModel> artistViewModels;
       artistViewModels = await _fetchArtists(
+        ofSearch: state.ofSearch,
         ofDance: state.ofDance,
         ofFigure: state.ofFigure,
         ofVideo: state.ofVideo,
@@ -99,6 +102,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
       ));
 
       List<ArtistViewModel> artistViewModels = await _fetchArtists(
+        ofSearch: state.ofSearch,
         ofDance: state.ofDance,
         ofFigure: state.ofFigure,
         ofVideo: state.ofVideo,
@@ -170,16 +174,27 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
   }
 
   Future<List<ArtistViewModel>> _fetchArtists({
+    String? ofSearch,
     String? ofDance,
     String? ofFigure,
     String? ofVideo,
     required int offset,
     int limit = 10,
   }) async {
+    assert(ofSearch == null ||
+        (ofDance == null && ofFigure == null && ofVideo == null));
     if (kDebugMode) print('$runtimeType:_fetchArtists');
     List<ArtistEntity> artistEntities;
 
-    if (ofDance != null) {
+    if (ofSearch != null) {
+      artistEntities = await artistRepository.getListOfSearch(
+        ofSearch,
+        offset: Offset(
+          offset: offset,
+          limit: limit,
+        ),
+      );
+    } else if (ofDance != null) {
       artistEntities = await artistRepository.getArtistsOfDance(
         ofDance,
         offset: Offset(
