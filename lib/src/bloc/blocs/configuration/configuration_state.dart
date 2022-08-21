@@ -77,19 +77,17 @@ class ConfigState extends Equatable {
   }
 
   @override
-  String toString() {
-    return 'ConfigurationState{'
-        'status: $status, '
-        'fileDir: $fileDir, '
-        'fileName: $fileName, '
-        'appPrefsRepository: $appPrefsRepository, '
-        'danceRepository: $danceRepository, '
-        'artistRepository: $artistRepository, '
-        'figureRepository: $figureRepository, '
-        'momentRepository: $momentRepository, '
-        'practiceRepository: $practiceRepository, '
-        'videoRepository: $videoRepository, '
-        'error: $error'
-        '}';
-  }
+  String toString() => 'ConfigurationState{'
+      'status: $status, '
+      'fileDir: $fileDir, '
+      'fileName: $fileName, '
+      'appPrefsRepository: $appPrefsRepository, '
+      'danceRepository: $danceRepository, '
+      'artistRepository: $artistRepository, '
+      'figureRepository: $figureRepository, '
+      'momentRepository: $momentRepository, '
+      'practiceRepository: $practiceRepository, '
+      'videoRepository: $videoRepository, '
+      'error: $error'
+      '}';
 }

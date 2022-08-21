@@ -51,13 +51,11 @@ class VideoEditState extends Equatable {
   }
 
   @override
-  String toString() {
-    return 'VideoEditLoaded{'
-        'status: $status, '
-        'initialVideo: $initialVideo, '
-        'videoName: $videoName, '
-        'videoUrl: $videoUrl, '
-        'error: $error'
-        '}';
-  }
+  String toString() => 'VideoEditLoaded{'
+      'status: $status, '
+      'initialVideo: $initialVideo, '
+      'videoName: $videoName, '
+      'videoUrl: $videoUrl, '
+      'error: $error'
+      '}';
 }

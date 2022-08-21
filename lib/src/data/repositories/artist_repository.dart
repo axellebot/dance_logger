@@ -13,6 +13,7 @@ class ImplArtistRepository extends ArtistRepository {
 
   @override
   FutureOr<ArtistEntity> save(ArtistEntity entity) async {
+    if (kDebugMode) print('$runtimeType:save($entity)');
     return await factory.databaseDataStore
         .saveArtist(entity as ArtistDataModel);
   }

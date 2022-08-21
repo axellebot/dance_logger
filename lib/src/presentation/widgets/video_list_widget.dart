@@ -59,7 +59,7 @@ class VideoListBlocProvider extends StatelessWidget
                   Provider.of<VideoRepository>(context, listen: false),
               mapper: ModelMapper(),
             )..add(VideoListLoad(
-              ofSearch: ofSearch,
+                ofSearch: ofSearch,
                 ofArtist: ofArtist,
                 ofDance: ofDance,
                 ofFigure: ofFigure,
@@ -140,6 +140,7 @@ class _VideoListViewState extends State<VideoListView> {
               );
             case VideoListStatus.failure:
             case VideoListStatus.success:
+            case VideoListStatus.refreshing:
               if (state.videos.isEmpty) {
                 return EmptyListView(
                   scrollDirection: widget.scrollDirection,
@@ -160,7 +161,7 @@ class _VideoListViewState extends State<VideoListView> {
                     if (index < state.videos.length) {
                       final VideoViewModel video = state.videos[index];
                       final VideoListBloc videoListBloc =
-                          BlocProvider.of<VideoListBloc>(context);
+                      BlocProvider.of<VideoListBloc>(context);
                       switch (widget.scrollDirection) {
                         case Axis.vertical:
                           if (state.selectedVideos.isEmpty) {

@@ -22,6 +22,7 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
           case ArtistDetailStatus.loading:
             return const LoadingPage();
           case ArtistDetailStatus.detailSuccess:
+          case ArtistDetailStatus.refreshing:
             final ArtistDetailBloc artistDetailBloc =
                 BlocProvider.of<ArtistDetailBloc>(context);
             Widget? background = (state.artist!.imageUrl != null)
@@ -33,69 +34,78 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                         fit: BoxFit.cover,
                       ),
                       _buildGradient(),
-                    ],
-                  )
+              ],
+            )
                 : null;
             return Scaffold(
-              body: CustomScrollView(
-                slivers: <Widget>[
-                  SliverAppBar(
-                    pinned: true,
-                    snap: false,
-                    floating: false,
-                    expandedHeight: 320.0,
-                    stretch: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                      stretchModes: const [
-                        StretchMode.fadeTitle,
-                        StretchMode.blurBackground,
-                        StretchMode.zoomBackground,
-                      ],
-                      title: Text(state.artist!.name),
-                      background: background,
-                    ),
-                    actions: [
-                      IconButton(
-                        onPressed: () {
-                          AutoRouter.of(context).push(
-                            ArtistEditRoute(
-                              artistId: state.artist!.id,
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.edit),
+              body: RefreshIndicator(
+                edgeOffset: AppStyles.sliverAppBarExpandedHeight +
+                    MediaQuery.of(context).viewPadding.top,
+                onRefresh: () {
+                  artistDetailBloc.add(const ArtistDetailRefresh());
+                  return artistDetailBloc.stream.firstWhere(
+                      (e) => e.status != ArtistListStatus.refreshing);
+                },
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    SliverAppBar(
+                      pinned: true,
+                      snap: false,
+                      floating: false,
+                      expandedHeight: AppStyles.sliverAppBarExpandedHeight,
+                      stretch: true,
+                      flexibleSpace: FlexibleSpaceBar(
+                        stretchModes: const [
+                          StretchMode.fadeTitle,
+                          StretchMode.blurBackground,
+                          StretchMode.zoomBackground,
+                        ],
+                        title: Text(state.artist!.name),
+                        background: background,
                       ),
-                      DeleteIconButton(
-                        onDeleted: () {
-                          artistDetailBloc.add(const ArtistDetailDelete());
-                        },
-                      )
-                    ],
-                  ),
-                  SliverList(
-                    delegate: SliverChildListDelegate(
-                      <Widget>[
-                        DancesSection(
-                          // label: 'Dances of ${state.artist!.name}',
-                          ofArtist: state.artist!.id,
+                      actions: [
+                        IconButton(
+                          onPressed: () {
+                            AutoRouter.of(context).push(
+                              ArtistEditRoute(
+                                artistId: state.artist!.id,
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.edit),
                         ),
-                        FiguresSection(
-                          // label: 'Figures of ${state.artist!.name}',
-                          ofArtist: state.artist!.id,
-                        ),
-                        VideosSection(
-                          // label: 'Videos of ${state.artist!.name}',
-                          ofArtist: state.artist!.id,
-                        ),
-                        EntityInfoListTile(
-                          createdAt: state.artist!.createdAt,
-                          updateAt: state.artist!.updatedAt,
-                          version: state.artist!.version,
-                        ),
+                        DeleteIconButton(
+                          onDeleted: () {
+                            artistDetailBloc.add(const ArtistDetailDelete());
+                          },
+                        )
                       ],
                     ),
-                  ),
-                ],
+                    SliverList(
+                      delegate: SliverChildListDelegate(
+                        <Widget>[
+                          DancesSection(
+                            // label: 'Dances of ${state.artist!.name}',
+                            ofArtist: state.artist!.id,
+                          ),
+                          FiguresSection(
+                            // label: 'Figures of ${state.artist!.name}',
+                            ofArtist: state.artist!.id,
+                          ),
+                          VideosSection(
+                            // label: 'Videos of ${state.artist!.name}',
+                            ofArtist: state.artist!.id,
+                          ),
+                          EntityInfoListTile(
+                            createdAt: state.artist!.createdAt,
+                            updateAt: state.artist!.updatedAt,
+                            version: state.artist!.version,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           case ArtistDetailStatus.failure:

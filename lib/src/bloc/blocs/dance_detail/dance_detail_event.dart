@@ -17,24 +17,29 @@ class DanceDetailLoad extends DanceDetailEvent {
   }) : super();
 
   @override
-  String toString() {
-    return 'DanceDetailLoad{'
-        'danceId: $danceId'
-        '}';
-  }
+  String toString() => 'DanceDetailLoad{'
+      'danceId: $danceId'
+      '}';
 
   @override
   List<Object?> get props => [danceId];
+}
+
+class DanceDetailRefresh extends DanceDetailEvent {
+  const DanceDetailRefresh();
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String toString() => 'DanceDetailRefresh{}';
 }
 
 class DanceDetailDelete extends DanceDetailEvent {
   const DanceDetailDelete() : super();
 
   @override
-  String toString() {
-    return 'DanceDetailDeleted{'
-        '}';
-  }
+  String toString() => 'DanceDetailDeleted{}';
 
   @override
   List<Object?> get props => [];

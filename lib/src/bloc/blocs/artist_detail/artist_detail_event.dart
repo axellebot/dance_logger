@@ -17,24 +17,29 @@ class ArtistDetailLoad extends ArtistDetailEvent {
   }) : super();
 
   @override
-  String toString() {
-    return 'ArtistDetailLoad{'
-        'artistId: $artistId'
-        '}';
-  }
+  String toString() => 'ArtistDetailLoad{'
+      'artistId: $artistId'
+      '}';
 
   @override
   List<Object?> get props => [artistId];
+}
+
+class ArtistDetailRefresh extends ArtistDetailEvent {
+  const ArtistDetailRefresh();
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String toString() => 'ArtistDetailRefresh{}';
 }
 
 class ArtistDetailDelete extends ArtistDetailEvent {
   const ArtistDetailDelete() : super();
 
   @override
-  String toString() {
-    return 'ArtistDetailDelete{'
-        '}';
-  }
+  String toString() => 'ArtistDetailDelete{}';
 
   @override
   List<Object?> get props => [];

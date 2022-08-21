@@ -35,8 +35,7 @@ class VideoListState extends Equatable implements VideoListParams {
             (ofArtist == null && ofDance == null && ofFigure == null));
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         status,
         ofSearch,
         ofArtist,
@@ -73,17 +72,15 @@ class VideoListState extends Equatable implements VideoListParams {
   }
 
   @override
-  String toString() {
-    return 'VideoListState{'
-        'status: $status, '
-        'ofSearch: $ofSearch, '
-        'ofArtist: $ofArtist, '
-        'ofDance: $ofDance, '
-        'ofFigure: $ofFigure, '
-        'videos: $videos, '
-        'hasReachedMax: $hasReachedMax, '
-        'selectedVideos: $selectedVideos, '
-        'error: $error'
-        '}';
-  }
+  String toString() => 'VideoListState{'
+      'status: $status, '
+      'ofSearch: $ofSearch, '
+      'ofArtist: $ofArtist, '
+      'ofDance: $ofDance, '
+      'ofFigure: $ofFigure, '
+      'videos: $videos, '
+      'hasReachedMax: $hasReachedMax, '
+      'selectedVideos: $selectedVideos, '
+      'error: $error'
+      '}';
 }

@@ -15,12 +15,13 @@ class ArtistDetailBloc extends Bloc<ArtistDetailEvent, ArtistDetailState> {
     required this.mapper,
   }) : super(const ArtistDetailState()) {
     on<ArtistDetailLoad>(_onArtistLoad);
+    on<ArtistDetailRefresh>(_onArtistDetailRefresh);
     on<ArtistDetailDelete>(_onArtistDelete);
   }
 
   FutureOr<void> _onArtistLoad(
     ArtistDetailLoad event,
-    emit,
+    Emitter<ArtistDetailState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onArtistLoad');
 
@@ -36,6 +37,37 @@ class ArtistDetailBloc extends Bloc<ArtistDetailEvent, ArtistDetailState> {
 
       emit(state.copyWith(
         status: ArtistDetailStatus.detailSuccess,
+        ofId: artistViewModel.id,
+        artist: artistViewModel,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: ArtistDetailStatus.failure,
+        ofId: event.artistId,
+        error: error,
+      ));
+    }
+  }
+
+  FutureOr<void> _onArtistDetailRefresh(
+    ArtistDetailRefresh event,
+    Emitter<ArtistDetailState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onArtistDetailRefresh');
+
+    try {
+      emit(state.copyWith(
+        status: ArtistDetailStatus.refreshing,
+      ));
+
+      ArtistEntity artistDataModel =
+          await artistRepository.getById(state.ofId!);
+      ArtistViewModel artistViewModel =
+          mapper.toArtistViewModel(artistDataModel);
+
+      emit(state.copyWith(
+        status: ArtistDetailStatus.detailSuccess,
+        ofId: artistViewModel.id,
         artist: artistViewModel,
       ));
     } on Error catch (error) {

@@ -16,6 +16,8 @@ class PracticeDetailBloc
     required this.mapper,
   }) : super(const PracticeDetailState()) {
     on<PracticeDetailLoad>(_onPracticeDetailLoad);
+    on<PracticeDetailRefresh>(_onPracticeDetailRefresh);
+    on<PracticeDetailDelete>(_onPracticeDelete);
   }
 
   FutureOr<void> _onPracticeDetailLoad(
@@ -34,8 +36,63 @@ class PracticeDetailBloc
           mapper.toPracticeViewModel(practiceDataModel);
 
       emit(state.copyWith(
-        status: PracticeDetailStatus.success,
+        status: PracticeDetailStatus.detailSuccess,
+        ofId: practiceViewModel.id,
         practice: practiceViewModel,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: PracticeDetailStatus.failure,
+        error: error,
+      ));
+    }
+  }
+
+  FutureOr<void> _onPracticeDetailRefresh(
+    PracticeDetailRefresh event,
+    Emitter<PracticeDetailState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onPracticeDetailRefresh');
+
+    try {
+      emit(state.copyWith(
+        status: PracticeDetailStatus.refreshing,
+      ));
+
+      PracticeEntity practiceDataModel =
+          await practiceRepository.getById(state.ofId!);
+      PracticeViewModel practiceViewModel =
+          mapper.toPracticeViewModel(practiceDataModel);
+
+      emit(state.copyWith(
+        status: PracticeDetailStatus.detailSuccess,
+        ofId: practiceViewModel.id,
+        practice: practiceViewModel,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: PracticeDetailStatus.failure,
+        error: error,
+      ));
+    }
+  }
+
+  FutureOr<void> _onPracticeDelete(
+    PracticeDetailDelete event,
+    Emitter<PracticeDetailState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onPracticeDeleted');
+
+    if (state.practice == null) return;
+    try {
+      emit(state.copyWith(
+        status: PracticeDetailStatus.loading,
+      ));
+
+      await practiceRepository.deleteById(state.practice!.id);
+
+      emit(const PracticeDetailState(
+        status: PracticeDetailStatus.deleteSuccess,
       ));
     } on Error catch (error) {
       emit(state.copyWith(

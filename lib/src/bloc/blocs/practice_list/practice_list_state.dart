@@ -71,17 +71,15 @@ class PracticeListState extends Equatable implements PracticeListParams {
   }
 
   @override
-  String toString() {
-    return 'PracticeListState{'
-        'status: $status, '
-        'ofArtist: $ofArtist, '
-        'ofDance: $ofDance, '
-        'ofFigure: $ofFigure, '
-        'ofVideo: $ofVideo, '
-        'practices: $practices, '
-        'hasReachedMax: $hasReachedMax, '
-        'selectedPractices: $selectedPractices, '
-        'error: $error'
-        '}';
-  }
+  String toString() => 'PracticeListState{'
+      'status: $status, '
+      'ofArtist: $ofArtist, '
+      'ofDance: $ofDance, '
+      'ofFigure: $ofFigure, '
+      'ofVideo: $ofVideo, '
+      'practices: $practices, '
+      'hasReachedMax: $hasReachedMax, '
+      'selectedPractices: $selectedPractices, '
+      'error: $error'
+      '}';
 }

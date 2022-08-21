@@ -51,13 +51,11 @@ class ArtistEditState extends Equatable {
   }
 
   @override
-  String toString() {
-    return 'ArtistEditLoaded{'
-        'status: $status, '
-        'initialArtist: $initialArtist, '
-        'artistName: $artistName, '
-        'artistImageUrl: $artistImageUrl, '
-        'error: $error'
-        '}';
-  }
+  String toString() => 'ArtistEditLoaded{'
+      'status: $status, '
+      'initialArtist: $initialArtist, '
+      'artistName: $artistName, '
+      'artistImageUrl: $artistImageUrl, '
+      'error: $error'
+      '}';
 }

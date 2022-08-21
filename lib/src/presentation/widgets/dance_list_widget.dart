@@ -56,7 +56,7 @@ class DanceListBlocProvider extends StatelessWidget
                   Provider.of<DanceRepository>(context, listen: false),
               mapper: ModelMapper(),
             )..add(DanceListLoad(
-              ofSearch: ofSearch,
+                ofSearch: ofSearch,
                 ofArtist: ofArtist,
                 ofVideo: ofVideo,
               )),

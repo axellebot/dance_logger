@@ -22,58 +22,68 @@ class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
           case DanceDetailStatus.loading:
             return const LoadingPage();
           case DanceDetailStatus.detailSuccess:
+          case DanceDetailStatus.refreshing:
             final DanceDetailBloc danceDetailBloc =
                 BlocProvider.of<DanceDetailBloc>(context);
             return Scaffold(
-              body: CustomScrollView(
-                slivers: <Widget>[
-                  SliverAppBar(
-                    pinned: true,
-                    snap: false,
-                    floating: false,
-                    title: Text(state.dance!.name),
-                    actions: [
-                      IconButton(
-                        onPressed: () {
-                          AutoRouter.of(context).push(
-                            DanceEditRoute(
-                              danceId: state.dance!.id,
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.edit),
-                      ),
-                      DeleteIconButton(
-                        onDeleted: () {
-                          danceDetailBloc.add(const DanceDetailDelete());
-                        },
-                      )
-                    ],
-                  ),
-                  SliverList(
-                    delegate: SliverChildListDelegate(
-                      <Widget>[
-                        ArtistsSection(
-                          // label: 'Artists of ${state.dance!.name}',
-                          ofDance: state.dance!.id,
+              body: RefreshIndicator(
+                edgeOffset:
+                    kToolbarHeight + MediaQuery.of(context).viewPadding.top,
+                onRefresh: () {
+                  danceDetailBloc.add(const DanceDetailRefresh());
+                  return danceDetailBloc.stream.firstWhere(
+                      (e) => e.status != DanceListStatus.refreshing);
+                },
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    SliverAppBar(
+                      pinned: true,
+                      snap: false,
+                      floating: false,
+                      title: Text(state.dance!.name),
+                      actions: [
+                        IconButton(
+                          onPressed: () {
+                            AutoRouter.of(context).push(
+                              DanceEditRoute(
+                                danceId: state.dance!.id,
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.edit),
                         ),
-                        FiguresSection(
-                          // label: 'Figures of ${state.dance!.name}',
-                          ofDance: state.dance!.id,
-                        ),
-                        VideosSection(
-                          // label: 'Videos of ${state.dance!.name}',
-                          ofDance: state.dance!.id,
-                        ),
-                        EntityInfoListTile(
-                          createdAt: state.dance!.createdAt,
-                          updateAt: state.dance!.updatedAt,
-                          version: state.dance!.version,
-                        ),
+                        DeleteIconButton(
+                          onDeleted: () {
+                            danceDetailBloc.add(const DanceDetailDelete());
+                          },
+                        )
                       ],
                     ),
-                  ),
-                ],
+                    SliverList(
+                      delegate: SliverChildListDelegate(
+                        <Widget>[
+                          ArtistsSection(
+                            // label: 'Artists of ${state.dance!.name}',
+                            ofDance: state.dance!.id,
+                          ),
+                          FiguresSection(
+                            // label: 'Figures of ${state.dance!.name}',
+                            ofDance: state.dance!.id,
+                          ),
+                          VideosSection(
+                            // label: 'Videos of ${state.dance!.name}',
+                            ofDance: state.dance!.id,
+                          ),
+                          EntityInfoListTile(
+                            createdAt: state.dance!.createdAt,
+                            updateAt: state.dance!.updatedAt,
+                            version: state.dance!.version,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           case DanceDetailStatus.failure:

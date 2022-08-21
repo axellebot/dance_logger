@@ -32,14 +32,12 @@ class PracticeListLoad extends PracticeListEvent implements PracticeListParams {
   List<Object?> get props => [ofArtist, ofDance, ofFigure, ofVideo];
 
   @override
-  String toString() {
-    return 'PracticeListLoadMore{'
-        'ofArtist: $ofArtist, '
-        'ofDance: $ofDance, '
-        'ofFigure: $ofFigure, '
-        'ofVideo: $ofVideo'
-        '}';
-  }
+  String toString() => 'PracticeListLoadMore{'
+      'ofArtist: $ofArtist, '
+      'ofDance: $ofDance, '
+      'ofFigure: $ofFigure, '
+      'ofVideo: $ofVideo'
+      '}';
 }
 
 class PracticeListLoadMore extends PracticeListEvent {

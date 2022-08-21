@@ -17,11 +17,9 @@ class ArtistEditStart extends ArtistEditEvent {
   }) : super();
 
   @override
-  String toString() {
-    return 'ArtistEditStart{'
-        'danceId: $artistId'
-        '}';
-  }
+  String toString() => 'ArtistEditStart{'
+      'danceId: $artistId'
+      '}';
 
   @override
   List<Object?> get props => [artistId];
@@ -33,11 +31,9 @@ class ArtistEditChangeName extends ArtistEditEvent {
   const ArtistEditChangeName({required this.artistName}) : super();
 
   @override
-  String toString() {
-    return 'ArtistEditChangeName{'
-        'artistName: $artistName'
-        '}';
-  }
+  String toString() => 'ArtistEditChangeName{'
+      'artistName: $artistName'
+      '}';
 
   @override
   List<Object?> get props => [artistName];
@@ -49,11 +45,9 @@ class ArtistEditChangeImageUrl extends ArtistEditEvent {
   const ArtistEditChangeImageUrl({required this.artistImageUrl}) : super();
 
   @override
-  String toString() {
-    return 'ArtistEditChangeName{'
-        'artistImageUrl: $artistImageUrl'
-        '}';
-  }
+  String toString() => 'ArtistEditChangeName{'
+      'artistImageUrl: $artistImageUrl'
+      '}';
 
   @override
   List<Object?> get props => [artistImageUrl];
@@ -63,10 +57,7 @@ class ArtistEditSubmit extends ArtistEditEvent {
   const ArtistEditSubmit() : super();
 
   @override
-  String toString() {
-    return 'ArtistEditSubmit{'
-        '}';
-  }
+  String toString() => 'ArtistEditSubmit{}';
 
   @override
   List<Object?> get props => [];
@@ -76,10 +67,7 @@ class ArtistEditDelete extends ArtistEditEvent {
   const ArtistEditDelete() : super();
 
   @override
-  String toString() {
-    return 'ArtistEditDelete{'
-        '}';
-  }
+  String toString() => 'ArtistEditDelete{}';
 
   @override
   List<Object?> get props => [];

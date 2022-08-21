@@ -11,6 +11,7 @@ class ImplMomentRepository implements MomentRepository {
 
   @override
   FutureOr<MomentEntity> save(MomentEntity entity) async {
+    if (kDebugMode) print('$runtimeType:save($entity)');
     return await factory.databaseDataStore
         .saveMoment(entity as MomentDataModel);
   }

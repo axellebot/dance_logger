@@ -13,6 +13,7 @@ class ImplDanceRepository extends DanceRepository {
 
   @override
   FutureOr<DanceEntity> save(DanceEntity entity) async {
+    if (kDebugMode) print('$runtimeType:save($entity)');
     return await factory.databaseDataStore.saveDance(entity as DanceDataModel);
   }
 

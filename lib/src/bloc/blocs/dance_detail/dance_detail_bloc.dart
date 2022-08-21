@@ -15,6 +15,7 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
     required this.mapper,
   }) : super(const DanceDetailState()) {
     on<DanceDetailLoad>(_onDanceLoad);
+    on<DanceDetailRefresh>(_onDanceDetailRefresh);
     on<DanceDetailDelete>(_onDanceDelete);
   }
 
@@ -34,6 +35,35 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
 
       emit(state.copyWith(
         status: DanceDetailStatus.detailSuccess,
+        ofId: danceViewModel.id,
+        dance: danceViewModel,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: DanceDetailStatus.failure,
+        ofId: event.danceId,
+        error: error,
+      ));
+    }
+  }
+
+  FutureOr<void> _onDanceDetailRefresh(
+    DanceDetailRefresh event,
+    Emitter<DanceDetailState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onDanceDetailRefresh');
+
+    try {
+      emit(state.copyWith(
+        status: DanceDetailStatus.refreshing,
+      ));
+
+      DanceEntity danceDataModel = await danceRepository.getById(state.ofId!);
+      DanceViewModel danceViewModel = mapper.toDanceViewModel(danceDataModel);
+
+      emit(state.copyWith(
+        status: DanceDetailStatus.detailSuccess,
+        ofId: danceViewModel.id,
         dance: danceViewModel,
       ));
     } on Error catch (error) {

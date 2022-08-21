@@ -29,13 +29,11 @@ class DanceListLoad extends DanceListEvent implements DanceListParams {
   List<Object?> get props => [ofSearch, ofArtist, ofVideo];
 
   @override
-  String toString() {
-    return 'DanceListLoad{'
-        'ofSearch: $ofSearch, '
-        'ofArtist: $ofArtist, '
-        'ofVideo: $ofVideo'
-        '}';
-  }
+  String toString() => 'DanceListLoad{'
+      'ofSearch: $ofSearch, '
+      'ofArtist: $ofArtist, '
+      'ofVideo: $ofVideo'
+      '}';
 }
 
 class DanceListLoadMore extends DanceListEvent {

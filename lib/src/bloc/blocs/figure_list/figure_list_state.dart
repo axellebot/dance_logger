@@ -65,16 +65,14 @@ class FigureListState extends Equatable implements FigureListParams {
   }
 
   @override
-  String toString() {
-    return 'FigureListState{'
-        'status: $status, '
-        'ofArtist: $ofArtist, '
-        'ofDance: $ofDance, '
-        'ofVideo: $ofVideo, '
-        'figures: $figures, '
-        'hasReachedMax: $hasReachedMax, '
-        'selectedFigures: $selectedFigures, '
-        'error: $error'
-        '}';
-  }
+  String toString() => 'FigureListState{'
+      'status: $status, '
+      'ofArtist: $ofArtist, '
+      'ofDance: $ofDance, '
+      'ofVideo: $ofVideo, '
+      'figures: $figures, '
+      'hasReachedMax: $hasReachedMax, '
+      'selectedFigures: $selectedFigures, '
+      'error: $error'
+      '}';
 }

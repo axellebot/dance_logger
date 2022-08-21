@@ -11,6 +11,7 @@ class ImplVideoRepository extends VideoRepository {
 
   @override
   FutureOr<VideoEntity> save(VideoEntity entity) async {
+    if (kDebugMode) print('$runtimeType:save($entity)');
     return await factory.databaseDataStore.saveVideo(entity as VideoDataModel);
   }
 

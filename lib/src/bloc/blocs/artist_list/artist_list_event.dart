@@ -33,14 +33,12 @@ class ArtistListLoad extends ArtistListEvent implements ArtistListParams {
   List<Object?> get props => [ofSearch, ofDance, ofFigure, ofVideo];
 
   @override
-  String toString() {
-    return 'ArtistListLoad{'
-        'ofSearch: $ofSearch, '
-        'ofDance: $ofDance, '
-        'ofFigure: $ofFigure, '
-        'ofVideo: $ofVideo'
-        '}';
-  }
+  String toString() => 'ArtistListLoad{'
+      'ofSearch: $ofSearch, '
+      'ofDance: $ofDance, '
+      'ofFigure: $ofFigure, '
+      'ofVideo: $ofVideo'
+      '}';
 }
 
 class ArtistListLoadMore extends ArtistListEvent {

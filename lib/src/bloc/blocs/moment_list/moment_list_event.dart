@@ -30,13 +30,11 @@ class MomentListLoad extends MomentListEvent implements MomentListParams {
   List<Object?> get props => [ofArtist, ofFigure, ofVideo];
 
   @override
-  String toString() {
-    return 'MomentListLoad{'
-        'ofDance: $ofArtist, '
-        'ofFigure: $ofFigure, '
-        'ofVideo: $ofVideo'
-        '}';
-  }
+  String toString() => 'MomentListLoad{'
+      'ofDance: $ofArtist, '
+      'ofFigure: $ofFigure, '
+      'ofVideo: $ofVideo'
+      '}';
 }
 
 class MomentListLoadMore extends MomentListEvent {

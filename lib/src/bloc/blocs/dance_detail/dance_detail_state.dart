@@ -4,43 +4,48 @@ import 'package:equatable/equatable.dart';
 enum DanceDetailStatus {
   initial,
   loading,
+  refreshing,
   detailSuccess,
   deleteSuccess,
-  failure
+  failure,
 }
 
 class DanceDetailState extends Equatable {
   final DanceDetailStatus status;
+
+  final String? ofId;
   final DanceViewModel? dance;
   final Error? error;
 
   const DanceDetailState({
     this.status = DanceDetailStatus.initial,
+    this.ofId,
     this.dance,
     this.error,
   }) : super();
 
   @override
-  List<Object?> get props => [status, dance, error];
+  List<Object?> get props => [status, ofId, dance, error];
 
   DanceDetailState copyWith({
     DanceDetailStatus? status,
+    String? ofId,
     DanceViewModel? dance,
     Error? error,
   }) {
     return DanceDetailState(
       status: status ?? this.status,
+      ofId: ofId ?? this.ofId,
       dance: dance ?? this.dance,
       error: error ?? this.error,
     );
   }
 
   @override
-  String toString() {
-    return 'DanceDetailLoaded{'
-        'status: $status, '
-        'dance: $dance, '
-        'error: $error'
-        '}';
-  }
+  String toString() => 'DanceDetailLoaded{'
+      'status: $status, '
+      'ofId: $ofId, '
+      'dance: $dance, '
+      'error: $error'
+      '}';
 }

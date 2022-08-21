@@ -24,69 +24,79 @@ class VideoDetailsPage extends StatelessWidget implements AutoRouteWrapper {
           case VideoDetailStatus.loading:
             return const LoadingPage();
           case VideoDetailStatus.detailSuccess:
+          case VideoDetailStatus.refreshing:
             final VideoDetailBloc videoDetailBloc =
                 BlocProvider.of<VideoDetailBloc>(context);
             return Scaffold(
-              body: CustomScrollView(
-                slivers: <Widget>[
-                  SliverAppBar(
-                    pinned: true,
-                    snap: false,
-                    floating: false,
-                    title: Text(state.video!.name),
-                    actions: [
-                      IconButton(
-                        onPressed: () {
-                          AutoRouter.of(context).push(
-                            VideoEditRoute(
-                              videoId: state.video!.id,
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.edit),
-                      ),
-                      DeleteIconButton(
-                        onDeleted: () {
-                          videoDetailBloc.add(const VideoDetailDelete());
-                        },
-                      )
-                    ],
-                  ),
-                  SliverList(
-                    delegate: SliverChildListDelegate(
-                      <Widget>[
-                        ListTile(
-                            title: Text(state.video!.url),
-                            trailing: const Icon(MdiIcons.contentCopy),
-                            onTap: () {
-                              Clipboard.setData(
-                                  ClipboardData(text: state.video!.url));
-                            }),
-                        MomentsSection(
-                          // label: 'Moments of ${state.video!.name}',
-                          ofVideo: state.video!.id,
+              body: RefreshIndicator(
+                edgeOffset:
+                    kToolbarHeight + MediaQuery.of(context).viewPadding.top,
+                onRefresh: () {
+                  videoDetailBloc.add(const VideoDetailRefresh());
+                  return videoDetailBloc.stream.firstWhere(
+                      (e) => e.status != VideoListStatus.refreshing);
+                },
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    SliverAppBar(
+                      pinned: true,
+                      snap: false,
+                      floating: false,
+                      title: Text(state.video!.name),
+                      actions: [
+                        IconButton(
+                          onPressed: () {
+                            AutoRouter.of(context).push(
+                              VideoEditRoute(
+                                videoId: state.video!.id,
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.edit),
                         ),
-                        FiguresSection(
-                          // label: 'Figures of ${state.video!.name}',
-                          ofVideo: state.video!.id,
-                        ),
-                        ArtistsSection(
-                          // label: 'Artists of ${state.video!.name}',
-                          ofVideo: state.video!.id,
-                        ),
-                        DancesSection(
-                          // label: 'Dances of ${state.video!.name}',
-                          ofVideo: state.video!.id,
-                        ),
-                        EntityInfoListTile(
-                          createdAt: state.video!.createdAt,
-                          updateAt: state.video!.updatedAt,
-                          version: state.video!.version,
-                        ),
+                        DeleteIconButton(
+                          onDeleted: () {
+                            videoDetailBloc.add(const VideoDetailDelete());
+                          },
+                        )
                       ],
                     ),
-                  ),
-                ],
+                    SliverList(
+                      delegate: SliverChildListDelegate(
+                        <Widget>[
+                          ListTile(
+                              title: Text(state.video!.url),
+                              trailing: const Icon(MdiIcons.contentCopy),
+                              onTap: () {
+                                Clipboard.setData(
+                                    ClipboardData(text: state.video!.url));
+                              }),
+                          MomentsSection(
+                            // label: 'Moments of ${state.video!.name}',
+                            ofVideo: state.video!.id,
+                          ),
+                          FiguresSection(
+                            // label: 'Figures of ${state.video!.name}',
+                            ofVideo: state.video!.id,
+                          ),
+                          ArtistsSection(
+                            // label: 'Artists of ${state.video!.name}',
+                            ofVideo: state.video!.id,
+                          ),
+                          DancesSection(
+                            // label: 'Dances of ${state.video!.name}',
+                            ofVideo: state.video!.id,
+                          ),
+                          EntityInfoListTile(
+                            createdAt: state.video!.createdAt,
+                            updateAt: state.video!.updatedAt,
+                            version: state.video!.version,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           case VideoDetailStatus.failure:

@@ -22,3 +22,23 @@ class PracticeDetailLoad extends PracticeDetailEvent {
   @override
   List<Object?> get props => [practiceId];
 }
+
+class PracticeDetailRefresh extends PracticeDetailEvent {
+  const PracticeDetailRefresh();
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String toString() => 'PracticeDetailRefresh{}';
+}
+
+class PracticeDetailDelete extends PracticeDetailEvent {
+  const PracticeDetailDelete() : super();
+
+  @override
+  String toString() => 'PracticeDetailDeleted{}';
+
+  @override
+  List<Object?> get props => [];
+}

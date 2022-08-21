@@ -59,7 +59,7 @@ class ArtistListBlocProvider extends StatelessWidget
                   Provider.of<ArtistRepository>(context, listen: false),
               mapper: ModelMapper(),
             )..add(ArtistListLoad(
-              ofSearch: ofSearch,
+                ofSearch: ofSearch,
                 ofDance: ofDance,
                 ofFigure: ofFigure,
                 ofVideo: ofVideo,

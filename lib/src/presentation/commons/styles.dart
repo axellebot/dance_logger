@@ -96,6 +96,7 @@ class AppStyles {
   /// --------------------------------------------------------------------------
 
   static const double appBarIconHorizontalPadding = 16;
+  static const sliverAppBarExpandedHeight = 320.0;
 
   /// --------------------------------------------------------------------------
   ///                                Auth

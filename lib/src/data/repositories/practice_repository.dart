@@ -11,6 +11,7 @@ class ImplPracticeRepository extends PracticeRepository {
 
   @override
   FutureOr<PracticeEntity> save(PracticeEntity entity) async {
+    if (kDebugMode) print('$runtimeType:save($entity)');
     return await factory.databaseDataStore
         .savePractice(entity as PracticeDataModel);
   }

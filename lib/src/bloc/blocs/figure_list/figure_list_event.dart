@@ -29,13 +29,11 @@ class FigureListLoad extends FigureListEvent implements FigureListParams {
   List<Object?> get props => [ofArtist, ofDance, ofVideo];
 
   @override
-  String toString() {
-    return 'FigureListLoadMore{'
-        'ofArtist: $ofArtist, '
-        'ofDance: $ofDance, '
-        'ofVideo: $ofVideo'
-        '}';
-  }
+  String toString() => 'FigureListLoadMore{'
+      'ofArtist: $ofArtist, '
+      'ofDance: $ofDance, '
+      'ofVideo: $ofVideo'
+      '}';
 }
 
 class FigureListLoadMore extends FigureListEvent {

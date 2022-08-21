@@ -31,8 +31,7 @@ class DanceListState extends Equatable implements DanceListParams {
   }) : assert(ofSearch == null || (ofArtist == null && ofVideo == null));
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         status,
         ofSearch,
         ofArtist,
@@ -65,16 +64,14 @@ class DanceListState extends Equatable implements DanceListParams {
   }
 
   @override
-  String toString() {
-    return 'DanceListState{'
-        'status: $status, '
-        'ofSearch: $ofSearch, '
-        'ofArtist: $ofArtist, '
-        'ofVideo: $ofVideo, '
-        'dances: $dances, '
-        'hasReachedMax: $hasReachedMax, '
-        'selectedDances: $selectedDances, '
-        'error: $error'
-        '}';
-  }
+  String toString() => 'DanceListState{'
+      'status: $status, '
+      'ofSearch: $ofSearch, '
+      'ofArtist: $ofArtist, '
+      'ofVideo: $ofVideo, '
+      'dances: $dances, '
+      'hasReachedMax: $hasReachedMax, '
+      'selectedDances: $selectedDances, '
+      'error: $error'
+      '}';
 }

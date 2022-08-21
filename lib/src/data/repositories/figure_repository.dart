@@ -11,6 +11,7 @@ class ImplFigureRepository extends FigureRepository {
 
   @override
   FutureOr<FigureEntity> save(FigureEntity entity) async {
+    if (kDebugMode) print('$runtimeType:save($entity)');
     return await factory.databaseDataStore
         .saveFigure(entity as FigureDataModel);
   }

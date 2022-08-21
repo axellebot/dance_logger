@@ -46,12 +46,10 @@ class DanceEditState extends Equatable {
   }
 
   @override
-  String toString() {
-    return 'DanceEditLoaded{'
-        'status: $status, '
-        'initialDance: $initialDance, '
-        'danceName: $danceName, '
-        'error: $error'
-        '}';
-  }
+  String toString() => 'DanceEditLoaded{'
+      'status: $status, '
+      'initialDance: $initialDance, '
+      'danceName: $danceName, '
+      'error: $error'
+      '}';
 }

@@ -15,11 +15,9 @@ class DanceEditStart extends DanceEditEvent {
   const DanceEditStart({this.danceId}) : super();
 
   @override
-  String toString() {
-    return 'DanceEditStart{'
-        'danceId: $danceId'
-        '}';
-  }
+  String toString() => 'DanceEditStart{'
+      'danceId: $danceId'
+      '}';
 
   @override
   List<Object?> get props => [danceId];
@@ -31,11 +29,9 @@ class DanceEditChangeName extends DanceEditEvent {
   const DanceEditChangeName({required this.danceName}) : super();
 
   @override
-  String toString() {
-    return 'DanceEditChangeName{'
-        'danceName: $danceName'
-        '}';
-  }
+  String toString() => 'DanceEditChangeName{'
+      'danceName: $danceName'
+      '}';
 
   @override
   List<Object?> get props => [danceName];
@@ -45,10 +41,8 @@ class DanceEditSubmit extends DanceEditEvent {
   const DanceEditSubmit() : super();
 
   @override
-  String toString() {
-    return 'DanceEditSubmit{'
-        '}';
-  }
+  String toString() => 'DanceEditSubmit{'
+      '}';
 
   @override
   List<Object?> get props => [];
@@ -58,10 +52,7 @@ class DanceEditDelete extends DanceEditEvent {
   const DanceEditDelete() : super();
 
   @override
-  String toString() {
-    return 'DanceEditDelete{'
-        '}';
-  }
+  String toString() => 'DanceEditDelete{}';
 
   @override
   List<Object?> get props => [];

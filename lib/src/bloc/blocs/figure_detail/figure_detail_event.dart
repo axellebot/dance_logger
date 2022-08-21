@@ -22,3 +22,23 @@ class FigureDetailLoad extends FigureDetailEvent {
   @override
   List<Object?> get props => [figureId];
 }
+
+class FigureDetailRefresh extends FigureDetailEvent {
+  const FigureDetailRefresh();
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String toString() => 'FigureDetailRefresh{}';
+}
+
+class FigureDetailDelete extends FigureDetailRefresh {
+  const FigureDetailDelete() : super();
+
+  @override
+  String toString() => 'FigureDetailDelete{}';
+
+  @override
+  List<Object?> get props => [];
+}

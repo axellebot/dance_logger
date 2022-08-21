@@ -21,7 +21,10 @@ class PracticeDetailsPage extends StatelessWidget implements AutoRouteWrapper {
           case PracticeDetailStatus.initial:
           case PracticeDetailStatus.loading:
             return const LoadingPage();
-          case PracticeDetailStatus.success:
+          case PracticeDetailStatus.detailSuccess:
+          case PracticeDetailStatus.refreshing:
+            final PracticeDetailBloc practiceDetailBloc =
+                BlocProvider.of<PracticeDetailBloc>(context);
             return Scaffold(
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
@@ -33,35 +36,44 @@ class PracticeDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                 },
                 child: const Icon(Icons.edit),
               ),
-              body: CustomScrollView(
-                slivers: <Widget>[
-                  SliverAppBar(
-                    pinned: true,
-                    snap: false,
-                    floating: false,
-                    stretch: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                      stretchModes: const [
-                        StretchMode.fadeTitle,
-                        StretchMode.blurBackground,
-                        StretchMode.zoomBackground,
-                      ],
-                      title: Text('${state.practice!.doneAt}'),
+              body: RefreshIndicator(
+                edgeOffset:
+                    kToolbarHeight + MediaQuery.of(context).viewPadding.top,
+                onRefresh: () {
+                  practiceDetailBloc.add(const PracticeDetailRefresh());
+                  return practiceDetailBloc.stream.firstWhere(
+                      (e) => e.status != PracticeListStatus.refreshing);
+                },
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    SliverAppBar(
+                      pinned: true,
+                      snap: false,
+                      floating: false,
+                      stretch: true,
+                      flexibleSpace: FlexibleSpaceBar(
+                        stretchModes: const [
+                          StretchMode.fadeTitle,
+                          StretchMode.blurBackground,
+                          StretchMode.zoomBackground,
+                        ],
+                        title: Text('${state.practice!.doneAt}'),
+                      ),
                     ),
-                  ),
-                  SliverList(
-                    delegate: SliverChildListDelegate(
-                      <Widget>[
-                        _buildFigureTile(state.practice!.figureId),
-                        EntityInfoListTile(
-                          createdAt: state.practice!.createdAt,
-                          updateAt: state.practice!.updatedAt,
-                          version: state.practice!.version,
-                        ),
-                      ],
+                    SliverList(
+                      delegate: SliverChildListDelegate(
+                        <Widget>[
+                          _buildFigureTile(state.practice!.figureId),
+                          EntityInfoListTile(
+                            createdAt: state.practice!.createdAt,
+                            updateAt: state.practice!.updatedAt,
+                            version: state.practice!.version,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           case PracticeDetailStatus.failure:
@@ -99,7 +111,7 @@ class PracticeDetailsPage extends StatelessWidget implements AutoRouteWrapper {
         return BlocBuilder<FigureDetailBloc, FigureDetailState>(
           builder: (context, state) {
             switch (state.status) {
-              case FigureDetailStatus.success:
+              case FigureDetailStatus.detailSuccess:
                 return FigureListTile(figure: state.figure!);
               default:
                 return ErrorTile(

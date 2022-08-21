@@ -65,16 +65,14 @@ class MomentListState extends Equatable implements MomentListParams {
   }
 
   @override
-  String toString() {
-    return 'MomentListState{'
-        'status: $status, '
-        'ofArtist: $ofArtist, '
-        'ofFigure: $ofFigure, '
-        'ofVideo: $ofVideo, '
-        'moments: $moments, '
-        'hasReachedMax: $hasReachedMax, '
-        'selectedMoments: $selectedMoments, '
-        'error: $error'
-        '}';
-  }
+  String toString() => 'MomentListState{'
+      'status: $status, '
+      'ofArtist: $ofArtist, '
+      'ofFigure: $ofFigure, '
+      'ofVideo: $ofVideo, '
+      'moments: $moments, '
+      'hasReachedMax: $hasReachedMax, '
+      'selectedMoments: $selectedMoments, '
+      'error: $error'
+      '}';
 }

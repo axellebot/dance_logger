@@ -1,6 +1,7 @@
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -128,6 +129,7 @@ class App extends StatelessWidget {
                 themeMode = ThemeMode.system;
             }
             return MaterialApp.router(
+              scrollBehavior: MyCustomScrollBehavior(),
               routerDelegate: appRouter.delegate(),
               routeInformationParser: appRouter.defaultRouteParser(),
               onGenerateTitle: (BuildContext context) =>
@@ -290,4 +292,13 @@ class App extends StatelessWidget {
       settingsListBackground: appTheme.scaffoldBackgroundColor,
     );
   }
+}
+
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  // Override behavior methods and getters like dragDevices
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
 }

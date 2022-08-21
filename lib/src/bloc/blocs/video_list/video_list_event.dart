@@ -33,14 +33,12 @@ class VideoListLoad extends VideoListEvent implements VideoListParams {
   List<Object?> get props => [ofSearch, ofArtist, ofDance, ofFigure];
 
   @override
-  String toString() {
-    return 'VideoListLoad{'
-        'ofSearch: $ofSearch, '
-        'ofArtist: $ofArtist, '
-        'ofDance: $ofDance, '
-        'ofFigure: $ofFigure'
-        '}';
-  }
+  String toString() => 'VideoListLoad{'
+      'ofSearch: $ofSearch, '
+      'ofArtist: $ofArtist, '
+      'ofDance: $ofDance, '
+      'ofFigure: $ofFigure'
+      '}';
 }
 
 class VideoListLoadMore extends VideoListEvent {

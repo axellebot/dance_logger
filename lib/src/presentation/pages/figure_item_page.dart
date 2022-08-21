@@ -21,58 +21,70 @@ class FigureDetailsPage extends StatelessWidget implements AutoRouteWrapper {
           case FigureDetailStatus.initial:
           case FigureDetailStatus.loading:
             return const LoadingPage();
-          case FigureDetailStatus.success:
+          case FigureDetailStatus.detailSuccess:
+          case FigureDetailStatus.refreshing:
+            final FigureDetailBloc figureDetailBloc =
+                BlocProvider.of<FigureDetailBloc>(context);
             return Scaffold(
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  AutoRouter.of(context).push(
-                    FigureEditRoute(
-                      figureBloc: BlocProvider.of<FigureDetailBloc>(context),
-                    ),
-                  );
+                  // AutoRouter.of(context).push(
+                  //   FigureEditRoute(
+                  //     figureBloc: BlocProvider.of<FigureDetailBloc>(context),
+                  //   ),
+                  // );
                 },
                 child: const Icon(Icons.edit),
               ),
-              body: CustomScrollView(
-                slivers: <Widget>[
-                  SliverAppBar(
-                    pinned: true,
-                    snap: false,
-                    floating: false,
-                    stretch: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                      stretchModes: const [
-                        StretchMode.fadeTitle,
-                        StretchMode.blurBackground,
-                        StretchMode.zoomBackground,
-                      ],
-                      title: Text(state.figure!.name),
+              body: RefreshIndicator(
+                edgeOffset:
+                    kToolbarHeight + MediaQuery.of(context).viewPadding.top,
+                onRefresh: () {
+                  figureDetailBloc.add(const FigureDetailRefresh());
+                  return figureDetailBloc.stream.firstWhere(
+                      (e) => e.status != ArtistListStatus.refreshing);
+                },
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    SliverAppBar(
+                      pinned: true,
+                      snap: false,
+                      floating: false,
+                      stretch: true,
+                      flexibleSpace: FlexibleSpaceBar(
+                        stretchModes: const [
+                          StretchMode.fadeTitle,
+                          StretchMode.blurBackground,
+                          StretchMode.zoomBackground,
+                        ],
+                        title: Text(state.figure!.name),
+                      ),
                     ),
-                  ),
-                  SliverList(
-                    delegate: SliverChildListDelegate(
-                      <Widget>[
-                        ArtistsSection(
-                          // label: 'Artists of ${state.figure!.name}',
-                          ofFigure: state.figure!.id,
-                        ),
-                        VideosSection(
-                          // label: 'Videos of ${state.figure!.name}',
-                          ofFigure: state.figure!.id,
-                        ),
-                        PracticesSection(
-                          // label: 'Practices of ${state.figure!.name}',
-                          ofFigure: state.figure!.id,
-                        ),
-                        EntityInfoListTile(
-                          createdAt: state.figure!.createdAt,
-                          updateAt: state.figure!.updatedAt,
-                          version: state.figure!.version,
-                        ),
-                      ],
+                    SliverList(
+                      delegate: SliverChildListDelegate(
+                        <Widget>[
+                          ArtistsSection(
+                            // label: 'Artists of ${state.figure!.name}',
+                            ofFigure: state.figure!.id,
+                          ),
+                          VideosSection(
+                            // label: 'Videos of ${state.figure!.name}',
+                            ofFigure: state.figure!.id,
+                          ),
+                          PracticesSection(
+                            // label: 'Practices of ${state.figure!.name}',
+                            ofFigure: state.figure!.id,
+                          ),
+                          EntityInfoListTile(
+                            createdAt: state.figure!.createdAt,
+                            updateAt: state.figure!.updatedAt,
+                            version: state.figure!.version,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           case FigureDetailStatus.failure:

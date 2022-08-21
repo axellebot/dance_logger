@@ -131,11 +131,13 @@ class _MomentListViewState extends State<MomentListView> {
             case MomentListStatus.success:
             case MomentListStatus.refreshing:
               if (state.moments.isEmpty) {
-                return EmptyListView(
+                return ListView(
                   scrollDirection: widget.scrollDirection,
                   physics: widget.physics,
                   padding: widget.padding,
-                  label: 'No Moments',
+                  children: const [
+                    Chip(label: Text('No Moments')),
+                  ],
                 );
               } else {
                 return ListView.builder(

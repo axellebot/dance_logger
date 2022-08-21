@@ -15,6 +15,8 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
     required this.mapper,
   }) : super(const VideoDetailState()) {
     on<VideoDetailLoad>(_onVideoDetailLoad);
+    on<VideoDetailRefresh>(_onVideoDetailRefresh);
+    on<VideoDetailDelete>(_onVideoDelete);
   }
 
   FutureOr<void> _onVideoDetailLoad(
@@ -32,7 +34,61 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
 
       emit(state.copyWith(
         status: VideoDetailStatus.detailSuccess,
+        ofId: videoViewModel.id,
         video: videoViewModel,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: VideoDetailStatus.failure,
+        ofId: event.videoId,
+        error: error,
+      ));
+    }
+  }
+
+  FutureOr<void> _onVideoDetailRefresh(
+    VideoDetailRefresh event,
+    Emitter<VideoDetailState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onVideoDetailRefresh');
+
+    try {
+      emit(state.copyWith(
+        status: VideoDetailStatus.refreshing,
+      ));
+
+      VideoEntity videoDataModel = await videoRepository.getById(state.ofId!);
+      VideoViewModel videoViewModel = mapper.toVideoViewModel(videoDataModel);
+
+      emit(state.copyWith(
+        status: VideoDetailStatus.detailSuccess,
+        ofId: videoViewModel.id,
+        video: videoViewModel,
+      ));
+    } on Error catch (error) {
+      emit(state.copyWith(
+        status: VideoDetailStatus.failure,
+        error: error,
+      ));
+    }
+  }
+
+  FutureOr<void> _onVideoDelete(
+    VideoDetailDelete event,
+    Emitter<VideoDetailState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onVideoDeleted');
+
+    if (state.video == null) return;
+    try {
+      emit(state.copyWith(
+        status: VideoDetailStatus.loading,
+      ));
+
+      await videoRepository.deleteById(state.video!.id);
+
+      emit(const VideoDetailState(
+        status: VideoDetailStatus.deleteSuccess,
       ));
     } on Error catch (error) {
       emit(state.copyWith(

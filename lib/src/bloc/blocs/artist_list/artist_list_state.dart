@@ -35,8 +35,7 @@ class ArtistListState extends Equatable implements ArtistListParams {
             (ofDance == null && ofFigure == null && ofVideo == null));
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         status,
         ofSearch,
         ofDance,
@@ -73,17 +72,15 @@ class ArtistListState extends Equatable implements ArtistListParams {
   }
 
   @override
-  String toString() {
-    return 'ArtistListState{'
-        'status: $status, '
-        'ofSearch: $ofSearch, '
-        'ofDance: $ofDance, '
-        'ofFigure: $ofFigure, '
-        'ofVideo: $ofVideo, '
-        'artists: $artists, '
-        'hasReachedMax: $hasReachedMax, '
-        'selectedArtists: $selectedArtists, '
-        'error: $error'
-        '}';
-  }
+  String toString() => 'ArtistListState{'
+      'status: $status, '
+      'ofSearch: $ofSearch, '
+      'ofDance: $ofDance, '
+      'ofFigure: $ofFigure, '
+      'ofVideo: $ofVideo, '
+      'artists: $artists, '
+      'hasReachedMax: $hasReachedMax, '
+      'selectedArtists: $selectedArtists, '
+      'error: $error'
+      '}';
 }
