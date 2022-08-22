@@ -105,8 +105,6 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ///Routes
-
     return BlocBuilder<AppBloc, AppState>(
       builder: (BuildContext context, AppState state) {
         switch (state.status) {

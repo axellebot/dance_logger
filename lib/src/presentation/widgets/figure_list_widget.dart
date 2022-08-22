@@ -64,7 +64,8 @@ class FigureListBlocProvider extends StatelessWidget
   }
 }
 
-class FigureListView extends StatefulWidget implements FigureListWidgetParams {
+class FigureListView extends StatefulWidget
+    implements FigureListWidgetParams, EntityListViewParams {
   /// FigureListWidgetParams
   @override
   final FigureListBloc? figureListBloc;
@@ -75,9 +76,12 @@ class FigureListView extends StatefulWidget implements FigureListWidgetParams {
   @override
   final String? ofVideo;
 
-  /// ListView params
+  /// EntityListViewParams
+  @override
   final Axis scrollDirection;
+  @override
   final ScrollPhysics? physics;
+  @override
   final EdgeInsets? padding;
 
   const FigureListView({
@@ -89,7 +93,7 @@ class FigureListView extends StatefulWidget implements FigureListWidgetParams {
     this.ofDance,
     this.ofVideo,
 
-    /// ListView params
+    /// EntityListViewParams
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
@@ -226,13 +230,7 @@ class _FigureListViewState extends State<FigureListView> {
 }
 
 class FiguresSection extends StatelessWidget
-    implements EntitiesSectionWidgetParams, FigureListWidgetParams {
-  /// EntitiesSectionWidgetParams
-  @override
-  final String? label;
-  @override
-  final VoidCallback? onTap;
-
+    implements FigureListWidgetParams, EntitiesSectionWidgetParams {
   /// FigureListWidgetParams
   @override
   final FigureListBloc? figureListBloc;
@@ -243,20 +241,25 @@ class FiguresSection extends StatelessWidget
   @override
   final String? ofVideo;
 
+  /// EntitiesSectionWidgetParams
+  @override
+  final String? label;
+  @override
+  final VoidCallback? onSectionTap;
+
   const FiguresSection({
     super.key,
-
-    /// EntitiesSectionWidgetParams
-    this.label = 'Figures',
-    this.onTap,
 
     /// FigureListWidgetParams
     this.figureListBloc,
     this.ofArtist,
     this.ofDance,
     this.ofVideo,
-  })  : assert(label != null),
-        assert(figureListBloc == null ||
+
+    /// EntitiesSectionWidgetParams
+    this.label,
+    this.onSectionTap,
+  }) : assert(figureListBloc == null ||
             (ofArtist == null && ofDance == null && ofVideo == null));
 
   @override
@@ -272,8 +275,8 @@ class FiguresSection extends StatelessWidget
             mainAxisSize: MainAxisSize.min,
             children: [
               SectionTile(
-                title: Text(label!),
-                onTap: onTap ??
+                title: Text(label ?? "Figures"),
+                onTap: onSectionTap ??
                     () {
                       AutoRouter.of(context).push(
                         FigureListRoute(

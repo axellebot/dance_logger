@@ -69,7 +69,8 @@ class ArtistListBlocProvider extends StatelessWidget
   }
 }
 
-class ArtistListView extends StatefulWidget implements ArtistListWidgetParams {
+class ArtistListView extends StatefulWidget
+    implements ArtistListWidgetParams, EntityListViewParams {
   /// ArtistListWidgetParams
   @override
   final ArtistListBloc? artistListBloc;
@@ -82,9 +83,12 @@ class ArtistListView extends StatefulWidget implements ArtistListWidgetParams {
   @override
   final String? ofVideo;
 
-  /// ListView params
+  /// EntityListViewParams
+  @override
   final Axis scrollDirection;
+  @override
   final ScrollPhysics? physics;
+  @override
   final EdgeInsets? padding;
 
   const ArtistListView({
@@ -97,7 +101,7 @@ class ArtistListView extends StatefulWidget implements ArtistListWidgetParams {
     this.ofFigure,
     this.ofVideo,
 
-    /// ListView params
+    /// EntityListViewParams
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
@@ -237,12 +241,12 @@ class _ArtistListViewState extends State<ArtistListView> {
 }
 
 class ArtistsSection extends StatelessWidget
-    implements EntitiesSectionWidgetParams, ArtistListWidgetParams {
+    implements ArtistListWidgetParams, EntitiesSectionWidgetParams {
   /// EntitiesSectionWidgetParams
   @override
   final String? label;
   @override
-  final VoidCallback? onTap;
+  final VoidCallback? onSectionTap;
 
   /// ArtistListWidgetParams
   @override
@@ -261,7 +265,7 @@ class ArtistsSection extends StatelessWidget
 
     /// EntitiesSectionWidgetParams
     this.label,
-    this.onTap,
+    this.onSectionTap,
 
     /// ArtistListWidgetParams
     this.artistListBloc,
@@ -287,7 +291,7 @@ class ArtistsSection extends StatelessWidget
             children: [
               SectionTile(
                 title: Text(label ?? 'Artists'),
-                onTap: onTap ??
+                onTap: onSectionTap ??
                     () {
                       AutoRouter.of(context).push(
                         ArtistListRoute(

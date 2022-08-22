@@ -69,7 +69,8 @@ class VideoListBlocProvider extends StatelessWidget
   }
 }
 
-class VideoListView extends StatefulWidget implements VideoListWidgetParams {
+class VideoListView extends StatefulWidget
+    implements VideoListWidgetParams, EntityListViewParams {
   /// VideoListWidgetParams
   @override
   final VideoListBloc? videoListBloc;
@@ -82,9 +83,12 @@ class VideoListView extends StatefulWidget implements VideoListWidgetParams {
   @override
   final String? ofFigure;
 
-  /// ListView params
+  /// EntityListViewParams
+  @override
   final Axis scrollDirection;
+  @override
   final ScrollPhysics? physics;
+  @override
   final EdgeInsets? padding;
 
   const VideoListView({
@@ -97,7 +101,7 @@ class VideoListView extends StatefulWidget implements VideoListWidgetParams {
     this.ofDance,
     this.ofFigure,
 
-    /// ListView params
+    /// EntityListViewParams
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
@@ -161,7 +165,7 @@ class _VideoListViewState extends State<VideoListView> {
                     if (index < state.videos.length) {
                       final VideoViewModel video = state.videos[index];
                       final VideoListBloc videoListBloc =
-                      BlocProvider.of<VideoListBloc>(context);
+                          BlocProvider.of<VideoListBloc>(context);
                       switch (widget.scrollDirection) {
                         case Axis.vertical:
                           if (state.selectedVideos.isEmpty) {
@@ -236,13 +240,7 @@ class _VideoListViewState extends State<VideoListView> {
 }
 
 class VideosSection extends StatelessWidget
-    implements EntitiesSectionWidgetParams, VideoListWidgetParams {
-  /// EntitiesSectionWidgetParams
-  @override
-  final String? label;
-  @override
-  final VoidCallback? onTap;
-
+    implements VideoListWidgetParams, EntitiesSectionWidgetParams {
   /// VideoListWidgetParams
   @override
   final VideoListBloc? videoListBloc;
@@ -255,12 +253,14 @@ class VideosSection extends StatelessWidget
   @override
   final String? ofFigure;
 
+  /// EntitiesSectionWidgetParams
+  @override
+  final String? label;
+  @override
+  final VoidCallback? onSectionTap;
+
   const VideosSection({
     super.key,
-
-    /// EntitiesSectionWidgetParams
-    this.label = 'Videos',
-    this.onTap,
 
     /// VideoListWidgetParams
     this.videoListBloc,
@@ -268,8 +268,11 @@ class VideosSection extends StatelessWidget
     this.ofArtist,
     this.ofDance,
     this.ofFigure,
-  })  : assert(label != null),
-        assert(videoListBloc == null ||
+
+    /// EntitiesSectionWidgetParams
+    this.label,
+    this.onSectionTap,
+  }) : assert(videoListBloc == null ||
             ofSearch == null ||
             (ofArtist == null && ofDance == null && ofFigure == null));
 
@@ -286,8 +289,8 @@ class VideosSection extends StatelessWidget
           return Column(
             children: [
               SectionTile(
-                title: Text(label!),
-                onTap: onTap ??
+                title: Text(label ?? 'Videos'),
+                onTap: onSectionTap ??
                     () {
                       AutoRouter.of(context).push(
                         VideoListRoute(

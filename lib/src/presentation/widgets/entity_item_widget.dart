@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+typedef ItemCallback<T> = void Function(T element);
+
 class DeleteIconButton extends StatelessWidget {
   final VoidCallback onDeleted;
 

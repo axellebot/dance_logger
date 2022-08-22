@@ -72,7 +72,7 @@ class PracticeListBlocProvider extends StatelessWidget
 }
 
 class PracticeListView extends StatefulWidget
-    implements PracticeListWidgetParams {
+    implements PracticeListWidgetParams, EntityListViewParams {
   /// PracticeListWidgetParams
   @override
   final PracticeListBloc? practiceListBloc;
@@ -85,9 +85,12 @@ class PracticeListView extends StatefulWidget
   @override
   final String? ofVideo;
 
-  /// ListView params
+  /// EntityListViewParams
+  @override
   final Axis scrollDirection;
+  @override
   final ScrollPhysics? physics;
+  @override
   final EdgeInsets? padding;
 
   const PracticeListView({
@@ -100,7 +103,7 @@ class PracticeListView extends StatefulWidget
     this.ofFigure,
     this.ofVideo,
 
-    /// ListView params
+    /// EntityListViewParams
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
@@ -245,13 +248,7 @@ class _PracticeListViewState extends State<PracticeListView> {
 }
 
 class PracticesSection extends StatelessWidget
-    implements EntitiesSectionWidgetParams, PracticeListWidgetParams {
-  /// EntitiesSectionWidgetParams
-  @override
-  final String? label;
-  @override
-  final VoidCallback? onTap;
-
+    implements PracticeListWidgetParams, EntitiesSectionWidgetParams {
   /// PracticeListWidgetParams
   @override
   final PracticeListBloc? practiceListBloc;
@@ -264,12 +261,14 @@ class PracticesSection extends StatelessWidget
   @override
   final String? ofVideo;
 
+  /// EntitiesSectionWidgetParams
+  @override
+  final String? label;
+  @override
+  final VoidCallback? onSectionTap;
+
   const PracticesSection({
     super.key,
-
-    /// EntitiesSectionWidgetParams
-    this.label = 'Practices',
-    this.onTap,
 
     /// PracticeListWidgetParams
     this.practiceListBloc,
@@ -277,8 +276,11 @@ class PracticesSection extends StatelessWidget
     this.ofDance,
     this.ofFigure,
     this.ofVideo,
-  })  : assert(label != null),
-        assert(practiceListBloc == null ||
+
+    /// EntitiesSectionWidgetParams
+    this.label,
+    this.onSectionTap,
+  }) : assert(practiceListBloc == null ||
             (ofArtist == null &&
                 ofDance == null &&
                 ofFigure == null &&
@@ -297,8 +299,8 @@ class PracticesSection extends StatelessWidget
           return Column(
             children: [
               SectionTile(
-                title: Text(label!),
-                onTap: onTap ??
+                title: Text(label ?? 'Practices'),
+                onTap: onSectionTap ??
                     () {
                       AutoRouter.of(context).push(
                         PracticeListRoute(

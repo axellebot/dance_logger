@@ -58,15 +58,22 @@ class CheckboxMomentListTile extends StatelessWidget {
 
 class MomentChip extends StatelessWidget {
   final MomentViewModel moment;
+  final ItemCallback<MomentViewModel>? onTap;
 
   const MomentChip({
     super.key,
     required this.moment,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: () {
+        if (onTap != null) {
+          onTap!(moment);
+        }
+      },
       child: Chip(
         label: (moment.endTime != null)
             ? Text(

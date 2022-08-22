@@ -63,7 +63,8 @@ class MomentListBlocProvider extends StatelessWidget
   }
 }
 
-class MomentListView extends StatefulWidget implements MomentListWidgetParams {
+class MomentListView extends StatefulWidget
+    implements MomentListWidgetParams, EntityListViewParams {
   /// MomentListWidgetParams
   @override
   final MomentListBloc? momentListBloc;
@@ -74,9 +75,15 @@ class MomentListView extends StatefulWidget implements MomentListWidgetParams {
   @override
   final String? ofVideo;
 
-  /// ListView params
+  /// Custom
+  final ItemCallback<MomentViewModel>? onItemTap;
+
+  /// EntityListViewParams
+  @override
   final Axis scrollDirection;
+  @override
   final ScrollPhysics? physics;
+  @override
   final EdgeInsets? padding;
 
   const MomentListView({
@@ -88,7 +95,10 @@ class MomentListView extends StatefulWidget implements MomentListWidgetParams {
     this.ofFigure,
     this.ofVideo,
 
-    /// ListView params
+    /// Custom
+    this.onItemTap,
+
+    /// EntityListViewParams
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
@@ -178,7 +188,10 @@ class _MomentListViewState extends State<MomentListView> {
                             );
                           }
                         case Axis.horizontal:
-                          return MomentChip(moment: moment);
+                          return MomentChip(
+                            moment: moment,
+                            onTap: widget.onItemTap,
+                          );
                       }
                     } else {
                       switch (widget.scrollDirection) {
@@ -228,13 +241,7 @@ class _MomentListViewState extends State<MomentListView> {
 }
 
 class MomentsSection extends StatelessWidget
-    implements EntitiesSectionWidgetParams, MomentListWidgetParams {
-  /// EntitiesSectionWidgetParams
-  @override
-  final String? label;
-  @override
-  final VoidCallback? onTap;
-
+    implements MomentListWidgetParams, EntitiesSectionWidgetParams {
   /// MomentListWidgetParams
   @override
   final MomentListBloc? momentListBloc;
@@ -245,20 +252,31 @@ class MomentsSection extends StatelessWidget
   @override
   final String? ofVideo;
 
+  /// EntitiesSectionWidgetParams
+  @override
+  final String? label;
+  @override
+  final VoidCallback? onSectionTap;
+
+  /// Custom
+  final ItemCallback<MomentViewModel>? onItemTap;
+
   const MomentsSection({
     super.key,
-
-    /// EntitiesSectionWidgetParams
-    this.label = 'Moments',
-    this.onTap,
 
     /// MomentListWidgetParams
     this.momentListBloc,
     this.ofArtist,
     this.ofFigure,
     this.ofVideo,
-  })  : assert(label != null),
-        assert(momentListBloc == null ||
+
+    /// EntitiesSectionWidgetParams
+    this.label,
+    this.onSectionTap,
+
+    /// Custom
+    this.onItemTap,
+  }) : assert(momentListBloc == null ||
             (ofArtist == null && ofFigure == null && ofVideo == null));
 
   @override
@@ -274,13 +292,15 @@ class MomentsSection extends StatelessWidget
             mainAxisSize: MainAxisSize.min,
             children: [
               SectionTile(
-                title: Text(label!),
+                title: Text(label ?? 'Moments'),
+                onTap: onSectionTap,
               ),
               SizedBox(
                 height: AppStyles.chipHeight,
                 child: MomentListView(
                   momentListBloc: BlocProvider.of<MomentListBloc>(context),
                   scrollDirection: Axis.horizontal,
+                  onItemTap: onItemTap,
                 ),
               ),
             ],

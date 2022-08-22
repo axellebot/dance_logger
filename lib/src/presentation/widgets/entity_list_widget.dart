@@ -2,18 +2,36 @@ import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-abstract class EntitiesSectionWidgetParams {
-  final String? label;
-  final VoidCallback? onTap;
-
-  EntitiesSectionWidgetParams(this.label, this.onTap);
-}
-
-class EmptyListView extends StatelessWidget {
+/// Interface to implements basic `ListView` widget parameters
+abstract class EntityListViewParams {
+  /// EntityListViewParams
   final Axis scrollDirection;
   final ScrollPhysics? physics;
   final EdgeInsetsGeometry? padding;
+
+  EntityListViewParams(this.scrollDirection, this.physics, this.padding);
+}
+
+/// Interface to implements basic Section widget parameters
+abstract class EntitiesSectionWidgetParams {
+  final String? label;
+  final VoidCallback? onSectionTap;
+
+  EntitiesSectionWidgetParams(this.label, this.onSectionTap);
+}
+
+class EmptyListView extends StatelessWidget implements EntityListViewParams {
+  /// TODO: Remove all EmptyListView ?
+
   final String label;
+
+  /// EntityListViewParams
+  @override
+  final Axis scrollDirection;
+  @override
+  final ScrollPhysics? physics;
+  @override
+  final EdgeInsetsGeometry? padding;
 
   const EmptyListView({
     super.key,
@@ -47,12 +65,6 @@ class EmptyListView extends StatelessWidget {
       ],
     );
   }
-}
-
-class ItemTile extends ListTile {
-  const ItemTile({
-    super.key,
-  });
 }
 
 class SectionTile extends StatelessWidget {

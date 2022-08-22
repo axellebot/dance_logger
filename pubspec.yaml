@@ -40,10 +40,13 @@ dependencies:
   intl: ^0.17.0 # Translations
   share_plus: ^4.0.10
 
+  youtube_player_flutter: ^8.1.0
+
   material_design_icons_flutter: ^5.0.6595 # Material Design Icons
   cupertino_icons: ^1.0.5 # Cupertino Icons
   settings_ui: ^2.0.2
 
+  # Database libs
   sqflite: ^2.0.2+1 # Database only supports iOS/Android/MacOS
   sqflite_common_ffi: ^2.1.1+1 # Database that support Linux/Windows on Flutter/DartVM (also iOS/Android)
   sqlite3_flutter_libs: ^0.5.8 # More recent SQLite3 libs for iOS/Android/MacOS

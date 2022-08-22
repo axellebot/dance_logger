@@ -65,7 +65,8 @@ class DanceListBlocProvider extends StatelessWidget
   }
 }
 
-class DanceListView extends StatefulWidget implements DanceListWidgetParams {
+class DanceListView extends StatefulWidget
+    implements DanceListWidgetParams, EntityListViewParams {
   /// DanceListWidgetParams
   @override
   final DanceListBloc? danceListBloc;
@@ -76,9 +77,12 @@ class DanceListView extends StatefulWidget implements DanceListWidgetParams {
   @override
   final String? ofVideo;
 
-  /// ListView params
+  /// EntityListViewParams
+  @override
   final Axis scrollDirection;
+  @override
   final ScrollPhysics? physics;
+  @override
   final EdgeInsetsGeometry? padding;
 
   const DanceListView({
@@ -90,7 +94,7 @@ class DanceListView extends StatefulWidget implements DanceListWidgetParams {
     this.ofArtist,
     this.ofVideo,
 
-    /// ListView params
+    /// EntityListViewParams
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
@@ -229,12 +233,12 @@ class _DanceListViewState extends State<DanceListView> {
 }
 
 class DancesSection extends StatelessWidget
-    implements EntitiesSectionWidgetParams, DanceListWidgetParams {
+    implements DanceListWidgetParams, EntitiesSectionWidgetParams {
   /// EntitiesSectionWidgetParams
   @override
   final String? label;
   @override
-  final VoidCallback? onTap;
+  final VoidCallback? onSectionTap;
 
   /// DanceListWidgetParams
   @override
@@ -249,15 +253,15 @@ class DancesSection extends StatelessWidget
   const DancesSection({
     super.key,
 
-    /// EntitiesSectionWidgetParams
-    this.label,
-    this.onTap,
-
     /// DanceListWidgetParams
     this.danceListBloc,
     this.ofSearch,
     this.ofArtist,
     this.ofVideo,
+
+    /// EntitiesSectionWidgetParams
+    this.label,
+    this.onSectionTap,
   }) : assert(danceListBloc == null ||
             ofSearch == null ||
             (ofArtist == null && ofVideo == null));
@@ -275,7 +279,7 @@ class DancesSection extends StatelessWidget
             children: [
               SectionTile(
                 title: Text(label ?? 'Dances'),
-                onTap: onTap ??
+                onTap: onSectionTap ??
                     () {
                       AutoRouter.of(context).push(
                         DanceListRoute(
