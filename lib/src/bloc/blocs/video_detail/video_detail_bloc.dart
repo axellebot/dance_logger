@@ -26,20 +26,20 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
     if (kDebugMode) print('$runtimeType:_onVideoDetailLoad');
     try {
       emit(state.copyWith(
-        status: VideoDetailStatus.loading,
+        status: VideoDetailStatus.refreshing,
       ));
 
       VideoEntity videoDataModel = await videoRepository.getById(event.videoId);
       VideoViewModel videoViewModel = mapper.toVideoViewModel(videoDataModel);
 
       emit(state.copyWith(
-        status: VideoDetailStatus.detailSuccess,
+        status: VideoDetailStatus.refreshingSuccess,
         ofId: videoViewModel.id,
         video: videoViewModel,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: VideoDetailStatus.failure,
+        status: VideoDetailStatus.refreshingFailure,
         ofId: event.videoId,
         error: error,
       ));
@@ -61,13 +61,13 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
       VideoViewModel videoViewModel = mapper.toVideoViewModel(videoDataModel);
 
       emit(state.copyWith(
-        status: VideoDetailStatus.detailSuccess,
+        status: VideoDetailStatus.refreshingSuccess,
         ofId: videoViewModel.id,
         video: videoViewModel,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: VideoDetailStatus.failure,
+        status: VideoDetailStatus.refreshingFailure,
         error: error,
       ));
     }
@@ -81,10 +81,6 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
 
     if (state.video == null) return;
     try {
-      emit(state.copyWith(
-        status: VideoDetailStatus.loading,
-      ));
-
       await videoRepository.deleteById(state.video!.id);
 
       emit(const VideoDetailState(
@@ -92,7 +88,7 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: VideoDetailStatus.failure,
+        status: VideoDetailStatus.deleteFailure,
         error: error,
       ));
     }

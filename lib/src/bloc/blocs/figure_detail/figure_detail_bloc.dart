@@ -26,7 +26,7 @@ class FigureDetailBloc extends Bloc<FigureDetailEvent, FigureDetailState> {
     if (kDebugMode) print('$runtimeType:_onFigureDetailLoad');
     try {
       emit(state.copyWith(
-        status: FigureDetailStatus.loading,
+        status: FigureDetailStatus.refreshing,
       ));
 
       FigureEntity figureDataModel =
@@ -35,13 +35,13 @@ class FigureDetailBloc extends Bloc<FigureDetailEvent, FigureDetailState> {
           mapper.toFigureViewModel(figureDataModel);
 
       emit(state.copyWith(
-        status: FigureDetailStatus.detailSuccess,
+        status: FigureDetailStatus.refreshingSuccess,
         ofId: figureViewModel.id,
         figure: figureViewModel,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: FigureDetailStatus.failure,
+        status: FigureDetailStatus.refreshingFailure,
         ofId: event.figureId,
         error: error,
       ));
@@ -65,13 +65,13 @@ class FigureDetailBloc extends Bloc<FigureDetailEvent, FigureDetailState> {
           mapper.toFigureViewModel(figureDataModel);
 
       emit(state.copyWith(
-        status: FigureDetailStatus.detailSuccess,
+        status: FigureDetailStatus.refreshingSuccess,
         ofId: figureViewModel.id,
         figure: figureViewModel,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: FigureDetailStatus.failure,
+        status: FigureDetailStatus.refreshingFailure,
         error: error,
       ));
     }
@@ -85,10 +85,6 @@ class FigureDetailBloc extends Bloc<FigureDetailEvent, FigureDetailState> {
 
     if (state.figure == null) return;
     try {
-      emit(state.copyWith(
-        status: FigureDetailStatus.loading,
-      ));
-
       await figureRepository.deleteById(state.figure!.id);
 
       emit(const FigureDetailState(
@@ -96,7 +92,7 @@ class FigureDetailBloc extends Bloc<FigureDetailEvent, FigureDetailState> {
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: FigureDetailStatus.failure,
+        status: FigureDetailStatus.deleteFailure,
         error: error,
       ));
     }

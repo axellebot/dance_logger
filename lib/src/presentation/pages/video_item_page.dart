@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoDetailsPage extends StatefulWidget implements AutoRouteWrapper {
@@ -36,10 +37,8 @@ class VideoDetailsPage extends StatefulWidget implements AutoRouteWrapper {
 class _VideoDetailsPage extends State<VideoDetailsPage> {
   YoutubePlayerController? _videoController;
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   Widget build(BuildContext context) {
@@ -67,69 +66,76 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
           _videoController = null;
         }
       },
-      child: BlocBuilder<VideoDetailBloc, VideoDetailState>(
-        builder: (BuildContext context, VideoDetailState state) {
+      child: BlocListener<VideoDetailBloc, VideoDetailState>(
+        listener: (context, state) {
           switch (state.status) {
-            case VideoDetailStatus.initial:
-            case VideoDetailStatus.loading:
-              return const LoadingPage();
-            case VideoDetailStatus.detailSuccess:
-            case VideoDetailStatus.refreshing:
-              final VideoDetailBloc videoDetailBloc =
-                  BlocProvider.of<VideoDetailBloc>(context);
-              return Scaffold(
-                body: RefreshIndicator(
-                  edgeOffset:
-                      kToolbarHeight + MediaQuery.of(context).viewPadding.top,
-                  onRefresh: () {
-                    videoDetailBloc.add(const VideoDetailRefresh());
-                    return videoDetailBloc.stream.firstWhere(
-                        (e) => e.status != VideoListStatus.refreshing);
-                  },
-                  child: CustomScrollView(
-                    slivers: <Widget>[
-                      SliverAppBar(
-                        pinned: true,
-                        snap: false,
-                        floating: false,
-                        title: Text(state.video!.name),
-                        actions: [
-                          IconButton(
-                            onPressed: () {
-                              AutoRouter.of(context).push(
-                                VideoEditRoute(
-                                  videoId: state.video!.id,
-                                ),
-                              );
-                            },
-                            icon: const Icon(Icons.edit),
-                          ),
-                          DeleteIconButton(
-                            onDeleted: () {
-                              videoDetailBloc.add(const VideoDetailDelete());
-                            },
-                          )
-                        ],
+            case VideoDetailStatus.refreshingSuccess:
+              _refreshController.refreshCompleted();
+              break;
+            case VideoDetailStatus.refreshingFailure:
+              _refreshController.refreshFailed();
+              break;
+            default:
+          }
+        },
+        child: BlocBuilder<VideoDetailBloc, VideoDetailState>(
+          builder: (BuildContext context, VideoDetailState state) {
+            final VideoDetailBloc videoDetailBloc =
+                BlocProvider.of<VideoDetailBloc>(context);
+            return Scaffold(
+              body: CustomScrollView(
+                slivers: <Widget>[
+                  SliverAppBar(
+                    pinned: true,
+                    snap: false,
+                    floating: false,
+                    title: (state.video != null)
+                        ? Text(state.video!.name)
+                        : const Text('Video detail'),
+                    actions: [
+                      IconButton(
+                        onPressed: () {
+                          AutoRouter.of(context).push(
+                            VideoEditRoute(
+                              videoId: state.video!.id,
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.edit),
                       ),
-                      SliverList(
-                        delegate: SliverChildListDelegate(
-                          <Widget>[
-                            if (_videoController != null)
-                              ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  maxHeight:
-                                      MediaQuery.of(context).size.height * 0.3,
-                                ),
-                                child: Hero(
-                                  tag: state.video!.id,
-                                  child: AspectRatio(
-                                    aspectRatio: 16 / 9,
-                                    child: YoutubePlayer(
-                                      controller: _videoController!,
-                                    ),
+                      DeleteIconButton(
+                        onDeleted: () {
+                          videoDetailBloc.add(const VideoDetailDelete());
+                        },
+                      )
+                    ],
+                  ),
+                  SliverFillRemaining(
+                    child: SmartRefresher(
+                      controller: _refreshController,
+                      enablePullDown: true,
+                      onRefresh: () {
+                        videoDetailBloc.add(const VideoDetailRefresh());
+                      },
+                      child: ListView(
+                        children: <Widget>[
+                          if (_videoController != null)
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxHeight:
+                                    MediaQuery.of(context).size.height * 0.3,
+                              ),
+                              child: Hero(
+                                tag: state.video!.id,
+                                child: AspectRatio(
+                                  aspectRatio: 16 / 9,
+                                  child: YoutubePlayer(
+                                    controller: _videoController!,
                                   ),
                                 ),
                               ),
+                            ),
+                          if (state.video != null)
                             ListTile(
                                 title: Text(state.video!.url),
                                 trailing: const Icon(MdiIcons.contentCopy),
@@ -137,6 +143,7 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                                   Clipboard.setData(
                                       ClipboardData(text: state.video!.url));
                                 }),
+                          if (state.video != null)
                             MomentsSection(
                               // label: 'Moments of ${state.video!.name}',
                               ofVideo: state.video!.id,
@@ -144,38 +151,36 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                                 _videoController?.seekTo(moment.startTime);
                               },
                             ),
+                          if (state.video != null)
                             FiguresSection(
                               // label: 'Figures of ${state.video!.name}',
                               ofVideo: state.video!.id,
                             ),
+                          if (state.video != null)
                             ArtistsSection(
                               // label: 'Artists of ${state.video!.name}',
                               ofVideo: state.video!.id,
                             ),
+                          if (state.video != null)
                             DancesSection(
                               // label: 'Dances of ${state.video!.name}',
                               ofVideo: state.video!.id,
                             ),
+                          if (state.video != null)
                             EntityInfoListTile(
                               createdAt: state.video!.createdAt,
                               updateAt: state.video!.updatedAt,
                               version: state.video!.version,
                             ),
-                          ],
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              );
-            case VideoDetailStatus.failure:
-              return ErrorPage(error: state.error);
-            default:
-              return ErrorPage(
-                error: NotSupportedError(message: '${state.status}'),
-              );
-          }
-        },
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

@@ -27,7 +27,7 @@ class ArtistDetailBloc extends Bloc<ArtistDetailEvent, ArtistDetailState> {
 
     try {
       emit(state.copyWith(
-        status: ArtistDetailStatus.loading,
+        status: ArtistDetailStatus.refreshing,
       ));
 
       ArtistEntity artistDataModel =
@@ -36,13 +36,13 @@ class ArtistDetailBloc extends Bloc<ArtistDetailEvent, ArtistDetailState> {
           mapper.toArtistViewModel(artistDataModel);
 
       emit(state.copyWith(
-        status: ArtistDetailStatus.detailSuccess,
+        status: ArtistDetailStatus.refreshingSuccess,
         ofId: artistViewModel.id,
         artist: artistViewModel,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: ArtistDetailStatus.failure,
+        status: ArtistDetailStatus.refreshingFailure,
         ofId: event.artistId,
         error: error,
       ));
@@ -66,13 +66,13 @@ class ArtistDetailBloc extends Bloc<ArtistDetailEvent, ArtistDetailState> {
           mapper.toArtistViewModel(artistDataModel);
 
       emit(state.copyWith(
-        status: ArtistDetailStatus.detailSuccess,
+        status: ArtistDetailStatus.refreshingSuccess,
         ofId: artistViewModel.id,
         artist: artistViewModel,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: ArtistDetailStatus.failure,
+        status: ArtistDetailStatus.refreshingFailure,
         error: error,
       ));
     }
@@ -86,10 +86,6 @@ class ArtistDetailBloc extends Bloc<ArtistDetailEvent, ArtistDetailState> {
 
     if (state.artist == null) return;
     try {
-      emit(state.copyWith(
-        status: ArtistDetailStatus.loading,
-      ));
-
       await artistRepository.deleteById(state.artist!.id);
 
       emit(const ArtistDetailState(
@@ -97,7 +93,7 @@ class ArtistDetailBloc extends Bloc<ArtistDetailEvent, ArtistDetailState> {
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: ArtistDetailStatus.failure,
+        status: ArtistDetailStatus.deleteFailure,
         error: error,
       ));
     }

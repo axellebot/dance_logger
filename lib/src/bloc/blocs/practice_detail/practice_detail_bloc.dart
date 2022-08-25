@@ -27,7 +27,7 @@ class PracticeDetailBloc
     if (kDebugMode) print('$runtimeType:_onPracticeDetailLoad');
     try {
       emit(state.copyWith(
-        status: PracticeDetailStatus.loading,
+        status: PracticeDetailStatus.refreshing,
       ));
 
       PracticeEntity practiceDataModel =
@@ -36,13 +36,13 @@ class PracticeDetailBloc
           mapper.toPracticeViewModel(practiceDataModel);
 
       emit(state.copyWith(
-        status: PracticeDetailStatus.detailSuccess,
+        status: PracticeDetailStatus.refreshingSuccess,
         ofId: practiceViewModel.id,
         practice: practiceViewModel,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: PracticeDetailStatus.failure,
+        status: PracticeDetailStatus.refreshingFailure,
         error: error,
       ));
     }
@@ -65,13 +65,13 @@ class PracticeDetailBloc
           mapper.toPracticeViewModel(practiceDataModel);
 
       emit(state.copyWith(
-        status: PracticeDetailStatus.detailSuccess,
+        status: PracticeDetailStatus.refreshingSuccess,
         ofId: practiceViewModel.id,
         practice: practiceViewModel,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: PracticeDetailStatus.failure,
+        status: PracticeDetailStatus.refreshingFailure,
         error: error,
       ));
     }
@@ -85,10 +85,6 @@ class PracticeDetailBloc
 
     if (state.practice == null) return;
     try {
-      emit(state.copyWith(
-        status: PracticeDetailStatus.loading,
-      ));
-
       await practiceRepository.deleteById(state.practice!.id);
 
       emit(const PracticeDetailState(
@@ -96,7 +92,7 @@ class PracticeDetailBloc
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: PracticeDetailStatus.failure,
+        status: PracticeDetailStatus.deleteFailure,
         error: error,
       ));
     }

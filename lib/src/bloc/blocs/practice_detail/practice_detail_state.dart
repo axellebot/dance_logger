@@ -3,11 +3,11 @@ import 'package:equatable/equatable.dart';
 
 enum PracticeDetailStatus {
   initial,
-  loading,
   refreshing,
-  detailSuccess,
+  refreshingSuccess,
+  refreshingFailure,
   deleteSuccess,
-  failure,
+  deleteFailure,
 }
 
 class PracticeDetailState extends Equatable {

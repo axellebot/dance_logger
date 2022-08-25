@@ -3,11 +3,11 @@ import 'package:equatable/equatable.dart';
 
 enum FigureDetailStatus {
   initial,
-  loading,
   refreshing,
-  detailSuccess,
+  refreshingSuccess,
+  refreshingFailure,
   deleteSuccess,
-  failure,
+  deleteFailure,
 }
 
 class FigureDetailState extends Equatable {

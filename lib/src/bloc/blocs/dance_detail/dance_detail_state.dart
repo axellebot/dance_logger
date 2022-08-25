@@ -3,11 +3,11 @@ import 'package:equatable/equatable.dart';
 
 enum DanceDetailStatus {
   initial,
-  loading,
   refreshing,
-  detailSuccess,
+  refreshingSuccess,
+  refreshingFailure,
   deleteSuccess,
-  failure,
+  deleteFailure,
 }
 
 class DanceDetailState extends Equatable {

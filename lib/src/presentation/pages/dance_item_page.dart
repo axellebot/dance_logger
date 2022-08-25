@@ -4,8 +4,9 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
+class DanceDetailsPage extends StatefulWidget implements AutoRouteWrapper {
   final String danceId;
 
   const DanceDetailsPage({
@@ -14,88 +15,7 @@ class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<DanceDetailBloc, DanceDetailState>(
-      builder: (BuildContext context, DanceDetailState state) {
-        switch (state.status) {
-          case DanceDetailStatus.initial:
-          case DanceDetailStatus.loading:
-            return const LoadingPage();
-          case DanceDetailStatus.detailSuccess:
-          case DanceDetailStatus.refreshing:
-            final DanceDetailBloc danceDetailBloc =
-                BlocProvider.of<DanceDetailBloc>(context);
-            return Scaffold(
-              body: RefreshIndicator(
-                edgeOffset:
-                    kToolbarHeight + MediaQuery.of(context).viewPadding.top,
-                onRefresh: () {
-                  danceDetailBloc.add(const DanceDetailRefresh());
-                  return danceDetailBloc.stream.firstWhere(
-                      (e) => e.status != DanceListStatus.refreshing);
-                },
-                child: CustomScrollView(
-                  slivers: <Widget>[
-                    SliverAppBar(
-                      pinned: true,
-                      snap: false,
-                      floating: false,
-                      title: Text(state.dance!.name),
-                      actions: [
-                        IconButton(
-                          onPressed: () {
-                            AutoRouter.of(context).push(
-                              DanceEditRoute(
-                                danceId: state.dance!.id,
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.edit),
-                        ),
-                        DeleteIconButton(
-                          onDeleted: () {
-                            danceDetailBloc.add(const DanceDetailDelete());
-                          },
-                        )
-                      ],
-                    ),
-                    SliverList(
-                      delegate: SliverChildListDelegate(
-                        <Widget>[
-                          ArtistsSection(
-                            // label: 'Artists of ${state.dance!.name}',
-                            ofDance: state.dance!.id,
-                          ),
-                          FiguresSection(
-                            // label: 'Figures of ${state.dance!.name}',
-                            ofDance: state.dance!.id,
-                          ),
-                          VideosSection(
-                            // label: 'Videos of ${state.dance!.name}',
-                            ofDance: state.dance!.id,
-                          ),
-                          EntityInfoListTile(
-                            createdAt: state.dance!.createdAt,
-                            updateAt: state.dance!.updatedAt,
-                            version: state.dance!.version,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          case DanceDetailStatus.failure:
-            return ErrorPage(error: state.error);
-          default:
-            return ErrorPage(
-              error: NotSupportedError(message: '${state.status}'),
-            );
-        }
-      },
-    );
-  }
+  State<DanceDetailsPage> createState() => _DanceDetailsPageState();
 
   @override
   Widget wrappedRoute(BuildContext context) {
@@ -107,6 +27,98 @@ class DanceDetailsPage extends StatelessWidget implements AutoRouteWrapper {
         )..add(DanceDetailLoad(danceId: danceId));
       },
       child: this,
+    );
+  }
+}
+
+class _DanceDetailsPageState extends State<DanceDetailsPage> {
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<DanceDetailBloc, DanceDetailState>(
+      listener: (context, state) {
+        switch (state.status) {
+          case DanceDetailStatus.refreshingSuccess:
+            _refreshController.refreshCompleted();
+            break;
+          case DanceDetailStatus.refreshingFailure:
+            _refreshController.refreshFailed();
+            break;
+          default:
+        }
+      },
+      child: BlocBuilder<DanceDetailBloc, DanceDetailState>(
+        builder: (BuildContext context, DanceDetailState state) {
+          final DanceDetailBloc danceDetailBloc =
+              BlocProvider.of<DanceDetailBloc>(context);
+          return Scaffold(
+            body: CustomScrollView(
+              slivers: <Widget>[
+                SliverAppBar(
+                  pinned: true,
+                  snap: false,
+                  floating: false,
+                  title: (state.dance != null)
+                      ? Text(state.dance!.name)
+                      : const Text('Dance detail'),
+                  actions: [
+                    IconButton(
+                      onPressed: () {
+                        AutoRouter.of(context).push(
+                          DanceEditRoute(
+                            danceId: state.dance!.id,
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.edit),
+                    ),
+                    DeleteIconButton(
+                      onDeleted: () {
+                        danceDetailBloc.add(const DanceDetailDelete());
+                      },
+                    )
+                  ],
+                ),
+                SliverFillRemaining(
+                  child: SmartRefresher(
+                    controller: _refreshController,
+                    onRefresh: () {
+                      danceDetailBloc.add(const DanceDetailRefresh());
+                    },
+                    child: ListView(
+                      children: <Widget>[
+                        if (state.dance != null)
+                          ArtistsSection(
+                            // label: 'Artists of ${state.dance!.name}',
+                            ofDance: state.dance!.id,
+                          ),
+                        if (state.dance != null)
+                          FiguresSection(
+                            // label: 'Figures of ${state.dance!.name}',
+                            ofDance: state.dance!.id,
+                          ),
+                        if (state.dance != null)
+                          VideosSection(
+                            // label: 'Videos of ${state.dance!.name}',
+                            ofDance: state.dance!.id,
+                          ),
+                        if (state.dance != null)
+                          EntityInfoListTile(
+                            createdAt: state.dance!.createdAt,
+                            updateAt: state.dance!.updatedAt,
+                            version: state.dance!.version,
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

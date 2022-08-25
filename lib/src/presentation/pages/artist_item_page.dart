@@ -4,8 +4,9 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
+class ArtistDetailsPage extends StatefulWidget implements AutoRouteWrapper {
   final String artistId;
 
   const ArtistDetailsPage({
@@ -14,111 +15,136 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
   });
 
   @override
+  State<ArtistDetailsPage> createState() => _ArtistDetailsPageState();
+
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider<ArtistDetailBloc>(
+      create: (BuildContext context) {
+        return ArtistDetailBloc(
+          artistRepository: RepositoryProvider.of<ArtistRepository>(context),
+          mapper: ModelMapper(),
+        )..add(ArtistDetailLoad(artistId: artistId));
+      },
+      child: this,
+    );
+  }
+}
+
+class _ArtistDetailsPageState extends State<ArtistDetailsPage> {
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ArtistDetailBloc, ArtistDetailState>(
-      builder: (BuildContext context, ArtistDetailState state) {
+    return BlocListener<ArtistDetailBloc, ArtistDetailState>(
+      listener: (context, state) {
         switch (state.status) {
-          case ArtistDetailStatus.initial:
-          case ArtistDetailStatus.loading:
-            return const LoadingPage();
-          case ArtistDetailStatus.detailSuccess:
-          case ArtistDetailStatus.refreshing:
-            final ArtistDetailBloc artistDetailBloc =
-                BlocProvider.of<ArtistDetailBloc>(context);
-            Widget? background = (state.artist!.imageUrl != null)
-                ? Stack(
-                    fit: StackFit.expand,
-                    children: <Widget>[
-                      Hero(
-                        tag: state!.artist!.id,
-                        child: Image.network(
-                          state.artist!.imageUrl!,
-                          fit: BoxFit.cover,
-                        ),
+          case ArtistDetailStatus.refreshingSuccess:
+            _refreshController.refreshCompleted();
+            break;
+          case ArtistDetailStatus.refreshingFailure:
+            _refreshController.refreshFailed();
+            break;
+          default:
+        }
+      },
+      child: BlocBuilder<ArtistDetailBloc, ArtistDetailState>(
+        builder: (BuildContext context, ArtistDetailState state) {
+          final ArtistDetailBloc artistDetailBloc =
+              BlocProvider.of<ArtistDetailBloc>(context);
+          Widget? background = (state.artist?.imageUrl != null)
+              ? Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    Hero(
+                      tag: state.artist!.id,
+                      child: Image.network(
+                        state.artist!.imageUrl!,
+                        fit: BoxFit.cover,
                       ),
-                      _buildGradient(),
-                    ],
-                  )
-                : null;
-            return Scaffold(
-              body: RefreshIndicator(
-                edgeOffset: MediaQuery.of(context).size.height * 0.3 +
-                    MediaQuery.of(context).viewPadding.top,
-                onRefresh: () {
-                  artistDetailBloc.add(const ArtistDetailRefresh());
-                  return artistDetailBloc.stream.firstWhere(
-                      (e) => e.status != ArtistListStatus.refreshing);
-                },
-                child: CustomScrollView(
-                  slivers: <Widget>[
-                    SliverAppBar(
-                      pinned: true,
-                      snap: false,
-                      floating: false,
-                      expandedHeight: MediaQuery.of(context).size.height * 0.3,
-                      stretch: true,
-                      flexibleSpace: FlexibleSpaceBar(
-                        stretchModes: const [
-                          StretchMode.fadeTitle,
-                          StretchMode.blurBackground,
-                          StretchMode.zoomBackground,
-                        ],
-                        title: Text(state.artist!.name),
-                        background: background,
-                      ),
-                      actions: [
-                        IconButton(
-                          onPressed: () {
-                            AutoRouter.of(context).push(
-                              ArtistEditRoute(
-                                artistId: state.artist!.id,
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.edit),
-                        ),
-                        DeleteIconButton(
-                          onDeleted: () {
-                            artistDetailBloc.add(const ArtistDetailDelete());
-                          },
-                        )
-                      ],
                     ),
-                    SliverList(
-                      delegate: SliverChildListDelegate(
-                        <Widget>[
+                    _buildGradient(),
+                  ],
+                )
+              : null;
+          return Scaffold(
+            body: CustomScrollView(
+              slivers: <Widget>[
+                SliverAppBar(
+                  pinned: true,
+                  snap: false,
+                  floating: false,
+                  expandedHeight: MediaQuery.of(context).size.height * 0.3,
+                  stretch: true,
+                  flexibleSpace: FlexibleSpaceBar(
+                    stretchModes: const [
+                      StretchMode.fadeTitle,
+                      StretchMode.blurBackground,
+                      StretchMode.zoomBackground,
+                    ],
+                    title: (state.artist != null)
+                        ? Text(state.artist!.name)
+                        : const Text('Artist detail'),
+                    background: background,
+                  ),
+                  actions: [
+                    IconButton(
+                      onPressed: () {
+                        AutoRouter.of(context).push(
+                          ArtistEditRoute(
+                            artistId: state.artist!.id,
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.edit),
+                    ),
+                    DeleteIconButton(
+                      onDeleted: () {
+                        artistDetailBloc.add(const ArtistDetailDelete());
+                      },
+                    )
+                  ],
+                ),
+                SliverFillRemaining(
+                  child: SmartRefresher(
+                    controller: _refreshController,
+                    enablePullDown: true,
+                    onRefresh: () {
+                      artistDetailBloc.add(const ArtistDetailRefresh());
+                    },
+                    child: ListView(
+                      children: <Widget>[
+                        if (state.artist != null)
                           DancesSection(
                             // label: 'Dances of ${state.artist!.name}',
                             ofArtist: state.artist!.id,
                           ),
+                        if (state.artist != null)
                           FiguresSection(
                             // label: 'Figures of ${state.artist!.name}',
                             ofArtist: state.artist!.id,
                           ),
+                        if (state.artist != null)
                           VideosSection(
                             // label: 'Videos of ${state.artist!.name}',
                             ofArtist: state.artist!.id,
                           ),
+                        if (state.artist != null)
                           EntityInfoListTile(
                             createdAt: state.artist!.createdAt,
                             updateAt: state.artist!.updatedAt,
                             version: state.artist!.version,
                           ),
-                        ],
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            );
-          case ArtistDetailStatus.failure:
-            return ErrorPage(error: state.error);
-          default:
-            return ErrorPage(
-              error: NotSupportedError(message: '${state.status}'),
-            );
-        }
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -134,19 +160,6 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
           ),
         ),
       ),
-    );
-  }
-
-  @override
-  Widget wrappedRoute(BuildContext context) {
-    return BlocProvider<ArtistDetailBloc>(
-      create: (BuildContext context) {
-        return ArtistDetailBloc(
-          artistRepository: RepositoryProvider.of<ArtistRepository>(context),
-          mapper: ModelMapper(),
-        )..add(ArtistDetailLoad(artistId: artistId));
-      },
-      child: this,
     );
   }
 }

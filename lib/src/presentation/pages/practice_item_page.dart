@@ -4,8 +4,9 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class PracticeDetailsPage extends StatelessWidget implements AutoRouteWrapper {
+class PracticeDetailsPage extends StatefulWidget implements AutoRouteWrapper {
   final String practiceId;
 
   const PracticeDetailsPage({
@@ -14,78 +15,7 @@ class PracticeDetailsPage extends StatelessWidget implements AutoRouteWrapper {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<PracticeDetailBloc, PracticeDetailState>(
-      builder: (BuildContext context, PracticeDetailState state) {
-        switch (state.status) {
-          case PracticeDetailStatus.initial:
-          case PracticeDetailStatus.loading:
-            return const LoadingPage();
-          case PracticeDetailStatus.detailSuccess:
-          case PracticeDetailStatus.refreshing:
-            final PracticeDetailBloc practiceDetailBloc =
-                BlocProvider.of<PracticeDetailBloc>(context);
-            return Scaffold(
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  AutoRouter.of(context).push(
-                    PracticeEditRoute(
-                      practiceId: state.practice!.id,
-                    ),
-                  );
-                },
-                child: const Icon(Icons.edit),
-              ),
-              body: RefreshIndicator(
-                edgeOffset:
-                    kToolbarHeight + MediaQuery.of(context).viewPadding.top,
-                onRefresh: () {
-                  practiceDetailBloc.add(const PracticeDetailRefresh());
-                  return practiceDetailBloc.stream.firstWhere(
-                      (e) => e.status != PracticeListStatus.refreshing);
-                },
-                child: CustomScrollView(
-                  slivers: <Widget>[
-                    SliverAppBar(
-                      pinned: true,
-                      snap: false,
-                      floating: false,
-                      stretch: true,
-                      flexibleSpace: FlexibleSpaceBar(
-                        stretchModes: const [
-                          StretchMode.fadeTitle,
-                          StretchMode.blurBackground,
-                          StretchMode.zoomBackground,
-                        ],
-                        title: Text('${state.practice!.doneAt}'),
-                      ),
-                    ),
-                    SliverList(
-                      delegate: SliverChildListDelegate(
-                        <Widget>[
-                          _buildFigureTile(state.practice!.figureId),
-                          EntityInfoListTile(
-                            createdAt: state.practice!.createdAt,
-                            updateAt: state.practice!.updatedAt,
-                            version: state.practice!.version,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          case PracticeDetailStatus.failure:
-            return ErrorPage(error: state.error);
-          default:
-            return ErrorPage(
-              error: NotSupportedError(message: '${state.status}'),
-            );
-        }
-      },
-    );
-  }
+  State<PracticeDetailsPage> createState() => _PracticeDetailsPageState();
 
   @override
   Widget wrappedRoute(BuildContext context) {
@@ -100,25 +30,80 @@ class PracticeDetailsPage extends StatelessWidget implements AutoRouteWrapper {
       child: this,
     );
   }
+}
 
-  Widget _buildFigureTile(String figureId) {
-    return BlocProvider<FigureDetailBloc>(
-      create: (context) => FigureDetailBloc(
-        figureRepository: RepositoryProvider.of<FigureRepository>(context),
-        mapper: ModelMapper(),
-      )..add(FigureDetailLoad(figureId: figureId)),
-      child: Builder(builder: (context) {
-        return BlocBuilder<FigureDetailBloc, FigureDetailState>(
-          builder: (context, state) {
-            switch (state.status) {
-              case FigureDetailStatus.detailSuccess:
-                return FigureListTile(figure: state.figure!);
-              default:
-                return ErrorTile(
-                  error: NotImplementedYetError('${state.status}'),
-                );
-            }
-          },
+class _PracticeDetailsPageState extends State<PracticeDetailsPage> {
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<PracticeDetailBloc, PracticeDetailState>(
+      listener: (context, state) {
+        switch (state.status) {
+          case PracticeDetailStatus.refreshingSuccess:
+            _refreshController.refreshCompleted();
+            break;
+          case PracticeDetailStatus.refreshingFailure:
+            _refreshController.refreshFailed();
+            break;
+          default:
+        }
+      },
+      child: BlocBuilder<PracticeDetailBloc, PracticeDetailState>(
+          builder: (BuildContext context, PracticeDetailState state) {
+        final PracticeDetailBloc practiceDetailBloc =
+            BlocProvider.of<PracticeDetailBloc>(context);
+        return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              AutoRouter.of(context).push(
+                PracticeEditRoute(
+                  practiceId: state.practice!.id,
+                ),
+              );
+            },
+            child: const Icon(Icons.edit),
+          ),
+          body: CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                pinned: true,
+                snap: false,
+                floating: false,
+                stretch: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  stretchModes: const [
+                    StretchMode.fadeTitle,
+                    StretchMode.blurBackground,
+                    StretchMode.zoomBackground,
+                  ],
+                  title: (state.practice != null)
+                      ? Text('${state.practice!.doneAt}')
+                      : const Text('Practice detail'),
+                ),
+              ),
+              SliverFillRemaining(
+                child: SmartRefresher(
+                  controller: _refreshController,
+                  onRefresh: () {
+                    practiceDetailBloc.add(const PracticeDetailRefresh());
+                  },
+                  child: ListView(
+                    children: <Widget>[
+                      // TODO: Add figure detail
+                      if (state.practice != null)
+                        EntityInfoListTile(
+                          createdAt: state.practice!.createdAt,
+                          updateAt: state.practice!.updatedAt,
+                          version: state.practice!.version,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         );
       }),
     );

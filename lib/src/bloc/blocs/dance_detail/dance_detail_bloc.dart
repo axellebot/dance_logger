@@ -27,20 +27,20 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
 
     try {
       emit(state.copyWith(
-        status: DanceDetailStatus.loading,
+        status: DanceDetailStatus.refreshing,
       ));
 
       DanceEntity danceDataModel = await danceRepository.getById(event.danceId);
       DanceViewModel danceViewModel = mapper.toDanceViewModel(danceDataModel);
 
       emit(state.copyWith(
-        status: DanceDetailStatus.detailSuccess,
+        status: DanceDetailStatus.refreshingSuccess,
         ofId: danceViewModel.id,
         dance: danceViewModel,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: DanceDetailStatus.failure,
+        status: DanceDetailStatus.refreshingFailure,
         ofId: event.danceId,
         error: error,
       ));
@@ -62,13 +62,13 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
       DanceViewModel danceViewModel = mapper.toDanceViewModel(danceDataModel);
 
       emit(state.copyWith(
-        status: DanceDetailStatus.detailSuccess,
+        status: DanceDetailStatus.refreshingSuccess,
         ofId: danceViewModel.id,
         dance: danceViewModel,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: DanceDetailStatus.failure,
+        status: DanceDetailStatus.refreshingFailure,
         error: error,
       ));
     }
@@ -82,10 +82,6 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
 
     if (state.dance == null) return;
     try {
-      emit(state.copyWith(
-        status: DanceDetailStatus.loading,
-      ));
-
       await danceRepository.deleteById(state.dance!.id);
 
       emit(const DanceDetailState(
@@ -93,7 +89,7 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: DanceDetailStatus.failure,
+        status: DanceDetailStatus.deleteFailure,
         error: error,
       ));
     }

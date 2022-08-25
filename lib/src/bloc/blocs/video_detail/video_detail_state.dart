@@ -3,11 +3,11 @@ import 'package:equatable/equatable.dart';
 
 enum VideoDetailStatus {
   initial,
-  loading,
   refreshing,
-  detailSuccess,
+  refreshingSuccess,
+  refreshingFailure,
   deleteSuccess,
-  failure,
+  deleteFailure,
 }
 
 class VideoDetailState extends Equatable {
