@@ -27,9 +27,16 @@ class VideoListTile extends StatelessWidget {
     return ListTile(
       title: Text(video.name),
       leading: (isYoutube(video.url))
-          ? VideoThumbnail(
-              url:
+          ? Hero(
+              tag: video.id,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(
+                    AppStyles.videoListTileThumbnailRadius),
+                child: Image.network(
                   'https://img.youtube.com/vi/${getYoutubeId(video.url)}/mqdefault.jpg',
+                  fit: BoxFit.cover,
+                ),
+              ),
             )
           : null,
       subtitle: Text(video.url),
@@ -40,26 +47,6 @@ class VideoListTile extends StatelessWidget {
       },
       onLongPress: onLongPress,
       selected: selected,
-    );
-  }
-}
-
-class VideoThumbnail extends StatelessWidget {
-  final String url;
-
-  const VideoThumbnail({
-    super.key,
-    required this.url,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(AppStyles.videoThumbnailRadius),
-      child: Image.network(
-        url,
-        fit: BoxFit.cover,
-      ),
     );
   }
 }
@@ -105,6 +92,7 @@ class VideoCard extends StatelessWidget {
       width: AppStyles.cardWidth,
       height: AppStyles.cardHeight,
       child: Card(
+        clipBehavior: Clip.antiAlias,
         elevation: AppStyles.cardElevation,
         child: GestureDetector(
           onTap: () {
@@ -112,18 +100,56 @@ class VideoCard extends StatelessWidget {
               VideoDetailsRoute(videoId: video.id),
             );
           },
-          child: Container(
-            padding: AppStyles.cardPadding,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(video.name),
-              ],
-            ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: <Widget>[
+              Hero(
+                tag: video.id,
+                child: Image.network(
+                  'https://img.youtube.com/vi/${getYoutubeId(video.url)}/mqdefault.jpg',
+                  fit: BoxFit.cover,
+                ),
+              ),
+              _buildGradient(),
+              _buildTitle(),
+            ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildGradient() {
+    return Positioned.fill(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: const [0.6, 0.95],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return Positioned(
+      left: 5,
+      bottom: 5,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            video.name,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }

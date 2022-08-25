@@ -117,8 +117,11 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                             if (_videoController != null)
                               AspectRatio(
                                 aspectRatio: 16 / 9,
-                                child: YoutubePlayer(
-                                  controller: _videoController!,
+                                child: Hero(
+                                  tag: state.video!.id,
+                                  child: YoutubePlayer(
+                                    controller: _videoController!,
+                                  ),
                                 ),
                               ),
                             ListTile(

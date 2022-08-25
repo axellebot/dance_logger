@@ -29,9 +29,12 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                 ? Stack(
                     fit: StackFit.expand,
                     children: <Widget>[
-                      Image.network(
-                        state.artist!.imageUrl!,
-                        fit: BoxFit.cover,
+                      Hero(
+                        tag: state!.artist!.id,
+                        child: Image.network(
+                          state.artist!.imageUrl!,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       _buildGradient(),
                     ],

@@ -118,7 +118,7 @@ class AppStyles {
   ///                              Video
   /// --------------------------------------------------------------------------
 
-  static double videoThumbnailRadius = 10.0;
+  static double videoListTileThumbnailRadius = 10.0;
   static double artistThumbnailRadius = 20.0;
 
   /// Sort

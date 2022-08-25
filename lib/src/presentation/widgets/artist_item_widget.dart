@@ -27,12 +27,15 @@ class ArtistListTile extends StatelessWidget {
     return ListTile(
       title: Text(artist.name),
       leading: (artist.imageUrl != null)
-          ? InitialCircleAvatar(
-              text: artist.name,
-              backgroundImage: NetworkImage(
-                artist.imageUrl!,
+          ? Hero(
+              tag: artist.id,
+              child: InitialCircleAvatar(
+                text: artist.name,
+                backgroundImage: NetworkImage(
+                  artist.imageUrl!,
+                ),
+                radius: AppStyles.artistThumbnailRadius,
               ),
-              radius: AppStyles.artistThumbnailRadius,
             )
           : null,
       onTap: onTap ??
@@ -143,10 +146,14 @@ class ArtistCard extends StatelessWidget {
     );
   }
 
-  Widget _buildImage() => (artist.imageUrl != null)
-      ? Image.network(
-          artist.imageUrl!,
-          fit: BoxFit.cover,
+  Widget _buildImage() =>
+      (artist.imageUrl != null)
+      ? Hero(
+          tag: artist.id,
+          child: Image.network(
+            artist.imageUrl!,
+            fit: BoxFit.cover,
+          ),
         )
       : const SizedBox();
 }
