@@ -85,17 +85,9 @@ class DanceListPage extends StatelessWidget
               },
               child: const Icon(MdiIcons.plus),
             ),
-            body: RefreshIndicator(
-              onRefresh: () {
-                danceListBloc.add(const DanceListRefresh());
-                return danceListBloc.stream
-                    .firstWhere((e) => e.status != DanceListStatus.refreshing);
-              },
-              child: DanceListView(
-                danceListBloc: danceListBloc,
-                scrollDirection: Axis.vertical,
-                physics: const AlwaysScrollableScrollPhysics(),
-              ),
+            body: DanceListView(
+              danceListBloc: danceListBloc,
+              scrollDirection: Axis.vertical,
             ),
           );
         },

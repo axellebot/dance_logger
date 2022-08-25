@@ -80,21 +80,13 @@ class PracticeListPage extends StatelessWidget
             appBar: appBar,
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                AutoRouter.of(context).push(PracticeCreateRoute());
+                AutoRouter.of(context).push(const PracticeCreateRoute());
               },
               child: const Icon(MdiIcons.plus),
             ),
-            body: RefreshIndicator(
-              onRefresh: () {
-                practiceListBloc.add(const PracticeListRefresh());
-                return practiceListBloc.stream.firstWhere(
-                    (e) => e.status != PracticeListStatus.refreshing);
-              },
-              child: PracticeListView(
-                practiceListBloc: practiceListBloc,
-                scrollDirection: Axis.vertical,
-                physics: const AlwaysScrollableScrollPhysics(),
-              ),
+            body: PracticeListView(
+              practiceListBloc: practiceListBloc,
+              scrollDirection: Axis.vertical,
             ),
           );
         },

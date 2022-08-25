@@ -2,7 +2,17 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
 
-enum PracticeListStatus { initial, loading, refreshing, success, failure }
+enum PracticeListStatus {
+  initial,
+  loading,
+  loadingSuccess,
+  loadingFailure,
+  refreshing,
+  refreshingSuccess,
+  refreshingFailure,
+  deleteSuccess,
+  deleteFailure,
+}
 
 class PracticeListState extends Equatable implements PracticeListParams {
   final PracticeListStatus status;
@@ -18,7 +28,7 @@ class PracticeListState extends Equatable implements PracticeListParams {
 
   final List<PracticeViewModel> practices;
   final bool hasReachedMax;
-  final List<String> selectedPractices;
+  final List<PracticeViewModel> selectedPractices;
   final Error? error;
 
   const PracticeListState({
@@ -29,7 +39,7 @@ class PracticeListState extends Equatable implements PracticeListParams {
     this.ofVideo,
     this.practices = const <PracticeViewModel>[],
     this.hasReachedMax = false,
-    this.selectedPractices = const <String>[],
+    this.selectedPractices = const <PracticeViewModel>[],
     this.error,
   });
 
@@ -54,7 +64,7 @@ class PracticeListState extends Equatable implements PracticeListParams {
     String? ofVideo,
     List<PracticeViewModel>? practices,
     bool? hasReachedMax,
-    List<String>? selectedPractices,
+    List<PracticeViewModel>? selectedPractices,
     Error? error,
   }) {
     return PracticeListState(

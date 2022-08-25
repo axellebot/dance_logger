@@ -4,6 +4,7 @@ import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 abstract class MomentListWidgetParams implements MomentListParams {
   /// ListBloc params
@@ -106,19 +107,12 @@ class MomentListView extends StatefulWidget
             (ofArtist == null && ofFigure == null && ofVideo == null));
 
   @override
-  State<StatefulWidget> createState() => _MomentListViewState();
+  State<MomentListView> createState() => _MomentListViewState();
 }
 
 class _MomentListViewState extends State<MomentListView> {
-  final _scrollController = ScrollController();
-
-  _MomentListViewState();
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   Widget build(BuildContext context) {
@@ -127,116 +121,89 @@ class _MomentListViewState extends State<MomentListView> {
       ofArtist: widget.ofArtist,
       ofFigure: widget.ofFigure,
       ofVideo: widget.ofVideo,
-      child: BlocBuilder<MomentListBloc, MomentListState>(
-        builder: (BuildContext context, MomentListState state) {
+      child: BlocListener<MomentListBloc, MomentListState>(
+        listener: (context, MomentListState state) {
           switch (state.status) {
-            case MomentListStatus.initial:
-            case MomentListStatus.loading:
-              return LoadingListView(
-                scrollDirection: widget.scrollDirection,
-                physics: widget.physics,
-                padding: widget.padding,
-              );
-            case MomentListStatus.failure:
-            case MomentListStatus.success:
-            case MomentListStatus.refreshing:
-              if (state.moments.isEmpty) {
-                return ListView(
-                  scrollDirection: widget.scrollDirection,
-                  physics: widget.physics,
-                  padding: widget.padding,
-                  children: const [
-                    Chip(label: Text('No Moments')),
-                  ],
-                );
+            case MomentListStatus.loadingSuccess:
+              if (!state.hasReachedMax) {
+                _refreshController.loadComplete();
               } else {
-                return ListView.builder(
-                  scrollDirection: widget.scrollDirection,
-                  physics: widget.physics,
-                  padding: widget.padding,
-                  controller: _scrollController,
-                  itemCount: state.hasReachedMax
-                      ? state.moments.length
-                      : state.moments.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index < state.moments.length) {
-                      final MomentViewModel moment = state.moments[index];
-                      final MomentListBloc momentListBloc =
-                          BlocProvider.of<MomentListBloc>(context);
-                      switch (widget.scrollDirection) {
-                        case Axis.vertical:
-                          if (state.selectedMoments.isEmpty) {
-                            return MomentListTile(
-                              moment: moment,
-                              onLongPress: () {
-                                momentListBloc.add(
-                                  MomentListSelect(momentId: moment.id),
-                                );
-                              },
-                            );
-                          } else {
-                            return CheckboxMomentListTile(
-                              moment: moment,
-                              value: state.selectedMoments.contains(moment.id),
-                              onChanged: (bool? value) {
-                                momentListBloc.add(
-                                  (value == true)
-                                      ? MomentListSelect(momentId: moment.id)
-                                      : MomentListUnselect(momentId: moment.id),
-                                );
-                              },
-                            );
-                          }
-                        case Axis.horizontal:
-                          return MomentChip(
-                            moment: moment,
-                            onTap: widget.onItemTap,
-                          );
-                      }
-                    } else {
-                      switch (widget.scrollDirection) {
-                        case Axis.vertical:
-                          return const BottomListLoadingIndicator();
-                        case Axis.horizontal:
-                          return const RightListLoadingIndicator();
-                      }
-                    }
-                  },
-                );
+                _refreshController.loadNoData();
               }
+              break;
+            case MomentListStatus.loadingFailure:
+              _refreshController.loadFailed();
+              break;
+            case MomentListStatus.refreshingSuccess:
+              _refreshController.refreshCompleted(resetFooterState: true);
+              break;
+            case MomentListStatus.refreshingFailure:
+              _refreshController.refreshFailed();
+              break;
             default:
-              return ErrorListView(
-                scrollDirection: widget.scrollDirection,
-                physics: widget.physics,
-                padding: widget.padding,
-                error: NotSupportedError(message: '${state.status}'),
-              );
           }
         },
+        child: BlocBuilder<MomentListBloc, MomentListState>(
+          builder: (BuildContext context, MomentListState state) {
+            final momentListBloc = BlocProvider.of<MomentListBloc>(context);
+
+            return SmartRefresher(
+              controller: _refreshController,
+              enablePullDown: true,
+              enablePullUp: true,
+              onRefresh: () {
+                momentListBloc.add(const MomentListRefresh());
+              },
+              onLoading: () {
+                momentListBloc.add(const MomentListLoadMore());
+              },
+              scrollDirection: widget.scrollDirection,
+              child: ListView.builder(
+                scrollDirection: widget.scrollDirection,
+                physics: widget.physics,
+                padding: widget.padding,
+                itemCount: state.moments.length,
+                itemBuilder: (context, index) {
+                  final MomentViewModel moment = state.moments[index];
+                  final MomentListBloc momentListBloc =
+                      BlocProvider.of<MomentListBloc>(context);
+                  switch (widget.scrollDirection) {
+                    case Axis.vertical:
+                      if (state.selectedMoments.isEmpty) {
+                        return MomentListTile(
+                          moment: moment,
+                          onLongPress: () {
+                            momentListBloc.add(
+                              MomentListSelect(moment: moment),
+                            );
+                          },
+                        );
+                      } else {
+                        return CheckboxMomentListTile(
+                          moment: moment,
+                          value: state.selectedMoments.contains(moment),
+                          onChanged: (bool? value) {
+                            momentListBloc.add(
+                              (value == true)
+                                  ? MomentListSelect(moment: moment)
+                                  : MomentListUnselect(moment: moment),
+                            );
+                          },
+                        );
+                      }
+                    case Axis.horizontal:
+                      return MomentChip(
+                        moment: moment,
+                        onTap: widget.onItemTap,
+                      );
+                  }
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
-  }
-
-  void _onScroll() {
-    if (_shouldLoadMore) {
-      context.read<MomentListBloc>().add(const MomentListLoadMore());
-    }
-  }
-
-  bool get _shouldLoadMore {
-    if (!_scrollController.hasClients) return false;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final scrollThreshold = (maxScroll * 0.9);
-    final currentScroll = _scrollController.offset;
-    return currentScroll >= scrollThreshold;
-  }
-
-  @override
-  void dispose() {
-    _scrollController
-      ..removeListener(_onScroll)
-      ..dispose();
-    super.dispose();
   }
 }
 

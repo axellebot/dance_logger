@@ -27,8 +27,9 @@ class ArtistListTile extends StatelessWidget {
     return ListTile(
       title: Text(artist.name),
       leading: (artist.imageUrl != null)
-          ? CircleAvatar(
-              foregroundImage: NetworkImage(
+          ? InitialCircleAvatar(
+              text: artist.name,
+              backgroundImage: NetworkImage(
                 artist.imageUrl!,
               ),
               radius: AppStyles.artistThumbnailRadius,

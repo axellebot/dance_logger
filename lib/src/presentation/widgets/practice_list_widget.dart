@@ -5,6 +5,7 @@ import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 abstract class PracticeListWidgetParams implements PracticeListParams {
   /// ListBloc params
@@ -114,19 +115,12 @@ class PracticeListView extends StatefulWidget
                 ofVideo == null));
 
   @override
-  State<StatefulWidget> createState() => _PracticeListViewState();
+  State<PracticeListView> createState() => _PracticeListViewState();
 }
 
 class _PracticeListViewState extends State<PracticeListView> {
-  final _scrollController = ScrollController();
-
-  _PracticeListViewState();
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   Widget build(BuildContext context) {
@@ -136,114 +130,86 @@ class _PracticeListViewState extends State<PracticeListView> {
       ofDance: widget.ofDance,
       ofFigure: widget.ofFigure,
       ofVideo: widget.ofVideo,
-      child: BlocBuilder<PracticeListBloc, PracticeListState>(
-        builder: (BuildContext context, PracticeListState state) {
+      child: BlocListener<PracticeListBloc, PracticeListState>(
+        listener: (context, PracticeListState state) {
           switch (state.status) {
-            case PracticeListStatus.initial:
-            case PracticeListStatus.loading:
-              return LoadingListView(
-                scrollDirection: widget.scrollDirection,
-                physics: widget.physics,
-                padding: widget.padding,
-              );
-            case PracticeListStatus.failure:
-            case PracticeListStatus.success:
-            case PracticeListStatus.refreshing:
-              if (state.practices.isEmpty) {
-                return EmptyListView(
-                  scrollDirection: widget.scrollDirection,
-                  physics: widget.physics,
-                  padding: widget.padding,
-                  label: 'No Practices',
-                );
+            case PracticeListStatus.loadingSuccess:
+              if (!state.hasReachedMax) {
+                _refreshController.loadComplete();
               } else {
-                return ListView.builder(
-                  scrollDirection: widget.scrollDirection,
-                  physics: widget.physics,
-                  padding: widget.padding,
-                  controller: _scrollController,
-                  itemCount: state.hasReachedMax
-                      ? state.practices.length
-                      : state.practices.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index < state.practices.length) {
-                      final PracticeViewModel practice = state.practices[index];
-                      final PracticeListBloc practiceListBloc =
-                          BlocProvider.of<PracticeListBloc>(context);
-                      switch (widget.scrollDirection) {
-                        case Axis.vertical:
-                          if (state.selectedPractices.isEmpty) {
-                            return PracticeListTile(
-                              practice: practice,
-                              onLongPress: () {
-                                practiceListBloc.add(
-                                  PracticeListSelect(practiceId: practice.id),
-                                );
-                              },
-                            );
-                          } else {
-                            return CheckboxPracticeListTile(
-                              practice: practice,
-                              value:
-                                  state.selectedPractices.contains(practice.id),
-                              onChanged: (bool? value) {
-                                practiceListBloc.add(
-                                  (value == true)
-                                      ? PracticeListSelect(
-                                          practiceId: practice.id)
-                                      : PracticeListUnselect(
-                                          practiceId: practice.id),
-                                );
-                              },
-                            );
-                          }
-                        case Axis.horizontal:
-                          return PracticeCard(practice: practice);
-                      }
-                    } else {
-                      switch (widget.scrollDirection) {
-                        case Axis.vertical:
-                          return const BottomListLoadingIndicator();
-                        case Axis.horizontal:
-                          return const RightListLoadingIndicator();
-                      }
-                    }
-                  },
-                );
+                _refreshController.loadNoData();
               }
+              break;
+            case PracticeListStatus.loadingFailure:
+              _refreshController.loadFailed();
+              break;
+            case PracticeListStatus.refreshingSuccess:
+              _refreshController.refreshCompleted(resetFooterState: true);
+              break;
+            case PracticeListStatus.refreshingFailure:
+              _refreshController.refreshFailed();
+              break;
             default:
-              return ErrorListView(
-                scrollDirection: widget.scrollDirection,
-                physics: widget.physics,
-                padding: widget.padding,
-                error: NotSupportedError(message: '${state.status}'),
-              );
           }
         },
+        child: BlocBuilder<PracticeListBloc, PracticeListState>(
+          builder: (BuildContext context, PracticeListState state) {
+            final practiceListBloc = BlocProvider.of<PracticeListBloc>(context);
+
+            return SmartRefresher(
+              controller: _refreshController,
+              enablePullDown: true,
+              enablePullUp: true,
+              onRefresh: () {
+                practiceListBloc.add(const PracticeListRefresh());
+              },
+              onLoading: () {
+                practiceListBloc.add(const PracticeListLoadMore());
+              },
+              scrollDirection: widget.scrollDirection,
+              child: ListView.builder(
+                scrollDirection: widget.scrollDirection,
+                physics: widget.physics,
+                padding: widget.padding,
+                itemCount: state.practices.length,
+                itemBuilder: (context, index) {
+                  final PracticeViewModel practice = state.practices[index];
+                  final PracticeListBloc practiceListBloc =
+                      BlocProvider.of<PracticeListBloc>(context);
+                  switch (widget.scrollDirection) {
+                    case Axis.vertical:
+                      if (state.selectedPractices.isEmpty) {
+                        return PracticeListTile(
+                          practice: practice,
+                          onLongPress: () {
+                            practiceListBloc.add(
+                              PracticeListSelect(practice: practice),
+                            );
+                          },
+                        );
+                      } else {
+                        return CheckboxPracticeListTile(
+                          practice: practice,
+                          value: state.selectedPractices.contains(practice),
+                          onChanged: (bool? value) {
+                            practiceListBloc.add(
+                              (value == true)
+                                  ? PracticeListSelect(practice: practice)
+                                  : PracticeListUnselect(practice: practice),
+                            );
+                          },
+                        );
+                      }
+                    case Axis.horizontal:
+                      return PracticeCard(practice: practice);
+                  }
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
-  }
-
-  void _onScroll() {
-    if (_shouldLoadMore) {
-      context.read<PracticeListBloc>().add(const PracticeListLoadMore());
-    }
-  }
-
-  bool get _shouldLoadMore {
-    if (!_scrollController.hasClients) return false;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final scrollThreshold = (maxScroll * 0.9);
-    final currentScroll = _scrollController.offset;
-    return currentScroll >= scrollThreshold;
-  }
-
-  @override
-  void dispose() {
-    _scrollController
-      ..removeListener(_onScroll)
-      ..dispose();
-    super.dispose();
   }
 }
 

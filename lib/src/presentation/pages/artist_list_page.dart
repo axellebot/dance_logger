@@ -90,17 +90,9 @@ class ArtistListPage extends StatelessWidget
               },
               child: const Icon(MdiIcons.plus),
             ),
-            body: RefreshIndicator(
-              onRefresh: () {
-                artistListBloc.add(const ArtistListRefresh());
-                return artistListBloc.stream
-                    .firstWhere((e) => e.status != ArtistListStatus.refreshing);
-              },
-              child: ArtistListView(
-                artistListBloc: artistListBloc,
-                scrollDirection: Axis.vertical,
-                physics: const AlwaysScrollableScrollPhysics(),
-              ),
+            body: ArtistListView(
+              artistListBloc: artistListBloc,
+              scrollDirection: Axis.vertical,
             ),
           );
         },

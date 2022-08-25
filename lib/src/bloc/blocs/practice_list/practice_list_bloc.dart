@@ -40,7 +40,7 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
         offset: 0,
       );
       emit(state.copyWith(
-        status: PracticeListStatus.success,
+        status: PracticeListStatus.loadingSuccess,
         ofDance: event.ofDance,
         ofFigure: event.ofFigure,
         ofVideo: event.ofVideo,
@@ -49,7 +49,7 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: PracticeListStatus.failure,
+        status: PracticeListStatus.loadingFailure,
         error: error,
       ));
     }
@@ -59,10 +59,12 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
     PracticeListLoadMore event,
     Emitter<PracticeListState> emit,
   ) async {
-    if (state.status != PracticeListStatus.success) return;
     try {
-      final List<PracticeViewModel> practiceViewModels;
+      emit(state.copyWith(
+        status: PracticeListStatus.loading,
+      ));
 
+      final List<PracticeViewModel> practiceViewModels;
       practiceViewModels = await _fetchPractices(
         ofArtist: state.ofArtist,
         ofDance: state.ofDance,
@@ -70,19 +72,15 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
         ofVideo: state.ofVideo,
         offset: state.practices.length,
       );
-      if (practiceViewModels.isNotEmpty) {
-        emit(state.copyWith(
-          practices: List.of(state.practices)..addAll(practiceViewModels),
-          hasReachedMax: false,
-        ));
-      } else {
-        emit(state.copyWith(
-          hasReachedMax: true,
-        ));
-      }
+
+      emit(state.copyWith(
+        status: PracticeListStatus.loadingSuccess,
+        practices: List.of(state.practices)..addAll(practiceViewModels),
+        hasReachedMax: practiceViewModels.isEmpty,
+      ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: PracticeListStatus.failure,
+        status: PracticeListStatus.loadingFailure,
         error: error,
       ));
     }
@@ -106,13 +104,13 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
       );
 
       emit(state.copyWith(
-        status: PracticeListStatus.success,
+        status: PracticeListStatus.refreshingSuccess,
         practices: practiceViewModels,
         hasReachedMax: false,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: PracticeListStatus.failure,
+        status: PracticeListStatus.refreshingFailure,
         error: error,
       ));
     }
@@ -125,8 +123,7 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
     if (kDebugMode) print('$runtimeType:_onPracticeListSelect');
 
     emit(state.copyWith(
-      selectedPractices: List.of(state.selectedPractices)
-        ..add(event.practiceId),
+      selectedPractices: List.of(state.selectedPractices)..add(event.practice),
     ));
   }
 
@@ -136,10 +133,10 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onPracticeListUnselect');
 
-    emit((event.practiceId != null)
+    emit((event.practice != null)
         ? state.copyWith(
             selectedPractices: List.of(state.selectedPractices)
-              ..remove(event.practiceId),
+              ..remove(event.practice),
           )
         : state.copyWith(
             selectedPractices: [],
@@ -154,18 +151,18 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
     if (state.selectedPractices.isEmpty) return;
 
     try {
-      for (String practiceId in state.selectedPractices) {
-        await practiceRepository.deleteById(practiceId);
+      for (PracticeViewModel practice in state.selectedPractices) {
+        await practiceRepository.deleteById(practice.id);
         emit(state.copyWith(
+          status: PracticeListStatus.deleteSuccess,
           practices: List.of(state.practices)
-            ..removeWhere((element) => element.id == practiceId),
-          selectedPractices: List.of(state.selectedPractices)
-            ..remove(practiceId),
+            ..removeWhere((element) => element == practice),
+          selectedPractices: List.of(state.selectedPractices)..remove(practice),
         ));
       }
     } on Error catch (error) {
       emit(state.copyWith(
-        status: PracticeListStatus.failure,
+        status: PracticeListStatus.deleteFailure,
         error: error,
       ));
     }

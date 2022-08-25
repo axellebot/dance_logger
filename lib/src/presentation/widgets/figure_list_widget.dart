@@ -5,6 +5,7 @@ import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 abstract class FigureListWidgetParams implements FigureListParams {
   /// ListBloc params
@@ -101,19 +102,12 @@ class FigureListView extends StatefulWidget
             (ofArtist == null && ofDance == null && ofVideo == null));
 
   @override
-  State<StatefulWidget> createState() => _FigureListViewState();
+  State<FigureListView> createState() => _FigureListViewState();
 }
 
 class _FigureListViewState extends State<FigureListView> {
-  final _scrollController = ScrollController();
-
-  _FigureListViewState();
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   Widget build(BuildContext context) {
@@ -122,110 +116,86 @@ class _FigureListViewState extends State<FigureListView> {
       ofArtist: widget.ofArtist,
       ofDance: widget.ofDance,
       ofVideo: widget.ofVideo,
-      child: BlocBuilder<FigureListBloc, FigureListState>(
-        builder: (context, state) {
+      child: BlocListener<FigureListBloc, FigureListState>(
+        listener: (context, FigureListState state) {
           switch (state.status) {
-            case FigureListStatus.initial:
-            case FigureListStatus.loading:
-              return LoadingListView(
+            case FigureListStatus.loadingSuccess:
+              if (!state.hasReachedMax) {
+                _refreshController.loadComplete();
+              } else {
+                _refreshController.loadNoData();
+              }
+              break;
+            case FigureListStatus.loadingFailure:
+              _refreshController.loadFailed();
+              break;
+            case FigureListStatus.refreshingSuccess:
+              _refreshController.refreshCompleted(resetFooterState: true);
+              break;
+            case FigureListStatus.refreshingFailure:
+              _refreshController.refreshFailed();
+              break;
+            default:
+          }
+        },
+        child: BlocBuilder<FigureListBloc, FigureListState>(
+          builder: (context, FigureListState state) {
+            final figureListBloc = BlocProvider.of<FigureListBloc>(context);
+
+            return SmartRefresher(
+              controller: _refreshController,
+              enablePullDown: true,
+              enablePullUp: true,
+              onRefresh: () {
+                figureListBloc.add(const FigureListRefresh());
+              },
+              onLoading: () {
+                figureListBloc.add(const FigureListLoadMore());
+              },
+              scrollDirection: widget.scrollDirection,
+              child: ListView.builder(
                 scrollDirection: widget.scrollDirection,
                 physics: widget.physics,
                 padding: widget.padding,
-              );
-            case FigureListStatus.failure:
-            case FigureListStatus.success:
-            case FigureListStatus.refreshing:
-              if (state.figures.isEmpty) {
-                return EmptyListView(
-                  scrollDirection: widget.scrollDirection,
-                  physics: widget.physics,
-                  padding: widget.padding,
-                  label: 'No Figures',
-                );
-              } else {
-                return ListView.builder(
-                  scrollDirection: widget.scrollDirection,
-                  physics: widget.physics,
-                  padding: widget.padding,
-                  controller: _scrollController,
-                  itemCount: state.hasReachedMax
-                      ? state.figures.length
-                      : state.figures.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index < state.figures.length) {
-                      final FigureViewModel figure = state.figures[index];
-                      final FigureListBloc artistListBloc =
-                          BlocProvider.of<FigureListBloc>(context);
-                      switch (widget.scrollDirection) {
-                        case Axis.vertical:
-                          if (state.selectedFigures.isEmpty) {
-                            return FigureListTile(
-                              figure: figure,
-                              onLongPress: () {
-                                artistListBloc.add(
-                                  FigureListSelect(figureId: figure.id),
-                                );
-                              },
+                itemCount: state.figures.length,
+                itemBuilder: (context, index) {
+                  final FigureViewModel figure = state.figures[index];
+                  final FigureListBloc artistListBloc =
+                      BlocProvider.of<FigureListBloc>(context);
+                  switch (widget.scrollDirection) {
+                    case Axis.vertical:
+                      if (state.selectedFigures.isEmpty) {
+                        return FigureListTile(
+                          figure: figure,
+                          onLongPress: () {
+                            artistListBloc.add(
+                              FigureListSelect(figure: figure),
                             );
-                          } else {
-                            return CheckboxFigureListTile(
-                              figure: figure,
-                              value: state.selectedFigures.contains(figure.id),
-                              onChanged: (bool? value) {
-                                artistListBloc.add(
-                                  (value == true)
-                                      ? FigureListSelect(figureId: figure.id)
-                                      : FigureListUnselect(figureId: figure.id),
-                                );
-                              },
+                          },
+                        );
+                      } else {
+                        return CheckboxFigureListTile(
+                          figure: figure,
+                          value: state.selectedFigures.contains(figure),
+                          onChanged: (bool? value) {
+                            artistListBloc.add(
+                              (value == true)
+                                  ? FigureListSelect(figure: figure)
+                                  : FigureListUnselect(figure: figure),
                             );
-                          }
-                        case Axis.horizontal:
-                          return FigureCard(figure: figure);
+                          },
+                        );
                       }
-                    } else {
-                      switch (widget.scrollDirection) {
-                        case Axis.vertical:
-                          return const BottomListLoadingIndicator();
-                        case Axis.horizontal:
-                          return const RightListLoadingIndicator();
-                      }
-                    }
-                  },
-                );
-              }
-            default:
-              return ErrorListView(
-                scrollDirection: widget.scrollDirection,
-                padding: widget.padding,
-                error: NotSupportedError(message: '${state.status}'),
-              );
-          }
-        },
+                    case Axis.horizontal:
+                      return FigureCard(figure: figure);
+                  }
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
-  }
-
-  void _onScroll() {
-    if (_shouldLoadMore) {
-      context.read<FigureListBloc>().add(const FigureListLoadMore());
-    }
-  }
-
-  bool get _shouldLoadMore {
-    if (!_scrollController.hasClients) return false;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final scrollThreshold = (maxScroll * 0.9);
-    final currentScroll = _scrollController.offset;
-    return currentScroll >= scrollThreshold;
-  }
-
-  @override
-  void dispose() {
-    _scrollController
-      ..removeListener(_onScroll)
-      ..dispose();
-    super.dispose();
   }
 }
 

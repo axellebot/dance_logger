@@ -34,12 +34,12 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                         fit: BoxFit.cover,
                       ),
                       _buildGradient(),
-              ],
-            )
+                    ],
+                  )
                 : null;
             return Scaffold(
               body: RefreshIndicator(
-                edgeOffset: AppStyles.sliverAppBarExpandedHeight +
+                edgeOffset: MediaQuery.of(context).size.height * 0.3 +
                     MediaQuery.of(context).viewPadding.top,
                 onRefresh: () {
                   artistDetailBloc.add(const ArtistDetailRefresh());
@@ -52,7 +52,7 @@ class ArtistDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                       pinned: true,
                       snap: false,
                       floating: false,
-                      expandedHeight: AppStyles.sliverAppBarExpandedHeight,
+                      expandedHeight: MediaQuery.of(context).size.height * 0.3,
                       stretch: true,
                       flexibleSpace: FlexibleSpaceBar(
                         stretchModes: const [

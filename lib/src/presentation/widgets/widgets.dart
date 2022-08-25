@@ -10,6 +10,7 @@ export './entity_list_widget.dart';
 export './error_widget.dart';
 export './figure_item_widget.dart';
 export './figure_list_widget.dart';
+export './initial_circle_avatar_widget.dart';
 export './loading_widget.dart';
 export './moment_item_widget.dart';
 export './moment_list_widget.dart';

@@ -2,7 +2,17 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
 
-enum VideoListStatus { initial, loading, refreshing, success, failure }
+enum VideoListStatus {
+  initial,
+  loading,
+  loadingSuccess,
+  loadingFailure,
+  refreshing,
+  refreshingSuccess,
+  refreshingFailure,
+  deleteSuccess,
+  deleteFailure,
+}
 
 class VideoListState extends Equatable implements VideoListParams {
   final VideoListStatus status;
@@ -18,7 +28,7 @@ class VideoListState extends Equatable implements VideoListParams {
 
   final List<VideoViewModel> videos;
   final bool hasReachedMax;
-  final List<String> selectedVideos;
+  final List<VideoViewModel> selectedVideos;
   final Error? error;
 
   const VideoListState({
@@ -29,7 +39,7 @@ class VideoListState extends Equatable implements VideoListParams {
     this.ofFigure,
     this.videos = const <VideoViewModel>[],
     this.hasReachedMax = false,
-    this.selectedVideos = const <String>[],
+    this.selectedVideos = const <VideoViewModel>[],
     this.error,
   }) : assert(ofSearch == null ||
             (ofArtist == null && ofDance == null && ofFigure == null));
@@ -55,7 +65,7 @@ class VideoListState extends Equatable implements VideoListParams {
     String? ofFigure,
     List<VideoViewModel>? videos,
     bool? hasReachedMax,
-    List<String>? selectedVideos,
+    List<VideoViewModel>? selectedVideos,
     Error? error,
   }) {
     return VideoListState(

@@ -87,17 +87,9 @@ class VideoListPage extends StatelessWidget
               },
               child: const Icon(MdiIcons.plus),
             ),
-            body: RefreshIndicator(
-              onRefresh: () {
-                videoListBloc.add(const VideoListRefresh());
-                return videoListBloc.stream
-                    .firstWhere((e) => e.status != VideoListStatus.refreshing);
-              },
-              child: VideoListView(
-                videoListBloc: videoListBloc,
-                scrollDirection: Axis.vertical,
-                physics: const AlwaysScrollableScrollPhysics(),
-              ),
+            body: VideoListView(
+              videoListBloc: videoListBloc,
+              scrollDirection: Axis.vertical,
             ),
           );
         },

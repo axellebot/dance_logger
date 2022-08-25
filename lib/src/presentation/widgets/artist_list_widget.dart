@@ -5,6 +5,7 @@ import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 abstract class ArtistListWidgetParams implements ArtistListParams {
   /// ListBloc params
@@ -110,19 +111,12 @@ class ArtistListView extends StatefulWidget
             (ofDance == null && ofFigure == null && ofVideo == null));
 
   @override
-  State<StatefulWidget> createState() => _ArtistListViewState();
+  State<ArtistListView> createState() => _ArtistListViewState();
 }
 
 class _ArtistListViewState extends State<ArtistListView> {
-  final _scrollController = ScrollController();
-
-  _ArtistListViewState();
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   Widget build(BuildContext context) {
@@ -132,111 +126,86 @@ class _ArtistListViewState extends State<ArtistListView> {
       ofDance: widget.ofDance,
       ofFigure: widget.ofFigure,
       ofVideo: widget.ofVideo,
-      child: BlocBuilder<ArtistListBloc, ArtistListState>(
-        builder: (BuildContext context, ArtistListState state) {
+      child: BlocListener<ArtistListBloc, ArtistListState>(
+        listener: (context, ArtistListState state) {
           switch (state.status) {
-            case ArtistListStatus.initial:
-            case ArtistListStatus.loading:
-              return LoadingListView(
-                scrollDirection: widget.scrollDirection,
-                physics: widget.physics,
-                padding: widget.padding,
-              );
-            case ArtistListStatus.failure:
-            case ArtistListStatus.success:
-            case ArtistListStatus.refreshing:
-              if (state.artists.isEmpty) {
-                return EmptyListView(
-                  scrollDirection: widget.scrollDirection,
-                  physics: widget.physics,
-                  padding: widget.padding,
-                  label: 'No Artists',
-                );
+            case ArtistListStatus.loadingSuccess:
+              if (!state.hasReachedMax) {
+                _refreshController.loadComplete();
               } else {
-                return ListView.builder(
-                  scrollDirection: widget.scrollDirection,
-                  physics: widget.physics,
-                  padding: widget.padding,
-                  controller: _scrollController,
-                  itemCount: state.hasReachedMax
-                      ? state.artists.length
-                      : state.artists.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index < state.artists.length) {
-                      final ArtistViewModel artist = state.artists[index];
-                      final ArtistListBloc artistListBloc =
-                          BlocProvider.of<ArtistListBloc>(context);
-                      switch (widget.scrollDirection) {
-                        case Axis.vertical:
-                          if (state.selectedArtists.isEmpty) {
-                            return ArtistListTile(
-                              artist: artist,
-                              onLongPress: () {
-                                artistListBloc.add(
-                                  ArtistListSelect(artistId: artist.id),
-                                );
-                              },
-                            );
-                          } else {
-                            return CheckboxArtistListTile(
-                              artist: artist,
-                              value: state.selectedArtists.contains(artist.id),
-                              onChanged: (bool? value) {
-                                artistListBloc.add(
-                                  (value == true)
-                                      ? ArtistListSelect(artistId: artist.id)
-                                      : ArtistListUnselect(artistId: artist.id),
-                                );
-                              },
-                            );
-                          }
-                        case Axis.horizontal:
-                          return ArtistCard(artist: artist);
-                      }
-                    } else {
-                      switch (widget.scrollDirection) {
-                        case Axis.vertical:
-                          return const BottomListLoadingIndicator();
-                        case Axis.horizontal:
-                          return const RightListLoadingIndicator();
-                      }
-                    }
-                  },
-                );
+                _refreshController.loadNoData();
               }
+              break;
+            case ArtistListStatus.loadingFailure:
+              _refreshController.loadFailed();
+              break;
+            case ArtistListStatus.refreshingSuccess:
+              _refreshController.refreshCompleted(resetFooterState: true);
+              break;
+            case ArtistListStatus.refreshingFailure:
+              _refreshController.refreshFailed();
+              break;
             default:
-              return ErrorListView(
-                scrollDirection: widget.scrollDirection,
-                physics: widget.physics,
-                padding: widget.padding,
-                error: NotSupportedError(message: '${state.status}'),
-              );
           }
         },
+        child: BlocBuilder<ArtistListBloc, ArtistListState>(
+          builder: (BuildContext context, ArtistListState state) {
+            final artistListBloc = BlocProvider.of<ArtistListBloc>(context);
+
+            return SmartRefresher(
+              controller: _refreshController,
+              enablePullDown: true,
+              enablePullUp: true,
+              onRefresh: () {
+                artistListBloc.add(const ArtistListRefresh());
+              },
+              onLoading: () {
+                artistListBloc.add(const ArtistListLoadMore());
+              },
+              scrollDirection: widget.scrollDirection,
+              child: ListView.builder(
+                scrollDirection: widget.scrollDirection,
+                physics: widget.physics,
+                padding: widget.padding,
+                itemCount: state.artists.length,
+                itemBuilder: (context, index) {
+                  final ArtistViewModel artist = state.artists[index];
+                  final ArtistListBloc artistListBloc =
+                      BlocProvider.of<ArtistListBloc>(context);
+                  switch (widget.scrollDirection) {
+                    case Axis.vertical:
+                      if (state.selectedArtists.isEmpty) {
+                        return ArtistListTile(
+                          artist: artist,
+                          onLongPress: () {
+                            artistListBloc.add(
+                              ArtistListSelect(artist: artist),
+                            );
+                          },
+                        );
+                      } else {
+                        return CheckboxArtistListTile(
+                          artist: artist,
+                          value: state.selectedArtists.contains(artist),
+                          onChanged: (bool? value) {
+                            artistListBloc.add(
+                              (value == true)
+                                  ? ArtistListSelect(artist: artist)
+                                  : ArtistListUnselect(artist: artist),
+                            );
+                          },
+                        );
+                      }
+                    case Axis.horizontal:
+                      return ArtistCard(artist: artist);
+                  }
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
-  }
-
-  void _onScroll() {
-    if (_shouldLoadMore) {
-      context.read<ArtistListBloc>().add(const ArtistListLoadMore());
-    }
-  }
-
-  bool get _shouldLoadMore {
-    if (!_scrollController.hasClients) return false;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final scrollThreshold = (maxScroll * 0.9);
-    final currentScroll = _scrollController.offset;
-    return currentScroll >= scrollThreshold;
-  }
-
-  @override
-  void dispose() {
-    _scrollController
-      ..removeListener(_onScroll)
-      ..dispose();
-    super.dispose();
   }
 }
 

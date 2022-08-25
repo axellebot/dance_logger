@@ -1,4 +1,5 @@
 import 'package:dance/domain.dart';
+import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
 
 /// [FigureListEvent] that must be dispatch to [FigureListBloc]
@@ -57,34 +58,34 @@ class FigureListRefresh extends FigureListEvent {
 }
 
 class FigureListSelect extends FigureListEvent {
-  final String figureId;
+  final FigureViewModel figure;
 
   const FigureListSelect({
-    required this.figureId,
+    required this.figure,
   });
 
   @override
-  List<Object?> get props => [figureId];
+  List<Object?> get props => [figure];
 
   @override
   String toString() => 'FigureListSelect{'
-      'figureId: $figureId'
+      'figure: $figure'
       '}';
 }
 
 class FigureListUnselect extends FigureListEvent {
-  final String? figureId;
+  final FigureViewModel? figure;
 
   const FigureListUnselect({
-    this.figureId,
+    this.figure,
   });
 
   @override
-  List<Object?> get props => [figureId];
+  List<Object?> get props => [figure];
 
   @override
   String toString() => 'FigureListUnselect{'
-      'figureId: $figureId'
+      'figure: $figure'
       '}';
 }
 

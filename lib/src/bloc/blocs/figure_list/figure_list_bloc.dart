@@ -41,7 +41,7 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
       );
 
       emit(state.copyWith(
-        status: FigureListStatus.success,
+        status: FigureListStatus.loadingSuccess,
         ofArtist: event.ofArtist,
         ofDance: event.ofDance,
         ofVideo: event.ofVideo,
@@ -50,7 +50,7 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: FigureListStatus.failure,
+        status: FigureListStatus.loadingFailure,
         error: error,
       ));
     }
@@ -61,29 +61,27 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
     Emitter<FigureListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onFigureListLoadMore');
-    if (state.status != FigureListStatus.success) return;
     try {
-      final List<FigureViewModel> figureViewModels;
+      emit(state.copyWith(
+        status: FigureListStatus.loading,
+      ));
 
+      final List<FigureViewModel> figureViewModels;
       figureViewModels = await _fetchFigures(
         ofArtist: state.ofArtist,
         ofDance: state.ofDance,
         ofVideo: state.ofVideo,
         offset: state.figures.length,
       );
-      if (figureViewModels.isNotEmpty) {
-        emit(state.copyWith(
-          figures: List.of(state.figures)..addAll(figureViewModels),
-          hasReachedMax: false,
-        ));
-      } else {
-        emit(state.copyWith(
-          hasReachedMax: true,
-        ));
-      }
+
+      emit(state.copyWith(
+        status: FigureListStatus.loadingSuccess,
+        figures: List.of(state.figures)..addAll(figureViewModels),
+        hasReachedMax: figureViewModels.isEmpty,
+      ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: FigureListStatus.failure,
+        status: FigureListStatus.loadingFailure,
         error: error,
       ));
     }
@@ -107,13 +105,13 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
       );
 
       emit(state.copyWith(
-        status: FigureListStatus.success,
+        status: FigureListStatus.refreshingSuccess,
         figures: figureViewModels,
         hasReachedMax: false,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: FigureListStatus.failure,
+        status: FigureListStatus.refreshingFailure,
         error: error,
       ));
     }
@@ -126,7 +124,7 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
     if (kDebugMode) print('$runtimeType:_onFigureListSelect');
 
     emit(state.copyWith(
-      selectedFigures: List.of(state.selectedFigures)..add(event.figureId),
+      selectedFigures: List.of(state.selectedFigures)..add(event.figure),
     ));
   }
 
@@ -136,10 +134,10 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onFigureListUnselect');
 
-    emit((event.figureId != null)
+    emit((event.figure != null)
         ? state.copyWith(
             selectedFigures: List.of(state.selectedFigures)
-              ..remove(event.figureId),
+              ..remove(event.figure),
           )
         : state.copyWith(
             selectedFigures: [],
@@ -154,17 +152,18 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
     if (state.selectedFigures.isEmpty) return;
 
     try {
-      for (String figureId in state.selectedFigures) {
-        await figureRepository.deleteById(figureId);
+      for (FigureViewModel figure in state.selectedFigures) {
+        await figureRepository.deleteById(figure.id);
         emit(state.copyWith(
+          status: FigureListStatus.deleteSuccess,
           figures: List.of(state.figures)
-            ..removeWhere((element) => element.id == figureId),
-          selectedFigures: List.of(state.selectedFigures)..remove(figureId),
+            ..removeWhere((element) => element == figure),
+          selectedFigures: List.of(state.selectedFigures)..remove(figure),
         ));
       }
     } on Error catch (error) {
       emit(state.copyWith(
-        status: FigureListStatus.failure,
+        status: FigureListStatus.deleteFailure,
         error: error,
       ));
     }

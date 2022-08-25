@@ -1,5 +1,6 @@
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
+import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
 
 /// [MomentListEvent] that must be dispatch to [MomentListBloc]
@@ -58,34 +59,34 @@ class MomentListRefresh extends MomentListEvent {
 }
 
 class MomentListSelect extends MomentListEvent {
-  final String momentId;
+  final MomentViewModel moment;
 
   const MomentListSelect({
-    required this.momentId,
+    required this.moment,
   });
 
   @override
-  List<Object?> get props => [momentId];
+  List<Object?> get props => [moment];
 
   @override
   String toString() => 'MomentListSelect{'
-      'momentId: $momentId'
+      'moment: $moment'
       '}';
 }
 
 class MomentListUnselect extends MomentListEvent {
-  final String? momentId;
+  final MomentViewModel? moment;
 
   const MomentListUnselect({
-    this.momentId,
+    this.moment,
   });
 
   @override
-  List<Object?> get props => [momentId];
+  List<Object?> get props => [moment];
 
   @override
   String toString() => 'MomentListUnselect{'
-      'momentId: $momentId'
+      'moment: $moment'
       '}';
 }
 

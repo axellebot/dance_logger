@@ -40,7 +40,7 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
         offset: 0,
       );
       emit(MomentListState(
-        status: MomentListStatus.success,
+        status: MomentListStatus.loadingSuccess,
         ofArtist: event.ofArtist,
         ofFigure: event.ofFigure,
         ofVideo: event.ofVideo,
@@ -49,7 +49,7 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: MomentListStatus.failure,
+        status: MomentListStatus.loadingFailure,
         error: error,
       ));
     }
@@ -60,8 +60,11 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     Emitter<MomentListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onMomentListLoadMore');
-    if (state.status != MomentListStatus.success) return;
     try {
+      emit(state.copyWith(
+        status: MomentListStatus.loading,
+      ));
+
       final List<MomentViewModel> momentViewModels;
       momentViewModels = await _fetchMoments(
         ofArtist: state.ofArtist,
@@ -69,19 +72,15 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
         ofVideo: state.ofVideo,
         offset: state.moments.length,
       );
-      if (momentViewModels.isNotEmpty) {
-        emit(state.copyWith(
-          moments: List.of(state.moments)..addAll(momentViewModels),
-          hasReachedMax: false,
-        ));
-      } else {
-        emit(state.copyWith(
-          hasReachedMax: true,
-        ));
-      }
+
+      emit(state.copyWith(
+        status: MomentListStatus.loadingSuccess,
+        moments: List.of(state.moments)..addAll(momentViewModels),
+        hasReachedMax: momentViewModels.isEmpty,
+      ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: MomentListStatus.failure,
+        status: MomentListStatus.loadingFailure,
         error: error,
       ));
     }
@@ -105,13 +104,13 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
       );
 
       emit(state.copyWith(
-        status: MomentListStatus.success,
+        status: MomentListStatus.refreshingSuccess,
         moments: momentViewModels,
         hasReachedMax: false,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: MomentListStatus.failure,
+        status: MomentListStatus.refreshingFailure,
         error: error,
       ));
     }
@@ -124,7 +123,7 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     if (kDebugMode) print('$runtimeType:_onMomentListSelect');
 
     emit(state.copyWith(
-      selectedMoments: List.of(state.selectedMoments)..add(event.momentId),
+      selectedMoments: List.of(state.selectedMoments)..add(event.moment),
     ));
   }
 
@@ -134,10 +133,10 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onMomentListUnselect');
 
-    emit((event.momentId != null)
+    emit((event.moment != null)
         ? state.copyWith(
             selectedMoments: List.of(state.selectedMoments)
-              ..remove(event.momentId),
+              ..remove(event.moment),
           )
         : state.copyWith(
             selectedMoments: [],
@@ -152,17 +151,18 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     if (state.selectedMoments.isEmpty) return;
 
     try {
-      for (String momentId in state.selectedMoments) {
-        await momentRepository.deleteById(momentId);
+      for (MomentViewModel moment in state.selectedMoments) {
+        await momentRepository.deleteById(moment.id);
         emit(state.copyWith(
+          status: MomentListStatus.deleteSuccess,
           moments: List.of(state.moments)
-            ..removeWhere((element) => element.id == momentId),
-          selectedMoments: List.of(state.selectedMoments)..remove(momentId),
+            ..removeWhere((element) => element == moment),
+          selectedMoments: List.of(state.selectedMoments)..remove(moment),
         ));
       }
     } on Error catch (error) {
       emit(state.copyWith(
-        status: MomentListStatus.failure,
+        status: MomentListStatus.deleteFailure,
         error: error,
       ));
     }

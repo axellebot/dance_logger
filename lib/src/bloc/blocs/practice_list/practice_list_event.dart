@@ -1,4 +1,5 @@
 import 'package:dance/domain.dart';
+import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
 
 /// [PracticeListEvent] that must be dispatch to [PracticeListBloc]
@@ -61,34 +62,34 @@ class PracticeListRefresh extends PracticeListEvent {
 }
 
 class PracticeListSelect extends PracticeListEvent {
-  final String practiceId;
+  final PracticeViewModel practice;
 
   const PracticeListSelect({
-    required this.practiceId,
+    required this.practice,
   });
 
   @override
-  List<Object?> get props => [practiceId];
+  List<Object?> get props => [practice];
 
   @override
   String toString() => 'PracticeListSelect{'
-      'practiceId: $practiceId'
+      'practiceId: $practice'
       '}';
 }
 
 class PracticeListUnselect extends PracticeListEvent {
-  final String? practiceId;
+  final PracticeViewModel? practice;
 
   const PracticeListUnselect({
-    this.practiceId,
+    this.practice,
   });
 
   @override
-  List<Object?> get props => [practiceId];
+  List<Object?> get props => [practice];
 
   @override
   String toString() => 'PracticeListUnselect{'
-      'practiceId: $practiceId'
+      'practiceId: $practice'
       '}';
 }
 

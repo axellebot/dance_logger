@@ -42,7 +42,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
       );
 
       emit(state.copyWith(
-        status: ArtistListStatus.success,
+        status: ArtistListStatus.loadingSuccess,
         ofSearch: state.ofSearch,
         ofDance: event.ofDance,
         ofFigure: event.ofFigure,
@@ -52,7 +52,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: ArtistListStatus.failure,
+        status: ArtistListStatus.loadingFailure,
         error: error,
       ));
     }
@@ -63,8 +63,11 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
     Emitter<ArtistListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onArtistListLoadMore');
-    if (state.status != ArtistListStatus.success) return;
     try {
+      emit(state.copyWith(
+        status: ArtistListStatus.loading,
+      ));
+
       final List<ArtistViewModel> artistViewModels;
       artistViewModels = await _fetchArtists(
         ofSearch: state.ofSearch,
@@ -73,19 +76,15 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
         ofVideo: state.ofVideo,
         offset: state.artists.length,
       );
-      if (artistViewModels.isNotEmpty) {
-        emit(state.copyWith(
-          artists: List.of(state.artists)..addAll(artistViewModels),
-          hasReachedMax: false,
-        ));
-      } else {
-        emit(state.copyWith(
-          hasReachedMax: true,
-        ));
-      }
+
+      emit(state.copyWith(
+        status: ArtistListStatus.loadingSuccess,
+        artists: List.of(state.artists)..addAll(artistViewModels),
+        hasReachedMax: artistViewModels.isEmpty,
+      ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: ArtistListStatus.failure,
+        status: ArtistListStatus.loadingFailure,
         error: error,
       ));
     }
@@ -110,13 +109,13 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
       );
 
       emit(state.copyWith(
-        status: ArtistListStatus.success,
+        status: ArtistListStatus.refreshingSuccess,
         artists: artistViewModels,
         hasReachedMax: false,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: ArtistListStatus.failure,
+        status: ArtistListStatus.refreshingFailure,
         error: error,
       ));
     }
@@ -129,7 +128,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
     if (kDebugMode) print('$runtimeType:_onArtistListSelect');
 
     emit(state.copyWith(
-      selectedArtists: List.of(state.selectedArtists)..add(event.artistId),
+      selectedArtists: List.of(state.selectedArtists)..add(event.artist),
     ));
   }
 
@@ -139,10 +138,10 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onArtistListUnselect');
 
-    emit((event.artistId != null)
+    emit((event.artist != null)
         ? state.copyWith(
             selectedArtists: List.of(state.selectedArtists)
-              ..remove(event.artistId),
+              ..remove(event.artist),
           )
         : state.copyWith(
             selectedArtists: [],
@@ -157,17 +156,18 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
     if (state.selectedArtists.isEmpty) return;
 
     try {
-      for (String artistId in state.selectedArtists) {
-        await artistRepository.deleteById(artistId);
+      for (ArtistViewModel artist in state.selectedArtists) {
+        await artistRepository.deleteById(artist.id);
         emit(state.copyWith(
+          status: ArtistListStatus.deleteSuccess,
           artists: List.of(state.artists)
-            ..removeWhere((element) => element.id == artistId),
-          selectedArtists: List.of(state.selectedArtists)..remove(artistId),
+            ..removeWhere((element) => element == artist),
+          selectedArtists: List.of(state.selectedArtists)..remove(artist),
         ));
       }
     } on Error catch (error) {
       emit(state.copyWith(
-        status: ArtistListStatus.failure,
+        status: ArtistListStatus.deleteFailure,
         error: error,
       ));
     }

@@ -5,6 +5,7 @@ import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 abstract class DanceListWidgetParams implements DanceListParams {
   /// ListBloc params
@@ -103,19 +104,12 @@ class DanceListView extends StatefulWidget
             (ofArtist == null && ofVideo == null));
 
   @override
-  State<StatefulWidget> createState() => _DanceListViewState();
+  State<DanceListView> createState() => _DanceListViewState();
 }
 
 class _DanceListViewState extends State<DanceListView> {
-  final _scrollController = ScrollController();
-
-  _DanceListViewState();
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   Widget build(BuildContext context) {
@@ -124,111 +118,86 @@ class _DanceListViewState extends State<DanceListView> {
       ofSearch: widget.ofSearch,
       ofArtist: widget.ofArtist,
       ofVideo: widget.ofVideo,
-      child: BlocBuilder<DanceListBloc, DanceListState>(
-        builder: (context, state) {
+      child: BlocListener<DanceListBloc, DanceListState>(
+        listener: (context, DanceListState state) {
           switch (state.status) {
-            case DanceListStatus.initial:
-            case DanceListStatus.loading:
-              return LoadingListView(
-                scrollDirection: widget.scrollDirection,
-                physics: widget.physics,
-                padding: widget.padding,
-              );
-            case DanceListStatus.failure:
-            case DanceListStatus.success:
-            case DanceListStatus.refreshing:
-              if (state.dances.isEmpty) {
-                return EmptyListView(
-                  scrollDirection: widget.scrollDirection,
-                  physics: widget.physics,
-                  padding: widget.padding,
-                  label: 'No Dances',
-                );
+            case DanceListStatus.loadingSuccess:
+              if (!state.hasReachedMax) {
+                _refreshController.loadComplete();
               } else {
-                return ListView.builder(
-                  scrollDirection: widget.scrollDirection,
-                  controller: _scrollController,
-                  physics: widget.physics,
-                  padding: widget.padding,
-                  itemCount: state.hasReachedMax
-                      ? state.dances.length
-                      : state.dances.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index < state.dances.length) {
-                      final DanceViewModel dance = state.dances[index];
-                      final DanceListBloc danceListBloc =
-                          BlocProvider.of<DanceListBloc>(context);
-                      switch (widget.scrollDirection) {
-                        case Axis.vertical:
-                          if (state.selectedDances.isEmpty) {
-                            return DanceListTile(
-                              dance: dance,
-                              onLongPress: () {
-                                danceListBloc.add(
-                                  DanceListSelect(danceId: dance.id),
-                                );
-                              },
-                            );
-                          } else {
-                            return CheckboxDanceListTile(
-                              dance: dance,
-                              value: state.selectedDances.contains(dance.id),
-                              onChanged: (bool? value) {
-                                danceListBloc.add(
-                                  (value == true)
-                                      ? DanceListSelect(danceId: dance.id)
-                                      : DanceListUnselect(danceId: dance.id),
-                                );
-                              },
-                            );
-                          }
-                        case Axis.horizontal:
-                          return DanceCard(dance: dance);
-                      }
-                    } else {
-                      switch (widget.scrollDirection) {
-                        case Axis.vertical:
-                          return const BottomListLoadingIndicator();
-                        case Axis.horizontal:
-                          return const RightListLoadingIndicator();
-                      }
-                    }
-                  },
-                );
+                _refreshController.loadNoData();
               }
+              break;
+            case DanceListStatus.loadingFailure:
+              _refreshController.loadFailed();
+              break;
+            case DanceListStatus.refreshingSuccess:
+              _refreshController.refreshCompleted(resetFooterState: true);
+              break;
+            case DanceListStatus.refreshingFailure:
+              _refreshController.refreshFailed();
+              break;
             default:
-              return ErrorListView(
-                scrollDirection: widget.scrollDirection,
-                physics: widget.physics,
-                padding: widget.padding,
-                error: NotSupportedError(message: '${state.status}'),
-              );
           }
         },
+        child: BlocBuilder<DanceListBloc, DanceListState>(
+          builder: (context, state) {
+            final danceListBloc = BlocProvider.of<DanceListBloc>(context);
+
+            return SmartRefresher(
+              controller: _refreshController,
+              enablePullDown: true,
+              enablePullUp: true,
+              onRefresh: () {
+                danceListBloc.add(const DanceListRefresh());
+              },
+              onLoading: () {
+                danceListBloc.add(const DanceListLoadMore());
+              },
+              scrollDirection: widget.scrollDirection,
+              child: ListView.builder(
+                scrollDirection: widget.scrollDirection,
+                physics: widget.physics,
+                padding: widget.padding,
+                itemCount: state.dances.length,
+                itemBuilder: (context, index) {
+                  final DanceViewModel dance = state.dances[index];
+                  final DanceListBloc danceListBloc =
+                      BlocProvider.of<DanceListBloc>(context);
+                  switch (widget.scrollDirection) {
+                    case Axis.vertical:
+                      if (state.selectedDances.isEmpty) {
+                        return DanceListTile(
+                          dance: dance,
+                          onLongPress: () {
+                            danceListBloc.add(
+                              DanceListSelect(dance: dance),
+                            );
+                          },
+                        );
+                      } else {
+                        return CheckboxDanceListTile(
+                          dance: dance,
+                          value: state.selectedDances.contains(dance),
+                          onChanged: (bool? value) {
+                            danceListBloc.add(
+                              (value == true)
+                                  ? DanceListSelect(dance: dance)
+                                  : DanceListUnselect(dance: dance),
+                            );
+                          },
+                        );
+                      }
+                    case Axis.horizontal:
+                      return DanceCard(dance: dance);
+                  }
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
-  }
-
-  void _onScroll() {
-    if (_shouldLoadMore) {
-      context.read<DanceListBloc>().add(const DanceListLoadMore());
-    }
-  }
-
-  bool get _shouldLoadMore {
-    if (!_scrollController.hasClients) return false;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final scrollThreshold = (maxScroll * 0.9);
-    final currentScroll = _scrollController.offset;
-    return currentScroll >= scrollThreshold;
-  }
-
-  @override
-  void dispose() {
-    _scrollController
-      ..removeListener(_onScroll)
-      ..dispose();
-    super.dispose();
   }
 }
 

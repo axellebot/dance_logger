@@ -2,7 +2,17 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
 
-enum FigureListStatus { initial, loading, refreshing, success, failure }
+enum FigureListStatus {
+  initial,
+  loading,
+  loadingSuccess,
+  loadingFailure,
+  refreshing,
+  refreshingSuccess,
+  refreshingFailure,
+  deleteSuccess,
+  deleteFailure,
+}
 
 class FigureListState extends Equatable implements FigureListParams {
   final FigureListStatus status;
@@ -16,7 +26,7 @@ class FigureListState extends Equatable implements FigureListParams {
 
   final List<FigureViewModel> figures;
   final bool hasReachedMax;
-  final List<String> selectedFigures;
+  final List<FigureViewModel> selectedFigures;
   final Error? error;
 
   const FigureListState({
@@ -26,7 +36,7 @@ class FigureListState extends Equatable implements FigureListParams {
     this.ofVideo,
     this.figures = const <FigureViewModel>[],
     this.hasReachedMax = false,
-    this.selectedFigures = const <String>[],
+    this.selectedFigures = const <FigureViewModel>[],
     this.error,
   });
 
@@ -49,7 +59,7 @@ class FigureListState extends Equatable implements FigureListParams {
     String? ofVideo,
     List<FigureViewModel>? figures,
     bool? hasReachedMax,
-    List<String>? selectedFigures,
+    List<FigureViewModel>? selectedFigures,
     Error? error,
   }) {
     return FigureListState(

@@ -41,7 +41,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
       );
 
       emit(state.copyWith(
-        status: DanceListStatus.success,
+        status: DanceListStatus.loadingSuccess,
         ofSearch: event.ofSearch,
         ofArtist: event.ofArtist,
         ofVideo: event.ofVideo,
@@ -50,7 +50,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: DanceListStatus.failure,
+        status: DanceListStatus.loadingFailure,
         error: error,
       ));
     }
@@ -61,8 +61,11 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     Emitter<DanceListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onDanceListLoadMore');
-    if (state.status != DanceListStatus.success) return;
     try {
+      emit(state.copyWith(
+        status: DanceListStatus.loading,
+      ));
+
       final List<DanceViewModel> danceViewModels;
       danceViewModels = await _fetchDances(
         ofSearch: state.ofSearch,
@@ -70,19 +73,15 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
         ofVideo: state.ofVideo,
         offset: state.dances.length,
       );
-      if (danceViewModels.isNotEmpty) {
-        emit(state.copyWith(
-          dances: List.of(state.dances)..addAll(danceViewModels),
-          hasReachedMax: false,
-        ));
-      } else {
-        emit(state.copyWith(
-          hasReachedMax: true,
-        ));
-      }
+
+      emit(state.copyWith(
+        status: DanceListStatus.loadingSuccess,
+        dances: List.of(state.dances)..addAll(danceViewModels),
+        hasReachedMax: danceViewModels.isEmpty,
+      ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: DanceListStatus.failure,
+        status: DanceListStatus.loadingFailure,
         error: error,
       ));
     }
@@ -106,13 +105,13 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
       );
 
       emit(state.copyWith(
-        status: DanceListStatus.success,
+        status: DanceListStatus.refreshingSuccess,
         dances: danceViewModels,
         hasReachedMax: false,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: DanceListStatus.failure,
+        status: DanceListStatus.refreshingFailure,
         error: error,
       ));
     }
@@ -125,7 +124,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     if (kDebugMode) print('$runtimeType:_onDanceListSelect');
 
     emit(state.copyWith(
-      selectedDances: List.of(state.selectedDances)..add(event.danceId),
+      selectedDances: List.of(state.selectedDances)..add(event.dance),
     ));
   }
 
@@ -135,10 +134,9 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onDanceListUnselect');
 
-    emit((event.danceId != null)
+    emit((event.dance != null)
         ? state.copyWith(
-            selectedDances: List.of(state.selectedDances)
-              ..remove(event.danceId),
+            selectedDances: List.of(state.selectedDances)..remove(event.dance),
           )
         : state.copyWith(
             selectedDances: [],
@@ -153,17 +151,18 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     if (state.selectedDances.isEmpty) return;
 
     try {
-      for (String danceId in state.selectedDances) {
-        await danceRepository.deleteById(danceId);
+      for (DanceViewModel dance in state.selectedDances) {
+        await danceRepository.deleteById(dance.id);
         emit(state.copyWith(
+          status: DanceListStatus.deleteFailure,
           dances: List.of(state.dances)
-            ..removeWhere((element) => element.id == danceId),
-          selectedDances: List.of(state.selectedDances)..remove(danceId),
+            ..removeWhere((element) => element == dance),
+          selectedDances: List.of(state.selectedDances)..remove(dance),
         ));
       }
     } on Error catch (error) {
       emit(state.copyWith(
-        status: DanceListStatus.failure,
+        status: DanceListStatus.deleteFailure,
         error: error,
       ));
     }

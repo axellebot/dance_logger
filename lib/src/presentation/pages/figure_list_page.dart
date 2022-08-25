@@ -77,17 +77,9 @@ class FigureListPage extends StatelessWidget
               },
               child: const Icon(MdiIcons.plus),
             ),
-            body: RefreshIndicator(
-              onRefresh: () {
-                figureListBloc.add(const FigureListRefresh());
-                return figureListBloc.stream
-                    .firstWhere((e) => e.status != FigureListStatus.refreshing);
-              },
-              child: FigureListView(
-                figureListBloc: figureListBloc,
-                scrollDirection: Axis.vertical,
-                physics: const AlwaysScrollableScrollPhysics(),
-              ),
+            body: FigureListView(
+              figureListBloc: figureListBloc,
+              scrollDirection: Axis.vertical,
             ),
           );
         },

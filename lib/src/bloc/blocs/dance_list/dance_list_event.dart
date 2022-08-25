@@ -1,4 +1,5 @@
 import 'package:dance/domain.dart';
+import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
 
 /// [DanceListEvent] that must be dispatch to [DanceListBloc]
@@ -57,34 +58,34 @@ class DanceListRefresh extends DanceListEvent {
 }
 
 class DanceListSelect extends DanceListEvent {
-  final String danceId;
+  final DanceViewModel dance;
 
   const DanceListSelect({
-    required this.danceId,
+    required this.dance,
   });
 
   @override
-  List<Object?> get props => [danceId];
+  List<Object?> get props => [dance];
 
   @override
   String toString() => 'DanceListSelect{'
-      'danceId: $danceId'
+      'danceId: $dance'
       '}';
 }
 
 class DanceListUnselect extends DanceListEvent {
-  final String? danceId;
+  final DanceViewModel? dance;
 
   const DanceListUnselect({
-    this.danceId,
+    this.dance,
   });
 
   @override
-  List<Object?> get props => [danceId];
+  List<Object?> get props => [dance];
 
   @override
   String toString() => 'DanceListUnselect{'
-      'danceId: $danceId'
+      'danceId: $dance'
       '}';
 }
 

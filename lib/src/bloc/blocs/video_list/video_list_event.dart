@@ -1,4 +1,5 @@
 import 'package:dance/domain.dart';
+import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
 
 /// [VideoListEvent] that must be dispatch to [VideoListBloc]
@@ -62,34 +63,34 @@ class VideoListRefresh extends VideoListEvent {
 }
 
 class VideoListSelect extends VideoListEvent {
-  final String videoId;
+  final VideoViewModel video;
 
   const VideoListSelect({
-    required this.videoId,
+    required this.video,
   });
 
   @override
-  List<Object?> get props => [videoId];
+  List<Object?> get props => [video];
 
   @override
   String toString() => 'VideoListSelect{'
-      'videoId: $videoId'
+      'video: $video'
       '}';
 }
 
 class VideoListUnselect extends VideoListEvent {
-  final String? videoId;
+  final VideoViewModel? video;
 
   const VideoListUnselect({
-    this.videoId,
+    this.video,
   });
 
   @override
-  List<Object?> get props => [videoId];
+  List<Object?> get props => [video];
 
   @override
   String toString() => 'VideoListUnselect{'
-      'videoId: $videoId'
+      'video: $video'
       '}';
 }
 

@@ -2,7 +2,17 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
 
-enum MomentListStatus { initial, loading, refreshing, success, failure }
+enum MomentListStatus {
+  initial,
+  loading,
+  loadingSuccess,
+  loadingFailure,
+  refreshing,
+  refreshingSuccess,
+  refreshingFailure,
+  deleteSuccess,
+  deleteFailure,
+}
 
 class MomentListState extends Equatable implements MomentListParams {
   final MomentListStatus status;
@@ -16,7 +26,7 @@ class MomentListState extends Equatable implements MomentListParams {
 
   final List<MomentViewModel> moments;
   final bool hasReachedMax;
-  final List<String> selectedMoments;
+  final List<MomentViewModel> selectedMoments;
   final Error? error;
 
   const MomentListState({
@@ -26,7 +36,7 @@ class MomentListState extends Equatable implements MomentListParams {
     this.ofVideo,
     this.moments = const <MomentViewModel>[],
     this.hasReachedMax = false,
-    this.selectedMoments = const <String>[],
+    this.selectedMoments = const <MomentViewModel>[],
     this.error,
   });
 
@@ -49,7 +59,7 @@ class MomentListState extends Equatable implements MomentListParams {
     String? ofVideo,
     List<MomentViewModel>? moments,
     bool? hasReachedMax,
-    List<String>? selectedMoments,
+    List<MomentViewModel>? selectedMoments,
     Error? error,
   }) {
     return MomentListState(
