@@ -219,6 +219,7 @@ class DanceDatabaseManager
       'artists',
       where: 'artist_id = ?',
       whereArgs: [artistId],
+      orderBy: 'name',
     );
     if (results.isEmpty) throw DataNotFoundError('Artist');
     ArtistDataModel artist = ArtistDataModel.fromJson(results.first);
@@ -246,6 +247,7 @@ class DanceDatabaseManager
 
     List results = await db.query(
       'artists',
+      orderBy: 'name',
       limit: offset.limit,
       offset: offset.offset,
     );
@@ -266,6 +268,7 @@ class DanceDatabaseManager
       SELECT DISTINCT a.*
       FROM artists a
       WHERE a.name LIKE ?
+      ORDER BY a.name
       LIMIT ?
       OFFSET ?
     ''',
@@ -298,6 +301,7 @@ class DanceDatabaseManager
             INNER JOIN figures f
             ON m.figure_id = f.figure_id
       WHERE f.dance_id=?
+      ORDER BY a.name
       LIMIT ?
       OFFSET ?
     ''',
@@ -328,6 +332,7 @@ class DanceDatabaseManager
           INNER JOIN moments m 
           ON m_a.moment_id = m.moment_id
       WHERE m.figure_id = ?
+      ORDER BY a.name
       LIMIT ?
       OFFSET ?
     ''',
@@ -356,6 +361,7 @@ class DanceDatabaseManager
         INNER JOIN moments_artists m_a
         ON a.artist_id = m_a.artist_id
       WHERE m_a.moment_id = ?
+      ORDER BY a.name
       LIMIT ?
       OFFSET ?
     ''',
@@ -386,6 +392,7 @@ class DanceDatabaseManager
           INNER JOIN moments m 
           ON m_a.moment_id=m.moment_id
       WHERE m.video_id = ?
+      ORDER BY a.name
       LIMIT ?
       OFFSET ?
     ''',
@@ -443,6 +450,7 @@ class DanceDatabaseManager
       'dances',
       where: 'dance_id = ?',
       whereArgs: [danceId],
+      orderBy: 'name',
     );
     if (results.isEmpty) throw DataNotFoundError('Dance');
     DanceDataModel dance = DanceDataModel.fromJson(results.first);
@@ -470,6 +478,7 @@ class DanceDatabaseManager
 
     List results = await db.query(
       'dances',
+      orderBy: 'name',
       limit: offset.limit,
       offset: offset.offset,
     );
@@ -490,6 +499,7 @@ class DanceDatabaseManager
       SELECT DISTINCT d.*
       FROM dances d
       WHERE d.name LIKE ?
+      ORDER BY d.name
       LIMIT ?
       OFFSET ?
     ''',
@@ -522,6 +532,7 @@ class DanceDatabaseManager
             INNER JOIN moments_artists m_a
             ON m.moment_id = m_a.moment_id
       WHERE m_a.artist_id = ?
+      ORDER BY d.name
       LIMIT ?
       OFFSET ?
     ''',
@@ -552,6 +563,7 @@ class DanceDatabaseManager
           INNER JOIN moments m
           ON f.figure_id = m.figure_id 
       WHERE m.video_id = ?
+      ORDER BY d.name
       LIMIT ?
       OFFSET ?
     ''',
@@ -608,6 +620,7 @@ class DanceDatabaseManager
       'figures',
       where: 'figure_id = ?',
       whereArgs: [figureId],
+      orderBy: 'name',
     );
     if (results.isEmpty) throw DataNotFoundError('Figure');
     FigureDataModel figure = FigureDataModel.fromJson(results.first);
@@ -635,6 +648,7 @@ class DanceDatabaseManager
 
     List results = await db.query(
       'figures',
+      orderBy: 'name',
       limit: offset.limit,
       offset: offset.offset,
     );
@@ -659,6 +673,7 @@ class DanceDatabaseManager
           INNER JOIN moments_artists m_a
           ON m.moment_id = m_a.moment_id
       WHERE m_a.artist_id = ?
+      ORDER BY f.name
       LIMIT ?
       OFFSET ?
     ''',
@@ -685,6 +700,7 @@ class DanceDatabaseManager
       SELECT DISTINCT f.*
       FROM figures f
       WHERE f.dance_id = ?
+      ORDER BY f.name
       LIMIT ?
       OFFSET ?
     ''',
@@ -713,6 +729,7 @@ class DanceDatabaseManager
         INNER JOIN moments m
         ON f.figure_id = m.figure_id
       WHERE m.video_id = ?
+      ORDER BY f.name
       LIMIT ?
       OFFSET ?
     ''',
@@ -769,6 +786,7 @@ class DanceDatabaseManager
       'moments',
       where: 'moment_id = ?',
       whereArgs: [momentId],
+      orderBy: 'start_time',
     );
     if (results.isEmpty) throw DataNotFoundError('Moment');
     MomentDataModel moment = MomentDataModel.fromJson(results.first);
@@ -796,6 +814,7 @@ class DanceDatabaseManager
 
     List results = await db.query(
       'moments',
+      orderBy: 'start_time',
       limit: offset.limit,
       offset: offset.offset,
     );
@@ -817,6 +836,7 @@ class DanceDatabaseManager
       SELECT DISTINCT m.*
       FROM moments m
       WHERE m.figure_id = ?
+      ORDER BY m.start_time
       LIMIT ?
       OFFSET ?
     ''',
@@ -843,6 +863,7 @@ class DanceDatabaseManager
       SELECT DISTINCT m.*
       FROM moments m
       WHERE m.video_id = ?
+      ORDER BY m.start_time
       LIMIT ?
       OFFSET ?
     ''',
@@ -872,6 +893,7 @@ class DanceDatabaseManager
         INNER JOIN moments_artists m_a
         ON m.moment_id = m_a.moment_id
       WHERE m_a.artist_id = ?
+      ORDER BY m.start_time
       LIMIT ?
       OFFSET ?
     ''',
@@ -929,6 +951,7 @@ class DanceDatabaseManager
       'practices',
       where: 'practice_id = ?',
       whereArgs: [practiceId],
+      orderBy: 'date',
     );
     if (results.isEmpty) throw DataNotFoundError('Figure');
     PracticeDataModel practice = PracticeDataModel.fromJson(results.first);
@@ -956,6 +979,7 @@ class DanceDatabaseManager
 
     List results = await db.query(
       'practices',
+      orderBy: 'date',
       limit: offset.limit,
       offset: offset.offset,
     );
@@ -1023,6 +1047,7 @@ class DanceDatabaseManager
       'videos',
       where: 'video_id = ?',
       whereArgs: [videoId],
+      orderBy: 'name',
     );
     if (results.isEmpty) throw DataNotFoundError('Video');
     VideoDataModel video = VideoDataModel.fromJson(results.first);
@@ -1049,6 +1074,7 @@ class DanceDatabaseManager
     if (kDebugMode) print('$runtimeType:getVideos()');
     List results = await db.query(
       'videos',
+      orderBy: 'name',
       limit: offset.limit,
       offset: offset.offset,
     );
@@ -1069,6 +1095,7 @@ class DanceDatabaseManager
       SELECT DISTINCT v.*
       FROM videos v
       WHERE v.name LIKE ?
+      ORDER BY v.name
       LIMIT ?
       OFFSET ?
     ''',
@@ -1100,6 +1127,7 @@ class DanceDatabaseManager
           INNER JOIN moments_artists m_a
           ON m.moment_id = m_a.moment_id
       WHERE m_a.artist_id = ?
+      ORDER BY v.name
       LIMIT ?
       OFFSET ?
     ''',
@@ -1131,6 +1159,7 @@ class DanceDatabaseManager
           INNER JOIN figures f
           ON f.figure_id = m.figure_id
       WHERE f.dance_id = ?
+      ORDER BY v.name
       LIMIT ?
       OFFSET ?
     ''',
@@ -1160,6 +1189,7 @@ class DanceDatabaseManager
         INNER JOIN moments m
         ON v.video_id = m.video_id
       WHERE m.figure_id = ?
+      ORDER BY v.name
       LIMIT ?
       OFFSET ?
     ''',
