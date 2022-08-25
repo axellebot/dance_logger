@@ -72,12 +72,13 @@ class PracticeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: AppStyles.cardHeight,
-      width: AppStyles.cardWidth,
-      child: Card(
-        elevation: AppStyles.cardElevation,
-        child: GestureDetector(
+    return Card(
+      elevation: AppStyles.cardElevation,
+      clipBehavior: Clip.antiAlias,
+      child: SizedBox(
+        width: AppStyles.cardWidth,
+        height: AppStyles.cardHeight,
+        child: InkWell(
           onTap: () {
             AutoRouter.of(context).push(
               PracticeDetailsRoute(practiceId: practice.id),

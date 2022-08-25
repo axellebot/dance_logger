@@ -259,6 +259,7 @@ class MomentsSection extends StatelessWidget
             mainAxisSize: MainAxisSize.min,
             children: [
               SectionTile(
+                leading: const Icon(Icons.timer),
                 title: Text(label ?? 'Moments'),
                 onTap: onSectionTap,
               ),

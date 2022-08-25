@@ -88,13 +88,13 @@ class VideoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: AppStyles.cardWidth,
-      height: AppStyles.cardHeight,
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        elevation: AppStyles.cardElevation,
-        child: GestureDetector(
+    return Card(
+      elevation: AppStyles.cardElevation,
+      clipBehavior: Clip.antiAlias,
+      child: SizedBox(
+        width: AppStyles.cardWidth,
+        height: AppStyles.cardHeight,
+        child: InkWell(
           onTap: () {
             AutoRouter.of(context).push(
               VideoDetailsRoute(videoId: video.id),

@@ -245,6 +245,7 @@ class FiguresSection extends StatelessWidget
             mainAxisSize: MainAxisSize.min,
             children: [
               SectionTile(
+                leading: const Icon(Icons.sports_gymnastics),
                 title: Text(label ?? "Figures"),
                 onTap: onSectionTap ??
                     () {

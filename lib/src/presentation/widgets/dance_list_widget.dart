@@ -4,6 +4,7 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -247,6 +248,7 @@ class DancesSection extends StatelessWidget
           return Column(
             children: [
               SectionTile(
+                leading: const Icon(MdiIcons.shoeBallet),
                 title: Text(label ?? 'Dances'),
                 onTap: onSectionTap ??
                     () {

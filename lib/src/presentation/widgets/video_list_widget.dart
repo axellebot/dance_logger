@@ -259,6 +259,7 @@ class VideosSection extends StatelessWidget
           return Column(
             children: [
               SectionTile(
+                leading: const Icon(Icons.movie),
                 title: Text(label ?? 'Videos'),
                 onTap: onSectionTap ??
                     () {

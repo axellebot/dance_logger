@@ -76,10 +76,10 @@ class CheckboxArtistListTile extends StatelessWidget {
   }
 }
 
-class ArtistCard extends StatelessWidget {
+class ArtistAvatar extends StatelessWidget {
   final ArtistViewModel artist;
 
-  const ArtistCard({
+  const ArtistAvatar({
     super.key,
     required this.artist,
   });
@@ -88,74 +88,30 @@ class ArtistCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: AppStyles.cardHeight,
-      width: AppStyles.cardWidth,
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        elevation: AppStyles.cardElevation,
-        child: GestureDetector(
-          onTap: () {
-            AutoRouter.of(context).push(
-              ArtistDetailsRoute(artistId: artist.id),
-            );
-          },
-          child: Stack(
-            fit: StackFit.expand,
-            children: <Widget>[
-              _buildImage(),
-              _buildGradient(),
-              _buildTitle(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildGradient() {
-    return Positioned.fill(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: const [0.6, 0.95],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTitle() {
-    return Positioned(
-      left: 5,
-      bottom: 5,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            artist.name,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+      child: InkWell(
+        onTap: () {
+          AutoRouter.of(context).push(
+            ArtistDetailsRoute(artistId: artist.id),
+          );
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: Hero(
+                tag: artist.id,
+                child: InitialCircleAvatar(
+                  backgroundImage: NetworkImage(
+                    artist.imageUrl!,
+                  ),
+                ),
+              ),
             ),
-          ),
-        ],
+            Text(artist.name)
+          ],
+        ),
       ),
     );
   }
-
-  Widget _buildImage() =>
-      (artist.imageUrl != null)
-      ? Hero(
-          tag: artist.id,
-          child: Image.network(
-            artist.imageUrl!,
-            fit: BoxFit.cover,
-          ),
-        )
-      : const SizedBox();
 }
 
 class ArtistForm extends StatelessWidget {

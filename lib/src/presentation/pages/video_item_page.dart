@@ -115,12 +115,18 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                         delegate: SliverChildListDelegate(
                           <Widget>[
                             if (_videoController != null)
-                              AspectRatio(
-                                aspectRatio: 16 / 9,
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxHeight:
+                                      MediaQuery.of(context).size.height * 0.3,
+                                ),
                                 child: Hero(
                                   tag: state.video!.id,
-                                  child: YoutubePlayer(
-                                    controller: _videoController!,
+                                  child: AspectRatio(
+                                    aspectRatio: 16 / 9,
+                                    child: YoutubePlayer(
+                                      controller: _videoController!,
+                                    ),
                                   ),
                                 ),
                               ),

@@ -197,7 +197,7 @@ class _ArtistListViewState extends State<ArtistListView> {
                         );
                       }
                     case Axis.horizontal:
-                      return ArtistCard(artist: artist);
+                      return ArtistAvatar(artist: artist);
                   }
                 },
               ),
@@ -259,6 +259,7 @@ class ArtistsSection extends StatelessWidget
           return Column(
             children: [
               SectionTile(
+                leading: const Icon(Icons.people),
                 title: Text(label ?? 'Artists'),
                 onTap: onSectionTap ??
                     () {
