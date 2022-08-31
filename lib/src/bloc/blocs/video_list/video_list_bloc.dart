@@ -128,7 +128,9 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
     if (kDebugMode) print('$runtimeType:_onVideoListSelect');
 
     emit(state.copyWith(
-      selectedVideos: List.of(state.selectedVideos)..add(event.video),
+      selectedVideos: List.of(state.selectedVideos)
+        ..removeWhere((element) => element.id == event.video.id)
+        ..add(event.video),
     ));
   }
 
@@ -140,8 +142,8 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
 
     emit((event.video != null)
         ? state.copyWith(
-            selectedVideos: List.of(state.selectedVideos)..remove(event.video),
-          )
+            selectedVideos: List.of(state.selectedVideos)
+              ..removeWhere((element) => element.id == event.video!.id))
         : state.copyWith(
             selectedVideos: [],
           ));
@@ -160,8 +162,9 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
         emit(state.copyWith(
           status: VideoListStatus.deleteSuccess,
           videos: List.of(state.videos)
-            ..removeWhere((element) => element == video),
-          selectedVideos: List.of(state.selectedVideos)..remove(video),
+            ..removeWhere((element) => element.id == video.id),
+          selectedVideos: List.of(state.selectedVideos)
+            ..removeWhere((element) => element.id == video.id),
         ));
       }
     } on Error catch (error) {

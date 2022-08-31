@@ -179,7 +179,8 @@ class _DanceListViewState extends State<DanceListView> {
                       } else {
                         return CheckboxDanceListTile(
                           dance: dance,
-                          value: state.selectedDances.contains(dance),
+                          value: state.selectedDances
+                              .any((element) => element.id == dance.id),
                           onChanged: (bool? value) {
                             danceListBloc.add(
                               (value == true)

@@ -123,7 +123,9 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
     if (kDebugMode) print('$runtimeType:_onPracticeListSelect');
 
     emit(state.copyWith(
-      selectedPractices: List.of(state.selectedPractices)..add(event.practice),
+      selectedPractices: List.of(state.selectedPractices)
+        ..removeWhere((element) => element.id == event.practice.id)
+        ..add(event.practice),
     ));
   }
 
@@ -135,8 +137,8 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
 
     emit((event.practice != null)
         ? state.copyWith(
-            selectedPractices: List.of(state.selectedPractices)
-              ..remove(event.practice),
+      selectedPractices: List.of(state.selectedPractices)
+              ..removeWhere((element) => element.id == event.practice!.id),
           )
         : state.copyWith(
             selectedPractices: [],
@@ -156,8 +158,9 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
         emit(state.copyWith(
           status: PracticeListStatus.deleteSuccess,
           practices: List.of(state.practices)
-            ..removeWhere((element) => element == practice),
-          selectedPractices: List.of(state.selectedPractices)..remove(practice),
+            ..removeWhere((element) => element.id == practice.id),
+          selectedPractices: List.of(state.selectedPractices)
+            ..removeWhere((element) => element.id == practice.id),
         ));
       }
     } on Error catch (error) {

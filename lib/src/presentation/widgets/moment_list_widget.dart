@@ -181,7 +181,8 @@ class _MomentListViewState extends State<MomentListView> {
                       } else {
                         return CheckboxMomentListTile(
                           moment: moment,
-                          value: state.selectedMoments.contains(moment),
+                          value: state.selectedMoments
+                              .any((element) => element.id == moment.id),
                           onChanged: (bool? value) {
                             momentListBloc.add(
                               (value == true)

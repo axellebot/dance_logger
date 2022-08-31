@@ -124,7 +124,9 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     if (kDebugMode) print('$runtimeType:_onDanceListSelect');
 
     emit(state.copyWith(
-      selectedDances: List.of(state.selectedDances)..add(event.dance),
+      selectedDances: List.of(state.selectedDances)
+        ..removeWhere((element) => element.id == event.dance.id)
+        ..add(event.dance),
     ));
   }
 
@@ -136,7 +138,8 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
 
     emit((event.dance != null)
         ? state.copyWith(
-            selectedDances: List.of(state.selectedDances)..remove(event.dance),
+            selectedDances: List.of(state.selectedDances)
+              ..removeWhere((element) => element.id == event.dance!.id),
           )
         : state.copyWith(
             selectedDances: [],
@@ -156,8 +159,9 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
         emit(state.copyWith(
           status: DanceListStatus.deleteFailure,
           dances: List.of(state.dances)
-            ..removeWhere((element) => element == dance),
-          selectedDances: List.of(state.selectedDances)..remove(dance),
+            ..removeWhere((element) => element.id == dance.id),
+          selectedDances: List.of(state.selectedDances)
+            ..removeWhere((element) => element.id == dance.id),
         ));
       }
     } on Error catch (error) {

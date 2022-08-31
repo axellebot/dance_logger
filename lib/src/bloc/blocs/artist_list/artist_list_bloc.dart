@@ -128,7 +128,9 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
     if (kDebugMode) print('$runtimeType:_onArtistListSelect');
 
     emit(state.copyWith(
-      selectedArtists: List.of(state.selectedArtists)..add(event.artist),
+      selectedArtists: List.of(state.selectedArtists)
+        ..removeWhere((element) => element.id == event.artist.id)
+        ..add(event.artist),
     ));
   }
 
@@ -140,8 +142,8 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
 
     emit((event.artist != null)
         ? state.copyWith(
-            selectedArtists: List.of(state.selectedArtists)
-              ..remove(event.artist),
+      selectedArtists: List.of(state.selectedArtists)
+              ..removeWhere((element) => element.id == event.artist!.id),
           )
         : state.copyWith(
             selectedArtists: [],
@@ -161,8 +163,9 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
         emit(state.copyWith(
           status: ArtistListStatus.deleteSuccess,
           artists: List.of(state.artists)
-            ..removeWhere((element) => element == artist),
-          selectedArtists: List.of(state.selectedArtists)..remove(artist),
+            ..removeWhere((element) => element.id == artist.id),
+          selectedArtists: List.of(state.selectedArtists)
+            ..removeWhere((element) => element.id == artist.id),
         ));
       }
     } on Error catch (error) {

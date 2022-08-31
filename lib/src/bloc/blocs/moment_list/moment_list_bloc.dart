@@ -123,7 +123,9 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     if (kDebugMode) print('$runtimeType:_onMomentListSelect');
 
     emit(state.copyWith(
-      selectedMoments: List.of(state.selectedMoments)..add(event.moment),
+      selectedMoments: List.of(state.selectedMoments)
+        ..removeWhere((element) => element.id == event.moment.id)
+        ..add(event.moment),
     ));
   }
 
@@ -135,8 +137,8 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
 
     emit((event.moment != null)
         ? state.copyWith(
-            selectedMoments: List.of(state.selectedMoments)
-              ..remove(event.moment),
+      selectedMoments: List.of(state.selectedMoments)
+              ..removeWhere((element) => element.id == event.moment!.id),
           )
         : state.copyWith(
             selectedMoments: [],
@@ -156,8 +158,9 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
         emit(state.copyWith(
           status: MomentListStatus.deleteSuccess,
           moments: List.of(state.moments)
-            ..removeWhere((element) => element == moment),
-          selectedMoments: List.of(state.selectedMoments)..remove(moment),
+            ..removeWhere((element) => element.id == moment.id),
+          selectedMoments: List.of(state.selectedMoments)
+            ..removeWhere((element) => element.id == moment.id),
         ));
       }
     } on Error catch (error) {

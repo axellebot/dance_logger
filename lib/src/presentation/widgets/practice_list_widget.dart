@@ -191,7 +191,8 @@ class _PracticeListViewState extends State<PracticeListView> {
                       } else {
                         return CheckboxPracticeListTile(
                           practice: practice,
-                          value: state.selectedPractices.contains(practice),
+                          value: state.selectedPractices
+                              .any((element) => element.id == practice.id),
                           onChanged: (bool? value) {
                             practiceListBloc.add(
                               (value == true)

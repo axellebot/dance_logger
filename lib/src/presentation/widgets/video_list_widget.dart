@@ -186,7 +186,8 @@ class _VideoListViewState extends State<VideoListView> {
                       } else {
                         return CheckboxVideoListTile(
                           video: video,
-                          value: state.selectedVideos.contains(video),
+                          value: state.selectedVideos
+                              .any((element) => element.id == video.id),
                           onChanged: (bool? value) {
                             videoListBloc.add(
                               (value == true)

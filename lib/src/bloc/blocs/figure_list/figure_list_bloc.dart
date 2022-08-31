@@ -124,7 +124,9 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
     if (kDebugMode) print('$runtimeType:_onFigureListSelect');
 
     emit(state.copyWith(
-      selectedFigures: List.of(state.selectedFigures)..add(event.figure),
+      selectedFigures: List.of(state.selectedFigures)
+        ..removeWhere((element) => element.id == event.figure.id)
+        ..add(event.figure),
     ));
   }
 
@@ -136,8 +138,8 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
 
     emit((event.figure != null)
         ? state.copyWith(
-            selectedFigures: List.of(state.selectedFigures)
-              ..remove(event.figure),
+      selectedFigures: List.of(state.selectedFigures)
+              ..removeWhere((element) => element.id == event.figure!.id),
           )
         : state.copyWith(
             selectedFigures: [],
@@ -157,8 +159,9 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
         emit(state.copyWith(
           status: FigureListStatus.deleteSuccess,
           figures: List.of(state.figures)
-            ..removeWhere((element) => element == figure),
-          selectedFigures: List.of(state.selectedFigures)..remove(figure),
+            ..removeWhere((element) => element.id == figure.id),
+          selectedFigures: List.of(state.selectedFigures)
+            ..removeWhere((element) => element.id == figure.id),
         ));
       }
     } on Error catch (error) {

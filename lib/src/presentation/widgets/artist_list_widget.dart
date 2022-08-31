@@ -186,7 +186,8 @@ class _ArtistListViewState extends State<ArtistListView> {
                       } else {
                         return CheckboxArtistListTile(
                           artist: artist,
-                          value: state.selectedArtists.contains(artist),
+                          value: state.selectedArtists
+                              .any((element) => element.id == artist.id),
                           onChanged: (bool? value) {
                             artistListBloc.add(
                               (value == true)

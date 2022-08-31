@@ -176,7 +176,8 @@ class _FigureListViewState extends State<FigureListView> {
                       } else {
                         return CheckboxFigureListTile(
                           figure: figure,
-                          value: state.selectedFigures.contains(figure),
+                          value: state.selectedFigures
+                              .any((element) => element.id == figure.id),
                           onChanged: (bool? value) {
                             artistListBloc.add(
                               (value == true)
