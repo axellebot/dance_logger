@@ -55,7 +55,7 @@ class DanceDatabaseManager
       db.execute('''
         CREATE TABLE dances(
           dance_id TEXT PRIMARY KEY,
-          name TEXT NOT NULL,
+          name TEXT NOT NULL UNIQUE,
           created_at TEXT NOT NULL,
           updated_at TEXT NOT NULL,
           version INTEGER NOT NULL
@@ -80,7 +80,7 @@ class DanceDatabaseManager
       db.execute('''
         CREATE TABLE artists(
           artist_id TEXT PRIMARY KEY,
-          name TEXT NOT NULL,
+          name TEXT NOT NULL UNIQUE,
           image_url TEXT,
           created_at TEXT NOT NULL,
           updated_at TEXT NOT NULL,
@@ -91,7 +91,7 @@ class DanceDatabaseManager
         CREATE TABLE videos(
           video_id TEXT PRIMARY KEY,
           name TEXT,
-          url TEXT NOT NULL,
+          url TEXT NOT NULL UNIQUE,
           created_at TEXT NOT NULL,
           updated_at TEXT NOT NULL,
           version INTEGER NOT NULL
