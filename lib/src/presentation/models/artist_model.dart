@@ -1,4 +1,5 @@
 import 'package:dance/presentation.dart';
+import 'package:quiver/core.dart';
 import 'package:uuid/uuid.dart';
 
 class ArtistViewModel extends BaseViewModel {
@@ -11,8 +12,6 @@ class ArtistViewModel extends BaseViewModel {
     required super.id,
     required this.name,
     this.imageUrl,
-    this.figures,
-    this.videos,
     required super.createdAt,
     required super.updatedAt,
     required super.version,
@@ -32,25 +31,31 @@ class ArtistViewModel extends BaseViewModel {
     );
   }
 
-  change({
-    String? name,
-    String? imageUrl,
-  }) {
-    if (name != null) this.name = name;
-    if (imageUrl != null) this.imageUrl = imageUrl;
-    updatedAt = DateTime.now();
-    version++;
-  }
-
   @override
   String toString() => '$runtimeType{'
       'id: $id, '
       'name: $name, '
       'imageUrl: $imageUrl, '
-      'figures: $figures, '
-      'videos: $videos, '
       'createdAt: $createdAt, '
       'updatedAt: $updatedAt, '
       'version: $version'
       '}';
+
+  ArtistViewModel copyWith({
+    String? id,
+    String? name,
+    Optional<String>? imageUrl,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? version,
+  }) {
+    return ArtistViewModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      imageUrl: imageUrl?.orNull ?? this.imageUrl,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      version: version ?? this.version,
+    );
+  }
 }

@@ -108,34 +108,17 @@ class _FigureDetailsPageState extends State<FigureDetailsPage> {
   }
 }
 
-class FigureCreatePage extends StatelessWidget {
+class FigureCreatePage extends FigureEditPage {
   const FigureCreatePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      floatingActionButton: const FloatingActionButton(
-        onPressed: null,
-        child: Icon(Icons.save),
-      ),
-      body: const Text('Figure Create'),
-    );
-  }
 }
 
 class FigureEditPage extends StatelessWidget implements AutoRouteWrapper {
-  late final FigureDetailBloc? _figureBloc;
-  late final String? _figureId;
+  final String? figureId;
 
-  FigureEditPage({
+  const FigureEditPage({
     super.key,
-    FigureDetailBloc? figureBloc,
-    String? figureId,
-  }) : assert(figureBloc != null || figureId != null) {
-    _figureId = figureId;
-    _figureBloc = figureBloc;
-  }
+    this.figureId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -151,19 +134,15 @@ class FigureEditPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    if (_figureId != null) {
-      return BlocProvider(
-        create: (_) => FigureDetailBloc(
-            figureRepository: RepositoryProvider.of<FigureRepository>(context),
-            mapper: ModelMapper()),
-        child: this,
-      );
-    } else if (_figureBloc != null) {
-      return BlocProvider<FigureDetailBloc>.value(
-        value: _figureBloc!,
-        child: this,
-      );
-    }
+    //TODO : Figure edit page
+    //  return BlocProvider(
+    //   create: (_) => FigureEditBloc(
+    //     figureRepository: RepositoryProvider.of<FigureRepository>(context),
+    //     mapper: ModelMapper(),
+    //   )..add(FigureEditStart(figureId: figureId)),
+    //   child: this,
+    // );
+
     return this;
   }
 }

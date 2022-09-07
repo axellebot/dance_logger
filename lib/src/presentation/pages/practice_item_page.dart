@@ -136,13 +136,14 @@ class PracticeEditPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return BlocProvider(
-      // TODO: Replace with EditBloc
-      create: (_) => PracticeDetailBloc(
-          practiceRepository:
-              RepositoryProvider.of<PracticeRepository>(context),
-          mapper: ModelMapper()),
-      child: this,
-    );
+    // TODO: Practice edit page
+    // return BlocProvider(
+    //   create: (_) => PracticeDetailBloc(
+    //       practiceRepository:
+    //           RepositoryProvider.of<PracticeRepository>(context),
+    //       mapper: ModelMapper()),
+    //   child: this,
+    // );
+    return this;
   }
 }

@@ -5,6 +5,7 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quiver/core.dart';
 
 class PracticeDetailBloc
     extends Bloc<PracticeDetailEvent, PracticeDetailState> {
@@ -25,9 +26,11 @@ class PracticeDetailBloc
     Emitter<PracticeDetailState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onPracticeDetailLoad');
+
     try {
       emit(state.copyWith(
         status: PracticeDetailStatus.refreshing,
+        ofId: Optional.of(event.practiceId),
       ));
 
       PracticeEntity practiceDataModel =
@@ -37,13 +40,15 @@ class PracticeDetailBloc
 
       emit(state.copyWith(
         status: PracticeDetailStatus.refreshingSuccess,
-        ofId: practiceViewModel.id,
-        practice: practiceViewModel,
+        ofId: Optional.of(practiceViewModel.id),
+        practice: Optional.of(practiceViewModel),
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: PracticeDetailStatus.refreshingFailure,
-        error: error,
+        ofId: Optional.of(event.practiceId),
+        error: Optional.of(error),
       ));
     }
   }
@@ -66,13 +71,14 @@ class PracticeDetailBloc
 
       emit(state.copyWith(
         status: PracticeDetailStatus.refreshingSuccess,
-        ofId: practiceViewModel.id,
-        practice: practiceViewModel,
+        ofId: Optional.of(practiceViewModel.id),
+        practice: Optional.of(practiceViewModel),
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: PracticeDetailStatus.refreshingFailure,
-        error: error,
+        error: Optional.fromNullable(error),
       ));
     }
   }
@@ -93,7 +99,7 @@ class PracticeDetailBloc
     } on Error catch (error) {
       emit(state.copyWith(
         status: PracticeDetailStatus.deleteFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }

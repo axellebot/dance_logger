@@ -165,18 +165,16 @@ class _ArtistDetailsPageState extends State<ArtistDetailsPage> {
 }
 
 class ArtistCreatePage extends ArtistEditPage {
-  ArtistCreatePage({super.key});
+  const ArtistCreatePage({super.key});
 }
 
 class ArtistEditPage extends StatelessWidget implements AutoRouteWrapper {
-  late final String? _artistId;
+  final String? artistId;
 
-  ArtistEditPage({
+  const ArtistEditPage({
     super.key,
-    String? artistId,
-  }) {
-    _artistId = artistId;
-  }
+    this.artistId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -238,7 +236,7 @@ class ArtistEditPage extends StatelessWidget implements AutoRouteWrapper {
       create: (_) => ArtistEditBloc(
         artistRepository: RepositoryProvider.of<ArtistRepository>(context),
         mapper: ModelMapper(),
-      )..add(ArtistEditStart(artistId: _artistId)),
+      )..add(ArtistEditStart(artistId: artistId)),
       child: this,
     );
   }

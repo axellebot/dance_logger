@@ -5,6 +5,9 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quiver/core.dart';
+
+/// TODO : Force name and url
 
 class VideoEditBloc extends Bloc<VideoEditEvent, VideoEditState> {
   final VideoRepository videoRepository;
@@ -26,9 +29,11 @@ class VideoEditBloc extends Bloc<VideoEditEvent, VideoEditState> {
     Emitter<VideoEditState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onVideoEditStart');
+
     try {
       emit(state.copyWith(
         status: VideoEditStatus.loading,
+        ofId: Optional.fromNullable(event.videoId),
       ));
 
       VideoViewModel? videoViewModel;
@@ -39,7 +44,8 @@ class VideoEditBloc extends Bloc<VideoEditEvent, VideoEditState> {
 
       emit(state.copyWith(
         status: VideoEditStatus.ready,
-        initialVideo: videoViewModel,
+        initialVideo: Optional.fromNullable(videoViewModel),
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(VideoEditState(
@@ -54,7 +60,10 @@ class VideoEditBloc extends Bloc<VideoEditEvent, VideoEditState> {
     Emitter<VideoEditState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onVideoEditChangeName');
-    emit(state.copyWith(videoName: event.videoName));
+
+    emit(state.copyWith(
+      videoName: Optional.of(event.videoName),
+    ));
   }
 
   FutureOr<void> _onVideoEditChangeUrl(
@@ -62,7 +71,10 @@ class VideoEditBloc extends Bloc<VideoEditEvent, VideoEditState> {
     Emitter<VideoEditState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onVideoEditChangeUrl');
-    emit(state.copyWith(videoUrl: event.videoUrl));
+
+    emit(state.copyWith(
+      videoUrl: Optional.of(event.videoUrl),
+    ));
   }
 
   FutureOr<void> _onVideoEditSubmit(
@@ -70,6 +82,7 @@ class VideoEditBloc extends Bloc<VideoEditEvent, VideoEditState> {
     Emitter<VideoEditState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onVideoEditSubmit');
+
     try {
       emit(state.copyWith(
         status: VideoEditStatus.loading,
@@ -77,11 +90,11 @@ class VideoEditBloc extends Bloc<VideoEditEvent, VideoEditState> {
       VideoViewModel videoViewModel;
 
       if (state.initialVideo != null) {
-        videoViewModel = state.initialVideo!;
-        videoViewModel.change(
+        videoViewModel = state.initialVideo!.copyWith(
           name: state.videoName,
           url: state.videoUrl,
         );
+        videoViewModel.incrementVersion();
       } else {
         videoViewModel = VideoViewModel.createNew(
           name: state.videoName!,
@@ -95,12 +108,13 @@ class VideoEditBloc extends Bloc<VideoEditEvent, VideoEditState> {
 
       emit(VideoEditState(
         status: VideoEditStatus.editSuccess,
+        ofId: videoViewModel.id,
         initialVideo: videoViewModel,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: VideoEditStatus.failure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -110,6 +124,7 @@ class VideoEditBloc extends Bloc<VideoEditEvent, VideoEditState> {
     Emitter<VideoEditState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onVideoEditDelete');
+
     if (state.initialVideo == null) return;
     try {
       emit(state.copyWith(
@@ -124,7 +139,7 @@ class VideoEditBloc extends Bloc<VideoEditEvent, VideoEditState> {
     } on Error catch (error) {
       emit(state.copyWith(
         status: VideoEditStatus.failure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }

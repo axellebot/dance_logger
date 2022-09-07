@@ -1,6 +1,7 @@
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
+import 'package:quiver/core.dart';
 
 enum ArtistListStatus {
   initial,
@@ -59,25 +60,25 @@ class ArtistListState extends Equatable implements ArtistListParams {
 
   ArtistListState copyWith({
     ArtistListStatus? status,
-    String? ofSearch,
-    String? ofDance,
-    String? ofFigure,
-    String? ofVideo,
+    Optional<String>? ofSearch,
+    Optional<String>? ofDance,
+    Optional<String>? ofFigure,
+    Optional<String>? ofVideo,
     List<ArtistViewModel>? artists,
     bool? hasReachedMax,
     List<ArtistViewModel>? selectedArtists,
-    Error? error,
+    Optional<Error>? error,
   }) {
     return ArtistListState(
       status: status ?? this.status,
-      ofSearch: ofSearch ?? this.ofSearch,
-      ofDance: ofDance ?? this.ofDance,
-      ofFigure: ofFigure ?? this.ofFigure,
-      ofVideo: ofVideo ?? this.ofVideo,
+      ofSearch: ofSearch?.orNull ?? this.ofSearch,
+      ofDance: ofDance?.orNull ?? this.ofDance,
+      ofFigure: ofFigure?.orNull ?? this.ofFigure,
+      ofVideo: ofVideo?.orNull ?? this.ofVideo,
       artists: artists ?? this.artists,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       selectedArtists: selectedArtists ?? this.selectedArtists,
-      error: error ?? this.error,
+      error: error?.orNull ?? this.error,
     );
   }
 

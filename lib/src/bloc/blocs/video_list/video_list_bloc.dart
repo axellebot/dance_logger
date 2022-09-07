@@ -5,6 +5,7 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quiver/core.dart';
 
 class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
   final VideoRepository videoRepository;
@@ -27,6 +28,7 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
     Emitter<VideoListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onVideoListLoad');
+
     try {
       emit(state.copyWith(
         status: VideoListStatus.loading,
@@ -43,17 +45,18 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
 
       emit(state.copyWith(
         status: VideoListStatus.loadingSuccess,
-        ofSearch: event.ofSearch,
-        ofArtist: event.ofArtist,
-        ofDance: event.ofDance,
-        ofFigure: event.ofFigure,
+        ofSearch: Optional.fromNullable(event.ofSearch),
+        ofArtist: Optional.fromNullable(event.ofArtist),
+        ofDance: Optional.fromNullable(event.ofDance),
+        ofFigure: Optional.fromNullable(event.ofFigure),
         videos: videoViewModels,
         hasReachedMax: false,
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: VideoListStatus.loadingFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -63,6 +66,7 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
     Emitter<VideoListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onVideoListLoadMore');
+
     try {
       emit(state.copyWith(
         status: VideoListStatus.loading,
@@ -81,11 +85,12 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
         status: VideoListStatus.loadingSuccess,
         videos: List.of(state.videos)..addAll(videoViewModels),
         hasReachedMax: videoViewModels.isEmpty,
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: VideoListStatus.loadingFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -95,6 +100,7 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
     Emitter<VideoListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onVideoListRefresh');
+
     try {
       emit(state.copyWith(
         status: VideoListStatus.refreshing,
@@ -112,11 +118,12 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
         status: VideoListStatus.refreshingSuccess,
         videos: videoViewModels,
         hasReachedMax: false,
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: VideoListStatus.refreshingFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -154,8 +161,8 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
     Emitter<VideoListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onVideoListSelect');
-    if (state.selectedVideos.isEmpty) return;
 
+    if (state.selectedVideos.isEmpty) return;
     try {
       for (VideoViewModel video in state.selectedVideos) {
         await videoRepository.deleteById(video.id);
@@ -165,12 +172,13 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
             ..removeWhere((element) => element.id == video.id),
           selectedVideos: List.of(state.selectedVideos)
             ..removeWhere((element) => element.id == video.id),
+          error: const Optional.absent(),
         ));
       }
     } on Error catch (error) {
       emit(state.copyWith(
         status: VideoListStatus.deleteFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -186,6 +194,7 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
     assert(ofSearch == null ||
         (ofArtist == null && ofDance == null && ofFigure == null));
     if (kDebugMode) print('$runtimeType:_fetchVideos');
+
     List<VideoEntity> videoEntities;
     if (ofSearch != null) {
       videoEntities = await videoRepository.getListOfSearch(

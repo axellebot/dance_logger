@@ -11,6 +11,11 @@ abstract class BaseViewModel {
     required this.version,
   }) : super();
 
+  incrementVersion() {
+    updatedAt = DateTime.now();
+    version++;
+  }
+
   @override
   String toString() => '$runtimeType{'
       'id: $id, '

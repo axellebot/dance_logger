@@ -23,6 +23,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     Emitter<AppState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onAppLaunch');
+
     try {
       final int themeMode = await appPreferencesRepository.getThemeMode() ?? 0;
       final bool themeUltraDark =
@@ -45,6 +46,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     Emitter<AppState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onThemeChange');
+
     try {
       await appPreferencesRepository.saveThemeMode(event.themeMode);
       await appPreferencesRepository.saveThemeUltraDark(event.themeUltraDark);

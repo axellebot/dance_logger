@@ -5,6 +5,7 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quiver/core.dart';
 
 class DanceEditBloc extends Bloc<DanceEditEvent, DanceEditState> {
   final DanceRepository danceRepository;
@@ -25,9 +26,11 @@ class DanceEditBloc extends Bloc<DanceEditEvent, DanceEditState> {
     Emitter<DanceEditState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onDanceEditStart');
+
     try {
       emit(state.copyWith(
         status: DanceEditStatus.loading,
+        ofId: Optional.fromNullable(event.danceId),
       ));
 
       DanceViewModel? danceViewModel;
@@ -38,12 +41,15 @@ class DanceEditBloc extends Bloc<DanceEditEvent, DanceEditState> {
 
       emit(state.copyWith(
         status: DanceEditStatus.ready,
-        initialDance: danceViewModel,
+        ofId: Optional.fromNullable(event.danceId),
+        initialDance: Optional.fromNullable(danceViewModel),
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
-      emit(DanceEditState(
+      emit(state.copyWith(
         status: DanceEditStatus.failure,
-        error: error,
+        ofId: Optional.fromNullable(event.danceId),
+        error: Optional.of(error),
       ));
     }
   }
@@ -53,7 +59,10 @@ class DanceEditBloc extends Bloc<DanceEditEvent, DanceEditState> {
     Emitter<DanceEditState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onDanceEditChangeName');
-    emit(state.copyWith(danceName: event.danceName));
+
+    emit(state.copyWith(
+      danceName: Optional.of(event.danceName),
+    ));
   }
 
   FutureOr<void> _onDanceEditSubmit(
@@ -61,6 +70,7 @@ class DanceEditBloc extends Bloc<DanceEditEvent, DanceEditState> {
     Emitter<DanceEditState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onDanceEditSubmit');
+
     try {
       emit(state.copyWith(
         status: DanceEditStatus.loading,
@@ -68,8 +78,7 @@ class DanceEditBloc extends Bloc<DanceEditEvent, DanceEditState> {
       DanceViewModel danceViewModel;
 
       if (state.initialDance != null) {
-        danceViewModel = state.initialDance!;
-        danceViewModel.change(
+        danceViewModel = state.initialDance!.copyWith(
           name: state.danceName,
         );
       } else {
@@ -84,12 +93,13 @@ class DanceEditBloc extends Bloc<DanceEditEvent, DanceEditState> {
 
       emit(DanceEditState(
         status: DanceEditStatus.editSuccess,
+        ofId: danceViewModel.id,
         initialDance: danceViewModel,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: DanceEditStatus.failure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -99,6 +109,7 @@ class DanceEditBloc extends Bloc<DanceEditEvent, DanceEditState> {
     Emitter<DanceEditState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onDanceEditDelete');
+
     if (state.initialDance == null) return;
     try {
       emit(state.copyWith(
@@ -113,7 +124,7 @@ class DanceEditBloc extends Bloc<DanceEditEvent, DanceEditState> {
     } on Error catch (error) {
       emit(state.copyWith(
         status: DanceEditStatus.failure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }

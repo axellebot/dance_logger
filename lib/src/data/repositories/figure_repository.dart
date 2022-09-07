@@ -22,8 +22,7 @@ class ImplFigureRepository extends FigureRepository {
     bool force = false,
   }) async {
     if (kDebugMode) print('$runtimeType:getById($id)');
-    final dataModel = await factory.databaseDataStore.getFigure(id);
-    return dataModel;
+    return await factory.databaseDataStore.getFigure(id);
   }
 
   @override
@@ -40,10 +39,9 @@ class ImplFigureRepository extends FigureRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getList()');
-    final dataModels = await factory.databaseDataStore.getFigures(
+    return await factory.databaseDataStore.getFigures(
       offset: offset,
     );
-    return dataModels;
   }
 
   @override
@@ -55,11 +53,10 @@ class ImplFigureRepository extends FigureRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getFiguresOfArtist($artistId)');
-    final dataModels = await factory.databaseDataStore.getFiguresOfArtist(
+    return await factory.databaseDataStore.getFiguresOfArtist(
       artistId,
       offset: offset,
     );
-    return dataModels;
   }
 
   @override
@@ -71,11 +68,10 @@ class ImplFigureRepository extends FigureRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getFiguresOfVideo($videoId)');
-    final dataModels = await factory.databaseDataStore.getFiguresOfVideo(
+    return await factory.databaseDataStore.getFiguresOfVideo(
       videoId,
       offset: offset,
     );
-    return dataModels;
   }
 
   @override
@@ -87,10 +83,9 @@ class ImplFigureRepository extends FigureRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getFiguresOfDance($danceId)');
-    final dataModels = await factory.databaseDataStore.getFiguresOfDance(
+    return await factory.databaseDataStore.getFiguresOfDance(
       danceId,
       offset: offset,
     );
-    return dataModels;
   }
 }

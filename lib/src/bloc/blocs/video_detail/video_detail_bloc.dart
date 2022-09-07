@@ -5,6 +5,7 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quiver/core.dart';
 
 class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
   final VideoRepository videoRepository;
@@ -24,9 +25,11 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
     Emitter<VideoDetailState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onVideoDetailLoad');
+
     try {
       emit(state.copyWith(
         status: VideoDetailStatus.refreshing,
+        ofId: Optional.of(event.videoId),
       ));
 
       VideoEntity videoDataModel = await videoRepository.getById(event.videoId);
@@ -34,14 +37,15 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
 
       emit(state.copyWith(
         status: VideoDetailStatus.refreshingSuccess,
-        ofId: videoViewModel.id,
-        video: videoViewModel,
+        ofId: Optional.of(videoViewModel.id),
+        video: Optional.of(videoViewModel),
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: VideoDetailStatus.refreshingFailure,
-        ofId: event.videoId,
-        error: error,
+        ofId: Optional.of(event.videoId),
+        error: Optional.of(error),
       ));
     }
   }
@@ -51,7 +55,6 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
     Emitter<VideoDetailState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onVideoDetailRefresh');
-
     try {
       emit(state.copyWith(
         status: VideoDetailStatus.refreshing,
@@ -62,13 +65,14 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
 
       emit(state.copyWith(
         status: VideoDetailStatus.refreshingSuccess,
-        ofId: videoViewModel.id,
-        video: videoViewModel,
+        ofId: Optional.of(videoViewModel.id),
+        video: Optional.of(videoViewModel),
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: VideoDetailStatus.refreshingFailure,
-        error: error,
+        error: Optional.fromNullable(error),
       ));
     }
   }
@@ -78,7 +82,6 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
     Emitter<VideoDetailState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onVideoDeleted');
-
     if (state.video == null) return;
     try {
       await videoRepository.deleteById(state.video!.id);
@@ -89,7 +92,7 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
     } on Error catch (error) {
       emit(state.copyWith(
         status: VideoDetailStatus.deleteFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }

@@ -27,6 +27,7 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
     Emitter<FigureListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onFigureListLoad');
+
     try {
       emit(state.copyWith(
         status: FigureListStatus.loading,
@@ -61,6 +62,7 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
     Emitter<FigureListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onFigureListLoadMore');
+
     try {
       emit(state.copyWith(
         status: FigureListStatus.loading,
@@ -92,6 +94,7 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
     Emitter<FigureListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onFigureListRefresh');
+
     try {
       emit(state.copyWith(
         status: FigureListStatus.refreshing,
@@ -151,8 +154,8 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
     Emitter<FigureListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onFigureListSelect');
-    if (state.selectedFigures.isEmpty) return;
 
+    if (state.selectedFigures.isEmpty) return;
     try {
       for (FigureViewModel figure in state.selectedFigures) {
         await figureRepository.deleteById(figure.id);
@@ -180,8 +183,8 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
     int limit = 10,
   }) async {
     if (kDebugMode) print('$runtimeType:_fetchFigures');
-    List<FigureEntity> figureEntities;
 
+    List<FigureEntity> figureEntities;
     if (ofArtist != null) {
       figureEntities = await figureRepository.getFiguresOfArtist(
         ofArtist,

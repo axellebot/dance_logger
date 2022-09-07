@@ -1,5 +1,6 @@
 import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
+import 'package:quiver/core.dart';
 
 enum ArtistDetailStatus {
   initial,
@@ -12,7 +13,6 @@ enum ArtistDetailStatus {
 
 class ArtistDetailState extends Equatable {
   final ArtistDetailStatus status;
-
   final String? ofId;
   final ArtistViewModel? artist;
   final Error? error;
@@ -25,19 +25,24 @@ class ArtistDetailState extends Equatable {
   }) : super();
 
   @override
-  List<Object?> get props => [status, ofId, artist, error];
+  List<Object?> get props => [
+        status,
+        ofId,
+        artist,
+        error,
+      ];
 
   ArtistDetailState copyWith({
     ArtistDetailStatus? status,
-    String? ofId,
-    ArtistViewModel? artist,
-    Error? error,
+    Optional<String>? ofId,
+    Optional<ArtistViewModel>? artist,
+    Optional<Error>? error,
   }) {
     return ArtistDetailState(
       status: status ?? this.status,
-      ofId: ofId ?? this.ofId,
-      artist: artist ?? this.artist,
-      error: error ?? this.error,
+      ofId: ofId?.orNull ?? this.ofId,
+      artist: artist?.orNull ?? this.artist,
+      error: error?.orNull ?? this.error,
     );
   }
 

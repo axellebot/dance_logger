@@ -5,6 +5,7 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quiver/core.dart';
 
 class FigureDetailBloc extends Bloc<FigureDetailEvent, FigureDetailState> {
   final FigureRepository figureRepository;
@@ -24,9 +25,11 @@ class FigureDetailBloc extends Bloc<FigureDetailEvent, FigureDetailState> {
     Emitter<FigureDetailState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onFigureDetailLoad');
+
     try {
       emit(state.copyWith(
         status: FigureDetailStatus.refreshing,
+        ofId: Optional.of(event.figureId),
       ));
 
       FigureEntity figureDataModel =
@@ -36,14 +39,15 @@ class FigureDetailBloc extends Bloc<FigureDetailEvent, FigureDetailState> {
 
       emit(state.copyWith(
         status: FigureDetailStatus.refreshingSuccess,
-        ofId: figureViewModel.id,
-        figure: figureViewModel,
+        ofId: Optional.of(figureViewModel.id),
+        figure: Optional.of(figureViewModel),
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: FigureDetailStatus.refreshingFailure,
-        ofId: event.figureId,
-        error: error,
+        ofId: Optional.of(event.figureId),
+        error: Optional.of(error),
       ));
     }
   }
@@ -66,13 +70,14 @@ class FigureDetailBloc extends Bloc<FigureDetailEvent, FigureDetailState> {
 
       emit(state.copyWith(
         status: FigureDetailStatus.refreshingSuccess,
-        ofId: figureViewModel.id,
-        figure: figureViewModel,
+        ofId: Optional.of(figureViewModel.id),
+        figure: Optional.of(figureViewModel),
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: FigureDetailStatus.refreshingFailure,
-        error: error,
+        error: Optional.fromNullable(error),
       ));
     }
   }
@@ -93,7 +98,7 @@ class FigureDetailBloc extends Bloc<FigureDetailEvent, FigureDetailState> {
     } on Error catch (error) {
       emit(state.copyWith(
         status: FigureDetailStatus.deleteFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }

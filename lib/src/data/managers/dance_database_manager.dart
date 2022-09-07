@@ -174,6 +174,7 @@ class DanceDatabaseManager
 
   FutureOr delete() async {
     if (kDebugMode) print('$runtimeType:delete()');
+
     await deleteDatabase(
       join(await getDatabasesPath(), filePath),
     );

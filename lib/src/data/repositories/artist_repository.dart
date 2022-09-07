@@ -24,8 +24,7 @@ class ImplArtistRepository extends ArtistRepository {
     bool force = false,
   }) async {
     if (kDebugMode) print('$runtimeType:getById($id)');
-    final dataModel = await factory.databaseDataStore.getArtist(id);
-    return dataModel;
+    return await factory.databaseDataStore.getArtist(id);
   }
 
   @override
@@ -42,10 +41,9 @@ class ImplArtistRepository extends ArtistRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getList()');
-    final dataModels = await factory.databaseDataStore.getArtists(
+    return await factory.databaseDataStore.getArtists(
       offset: offset,
     );
-    return dataModels;
   }
 
   @override
@@ -57,11 +55,10 @@ class ImplArtistRepository extends ArtistRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getListOfSearch($search)');
-    final dataModels = await factory.databaseDataStore.getArtistsOfSearch(
+    return await factory.databaseDataStore.getArtistsOfSearch(
       search,
       offset: offset,
     );
-    return dataModels;
   }
 
   @override
@@ -73,11 +70,10 @@ class ImplArtistRepository extends ArtistRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getArtistsOfDance($danceId)');
-    final dataModels = await factory.databaseDataStore.getArtistsOfDance(
+    return await factory.databaseDataStore.getArtistsOfDance(
       danceId,
       offset: offset,
     );
-    return dataModels;
   }
 
   @override
@@ -89,11 +85,10 @@ class ImplArtistRepository extends ArtistRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getArtistsOfVideo($videoId)');
-    final dataModels = await factory.databaseDataStore.getArtistsOfVideo(
+    return await factory.databaseDataStore.getArtistsOfVideo(
       videoId,
       offset: offset,
     );
-    return dataModels;
   }
 
   @override
@@ -105,11 +100,10 @@ class ImplArtistRepository extends ArtistRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getArtistsOfFigure($figureId)');
-    final dataModels = await factory.databaseDataStore.getArtistsOfFigure(
+    return await factory.databaseDataStore.getArtistsOfFigure(
       figureId,
       offset: offset,
     );
-    return dataModels;
   }
 
   @override
@@ -121,10 +115,9 @@ class ImplArtistRepository extends ArtistRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getArtistsOfMoment($timeId)');
-    final dataModels = await factory.databaseDataStore.getArtistsOfMoment(
+    return await factory.databaseDataStore.getArtistsOfMoment(
       timeId,
       offset: offset,
     );
-    return dataModels;
   }
 }

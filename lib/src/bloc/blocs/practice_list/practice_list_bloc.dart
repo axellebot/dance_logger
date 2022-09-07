@@ -27,6 +27,7 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
     Emitter<PracticeListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onPracticeListLoad');
+
     try {
       emit(state.copyWith(
         status: PracticeListStatus.loading,
@@ -150,6 +151,7 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
     Emitter<PracticeListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onPracticeListSelect');
+
     if (state.selectedPractices.isEmpty) return;
 
     try {

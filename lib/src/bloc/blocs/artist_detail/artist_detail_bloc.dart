@@ -5,6 +5,7 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quiver/core.dart';
 
 class ArtistDetailBloc extends Bloc<ArtistDetailEvent, ArtistDetailState> {
   final ArtistRepository artistRepository;
@@ -14,12 +15,12 @@ class ArtistDetailBloc extends Bloc<ArtistDetailEvent, ArtistDetailState> {
     required this.artistRepository,
     required this.mapper,
   }) : super(const ArtistDetailState()) {
-    on<ArtistDetailLoad>(_onArtistLoad);
+    on<ArtistDetailLoad>(_onArtistDetailLoad);
     on<ArtistDetailRefresh>(_onArtistDetailRefresh);
     on<ArtistDetailDelete>(_onArtistDelete);
   }
 
-  FutureOr<void> _onArtistLoad(
+  FutureOr<void> _onArtistDetailLoad(
     ArtistDetailLoad event,
     Emitter<ArtistDetailState> emit,
   ) async {
@@ -28,6 +29,7 @@ class ArtistDetailBloc extends Bloc<ArtistDetailEvent, ArtistDetailState> {
     try {
       emit(state.copyWith(
         status: ArtistDetailStatus.refreshing,
+        ofId: Optional.of(event.artistId),
       ));
 
       ArtistEntity artistDataModel =
@@ -37,14 +39,15 @@ class ArtistDetailBloc extends Bloc<ArtistDetailEvent, ArtistDetailState> {
 
       emit(state.copyWith(
         status: ArtistDetailStatus.refreshingSuccess,
-        ofId: artistViewModel.id,
-        artist: artistViewModel,
+        ofId: Optional.of(artistViewModel.id),
+        artist: Optional.of(artistViewModel),
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: ArtistDetailStatus.refreshingFailure,
-        ofId: event.artistId,
-        error: error,
+        ofId: Optional.of(event.artistId),
+        error: Optional.of(error),
       ));
     }
   }
@@ -67,13 +70,14 @@ class ArtistDetailBloc extends Bloc<ArtistDetailEvent, ArtistDetailState> {
 
       emit(state.copyWith(
         status: ArtistDetailStatus.refreshingSuccess,
-        ofId: artistViewModel.id,
-        artist: artistViewModel,
+        ofId: Optional.of(artistViewModel.id),
+        artist: Optional.of(artistViewModel),
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: ArtistDetailStatus.refreshingFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -94,7 +98,7 @@ class ArtistDetailBloc extends Bloc<ArtistDetailEvent, ArtistDetailState> {
     } on Error catch (error) {
       emit(state.copyWith(
         status: ArtistDetailStatus.deleteFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }

@@ -5,6 +5,7 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quiver/core.dart';
 
 class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
   final ArtistRepository artistRepository;
@@ -27,6 +28,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
     Emitter<ArtistListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onArtistListLoad');
+
     try {
       emit(state.copyWith(
         status: ArtistListStatus.loading,
@@ -43,17 +45,18 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
 
       emit(state.copyWith(
         status: ArtistListStatus.loadingSuccess,
-        ofSearch: state.ofSearch,
-        ofDance: event.ofDance,
-        ofFigure: event.ofFigure,
-        ofVideo: event.ofVideo,
+        ofSearch: Optional.fromNullable(event.ofSearch),
+        ofDance: Optional.fromNullable(event.ofDance),
+        ofFigure: Optional.fromNullable(event.ofFigure),
+        ofVideo: Optional.fromNullable(event.ofVideo),
         artists: artistViewModels,
         hasReachedMax: false,
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: ArtistListStatus.loadingFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -63,6 +66,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
     Emitter<ArtistListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onArtistListLoadMore');
+
     try {
       emit(state.copyWith(
         status: ArtistListStatus.loading,
@@ -81,11 +85,12 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
         status: ArtistListStatus.loadingSuccess,
         artists: List.of(state.artists)..addAll(artistViewModels),
         hasReachedMax: artistViewModels.isEmpty,
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: ArtistListStatus.loadingFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -95,6 +100,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
     Emitter<ArtistListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onArtistListRefresh');
+
     try {
       emit(state.copyWith(
         status: ArtistListStatus.refreshing,
@@ -112,11 +118,12 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
         status: ArtistListStatus.refreshingSuccess,
         artists: artistViewModels,
         hasReachedMax: false,
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: ArtistListStatus.refreshingFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -155,8 +162,8 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
     Emitter<ArtistListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onArtistListSelect');
-    if (state.selectedArtists.isEmpty) return;
 
+    if (state.selectedArtists.isEmpty) return;
     try {
       for (ArtistViewModel artist in state.selectedArtists) {
         await artistRepository.deleteById(artist.id);
@@ -166,12 +173,13 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
             ..removeWhere((element) => element.id == artist.id),
           selectedArtists: List.of(state.selectedArtists)
             ..removeWhere((element) => element.id == artist.id),
+          error: const Optional.absent(),
         ));
       }
     } on Error catch (error) {
       emit(state.copyWith(
         status: ArtistListStatus.deleteFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -187,6 +195,7 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
     assert(ofSearch == null ||
         (ofDance == null && ofFigure == null && ofVideo == null));
     if (kDebugMode) print('$runtimeType:_fetchArtists');
+
     List<ArtistEntity> artistEntities;
 
     if (ofSearch != null) {

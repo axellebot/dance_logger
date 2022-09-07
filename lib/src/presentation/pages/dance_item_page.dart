@@ -124,18 +124,16 @@ class _DanceDetailsPageState extends State<DanceDetailsPage> {
 }
 
 class DanceCreatePage extends DanceEditPage {
-  DanceCreatePage({super.key});
+  const DanceCreatePage({super.key});
 }
 
 class DanceEditPage extends StatelessWidget implements AutoRouteWrapper {
-  late final String? _danceId;
+  final String? danceId;
 
-  DanceEditPage({
+  const DanceEditPage({
     super.key,
-    String? danceId,
-  }) {
-    _danceId = danceId;
-  }
+    this.danceId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +195,7 @@ class DanceEditPage extends StatelessWidget implements AutoRouteWrapper {
       create: (_) => DanceEditBloc(
         danceRepository: RepositoryProvider.of<DanceRepository>(context),
         mapper: ModelMapper(),
-      )..add(DanceEditStart(danceId: _danceId)),
+      )..add(DanceEditStart(danceId: danceId)),
       child: this,
     );
   }

@@ -5,6 +5,7 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quiver/core.dart';
 
 class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
   final DanceRepository danceRepository;
@@ -14,12 +15,12 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
     required this.danceRepository,
     required this.mapper,
   }) : super(const DanceDetailState()) {
-    on<DanceDetailLoad>(_onDanceLoad);
+    on<DanceDetailLoad>(_onDanceDetailLoad);
     on<DanceDetailRefresh>(_onDanceDetailRefresh);
     on<DanceDetailDelete>(_onDanceDelete);
   }
 
-  FutureOr<void> _onDanceLoad(
+  FutureOr<void> _onDanceDetailLoad(
     DanceDetailLoad event,
     Emitter<DanceDetailState> emit,
   ) async {
@@ -28,6 +29,7 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
     try {
       emit(state.copyWith(
         status: DanceDetailStatus.refreshing,
+        ofId: Optional.of(event.danceId),
       ));
 
       DanceEntity danceDataModel = await danceRepository.getById(event.danceId);
@@ -35,14 +37,15 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
 
       emit(state.copyWith(
         status: DanceDetailStatus.refreshingSuccess,
-        ofId: danceViewModel.id,
-        dance: danceViewModel,
+        ofId: Optional.of(danceViewModel.id),
+        dance: Optional.of(danceViewModel),
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: DanceDetailStatus.refreshingFailure,
-        ofId: event.danceId,
-        error: error,
+        ofId: Optional.of(event.danceId),
+        error: Optional.of(error),
       ));
     }
   }
@@ -63,13 +66,14 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
 
       emit(state.copyWith(
         status: DanceDetailStatus.refreshingSuccess,
-        ofId: danceViewModel.id,
-        dance: danceViewModel,
+        ofId: Optional.of(danceViewModel.id),
+        dance: Optional.of(danceViewModel),
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: DanceDetailStatus.refreshingFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -90,7 +94,7 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
     } on Error catch (error) {
       emit(state.copyWith(
         status: DanceDetailStatus.deleteFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }

@@ -5,6 +5,7 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quiver/core.dart';
 
 class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
   final DanceRepository danceRepository;
@@ -27,9 +28,11 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     Emitter<DanceListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onDanceListLoad');
+
     try {
       emit(state.copyWith(
         status: DanceListStatus.loading,
+        error: const Optional.absent(),
       ));
 
       final List<DanceViewModel> danceViewModels;
@@ -42,16 +45,17 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
 
       emit(state.copyWith(
         status: DanceListStatus.loadingSuccess,
-        ofSearch: event.ofSearch,
-        ofArtist: event.ofArtist,
-        ofVideo: event.ofVideo,
+        ofSearch: Optional.fromNullable(event.ofSearch),
+        ofArtist: Optional.fromNullable(event.ofArtist),
+        ofVideo: Optional.fromNullable(event.ofVideo),
         dances: danceViewModels,
         hasReachedMax: danceViewModels.isEmpty,
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: DanceListStatus.loadingFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -61,9 +65,11 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     Emitter<DanceListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onDanceListLoadMore');
+
     try {
       emit(state.copyWith(
         status: DanceListStatus.loading,
+        error: const Optional.absent(),
       ));
 
       final List<DanceViewModel> danceViewModels;
@@ -78,11 +84,12 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
         status: DanceListStatus.loadingSuccess,
         dances: List.of(state.dances)..addAll(danceViewModels),
         hasReachedMax: danceViewModels.isEmpty,
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: DanceListStatus.loadingFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -92,6 +99,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     Emitter<DanceListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onDanceListRefresh');
+
     try {
       emit(state.copyWith(
         status: DanceListStatus.refreshing,
@@ -108,11 +116,12 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
         status: DanceListStatus.refreshingSuccess,
         dances: danceViewModels,
         hasReachedMax: false,
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: DanceListStatus.refreshingFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -151,6 +160,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
     Emitter<DanceListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onDanceListSelect');
+
     if (state.selectedDances.isEmpty) return;
 
     try {
@@ -162,12 +172,13 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
             ..removeWhere((element) => element.id == dance.id),
           selectedDances: List.of(state.selectedDances)
             ..removeWhere((element) => element.id == dance.id),
+          error: const Optional.absent(),
         ));
       }
     } on Error catch (error) {
       emit(state.copyWith(
         status: DanceListStatus.deleteFailure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -181,6 +192,7 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
   }) async {
     assert(ofSearch == null || (ofArtist == null && ofVideo == null));
     if (kDebugMode) print('$runtimeType:_fetchDances');
+
     List<DanceEntity> danceEntities;
 
     if (ofSearch != null) {

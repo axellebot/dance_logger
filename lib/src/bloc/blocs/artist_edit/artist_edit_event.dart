@@ -40,7 +40,7 @@ class ArtistEditChangeName extends ArtistEditEvent {
 }
 
 class ArtistEditChangeImageUrl extends ArtistEditEvent {
-  final String artistImageUrl;
+  final String? artistImageUrl;
 
   const ArtistEditChangeImageUrl({required this.artistImageUrl}) : super();
 

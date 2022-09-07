@@ -27,6 +27,7 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     Emitter<MomentListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onMomentListLoad');
+
     try {
       emit(state.copyWith(
         status: MomentListStatus.loading,
@@ -60,6 +61,7 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     Emitter<MomentListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onMomentListLoadMore');
+
     try {
       emit(state.copyWith(
         status: MomentListStatus.loading,
@@ -91,6 +93,7 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     Emitter<MomentListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onMomentListRefresh');
+
     try {
       emit(state.copyWith(
         status: MomentListStatus.refreshing,
@@ -150,8 +153,8 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     Emitter<MomentListState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onMomentListSelect');
-    if (state.selectedMoments.isEmpty) return;
 
+    if (state.selectedMoments.isEmpty) return;
     try {
       for (MomentViewModel moment in state.selectedMoments) {
         await momentRepository.deleteById(moment.id);
@@ -179,8 +182,8 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
     int limit = 10,
   }) async {
     if (kDebugMode) print('$runtimeType:_fetchMoments');
-    List<MomentEntity> momentEntities;
 
+    List<MomentEntity> momentEntities;
     if (ofArtist != null) {
       momentEntities = await momentRepository.getMomentsOfArtist(
         ofArtist,

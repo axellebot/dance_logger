@@ -22,8 +22,7 @@ class ImplPracticeRepository extends PracticeRepository {
     bool force = false,
   }) async {
     if (kDebugMode) print('$runtimeType:getById($id)');
-    final dataModel = await factory.databaseDataStore.getPractice(id);
-    return dataModel;
+    return await factory.databaseDataStore.getPractice(id);
   }
 
   @override
@@ -40,10 +39,9 @@ class ImplPracticeRepository extends PracticeRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getList()');
-    final dataModels = await factory.databaseDataStore.getPractices(
+    return await factory.databaseDataStore.getPractices(
       offset: offset,
     );
-    return dataModels;
   }
 
   @override
@@ -55,11 +53,10 @@ class ImplPracticeRepository extends PracticeRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getPracticesOfFigure($figureId)');
-    final dataModels = factory.databaseDataStore.getPracticesOfFigure(
+    return await factory.databaseDataStore.getPracticesOfFigure(
       figureId,
       offset: offset,
     );
-    return dataModels;
   }
 
   @override
@@ -71,10 +68,9 @@ class ImplPracticeRepository extends PracticeRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getPracticesOfUser($userId)');
-    final dataModels = await factory.databaseDataStore.getPracticesOfUser(
+    return await factory.databaseDataStore.getPracticesOfUser(
       userId,
       offset: offset,
     );
-    return dataModels;
   }
 }

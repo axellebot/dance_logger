@@ -1,5 +1,6 @@
 import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
+import 'package:quiver/core.dart';
 
 enum FigureDetailStatus {
   initial,
@@ -12,7 +13,6 @@ enum FigureDetailStatus {
 
 class FigureDetailState extends Equatable {
   final FigureDetailStatus status;
-
   final String? ofId;
   final FigureViewModel? figure;
   final Error? error;
@@ -25,19 +25,24 @@ class FigureDetailState extends Equatable {
   }) : super();
 
   @override
-  List<Object?> get props => [status, ofId, figure, error];
+  List<Object?> get props => [
+        status,
+        ofId,
+        figure,
+        error,
+      ];
 
   FigureDetailState copyWith({
     FigureDetailStatus? status,
-    String? ofId,
-    FigureViewModel? figure,
-    Error? error,
+    Optional<String>? ofId,
+    Optional<FigureViewModel>? figure,
+    Optional<Error>? error,
   }) {
     return FigureDetailState(
       status: status ?? this.status,
-      ofId: ofId ?? this.ofId,
-      figure: figure ?? this.figure,
-      error: error ?? this.error,
+      ofId: ofId?.orNull ?? this.ofId,
+      figure: figure?.orNull ?? this.figure,
+      error: error?.orNull ?? this.error,
     );
   }
 

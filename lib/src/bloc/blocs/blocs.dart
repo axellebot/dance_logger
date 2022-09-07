@@ -9,6 +9,7 @@ export './dance_edit/dance_edit.dart';
 export './dance_list/dance_list.dart';
 export './figure_detail/figure_detail.dart';
 export './figure_list/figure_list.dart';
+export './moment_edit/moment_edit.dart';
 export './moment_list/moment_list.dart';
 export './practice_detail/practice_detail.dart';
 export './practice_list/practice_list.dart';

@@ -40,6 +40,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
     Emitter<ConfigState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onConfigLoad');
+
     try {
       emit(state.copyWith(
         status: ConfigStatus.loading,
@@ -58,6 +59,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
     Emitter<ConfigState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onConfigChange');
+
     try {
       emit(state.copyWith(
         status: ConfigStatus.loading,
@@ -81,6 +83,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
 
   Future<void> _loadConfig(Emitter<ConfigState> emit) async {
     if (kDebugMode) print('$runtimeType:_loadConfig');
+
     try {
       String? fileDirPath = await _appPrefsRepository?.getFileDir();
       String? fileName = await _appPrefsRepository?.getFileName();

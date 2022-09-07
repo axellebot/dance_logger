@@ -41,23 +41,25 @@ class _$AppRouter extends RootStackRouter {
               ofVideo: args.ofVideo));
     },
     ArtistCreateRoute.name: (routeData) {
-      final args = routeData.argsAs<ArtistCreateRouteArgs>(
-          orElse: () => const ArtistCreateRouteArgs());
       return MaterialPageX<dynamic>(
-          routeData: routeData, child: ArtistCreatePage(key: args.key));
+          routeData: routeData,
+          child: WrappedRoute(child: const ArtistCreatePage()));
     },
     ArtistDetailsRoute.name: (routeData) {
       final args = routeData.argsAs<ArtistDetailsRouteArgs>();
       return MaterialPageX<dynamic>(
           routeData: routeData,
-          child: ArtistDetailsPage(key: args.key, artistId: args.artistId));
+          child: WrappedRoute(
+              child:
+                  ArtistDetailsPage(key: args.key, artistId: args.artistId)));
     },
     ArtistEditRoute.name: (routeData) {
       final args = routeData.argsAs<ArtistEditRouteArgs>(
           orElse: () => const ArtistEditRouteArgs());
       return MaterialPageX<dynamic>(
           routeData: routeData,
-          child: ArtistEditPage(key: args.key, artistId: args.artistId));
+          child: WrappedRoute(
+              child: ArtistEditPage(key: args.key, artistId: args.artistId)));
     },
     DanceListRoute.name: (routeData) {
       final args = routeData.argsAs<DanceListRouteArgs>(
@@ -74,23 +76,24 @@ class _$AppRouter extends RootStackRouter {
               ofVideo: args.ofVideo));
     },
     DanceCreateRoute.name: (routeData) {
-      final args = routeData.argsAs<DanceCreateRouteArgs>(
-          orElse: () => const DanceCreateRouteArgs());
       return MaterialPageX<dynamic>(
-          routeData: routeData, child: DanceCreatePage(key: args.key));
+          routeData: routeData,
+          child: WrappedRoute(child: const DanceCreatePage()));
     },
     DanceDetailsRoute.name: (routeData) {
       final args = routeData.argsAs<DanceDetailsRouteArgs>();
       return MaterialPageX<dynamic>(
           routeData: routeData,
-          child: DanceDetailsPage(key: args.key, danceId: args.danceId));
+          child: WrappedRoute(
+              child: DanceDetailsPage(key: args.key, danceId: args.danceId)));
     },
     DanceEditRoute.name: (routeData) {
       final args = routeData.argsAs<DanceEditRouteArgs>(
           orElse: () => const DanceEditRouteArgs());
       return MaterialPageX<dynamic>(
           routeData: routeData,
-          child: DanceEditPage(key: args.key, danceId: args.danceId));
+          child: WrappedRoute(
+              child: DanceEditPage(key: args.key, danceId: args.danceId)));
     },
     FigureListRoute.name: (routeData) {
       final args = routeData.argsAs<FigureListRouteArgs>(
@@ -108,23 +111,24 @@ class _$AppRouter extends RootStackRouter {
     },
     FigureCreateRoute.name: (routeData) {
       return MaterialPageX<dynamic>(
-          routeData: routeData, child: const FigureCreatePage());
+          routeData: routeData,
+          child: WrappedRoute(child: const FigureCreatePage()));
     },
     FigureDetailsRoute.name: (routeData) {
       final args = routeData.argsAs<FigureDetailsRouteArgs>();
       return MaterialPageX<dynamic>(
           routeData: routeData,
-          child: FigureDetailsPage(key: args.key, figureId: args.figureId));
+          child: WrappedRoute(
+              child:
+                  FigureDetailsPage(key: args.key, figureId: args.figureId)));
     },
     FigureEditRoute.name: (routeData) {
       final args = routeData.argsAs<FigureEditRouteArgs>(
           orElse: () => const FigureEditRouteArgs());
       return MaterialPageX<dynamic>(
           routeData: routeData,
-          child: FigureEditPage(
-              key: args.key,
-              figureBloc: args.figureBloc,
-              figureId: args.figureId));
+          child: WrappedRoute(
+              child: FigureEditPage(key: args.key, figureId: args.figureId)));
     },
     PracticeListRoute.name: (routeData) {
       final args = routeData.argsAs<PracticeListRouteArgs>(
@@ -143,21 +147,25 @@ class _$AppRouter extends RootStackRouter {
     },
     PracticeCreateRoute.name: (routeData) {
       return MaterialPageX<dynamic>(
-          routeData: routeData, child: const PracticeCreatePage());
+          routeData: routeData,
+          child: WrappedRoute(child: const PracticeCreatePage()));
     },
     PracticeDetailsRoute.name: (routeData) {
       final args = routeData.argsAs<PracticeDetailsRouteArgs>();
       return MaterialPageX<dynamic>(
           routeData: routeData,
-          child:
-              PracticeDetailsPage(key: args.key, practiceId: args.practiceId));
+          child: WrappedRoute(
+              child: PracticeDetailsPage(
+                  key: args.key, practiceId: args.practiceId)));
     },
     PracticeEditRoute.name: (routeData) {
       final args = routeData.argsAs<PracticeEditRouteArgs>(
           orElse: () => const PracticeEditRouteArgs());
       return MaterialPageX<dynamic>(
           routeData: routeData,
-          child: PracticeEditPage(key: args.key, practiceId: args.practiceId));
+          child: WrappedRoute(
+              child: PracticeEditPage(
+                  key: args.key, practiceId: args.practiceId)));
     },
     VideoListRoute.name: (routeData) {
       final args = routeData.argsAs<VideoListRouteArgs>(
@@ -175,23 +183,24 @@ class _$AppRouter extends RootStackRouter {
               ofFigure: args.ofFigure));
     },
     VideoCreateRoute.name: (routeData) {
-      final args = routeData.argsAs<VideoCreateRouteArgs>(
-          orElse: () => const VideoCreateRouteArgs());
       return MaterialPageX<dynamic>(
-          routeData: routeData, child: VideoCreatePage(key: args.key));
+          routeData: routeData,
+          child: WrappedRoute(child: const VideoCreatePage()));
     },
     VideoDetailsRoute.name: (routeData) {
       final args = routeData.argsAs<VideoDetailsRouteArgs>();
       return MaterialPageX<dynamic>(
           routeData: routeData,
-          child: VideoDetailsPage(key: args.key, videoId: args.videoId));
+          child: WrappedRoute(
+              child: VideoDetailsPage(key: args.key, videoId: args.videoId)));
     },
     VideoEditRoute.name: (routeData) {
       final args = routeData.argsAs<VideoEditRouteArgs>(
           orElse: () => const VideoEditRouteArgs());
       return MaterialPageX<dynamic>(
           routeData: routeData,
-          child: VideoEditPage(key: args.key, videoId: args.videoId));
+          child: WrappedRoute(
+              child: VideoEditPage(key: args.key, videoId: args.videoId)));
     }
   };
 
@@ -326,23 +335,11 @@ class ArtistListRouteArgs {
 
 /// generated route for
 /// [ArtistCreatePage]
-class ArtistCreateRoute extends PageRouteInfo<ArtistCreateRouteArgs> {
-  ArtistCreateRoute({Key? key})
-      : super(ArtistCreateRoute.name,
-            path: 'artists/create', args: ArtistCreateRouteArgs(key: key));
+class ArtistCreateRoute extends PageRouteInfo<void> {
+  const ArtistCreateRoute()
+      : super(ArtistCreateRoute.name, path: 'artists/create');
 
   static const String name = 'ArtistCreateRoute';
-}
-
-class ArtistCreateRouteArgs {
-  const ArtistCreateRouteArgs({this.key});
-
-  final Key? key;
-
-  @override
-  String toString() {
-    return 'ArtistCreateRouteArgs{key: $key}';
-  }
 }
 
 /// generated route for
@@ -450,23 +447,11 @@ class DanceListRouteArgs {
 
 /// generated route for
 /// [DanceCreatePage]
-class DanceCreateRoute extends PageRouteInfo<DanceCreateRouteArgs> {
-  DanceCreateRoute({Key? key})
-      : super(DanceCreateRoute.name,
-            path: 'dances/create', args: DanceCreateRouteArgs(key: key));
+class DanceCreateRoute extends PageRouteInfo<void> {
+  const DanceCreateRoute()
+      : super(DanceCreateRoute.name, path: 'dances/create');
 
   static const String name = 'DanceCreateRoute';
-}
-
-class DanceCreateRouteArgs {
-  const DanceCreateRouteArgs({this.key});
-
-  final Key? key;
-
-  @override
-  String toString() {
-    return 'DanceCreateRouteArgs{key: $key}';
-  }
 }
 
 /// generated route for
@@ -608,27 +593,24 @@ class FigureDetailsRouteArgs {
 /// generated route for
 /// [FigureEditPage]
 class FigureEditRoute extends PageRouteInfo<FigureEditRouteArgs> {
-  FigureEditRoute({Key? key, FigureDetailBloc? figureBloc, String? figureId})
+  FigureEditRoute({Key? key, String? figureId})
       : super(FigureEditRoute.name,
             path: 'figures/:figureId/edit',
-            args: FigureEditRouteArgs(
-                key: key, figureBloc: figureBloc, figureId: figureId));
+            args: FigureEditRouteArgs(key: key, figureId: figureId));
 
   static const String name = 'FigureEditRoute';
 }
 
 class FigureEditRouteArgs {
-  const FigureEditRouteArgs({this.key, this.figureBloc, this.figureId});
+  const FigureEditRouteArgs({this.key, this.figureId});
 
   final Key? key;
-
-  final FigureDetailBloc? figureBloc;
 
   final String? figureId;
 
   @override
   String toString() {
-    return 'FigureEditRouteArgs{key: $key, figureBloc: $figureBloc, figureId: $figureId}';
+    return 'FigureEditRouteArgs{key: $key, figureId: $figureId}';
   }
 }
 
@@ -811,23 +793,11 @@ class VideoListRouteArgs {
 
 /// generated route for
 /// [VideoCreatePage]
-class VideoCreateRoute extends PageRouteInfo<VideoCreateRouteArgs> {
-  VideoCreateRoute({Key? key})
-      : super(VideoCreateRoute.name,
-            path: 'videos/create', args: VideoCreateRouteArgs(key: key));
+class VideoCreateRoute extends PageRouteInfo<void> {
+  const VideoCreateRoute()
+      : super(VideoCreateRoute.name, path: 'videos/create');
 
   static const String name = 'VideoCreateRoute';
-}
-
-class VideoCreateRouteArgs {
-  const VideoCreateRouteArgs({this.key});
-
-  final Key? key;
-
-  @override
-  String toString() {
-    return 'VideoCreateRouteArgs{key: $key}';
-  }
 }
 
 /// generated route for

@@ -23,9 +23,7 @@ class ImplDanceRepository extends DanceRepository {
     bool force = false,
   }) async {
     if (kDebugMode) print('$runtimeType:getById($id)');
-    DanceDataModel dataModel;
-    dataModel = await factory.databaseDataStore.getDance(id);
-    return dataModel;
+    return await factory.databaseDataStore.getDance(id);
   }
 
   @override
@@ -42,10 +40,9 @@ class ImplDanceRepository extends DanceRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getList()');
-    final dataModels = await factory.databaseDataStore.getDances(
+    return await factory.databaseDataStore.getDances(
       offset: offset,
     );
-    return dataModels;
   }
 
   @override
@@ -57,11 +54,10 @@ class ImplDanceRepository extends DanceRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getListOfSearch($search)');
-    final dataModels = await factory.databaseDataStore.getDancesOfSearch(
+    return await factory.databaseDataStore.getDancesOfSearch(
       search,
       offset: offset,
     );
-    return dataModels;
   }
 
   @override
@@ -73,11 +69,10 @@ class ImplDanceRepository extends DanceRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getDancesOfArtist($artistId)');
-    final dataModels = await factory.databaseDataStore.getDancesOfArtist(
+    return await factory.databaseDataStore.getDancesOfArtist(
       artistId,
       offset: offset,
     );
-    return dataModels;
   }
 
   @override

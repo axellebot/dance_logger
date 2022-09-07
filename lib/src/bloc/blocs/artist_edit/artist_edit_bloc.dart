@@ -5,6 +5,7 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quiver/core.dart';
 
 class ArtistEditBloc extends Bloc<ArtistEditEvent, ArtistEditState> {
   final ArtistRepository artistRepository;
@@ -26,9 +27,11 @@ class ArtistEditBloc extends Bloc<ArtistEditEvent, ArtistEditState> {
     Emitter<ArtistEditState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onArtistEditStart');
+
     try {
       emit(state.copyWith(
         status: ArtistEditStatus.loading,
+        ofId: Optional.fromNullable(event.artistId),
       ));
 
       ArtistViewModel? artistViewModel;
@@ -40,12 +43,15 @@ class ArtistEditBloc extends Bloc<ArtistEditEvent, ArtistEditState> {
 
       emit(state.copyWith(
         status: ArtistEditStatus.ready,
-        initialArtist: artistViewModel,
+        ofId: Optional.fromNullable(event.artistId),
+        initialArtist: Optional.fromNullable(artistViewModel),
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
-      emit(ArtistEditState(
+      emit(state.copyWith(
         status: ArtistEditStatus.failure,
-        error: error,
+        ofId: Optional.fromNullable(event.artistId),
+        error: Optional.of(error),
       ));
     }
   }
@@ -55,7 +61,10 @@ class ArtistEditBloc extends Bloc<ArtistEditEvent, ArtistEditState> {
     Emitter<ArtistEditState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onArtistEditChangeName');
-    emit(state.copyWith(artistName: event.artistName));
+
+    emit(state.copyWith(
+      artistName: Optional.of(event.artistName),
+    ));
   }
 
   FutureOr<void> _onArtistEditChangeImageUrl(
@@ -63,7 +72,10 @@ class ArtistEditBloc extends Bloc<ArtistEditEvent, ArtistEditState> {
     Emitter<ArtistEditState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onArtistEditChangeImageUrl');
-    emit(state.copyWith(artistImageUrl: event.artistImageUrl));
+
+    emit(state.copyWith(
+      artistImageUrl: Optional.fromNullable(event.artistImageUrl),
+    ));
   }
 
   FutureOr<void> _onArtistEditSubmit(
@@ -71,6 +83,7 @@ class ArtistEditBloc extends Bloc<ArtistEditEvent, ArtistEditState> {
     Emitter<ArtistEditState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onArtistEditSubmit');
+
     try {
       emit(state.copyWith(
         status: ArtistEditStatus.loading,
@@ -78,11 +91,11 @@ class ArtistEditBloc extends Bloc<ArtistEditEvent, ArtistEditState> {
       ArtistViewModel artistViewModel;
 
       if (state.initialArtist != null) {
-        artistViewModel = state.initialArtist!;
-        artistViewModel.change(
+        artistViewModel = state.initialArtist!.copyWith(
           name: state.artistName,
-          imageUrl: state.artistImageUrl,
+          imageUrl: Optional.fromNullable(state.artistImageUrl),
         );
+        artistViewModel.incrementVersion();
       } else {
         artistViewModel = ArtistViewModel.createNew(
           name: state.artistName!,
@@ -96,12 +109,13 @@ class ArtistEditBloc extends Bloc<ArtistEditEvent, ArtistEditState> {
 
       emit(ArtistEditState(
         status: ArtistEditStatus.editSuccess,
+        ofId: artistViewModel.id,
         initialArtist: artistViewModel,
       ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: ArtistEditStatus.failure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }
@@ -111,6 +125,7 @@ class ArtistEditBloc extends Bloc<ArtistEditEvent, ArtistEditState> {
     Emitter<ArtistEditState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onArtistEditDelete');
+
     if (state.initialArtist == null) return;
     try {
       emit(state.copyWith(
@@ -125,7 +140,7 @@ class ArtistEditBloc extends Bloc<ArtistEditEvent, ArtistEditState> {
     } on Error catch (error) {
       emit(state.copyWith(
         status: ArtistEditStatus.failure,
-        error: error,
+        error: Optional.of(error),
       ));
     }
   }

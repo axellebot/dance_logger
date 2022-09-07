@@ -5,10 +5,6 @@ class VideoViewModel extends BaseViewModel {
   String name;
   String url;
 
-  late List<ArtistViewModel>? artists;
-  late List<FigureViewModel>? figures;
-  late List<MomentViewModel>? times;
-
   VideoViewModel({
     required super.id,
     required this.name,
@@ -32,26 +28,31 @@ class VideoViewModel extends BaseViewModel {
     );
   }
 
-  change({
-    String? name,
-    String? url,
-  }) {
-    if (name != null) this.name = name;
-    if (url != null) this.url = url;
-    updatedAt = DateTime.now();
-    version++;
-  }
-
   @override
   String toString() => '$runtimeType{'
       'id: $id, '
       'name: $name, '
       'url: $url, '
-      'artists: $artists, '
-      'figures: $figures, '
-      'times: $times, '
       'createdAt: $createdAt, '
       'updatedAt: $updatedAt, '
       'version: $version'
       '}';
+
+  VideoViewModel copyWith({
+    String? id,
+    String? name,
+    String? url,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? version,
+  }) {
+    return VideoViewModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      url: url ?? this.url,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      version: version ?? this.version,
+    );
+  }
 }

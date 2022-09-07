@@ -200,19 +200,16 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
 }
 
 class VideoCreatePage extends VideoEditPage {
-  VideoCreatePage({super.key});
+  const VideoCreatePage({super.key});
 }
 
-/// TODO : Force name and url
 class VideoEditPage extends StatelessWidget implements AutoRouteWrapper {
-  late final String? _videoId;
+  final String? videoId;
 
-  VideoEditPage({
+  const VideoEditPage({
     super.key,
-    String? videoId,
-  }) {
-    _videoId = videoId;
-  }
+    this.videoId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -275,7 +272,7 @@ class VideoEditPage extends StatelessWidget implements AutoRouteWrapper {
       create: (_) => VideoEditBloc(
         videoRepository: RepositoryProvider.of<VideoRepository>(context),
         mapper: ModelMapper(),
-      )..add(VideoEditStart(videoId: _videoId)),
+      )..add(VideoEditStart(videoId: videoId)),
       child: this,
     );
   }

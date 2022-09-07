@@ -21,12 +21,7 @@ class ImplVideoRepository extends VideoRepository {
     bool force = false,
   }) async {
     if (kDebugMode) print('$runtimeType:getById($id)');
-
-    VideoDataModel dataModel;
-
-    dataModel = await factory.databaseDataStore.getVideo(id);
-
-    return dataModel;
+    return await factory.databaseDataStore.getVideo(id);
   }
 
   @override
@@ -43,10 +38,9 @@ class ImplVideoRepository extends VideoRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getList()');
-    final dataModels = await factory.databaseDataStore.getVideos(
+    return await factory.databaseDataStore.getVideos(
       offset: offset,
     );
-    return dataModels;
   }
 
   @override
@@ -58,11 +52,10 @@ class ImplVideoRepository extends VideoRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getListOfSearch($search)');
-    final dataModels = await factory.databaseDataStore.getVideosOfSearch(
+    return await factory.databaseDataStore.getVideosOfSearch(
       search,
       offset: offset,
     );
-    return dataModels;
   }
 
   @override
@@ -74,11 +67,10 @@ class ImplVideoRepository extends VideoRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getVideosOfArtist($artistId)');
-    final dataModels = await factory.databaseDataStore.getVideosOfArtist(
+    return await factory.databaseDataStore.getVideosOfArtist(
       artistId,
       offset: offset,
     );
-    return dataModels;
   }
 
   @override
@@ -90,21 +82,24 @@ class ImplVideoRepository extends VideoRepository {
     /// TODO: Add sort
   }) async {
     if (kDebugMode) print('$runtimeType:getVideosOfFigure($figureId)');
-    final dataModels = await factory.databaseDataStore.getVideosOfFigure(
+    return await factory.databaseDataStore.getVideosOfFigure(
       figureId,
       offset: offset,
     );
-    return dataModels;
   }
 
   @override
-  FutureOr<List<VideoEntity>> getVideosOfDance(String danceId,
-      {required Offset offset}) async {
+  FutureOr<List<VideoEntity>> getVideosOfDance(
+    String danceId, {
+    required Offset offset,
+
+    /// TODO: Add filters
+    /// TODO: Add sort
+  }) async {
     if (kDebugMode) print('$runtimeType:getVideosOfDance($danceId)');
-    final dataModels = await factory.databaseDataStore.getVideosOfDance(
+    return await factory.databaseDataStore.getVideosOfDance(
       danceId,
       offset: offset,
     );
-    return dataModels;
   }
 }

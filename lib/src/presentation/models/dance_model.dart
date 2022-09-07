@@ -4,19 +4,16 @@ import 'package:uuid/uuid.dart';
 class DanceViewModel extends BaseViewModel {
   String name;
 
-  List<FigureViewModel>? figures;
-
   DanceViewModel({
     required super.id,
     required this.name,
-    this.figures,
     required super.createdAt,
     required super.updatedAt,
     required super.version,
   });
 
   factory DanceViewModel.createNew({
-    String name = '',
+    required String name,
   }) {
     return DanceViewModel(
       id: const Uuid().v4(),
@@ -27,21 +24,26 @@ class DanceViewModel extends BaseViewModel {
     );
   }
 
-  change({
+  DanceViewModel copyWith({
+    String? id,
     String? name,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? version,
   }) {
-    if (name != null) {
-      this.name = name;
-    }
-    updatedAt = DateTime.now();
-    version++;
+    return DanceViewModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      version: version ?? this.version,
+    );
   }
 
   @override
   String toString() => '$runtimeType{'
       'id: $id, '
       'name: $name, '
-      'figures: $figures, '
       'createdAt: $createdAt, '
       'updatedAt: $updatedAt, '
       'version: $version'

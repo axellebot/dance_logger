@@ -91,9 +91,25 @@ class ModelMapper {
       startTime: Duration(seconds: entity.startTime),
       endTime:
           entity.endTime != null ? Duration(seconds: entity.endTime!) : null,
+      figureId: entity.figureId,
+      videoId: entity.videoId,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       version: entity.version,
+    );
+  }
+
+  /// [MomentViewModel] to [MomentEntity]
+  MomentEntity toMomentEntity(MomentViewModel viewModel) {
+    return MomentDataModel(
+      id: viewModel.id,
+      startTime: viewModel.startTime.inSeconds,
+      endTime: viewModel.startTime.inSeconds,
+      figureId: viewModel.figureId,
+      videoId: viewModel.videoId,
+      createdAt: viewModel.createdAt,
+      updatedAt: viewModel.updatedAt,
+      version: viewModel.version,
     );
   }
 
