@@ -50,7 +50,7 @@ class MomentViewModel extends BaseViewModel {
     return MomentViewModel(
       id: id ?? this.id,
       startTime: startTime ?? this.startTime,
-      endTime: endTime?.orNull ?? this.endTime,
+      endTime: endTime != null ? endTime.orNull : this.endTime,
       videoId: videoId ?? this.videoId,
       figureId: figureId ?? this.figureId,
       createdAt: createdAt ?? this.createdAt,

@@ -59,34 +59,34 @@ class MomentListRefresh extends MomentListEvent {
 }
 
 class MomentListSelect extends MomentListEvent {
-  final MomentViewModel moment;
+  final List<MomentViewModel> moments;
 
   const MomentListSelect({
-    required this.moment,
+    required this.moments,
   });
 
   @override
-  List<Object?> get props => [moment];
+  List<Object?> get props => [moments];
 
   @override
   String toString() => 'MomentListSelect{'
-      'moment: $moment'
+      'moments: $moments'
       '}';
 }
 
 class MomentListUnselect extends MomentListEvent {
-  final MomentViewModel? moment;
+  final List<MomentViewModel>? moments;
 
   const MomentListUnselect({
-    this.moment,
+    this.moments,
   });
 
   @override
-  List<Object?> get props => [moment];
+  List<Object?> get props => [moments];
 
   @override
   String toString() => 'MomentListUnselect{'
-      'moment: $moment'
+      'moments: $moments'
       '}';
 }
 

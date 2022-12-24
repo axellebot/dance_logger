@@ -16,13 +16,13 @@ class MomentEditState extends Equatable {
   final String? ofId;
   final MomentViewModel? initialMoment;
   final Duration? startTime;
-  final Duration? endTime;
+  final Optional<Duration>? endTime;
   final FigureViewModel? initialFigure;
   final FigureViewModel? figure;
   final VideoViewModel? initialVideo;
   final VideoViewModel? video;
-  final List<ArtistViewModel> initialArtists;
-  final List<ArtistViewModel> artists;
+  final List<ArtistViewModel>? initialArtists;
+  final List<ArtistViewModel>? artists;
   final Error? error;
 
   const MomentEditState({
@@ -35,8 +35,8 @@ class MomentEditState extends Equatable {
     this.figure,
     this.initialVideo,
     this.video,
-    this.initialArtists = const <ArtistViewModel>[],
-    this.artists = const <ArtistViewModel>[],
+    this.initialArtists,
+    this.artists,
     this.error,
   }) : super();
 
@@ -66,23 +66,27 @@ class MomentEditState extends Equatable {
     Optional<FigureViewModel>? figure,
     Optional<VideoViewModel>? initialVideo,
     Optional<VideoViewModel>? video,
-    List<ArtistViewModel>? initialArtists,
-    List<ArtistViewModel>? artists,
+    Optional<List<ArtistViewModel>>? initialArtists,
+    Optional<List<ArtistViewModel>>? artists,
     Optional<Error>? error,
   }) {
     return MomentEditState(
       status: status ?? this.status,
-      ofId: ofId?.orNull ?? this.ofId,
-      initialMoment: initialMoment?.orNull ?? this.initialMoment,
-      startTime: startTime?.orNull ?? this.startTime,
-      endTime: endTime?.orNull ?? this.endTime,
-      initialFigure: initialFigure?.orNull ?? this.initialFigure,
-      figure: figure?.orNull ?? this.figure,
-      initialVideo: initialVideo?.orNull ?? this.initialVideo,
-      video: video?.orNull ?? this.video,
-      initialArtists: initialArtists ?? this.initialArtists,
-      artists: artists ?? this.artists,
-      error: error?.orNull ?? this.error,
+      ofId: ofId != null ? ofId.orNull : this.ofId,
+      initialMoment:
+          initialMoment != null ? initialMoment.orNull : this.initialMoment,
+      startTime: startTime != null ? startTime.orNull : this.startTime,
+      endTime: endTime ?? this.endTime,
+      initialFigure:
+          initialFigure != null ? initialFigure.orNull : this.initialFigure,
+      figure: figure != null ? figure.orNull : this.figure,
+      initialVideo:
+          initialVideo != null ? initialVideo.orNull : this.initialVideo,
+      video: video != null ? video.orNull : this.video,
+      initialArtists:
+          initialArtists != null ? initialArtists.orNull : this.initialArtists,
+      artists: artists != null ? artists.orNull : this.artists,
+      error: error != null ? error.orNull : this.error,
     );
   }
 

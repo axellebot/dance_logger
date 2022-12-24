@@ -29,6 +29,9 @@ class PracticeListBlocProvider extends StatelessWidget
   @override
   final String? ofVideo;
 
+  /// Selection
+  final List<PracticeViewModel>? preselectedPractices;
+
   /// Widget params
   final Widget child;
 
@@ -42,6 +45,9 @@ class PracticeListBlocProvider extends StatelessWidget
     this.ofFigure,
     this.ofVideo,
 
+    /// Selection
+    this.preselectedPractices,
+
     /// Widget params
     required this.child,
   }) : assert(practiceListBloc == null ||
@@ -52,24 +58,37 @@ class PracticeListBlocProvider extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    return (practiceListBloc != null)
-        ? BlocProvider<PracticeListBloc>.value(
-            value: practiceListBloc!,
-            child: child,
-          )
-        : BlocProvider<PracticeListBloc>(
-            create: (context) => PracticeListBloc(
-              practiceRepository:
-                  Provider.of<PracticeRepository>(context, listen: false),
-              mapper: ModelMapper(),
-            )..add(PracticeListLoad(
-                ofArtist: ofArtist,
-                ofDance: ofDance,
-                ofFigure: ofFigure,
-                ofVideo: ofVideo,
-              )),
-            child: child,
+    if ((practiceListBloc != null)) {
+      return BlocProvider<PracticeListBloc>.value(
+        value: practiceListBloc!,
+        child: child,
+      );
+    } else {
+      return BlocProvider<PracticeListBloc>(
+        create: (context) {
+          final practiceListBloc = PracticeListBloc(
+            practiceRepository:
+                Provider.of<PracticeRepository>(context, listen: false),
+            mapper: ModelMapper(),
           );
+
+          if (preselectedPractices?.isNotEmpty ?? false) {
+            practiceListBloc
+                .add(PracticeListSelect(practices: preselectedPractices!));
+          }
+
+          practiceListBloc.add(PracticeListLoad(
+            ofArtist: ofArtist,
+            ofDance: ofDance,
+            ofFigure: ofFigure,
+            ofVideo: ofVideo,
+          ));
+
+          return practiceListBloc;
+        },
+        child: child,
+      );
+    }
   }
 }
 
@@ -182,9 +201,9 @@ class _PracticeListViewState extends State<PracticeListView> {
                       if (state.selectedPractices.isEmpty) {
                         return PracticeListTile(
                           practice: practice,
-                          onLongPress: () {
+                          onLongPress: (item) {
                             practiceListBloc.add(
-                              PracticeListSelect(practice: practice),
+                              PracticeListSelect(practices: [item]),
                             );
                           },
                         );
@@ -196,8 +215,8 @@ class _PracticeListViewState extends State<PracticeListView> {
                           onChanged: (bool? value) {
                             practiceListBloc.add(
                               (value == true)
-                                  ? PracticeListSelect(practice: practice)
-                                  : PracticeListUnselect(practice: practice),
+                                  ? PracticeListSelect(practices: [practice])
+                                  : PracticeListUnselect(practices: [practice]),
                             );
                           },
                         );

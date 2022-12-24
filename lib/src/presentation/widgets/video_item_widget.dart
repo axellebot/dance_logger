@@ -8,8 +8,8 @@ class VideoListTile extends StatelessWidget {
   final VideoViewModel video;
 
   /// ListTile options
-  final GestureTapCallback? onTap;
-  final GestureLongPressCallback? onLongPress;
+  final ItemCallback<VideoViewModel>? onTap;
+  final ItemCallback<VideoViewModel>? onLongPress;
   final bool selected;
 
   const VideoListTile({
@@ -28,7 +28,7 @@ class VideoListTile extends StatelessWidget {
       title: Text(video.name),
       leading: (isYoutube(video.url))
           ? Hero(
-              tag: video.id,
+              tag: 'img-${video.id}',
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(
                     AppStyles.videoListTileThumbnailRadius),
@@ -45,7 +45,11 @@ class VideoListTile extends StatelessWidget {
           VideoDetailsRoute(videoId: video.id),
         );
       },
-      onLongPress: onLongPress,
+      onLongPress: (onLongPress != null)
+          ? () {
+              onLongPress!(video);
+            }
+          : null,
       selected: selected,
     );
   }
@@ -88,66 +92,29 @@ class VideoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: AppStyles.cardElevation,
-      clipBehavior: Clip.antiAlias,
-      child: SizedBox(
-        width: AppStyles.cardWidth,
-        height: AppStyles.cardHeight,
-        child: InkWell(
-          onTap: () {
-            AutoRouter.of(context).push(
-              VideoDetailsRoute(videoId: video.id),
-            );
-          },
-          child: Stack(
-            fit: StackFit.expand,
-            children: <Widget>[
-              Hero(
-                tag: video.id,
+    return GestureDetector(
+      onTap: () {
+        AutoRouter.of(context).push(
+          VideoDetailsRoute(videoId: video.id),
+        );
+      },
+      child: Column(
+        children: [
+          Expanded(
+            child: Hero(
+              tag: 'img-${video.id}',
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(
+                    AppStyles.videoListTileThumbnailRadius),
                 child: Image.network(
                   'https://img.youtube.com/vi/${getYoutubeId(video.url)}/mqdefault.jpg',
                   fit: BoxFit.cover,
                 ),
               ),
-              _buildGradient(),
-              _buildTitle(),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildGradient() {
-    return Positioned.fill(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: const [0.6, 0.95],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTitle() {
-    return Positioned(
-      left: 5,
-      bottom: 5,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
           Text(
             video.name,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
           ),
         ],
       ),
@@ -174,8 +141,8 @@ class VideoForm extends StatelessWidget {
                   hintText: 'Best video ever',
                 ),
                 initialValue: state.initialVideo?.name,
-                onChanged: (videoName) {
-                  videoEditBloc.add(VideoEditChangeName(videoName: videoName));
+                onChanged: (value) {
+                  videoEditBloc.add(VideoEditChangeName(videoName: value));
                 },
               ),
               const SizedBox(
@@ -187,8 +154,8 @@ class VideoForm extends StatelessWidget {
                   hintText: 'https://youtu.be/qwerty',
                 ),
                 initialValue: state.initialVideo?.url,
-                onChanged: (videoUrl) {
-                  videoEditBloc.add(VideoEditChangeUrl(videoUrl: videoUrl));
+                onChanged: (value) {
+                  videoEditBloc.add(VideoEditChangeUrl(videoUrl: value));
                 },
               ),
             ],

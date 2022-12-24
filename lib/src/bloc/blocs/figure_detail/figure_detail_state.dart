@@ -40,9 +40,9 @@ class FigureDetailState extends Equatable {
   }) {
     return FigureDetailState(
       status: status ?? this.status,
-      ofId: ofId?.orNull ?? this.ofId,
-      figure: figure?.orNull ?? this.figure,
-      error: error?.orNull ?? this.error,
+      ofId: ofId != null ? ofId.orNull : this.ofId,
+      figure: figure != null ? figure.orNull : this.figure,
+      error: error != null ? error.orNull : this.error,
     );
   }
 

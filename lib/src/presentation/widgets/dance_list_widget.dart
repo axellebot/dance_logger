@@ -27,6 +27,9 @@ class DanceListBlocProvider extends StatelessWidget
   @override
   final String? ofVideo;
 
+  /// Selection
+  final List<DanceViewModel>? preselectedDances;
+
   /// Widget params
   final Widget child;
 
@@ -39,6 +42,9 @@ class DanceListBlocProvider extends StatelessWidget
     this.ofArtist,
     this.ofVideo,
 
+    /// Selection
+    this.preselectedDances,
+
     /// Widget params
     required this.child,
   }) : assert(danceListBloc == null ||
@@ -47,23 +53,34 @@ class DanceListBlocProvider extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    return (danceListBloc != null)
-        ? BlocProvider<DanceListBloc>.value(
-            value: danceListBloc!,
-            child: child,
-          )
-        : BlocProvider(
-            create: (context) => DanceListBloc(
-              danceRepository:
-                  Provider.of<DanceRepository>(context, listen: false),
-              mapper: ModelMapper(),
-            )..add(DanceListLoad(
-                ofSearch: ofSearch,
-                ofArtist: ofArtist,
-                ofVideo: ofVideo,
-              )),
-            child: child,
+    if ((danceListBloc != null)) {
+      return BlocProvider<DanceListBloc>.value(
+        value: danceListBloc!,
+        child: child,
+      );
+    } else {
+      return BlocProvider(
+        create: (context) {
+          final danceListBloc = DanceListBloc(
+            danceRepository:
+                Provider.of<DanceRepository>(context, listen: false),
+            mapper: ModelMapper(),
           );
+
+          if (preselectedDances?.isNotEmpty ?? false) {
+            danceListBloc.add(DanceListSelect(dances: preselectedDances!));
+          }
+
+          danceListBloc.add(DanceListLoad(
+            ofSearch: ofSearch,
+            ofArtist: ofArtist,
+            ofVideo: ofVideo,
+          ));
+          return danceListBloc;
+        },
+        child: child,
+      );
+    }
   }
 }
 
@@ -170,9 +187,9 @@ class _DanceListViewState extends State<DanceListView> {
                       if (state.selectedDances.isEmpty) {
                         return DanceListTile(
                           dance: dance,
-                          onLongPress: () {
+                          onLongPress: (item) {
                             danceListBloc.add(
-                              DanceListSelect(dance: dance),
+                              DanceListSelect(dances: [item]),
                             );
                           },
                         );
@@ -184,8 +201,8 @@ class _DanceListViewState extends State<DanceListView> {
                           onChanged: (bool? value) {
                             danceListBloc.add(
                               (value == true)
-                                  ? DanceListSelect(dance: dance)
-                                  : DanceListUnselect(dance: dance),
+                                  ? DanceListSelect(dances: [dance])
+                                  : DanceListUnselect(dances: [dance]),
                             );
                           },
                         );

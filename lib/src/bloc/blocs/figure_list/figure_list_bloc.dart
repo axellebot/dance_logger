@@ -126,10 +126,14 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onFigureListSelect');
 
+    final newSelectedFigures = List.of(state.selectedFigures);
+    for (FigureViewModel figure in event.figures) {
+      newSelectedFigures.removeWhere((element) => element.id == figure.id);
+    }
+    newSelectedFigures.addAll(event.figures);
+
     emit(state.copyWith(
-      selectedFigures: List.of(state.selectedFigures)
-        ..removeWhere((element) => element.id == event.figure.id)
-        ..add(event.figure),
+      selectedFigures: newSelectedFigures,
     ));
   }
 
@@ -139,14 +143,20 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onFigureListUnselect');
 
-    emit((event.figure != null)
-        ? state.copyWith(
-      selectedFigures: List.of(state.selectedFigures)
-              ..removeWhere((element) => element.id == event.figure!.id),
-          )
-        : state.copyWith(
-            selectedFigures: [],
-          ));
+    if (event.figures == null) {
+      return emit(state.copyWith(
+        selectedFigures: [],
+      ));
+    }
+
+    final newSelectedFigures = List.of(state.selectedFigures);
+    for (FigureViewModel figure in event.figures!) {
+      newSelectedFigures.removeWhere((element) => element.id == figure.id);
+    }
+
+    emit(state.copyWith(
+      selectedFigures: newSelectedFigures,
+    ));
   }
 
   FutureOr<void> _onFigureListDelete(

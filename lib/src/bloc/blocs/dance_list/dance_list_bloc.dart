@@ -132,10 +132,14 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onDanceListSelect');
 
+    final newSelectedDances = List.of(state.selectedDances);
+    for (DanceViewModel dance in event.dances) {
+      newSelectedDances.removeWhere((element) => element.id == dance.id);
+    }
+    newSelectedDances.addAll(event.dances);
+
     emit(state.copyWith(
-      selectedDances: List.of(state.selectedDances)
-        ..removeWhere((element) => element.id == event.dance.id)
-        ..add(event.dance),
+      selectedDances: newSelectedDances,
     ));
   }
 
@@ -145,14 +149,20 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onDanceListUnselect');
 
-    emit((event.dance != null)
-        ? state.copyWith(
-            selectedDances: List.of(state.selectedDances)
-              ..removeWhere((element) => element.id == event.dance!.id),
-          )
-        : state.copyWith(
-            selectedDances: [],
-          ));
+    if (event.dances == null) {
+      return emit(state.copyWith(
+        selectedDances: [],
+      ));
+    }
+
+    final newSelectedDances = List.of(state.selectedDances);
+    for (DanceViewModel dance in event.dances!) {
+      newSelectedDances.removeWhere((element) => element.id == dance.id);
+    }
+
+    emit(state.copyWith(
+      selectedDances: newSelectedDances,
+    ));
   }
 
   FutureOr<void> _onDanceListDelete(

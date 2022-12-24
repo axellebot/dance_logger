@@ -58,34 +58,34 @@ class DanceListRefresh extends DanceListEvent {
 }
 
 class DanceListSelect extends DanceListEvent {
-  final DanceViewModel dance;
+  final List<DanceViewModel> dances;
 
   const DanceListSelect({
-    required this.dance,
+    required this.dances,
   });
 
   @override
-  List<Object?> get props => [dance];
+  List<Object?> get props => [dances];
 
   @override
   String toString() => 'DanceListSelect{'
-      'danceId: $dance'
+      'dances: $dances'
       '}';
 }
 
 class DanceListUnselect extends DanceListEvent {
-  final DanceViewModel? dance;
+  final List<DanceViewModel>? dances;
 
   const DanceListUnselect({
-    this.dance,
+    this.dances,
   });
 
   @override
-  List<Object?> get props => [dance];
+  List<Object?> get props => [dances];
 
   @override
   String toString() => 'DanceListUnselect{'
-      'danceId: $dance'
+      'dances: $dances'
       '}';
 }
 

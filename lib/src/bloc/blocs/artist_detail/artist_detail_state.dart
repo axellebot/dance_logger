@@ -40,9 +40,9 @@ class ArtistDetailState extends Equatable {
   }) {
     return ArtistDetailState(
       status: status ?? this.status,
-      ofId: ofId?.orNull ?? this.ofId,
-      artist: artist?.orNull ?? this.artist,
-      error: error?.orNull ?? this.error,
+      ofId: ofId != null ? ofId.orNull : this.ofId,
+      artist: artist != null ? artist.orNull : this.artist,
+      error: error != null ? error.orNull : this.error,
     );
   }
 

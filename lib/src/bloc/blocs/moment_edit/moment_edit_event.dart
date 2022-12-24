@@ -56,9 +56,9 @@ class MomentEditChangeEndTime extends MomentEditEvent {
 }
 
 class MomentEditChangeFigure extends MomentEditEvent {
-  final FigureViewModel figure;
+  final FigureViewModel? figure;
 
-  const MomentEditChangeFigure({required this.figure}) : super();
+  const MomentEditChangeFigure({this.figure}) : super();
 
   @override
   String toString() => 'MomentEditChangeFigure{'
@@ -83,8 +83,22 @@ class MomentEditChangeVideo extends MomentEditEvent {
   List<Object?> get props => [video];
 }
 
+class MomentEditRemoveArtist extends MomentEditEvent {
+  final ArtistViewModel artist;
+
+  const MomentEditRemoveArtist(this.artist);
+
+  @override
+  String toString() => 'MomentEditRemoveArtist{'
+      'artist: $artist'
+      '}';
+
+  @override
+  List<Object?> get props => [artist];
+}
+
 class MomentEditChangeArtists extends MomentEditEvent {
-  final List<ArtistViewModel> artists;
+  final List<ArtistViewModel>? artists;
 
   const MomentEditChangeArtists({required this.artists}) : super();
 

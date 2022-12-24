@@ -12,6 +12,12 @@ class VideoListPage extends StatelessWidget
   final bool showAppBar;
   @override
   final String? titleText;
+  @override
+  final bool shouldSelectOne;
+  @override
+  final bool shouldSelectMultiple;
+  @override
+  final List<VideoViewModel>? preselectedItems;
 
   /// VideoListWidgetParams
   @override
@@ -29,6 +35,9 @@ class VideoListPage extends StatelessWidget
     super.key,
     this.showAppBar = true,
     this.titleText,
+    this.shouldSelectOne = false,
+    this.shouldSelectMultiple = false,
+    this.preselectedItems,
 
     /// VideoListWidgetParams
     this.videoListBloc,
@@ -36,7 +45,8 @@ class VideoListPage extends StatelessWidget
     this.ofArtist,
     this.ofDance,
     this.ofFigure,
-  }) : assert(videoListBloc == null ||
+  })  : assert(shouldSelectOne == false || shouldSelectMultiple == false),
+        assert(videoListBloc == null ||
             ofSearch == null ||
             (ofArtist == null && ofDance == null && ofFigure == null));
 
@@ -48,6 +58,7 @@ class VideoListPage extends StatelessWidget
       ofArtist: ofArtist,
       ofDance: ofDance,
       ofFigure: ofFigure,
+      preselectedVideos: preselectedItems,
       child: BlocBuilder<VideoListBloc, VideoListState>(
         builder: (context, state) {
           final videoListBloc = BlocProvider.of<VideoListBloc>(context);
@@ -72,9 +83,18 @@ class VideoListPage extends StatelessWidget
                 onCanceled: () {
                   videoListBloc.add(const VideoListUnselect());
                 },
-                onDeleted: () {
-                  videoListBloc.add(const VideoListDelete());
-                },
+                onDeleted: (state.selectedVideos.isNotEmpty)
+                    ? () {
+                        videoListBloc.add(const VideoListDelete());
+                      }
+                    : null,
+                onConfirmed: (state.selectedVideos.isNotEmpty &&
+                        shouldSelectMultiple)
+                    ? () {
+                        AutoRouter.of(context)
+                            .pop<List<VideoViewModel>>(state.selectedVideos);
+                      }
+                    : null,
               );
             }
           }
@@ -83,7 +103,7 @@ class VideoListPage extends StatelessWidget
             appBar: appBar,
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                AutoRouter.of(context).push(VideoCreateRoute());
+                AutoRouter.of(context).push(const VideoCreateRoute());
               },
               child: const Icon(MdiIcons.plus),
             ),

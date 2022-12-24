@@ -6,8 +6,8 @@ class FigureListTile extends StatelessWidget {
   final FigureViewModel figure;
 
   /// ListTile options
-  final GestureTapCallback? onTap;
-  final GestureLongPressCallback? onLongPress;
+  final ItemCallback<FigureViewModel>? onTap;
+  final ItemCallback<FigureViewModel>? onLongPress;
   final bool selected;
 
   const FigureListTile({
@@ -24,13 +24,20 @@ class FigureListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(figure.name),
-      onTap: onTap ??
-          () {
-            AutoRouter.of(context).push(
-              FigureDetailsRoute(figureId: figure.id),
-            );
-          },
-      onLongPress: onLongPress,
+      onTap: (onTap != null)
+          ? () {
+              onTap!(figure);
+            }
+          : () {
+              AutoRouter.of(context).push(
+                FigureDetailsRoute(figureId: figure.id),
+              );
+            },
+      onLongPress: (onLongPress != null)
+          ? () {
+              onLongPress!(figure);
+            }
+          : null,
       selected: selected,
     );
   }

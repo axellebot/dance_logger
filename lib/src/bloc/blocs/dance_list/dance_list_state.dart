@@ -64,13 +64,13 @@ class DanceListState extends Equatable implements DanceListParams {
   }) {
     return DanceListState(
       status: status ?? this.status,
-      ofSearch: ofSearch?.orNull ?? this.ofSearch,
-      ofArtist: ofArtist?.orNull ?? this.ofArtist,
-      ofVideo: ofVideo?.orNull ?? this.ofVideo,
+      ofSearch: ofSearch != null ? ofSearch.orNull : this.ofSearch,
+      ofArtist: ofArtist != null ? ofArtist.orNull : this.ofArtist,
+      ofVideo: ofVideo != null ? ofVideo.orNull : this.ofVideo,
       dances: dances ?? this.dances,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       selectedDances: selectedDances ?? this.selectedDances,
-      error: error?.orNull ?? this.error,
+      error: error != null ? error.orNull : this.error,
     );
   }
 

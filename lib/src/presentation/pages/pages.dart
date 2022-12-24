@@ -6,6 +6,7 @@ export './entity_list_page.dart';
 export './figure_item_page.dart';
 export './figure_list_page.dart';
 export './main_page.dart';
+export './moment_item_page.dart';
 export './practice_item_page.dart';
 export './practice_list_page.dart';
 export './settings_page.dart';

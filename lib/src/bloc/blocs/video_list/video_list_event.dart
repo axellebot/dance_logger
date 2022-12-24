@@ -63,34 +63,34 @@ class VideoListRefresh extends VideoListEvent {
 }
 
 class VideoListSelect extends VideoListEvent {
-  final VideoViewModel video;
+  final List<VideoViewModel> videos;
 
   const VideoListSelect({
-    required this.video,
+    required this.videos,
   });
 
   @override
-  List<Object?> get props => [video];
+  List<Object?> get props => [videos];
 
   @override
   String toString() => 'VideoListSelect{'
-      'video: $video'
+      'videos: $videos'
       '}';
 }
 
 class VideoListUnselect extends VideoListEvent {
-  final VideoViewModel? video;
+  final List<VideoViewModel>? videos;
 
   const VideoListUnselect({
-    this.video,
+    this.videos,
   });
 
   @override
-  List<Object?> get props => [video];
+  List<Object?> get props => [videos];
 
   @override
   String toString() => 'VideoListUnselect{'
-      'video: $video'
+      'videos: $videos'
       '}';
 }
 

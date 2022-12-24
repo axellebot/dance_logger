@@ -138,7 +138,7 @@ class DanceEditPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DanceEditBloc, DanceEditState>(
-      builder: (context, DanceEditState state) {
+      builder: (context, state) {
         switch (state.status) {
           case DanceEditStatus.initial:
           case DanceEditStatus.loading:

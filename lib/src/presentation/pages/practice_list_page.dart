@@ -12,6 +12,12 @@ class PracticeListPage extends StatelessWidget
   final bool showAppBar;
   @override
   final String? titleText;
+  @override
+  final bool shouldSelectOne;
+  @override
+  final bool shouldSelectMultiple;
+  @override
+  final List<PracticeViewModel>? preselectedItems;
 
   /// PracticeListWidgetParams
   @override
@@ -31,6 +37,9 @@ class PracticeListPage extends StatelessWidget
     /// Page params
     this.showAppBar = true,
     this.titleText,
+    this.shouldSelectOne = false,
+    this.shouldSelectMultiple = false,
+    this.preselectedItems,
 
     /// PracticeListWidgetParams
     this.practiceListBloc,
@@ -38,7 +47,8 @@ class PracticeListPage extends StatelessWidget
     this.ofDance,
     this.ofFigure,
     this.ofVideo,
-  }) : assert(practiceListBloc == null ||
+  })  : assert(shouldSelectOne == false || shouldSelectMultiple == false),
+        assert(practiceListBloc == null ||
             (ofArtist == null &&
                 ofDance == null &&
                 ofFigure == null &&
@@ -52,6 +62,7 @@ class PracticeListPage extends StatelessWidget
       ofDance: ofDance,
       ofFigure: ofFigure,
       ofVideo: ofVideo,
+      preselectedPractices: preselectedItems,
       child: BlocBuilder<PracticeListBloc, PracticeListState>(
         builder: (context, state) {
           final practiceListBloc = BlocProvider.of<PracticeListBloc>(context);
@@ -69,9 +80,18 @@ class PracticeListPage extends StatelessWidget
                 onCanceled: () {
                   practiceListBloc.add(const PracticeListUnselect());
                 },
-                onDeleted: () {
-                  practiceListBloc.add(const PracticeListDelete());
-                },
+                onDeleted: (state.selectedPractices.isNotEmpty)
+                    ? () {
+                        practiceListBloc.add(const PracticeListDelete());
+                      }
+                    : null,
+                onConfirmed:
+                    (state.selectedPractices.isNotEmpty && shouldSelectMultiple)
+                        ? () {
+                            AutoRouter.of(context).pop<List<PracticeViewModel>>(
+                                state.selectedPractices);
+                          }
+                        : null,
               );
             }
           }

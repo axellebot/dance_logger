@@ -134,10 +134,14 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onArtistListSelect');
 
+    final newSelectedArtists = List.of(state.selectedArtists);
+    for (ArtistViewModel artist in event.artists) {
+      newSelectedArtists.removeWhere((element) => element.id == artist.id);
+    }
+    newSelectedArtists.addAll(event.artists);
+
     emit(state.copyWith(
-      selectedArtists: List.of(state.selectedArtists)
-        ..removeWhere((element) => element.id == event.artist.id)
-        ..add(event.artist),
+      selectedArtists: newSelectedArtists,
     ));
   }
 
@@ -147,14 +151,20 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onArtistListUnselect');
 
-    emit((event.artist != null)
-        ? state.copyWith(
-      selectedArtists: List.of(state.selectedArtists)
-              ..removeWhere((element) => element.id == event.artist!.id),
-          )
-        : state.copyWith(
-            selectedArtists: [],
-          ));
+    if (event.artists == null) {
+      return emit(state.copyWith(
+        selectedArtists: [],
+      ));
+    }
+
+    final newSelectedArtists = List.of(state.selectedArtists);
+    for (ArtistViewModel artist in event.artists!) {
+      newSelectedArtists.removeWhere((element) => element.id == artist.id);
+    }
+
+    emit(state.copyWith(
+      selectedArtists: newSelectedArtists,
+    ));
   }
 
   FutureOr<void> _onArtistListDelete(

@@ -40,9 +40,9 @@ class VideoDetailState extends Equatable {
   }) {
     return VideoDetailState(
       status: status ?? this.status,
-      ofId: ofId?.orNull ?? this.ofId,
-      video: video?.orNull ?? this.video,
-      error: error?.orNull ?? this.error,
+      ofId: ofId != null ? ofId.orNull : this.ofId,
+      video: video != null ? video.orNull : this.video,
+      error: error != null ? error.orNull : this.error,
     );
   }
 

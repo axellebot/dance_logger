@@ -71,14 +71,14 @@ class VideoListState extends Equatable implements VideoListParams {
   }) {
     return VideoListState(
       status: status ?? this.status,
-      ofSearch: ofSearch?.orNull ?? this.ofSearch,
-      ofArtist: ofArtist?.orNull ?? this.ofArtist,
-      ofDance: ofDance?.orNull ?? this.ofDance,
-      ofFigure: ofFigure?.orNull ?? this.ofFigure,
+      ofSearch: ofSearch != null ? ofSearch.orNull : this.ofSearch,
+      ofArtist: ofArtist != null ? ofArtist.orNull : this.ofArtist,
+      ofDance: ofDance != null ? ofDance.orNull : this.ofDance,
+      ofFigure: ofFigure != null ? ofFigure.orNull : this.ofFigure,
       videos: videos ?? this.videos,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       selectedVideos: selectedVideos ?? this.selectedVideos,
-      error: error?.orNull ?? this.error,
+      error: error != null ? error.orNull : this.error,
     );
   }
 

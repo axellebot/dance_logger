@@ -58,7 +58,7 @@ class _ArtistDetailsPageState extends State<ArtistDetailsPage> {
                   fit: StackFit.expand,
                   children: <Widget>[
                     Hero(
-                      tag: state.artist!.id,
+                      tag: 'img-${state.artist!.id}',
                       child: Image.network(
                         state.artist!.imageUrl!,
                         fit: BoxFit.cover,

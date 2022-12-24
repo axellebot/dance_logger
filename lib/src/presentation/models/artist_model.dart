@@ -52,7 +52,7 @@ class ArtistViewModel extends BaseViewModel {
     return ArtistViewModel(
       id: id ?? this.id,
       name: name ?? this.name,
-      imageUrl: imageUrl?.orNull ?? this.imageUrl,
+      imageUrl: imageUrl != null ? imageUrl.orNull : this.imageUrl,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       version: version ?? this.version,

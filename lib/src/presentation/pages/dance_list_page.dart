@@ -6,12 +6,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class DanceListPage extends StatelessWidget
-    implements EntityListPageParams, DanceListWidgetParams {
+    implements EntityListPageParams<DanceViewModel>, DanceListWidgetParams {
   /// EntityListPageParams
   @override
   final bool showAppBar;
   @override
   final String? titleText;
+  @override
+  final bool shouldSelectOne;
+  @override
+  final bool shouldSelectMultiple;
 
   /// DanceListWidgetParams
   @override
@@ -22,6 +26,8 @@ class DanceListPage extends StatelessWidget
   final String? ofArtist;
   @override
   final String? ofVideo;
+  @override
+  final List<DanceViewModel>? preselectedItems;
 
   const DanceListPage({
     super.key,
@@ -29,13 +35,17 @@ class DanceListPage extends StatelessWidget
     /// Page params
     this.showAppBar = true,
     this.titleText,
+    this.shouldSelectOne = false,
+    this.shouldSelectMultiple = false,
+    this.preselectedItems,
 
     /// DanceListWidgetParams
     this.danceListBloc,
     this.ofSearch,
     this.ofArtist,
     this.ofVideo,
-  }) : assert(danceListBloc == null ||
+  })  : assert(shouldSelectOne == false || shouldSelectMultiple == false),
+        assert(danceListBloc == null ||
             ofSearch == null ||
             (ofArtist == null && ofVideo == null));
 
@@ -46,6 +56,7 @@ class DanceListPage extends StatelessWidget
       ofSearch: ofSearch,
       ofArtist: ofArtist,
       ofVideo: ofVideo,
+      preselectedDances: preselectedItems,
       child: BlocBuilder<DanceListBloc, DanceListState>(
         builder: (context, state) {
           final danceListBloc = BlocProvider.of<DanceListBloc>(context);
@@ -70,9 +81,18 @@ class DanceListPage extends StatelessWidget
                 onCanceled: () {
                   danceListBloc.add(const DanceListUnselect());
                 },
-                onDeleted: () {
-                  danceListBloc.add(const DanceListDelete());
-                },
+                onDeleted: (state.selectedDances.isNotEmpty)
+                    ? () {
+                        danceListBloc.add(const DanceListDelete());
+                      }
+                    : null,
+                onConfirmed: (state.selectedDances.isNotEmpty &&
+                        shouldSelectMultiple)
+                    ? () {
+                        AutoRouter.of(context)
+                            .pop<List<DanceViewModel>>(state.selectedDances);
+                      }
+                    : null,
               );
             }
           }
@@ -81,7 +101,7 @@ class DanceListPage extends StatelessWidget
             appBar: appBar,
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                AutoRouter.of(context).push(DanceCreateRoute());
+                AutoRouter.of(context).push(const DanceCreateRoute());
               },
               child: const Icon(MdiIcons.plus),
             ),

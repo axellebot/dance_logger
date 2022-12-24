@@ -40,9 +40,9 @@ class DanceDetailState extends Equatable {
   }) {
     return DanceDetailState(
       status: status ?? this.status,
-      ofId: ofId?.orNull ?? this.ofId,
-      dance: dance?.orNull ?? this.dance,
-      error: error?.orNull ?? this.error,
+      ofId: ofId != null ? ofId.orNull : this.ofId,
+      dance: dance != null ? dance.orNull : this.dance,
+      error: error != null ? error.orNull : this.error,
     );
   }
 

@@ -71,14 +71,14 @@ class ArtistListState extends Equatable implements ArtistListParams {
   }) {
     return ArtistListState(
       status: status ?? this.status,
-      ofSearch: ofSearch?.orNull ?? this.ofSearch,
-      ofDance: ofDance?.orNull ?? this.ofDance,
-      ofFigure: ofFigure?.orNull ?? this.ofFigure,
-      ofVideo: ofVideo?.orNull ?? this.ofVideo,
+      ofSearch: ofSearch != null ? ofSearch.orNull : this.ofSearch,
+      ofDance: ofDance != null ? ofDance.orNull : this.ofDance,
+      ofFigure: ofFigure != null ? ofFigure.orNull : this.ofFigure,
+      ofVideo: ofVideo != null ? ofVideo.orNull : this.ofVideo,
       artists: artists ?? this.artists,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       selectedArtists: selectedArtists ?? this.selectedArtists,
-      error: error?.orNull ?? this.error,
+      error: error != null ? error.orNull : this.error,
     );
   }
 

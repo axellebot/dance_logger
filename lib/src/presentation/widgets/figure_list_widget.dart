@@ -7,16 +7,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-abstract class FigureListWidgetParams implements FigureListParams {
+abstract class FigureListBlocParams implements FigureListParams {
   /// ListBloc params
   final FigureListBloc? figureListBloc;
 
-  FigureListWidgetParams(this.figureListBloc);
+  FigureListBlocParams(
+    this.figureListBloc,
+  );
 }
 
 class FigureListBlocProvider extends StatelessWidget
-    implements FigureListWidgetParams {
-  /// FigureListWidgetParams
+    implements FigureListBlocParams {
+  /// FigureListBlocParams
   @override
   final FigureListBloc? figureListBloc;
   @override
@@ -26,17 +28,23 @@ class FigureListBlocProvider extends StatelessWidget
   @override
   final String? ofVideo;
 
+  /// Selection
+  final List<FigureViewModel>? preselectedFigures;
+
   /// Widget params
   final Widget child;
 
   const FigureListBlocProvider({
     super.key,
 
-    /// FigureListWidgetParams
+    /// FigureListBlocParams
     this.figureListBloc,
     this.ofArtist,
     this.ofDance,
     this.ofVideo,
+
+    /// Selection
+    this.preselectedFigures,
 
     /// Widget params
     required this.child,
@@ -45,28 +53,40 @@ class FigureListBlocProvider extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    return (figureListBloc != null)
-        ? BlocProvider<FigureListBloc>.value(
-            value: figureListBloc!,
-            child: child,
-          )
-        : BlocProvider<FigureListBloc>(
-            create: (_) => FigureListBloc(
-              figureRepository:
-                  Provider.of<FigureRepository>(context, listen: false),
-              mapper: ModelMapper(),
-            )..add(FigureListLoad(
-                ofArtist: ofArtist,
-                ofDance: ofDance,
-                ofVideo: ofVideo,
-              )),
-            child: child,
+    if (figureListBloc != null) {
+      return BlocProvider<FigureListBloc>.value(
+        value: figureListBloc!,
+        child: child,
+      );
+    } else {
+      return BlocProvider<FigureListBloc>(
+        create: (context) {
+          final figureListBloc = FigureListBloc(
+            figureRepository:
+                Provider.of<FigureRepository>(context, listen: false),
+            mapper: ModelMapper(),
           );
+
+          if (preselectedFigures?.isNotEmpty ?? false) {
+            figureListBloc.add(FigureListSelect(figures: preselectedFigures!));
+          }
+
+          figureListBloc.add(FigureListLoad(
+            ofArtist: ofArtist,
+            ofDance: ofDance,
+            ofVideo: ofVideo,
+          ));
+
+          return figureListBloc;
+        },
+        child: child,
+      );
+    }
   }
 }
 
 class FigureListView extends StatefulWidget
-    implements FigureListWidgetParams, EntityListViewParams {
+    implements FigureListBlocParams, EntityListViewParams {
   /// FigureListWidgetParams
   @override
   final FigureListBloc? figureListBloc;
@@ -85,6 +105,9 @@ class FigureListView extends StatefulWidget
   @override
   final EdgeInsets? padding;
 
+  /// Misc
+  final ItemCallback<FigureViewModel>? onSelect;
+
   const FigureListView({
     super.key,
 
@@ -93,6 +116,9 @@ class FigureListView extends StatefulWidget
     this.ofArtist,
     this.ofDance,
     this.ofVideo,
+
+    /// Misc
+    this.onSelect,
 
     /// EntityListViewParams
     this.scrollDirection = Axis.vertical,
@@ -167,9 +193,10 @@ class _FigureListViewState extends State<FigureListView> {
                       if (state.selectedFigures.isEmpty) {
                         return FigureListTile(
                           figure: figure,
-                          onLongPress: () {
+                          onTap: widget.onSelect,
+                          onLongPress: (item) {
                             artistListBloc.add(
-                              FigureListSelect(figure: figure),
+                              FigureListSelect(figures: [item]),
                             );
                           },
                         );
@@ -181,8 +208,8 @@ class _FigureListViewState extends State<FigureListView> {
                           onChanged: (bool? value) {
                             artistListBloc.add(
                               (value == true)
-                                  ? FigureListSelect(figure: figure)
-                                  : FigureListUnselect(figure: figure),
+                                  ? FigureListSelect(figures: [figure])
+                                  : FigureListUnselect(figures: [figure]),
                             );
                           },
                         );
@@ -201,7 +228,7 @@ class _FigureListViewState extends State<FigureListView> {
 }
 
 class FiguresSection extends StatelessWidget
-    implements FigureListWidgetParams, EntitiesSectionWidgetParams {
+    implements FigureListBlocParams, EntitiesSectionWidgetParams {
   /// FigureListWidgetParams
   @override
   final FigureListBloc? figureListBloc;

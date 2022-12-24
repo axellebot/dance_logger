@@ -59,7 +59,8 @@ EdgeInsets calculateDefaultPadding(BuildContext context) {
   }
 }
 
-String printDuration(Duration duration) {
+String? printDuration(Duration? duration) {
+  if (duration == null) return null;
   String twoDigits(int n) => n.toString().padLeft(2, "0");
   String twoDigitHours = twoDigits(duration.inHours);
   String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));

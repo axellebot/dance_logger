@@ -13,7 +13,7 @@ part 'router.gr.dart';
     RedirectRoute(path: '*', redirectTo: AppPaths.kPathHome),
 
     /// Artists
-    AutoRoute(
+    AutoRoute<List<ArtistViewModel>>(
       path: AppPaths.kPathArtists,
       page: ArtistListPage,
     ),
@@ -38,7 +38,7 @@ part 'router.gr.dart';
     ),
 
     /// Dances
-    AutoRoute(
+    AutoRoute<List<DanceViewModel>>(
       path: AppPaths.kPathDances,
       page: DanceListPage,
     ),
@@ -63,7 +63,7 @@ part 'router.gr.dart';
     ),
 
     /// Figures
-    AutoRoute(
+    AutoRoute<List<FigureViewModel>>(
       path: AppPaths.kPathFigures,
       page: FigureListPage,
     ),
@@ -88,7 +88,7 @@ part 'router.gr.dart';
     ),
 
     /// Practices
-    AutoRoute(
+    AutoRoute<List<PracticeViewModel>>(
       path: AppPaths.kPathPractices,
       page: PracticeListPage,
     ),
@@ -113,7 +113,7 @@ part 'router.gr.dart';
     ),
 
     /// Videos
-    AutoRoute(
+    AutoRoute<List<VideoViewModel>>(
       path: AppPaths.kPathVideos,
       page: VideoListPage,
     ),
@@ -137,10 +137,15 @@ part 'router.gr.dart';
       page: VideoEditPage,
     ),
 
-    /// Dances
+    /// Moments
     AutoRoute(
-      path: AppPaths.kPathDances,
-      page: DanceListPage,
+      path: '${AppPaths.kPathMoments}/${AppPaths.kViewCreate}',
+      page: MomentCreatePage,
+    ),
+    AutoRoute(
+      path:
+          '${AppPaths.kPathMoments}/:${AppPaths.kParamMomentId}/${AppPaths.kViewEdit}',
+      page: MomentEditPage,
     ),
   ],
 )
