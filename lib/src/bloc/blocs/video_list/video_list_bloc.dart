@@ -134,10 +134,14 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onVideoListSelect');
 
+    final newSelectedVideos = List.of(state.selectedVideos);
+    for (VideoViewModel video in event.videos) {
+      newSelectedVideos.removeWhere((element) => element.id == video.id);
+    }
+    newSelectedVideos.addAll(event.videos);
+
     emit(state.copyWith(
-      selectedVideos: List.of(state.selectedVideos)
-        ..removeWhere((element) => element.id == event.video.id)
-        ..add(event.video),
+      selectedVideos: newSelectedVideos,
     ));
   }
 
@@ -147,13 +151,20 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onVideoListUnselect');
 
-    emit((event.video != null)
-        ? state.copyWith(
-            selectedVideos: List.of(state.selectedVideos)
-              ..removeWhere((element) => element.id == event.video!.id))
-        : state.copyWith(
-            selectedVideos: [],
-          ));
+    if (event.videos == null) {
+      return emit(state.copyWith(
+        selectedVideos: [],
+      ));
+    }
+
+    final newSelectedVideos = List.of(state.selectedVideos);
+    for (VideoViewModel video in event.videos!) {
+      newSelectedVideos.removeWhere((element) => element.id == video.id);
+    }
+
+    emit(state.copyWith(
+      selectedVideos: newSelectedVideos,
+    ));
   }
 
   FutureOr<void> _onVideoListDelete(

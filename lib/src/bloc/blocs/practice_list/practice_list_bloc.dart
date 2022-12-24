@@ -123,10 +123,14 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onPracticeListSelect');
 
+    final newSelectedPractices = List.of(state.selectedPractices);
+    for (PracticeViewModel practice in event.practices) {
+      newSelectedPractices.removeWhere((element) => element.id == practice.id!);
+    }
+    newSelectedPractices.addAll(event.practices);
+
     emit(state.copyWith(
-      selectedPractices: List.of(state.selectedPractices)
-        ..removeWhere((element) => element.id == event.practice.id)
-        ..add(event.practice),
+      selectedPractices: newSelectedPractices,
     ));
   }
 
@@ -136,14 +140,20 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onPracticeListUnselect');
 
-    emit((event.practice != null)
-        ? state.copyWith(
-      selectedPractices: List.of(state.selectedPractices)
-              ..removeWhere((element) => element.id == event.practice!.id),
-          )
-        : state.copyWith(
-            selectedPractices: [],
-          ));
+    if (event.practices == null) {
+      return emit(state.copyWith(
+        selectedPractices: [],
+      ));
+    }
+
+    final newSelectedPractices = List.of(state.selectedPractices);
+    for (PracticeViewModel practice in event.practices!) {
+      newSelectedPractices.removeWhere((element) => element.id == practice.id!);
+    }
+
+    emit(state.copyWith(
+      selectedPractices: newSelectedPractices,
+    ));
   }
 
   FutureOr<void> _onPracticeListDelete(

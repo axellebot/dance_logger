@@ -8,8 +8,8 @@ class DanceListTile extends StatelessWidget {
   final DanceViewModel dance;
 
   /// ListTile options
-  final GestureTapCallback? onTap;
-  final GestureLongPressCallback? onLongPress;
+  final ItemCallback<DanceViewModel>? onTap;
+  final ItemCallback<DanceViewModel>? onLongPress;
   final bool selected;
 
   const DanceListTile({
@@ -26,13 +26,20 @@ class DanceListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(dance.name),
-      onTap: onTap ??
-          () {
-            AutoRouter.of(context).push(
-              DanceDetailsRoute(danceId: dance.id),
-            );
-          },
-      onLongPress: onLongPress,
+      onTap: (onTap != null)
+          ? () {
+              onTap!(dance);
+            }
+          : () {
+              AutoRouter.of(context).push(
+                DanceDetailsRoute(danceId: dance.id),
+              );
+            },
+      onLongPress: (onLongPress != null)
+          ? () {
+              onLongPress!(dance);
+            }
+          : null,
       selected: selected,
     );
   }
@@ -138,8 +145,8 @@ class DanceForm extends StatelessWidget {
                   hintText: 'Name',
                 ),
                 initialValue: state.initialDance?.name,
-                onChanged: (danceName) {
-                  danceEditBloc.add(DanceEditChangeName(danceName: danceName));
+                onChanged: (value) {
+                  danceEditBloc.add(DanceEditChangeName(danceName: value));
                 },
               ),
             ],

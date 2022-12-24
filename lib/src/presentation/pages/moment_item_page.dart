@@ -10,24 +10,64 @@ class MomentCreatePage extends MomentEditPage {
 }
 
 class MomentEditPage extends StatelessWidget implements AutoRouteWrapper {
-  final MomentEditBloc? momentEditBloc;
   final String? momentId;
 
   const MomentEditPage({
     super.key,
-    this.momentEditBloc,
     this.momentId,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      floatingActionButton: const FloatingActionButton(
-        onPressed: null,
-        child: Icon(Icons.save),
-      ),
-      body: const Text('Moment Edit'),
+    return BlocBuilder<MomentEditBloc, MomentEditState>(
+      builder: (context, state) {
+        switch (state.status) {
+          case MomentEditStatus.initial:
+          case MomentEditStatus.loading:
+            return const LoadingPage();
+          case MomentEditStatus.failure:
+            return ErrorPage(error: state.error!);
+          case MomentEditStatus.ready:
+          case MomentEditStatus.editSuccess:
+            final momentEditBloc = BlocProvider.of<MomentEditBloc>(context);
+            return Scaffold(
+              appBar: AppBar(
+                leading: IconButton(
+                  onPressed: () {
+                    AutoRouter.of(context).pop();
+                  },
+                  icon: const Icon(Icons.close),
+                ),
+                title: Text(
+                  state.initialMoment != null ? "Edit dance" : "Create dance",
+                ),
+                actions: <Widget>[
+                  SaveButton(
+                    onSaved: () {
+                      momentEditBloc.add(const MomentEditSubmit());
+                    },
+                  ),
+                  if (state.initialMoment != null)
+                    DeleteIconButton(
+                      onDeleted: () {
+                        momentEditBloc.add(const MomentEditDelete());
+                      },
+                    ),
+                ],
+              ),
+              body: SingleChildScrollView(
+                child: Container(
+                  padding: AppStyles.formPadding,
+                  child: const MomentForm(),
+                ),
+              ),
+            );
+          default:
+            return ErrorPage(
+              error: NotSupportedError(message: '${state.status}'),
+            );
+        }
+      },
     );
   }
 

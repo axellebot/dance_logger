@@ -63,34 +63,34 @@ class ArtistListRefresh extends ArtistListEvent {
 }
 
 class ArtistListSelect extends ArtistListEvent {
-  final ArtistViewModel artist;
+  final List<ArtistViewModel> artists;
 
   const ArtistListSelect({
-    required this.artist,
+    required this.artists,
   });
 
   @override
-  List<Object?> get props => [artist];
+  List<Object?> get props => [artists];
 
   @override
   String toString() => 'ArtistListSelect{'
-      'artist: $artist'
+      'artists: $artists'
       '}';
 }
 
 class ArtistListUnselect extends ArtistListEvent {
-  final ArtistViewModel? artist;
+  final List<ArtistViewModel>? artists;
 
   const ArtistListUnselect({
-    this.artist,
+    this.artists,
   });
 
   @override
-  List<Object?> get props => [artist];
+  List<Object?> get props => [artists];
 
   @override
   String toString() => 'ArtistListUnselect{'
-      'artist: $artist'
+      'artists: $artists'
       '}';
 }
 

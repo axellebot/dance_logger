@@ -77,12 +77,14 @@ class SelectionAppBar extends StatelessWidget with PreferredSizeWidget {
   final int count;
   final VoidCallback? onCanceled;
   final VoidCallback? onDeleted;
+  final VoidCallback? onConfirmed;
 
   const SelectionAppBar({
     super.key,
     required this.count,
     this.onCanceled,
     this.onDeleted,
+    this.onConfirmed,
   });
 
   @override
@@ -112,6 +114,16 @@ class SelectionAppBar extends StatelessWidget with PreferredSizeWidget {
                   },
                 );
               },
+            ),
+          ),
+        if (onConfirmed != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppStyles.appBarIconHorizontalPadding,
+            ),
+            child: IconButton(
+              icon: const Icon(Icons.check),
+              onPressed: onConfirmed,
             ),
           )
       ],

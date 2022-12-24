@@ -125,10 +125,14 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onMomentListSelect');
 
+    final newSelectedMoments = List.of(state.selectedMoments);
+    for (MomentViewModel moment in event.moments) {
+      newSelectedMoments.removeWhere((element) => element.id == moment.id);
+    }
+    newSelectedMoments.addAll(event.moments);
+
     emit(state.copyWith(
-      selectedMoments: List.of(state.selectedMoments)
-        ..removeWhere((element) => element.id == event.moment.id)
-        ..add(event.moment),
+      selectedMoments: newSelectedMoments,
     ));
   }
 
@@ -138,14 +142,20 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onMomentListUnselect');
 
-    emit((event.moment != null)
-        ? state.copyWith(
-      selectedMoments: List.of(state.selectedMoments)
-              ..removeWhere((element) => element.id == event.moment!.id),
-          )
-        : state.copyWith(
-            selectedMoments: [],
-          ));
+    if (event.moments == null) {
+      return emit(state.copyWith(
+        selectedMoments: [],
+      ));
+    }
+
+    final newSelectedMoments = List.of(state.selectedMoments);
+    for (MomentViewModel moment in event.moments!) {
+      newSelectedMoments.removeWhere((element) => element.id == moment.id);
+    }
+
+    emit(state.copyWith(
+      selectedMoments: newSelectedMoments,
+    ));
   }
 
   FutureOr<void> _onMomentListDelete(

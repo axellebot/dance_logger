@@ -5,7 +5,6 @@ import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -89,9 +88,6 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                     pinned: true,
                     snap: false,
                     floating: false,
-                    title: (state.video != null)
-                        ? Text(state.video!.name)
-                        : const Text('Video detail'),
                     actions: [
                       IconButton(
                         onPressed: () {
@@ -126,7 +122,7 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                                     MediaQuery.of(context).size.height * 0.3,
                               ),
                               child: Hero(
-                                tag: state.video!.id,
+                                tag: 'img-${state.video!.id}',
                                 child: AspectRatio(
                                   aspectRatio: 16 / 9,
                                   child: YoutubePlayer(
@@ -137,12 +133,14 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                             ),
                           if (state.video != null)
                             ListTile(
-                                title: Text(state.video!.url),
-                                trailing: const Icon(MdiIcons.contentCopy),
-                                onTap: () {
-                                  Clipboard.setData(
-                                      ClipboardData(text: state.video!.url));
-                                }),
+                              title: Text(state.video!.name),
+                              subtitle: Text(state.video!.url),
+                              trailing: const Icon(Icons.copy),
+                              onTap: () {
+                                Clipboard.setData(
+                                    ClipboardData(text: state.video!.url));
+                              },
+                            ),
                           if (state.video != null)
                             MomentsSection(
                               // label: 'Moments of ${state.video!.name}',
@@ -158,6 +156,7 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                             ),
                           if (state.video != null)
                             ArtistsSection(
+                              label: 'Cast',
                               // label: 'Artists of ${state.video!.name}',
                               ofVideo: state.video!.id,
                             ),

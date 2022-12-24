@@ -62,34 +62,34 @@ class PracticeListRefresh extends PracticeListEvent {
 }
 
 class PracticeListSelect extends PracticeListEvent {
-  final PracticeViewModel practice;
+  final List<PracticeViewModel> practices;
 
   const PracticeListSelect({
-    required this.practice,
+    required this.practices,
   });
 
   @override
-  List<Object?> get props => [practice];
+  List<Object?> get props => [practices];
 
   @override
   String toString() => 'PracticeListSelect{'
-      'practiceId: $practice'
+      'practices: $practices'
       '}';
 }
 
 class PracticeListUnselect extends PracticeListEvent {
-  final PracticeViewModel? practice;
+  final List<PracticeViewModel>? practices;
 
   const PracticeListUnselect({
-    this.practice,
+    this.practices,
   });
 
   @override
-  List<Object?> get props => [practice];
+  List<Object?> get props => [practices];
 
   @override
   String toString() => 'PracticeListUnselect{'
-      'practiceId: $practice'
+      'practices: $practices'
       '}';
 }
 

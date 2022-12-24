@@ -29,8 +29,7 @@ class VideoEditState extends Equatable {
   }) : super();
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         status,
         ofId,
         initialVideo,
@@ -49,11 +48,12 @@ class VideoEditState extends Equatable {
   }) {
     return VideoEditState(
       status: status ?? this.status,
-      ofId: ofId?.orNull ?? this.ofId,
-      initialVideo: initialVideo?.orNull ?? this.initialVideo,
-      videoName: videoName?.orNull ?? this.videoName,
-      videoUrl: videoUrl?.orNull ?? this.videoUrl,
-      error: error?.orNull ?? this.error,
+      ofId: ofId != null ? ofId.orNull : this.ofId,
+      initialVideo:
+          initialVideo != null ? initialVideo.orNull : this.initialVideo,
+      videoName: videoName != null ? videoName.orNull : this.videoName,
+      videoUrl: videoUrl != null ? videoUrl.orNull : this.videoUrl,
+      error: error != null ? error.orNull : this.error,
     );
   }
 

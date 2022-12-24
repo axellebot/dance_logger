@@ -8,8 +8,8 @@ class ArtistListTile extends StatelessWidget {
   final ArtistViewModel artist;
 
   /// ListTile options
-  final GestureTapCallback? onTap;
-  final GestureLongPressCallback? onLongPress;
+  final ItemCallback<ArtistViewModel>? onTap;
+  final ItemCallback<ArtistViewModel>? onLongPress;
   final bool selected;
 
   const ArtistListTile({
@@ -26,25 +26,32 @@ class ArtistListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(artist.name),
-      leading: (artist.imageUrl != null)
-          ? Hero(
-              tag: artist.id,
-              child: InitialCircleAvatar(
-                text: artist.name,
-                backgroundImage: NetworkImage(
+      leading: Hero(
+        tag: 'img-${artist.id}',
+        child: InitialCircleAvatar(
+          text: artist.name,
+          backgroundImage: (artist.imageUrl != null)
+              ? NetworkImage(
                   artist.imageUrl!,
-                ),
-                radius: AppStyles.artistThumbnailRadius,
-              ),
-            )
+                )
+              : null,
+          radius: AppStyles.artistThumbnailRadius,
+        ),
+      ),
+      onTap: (onTap != null)
+          ? () {
+              onTap!(artist);
+            }
+          : () {
+              AutoRouter.of(context).push(
+                ArtistDetailsRoute(artistId: artist.id),
+              );
+            },
+      onLongPress: (onLongPress != null)
+          ? () {
+              onLongPress!(artist);
+            }
           : null,
-      onTap: onTap ??
-          () {
-            AutoRouter.of(context).push(
-              ArtistDetailsRoute(artistId: artist.id),
-            );
-          },
-      onLongPress: onLongPress,
       selected: selected,
     );
   }
@@ -88,7 +95,7 @@ class ArtistAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: AppStyles.cardHeight,
-      child: InkWell(
+      child: GestureDetector(
         onTap: () {
           AutoRouter.of(context).push(
             ArtistDetailsRoute(artistId: artist.id),
@@ -98,8 +105,9 @@ class ArtistAvatar extends StatelessWidget {
           children: [
             Expanded(
               child: Hero(
-                tag: artist.id,
+                tag: 'img-${artist.id}',
                 child: InitialCircleAvatar(
+                  text: artist.name,
                   backgroundImage: NetworkImage(
                     artist.imageUrl!,
                   ),
@@ -132,23 +140,30 @@ class ArtistForm extends StatelessWidget {
                   hintText: 'Name',
                 ),
                 initialValue: state.initialArtist?.name,
-                onChanged: (artistName) {
-                  artistEditBloc
-                      .add(ArtistEditChangeName(artistName: artistName));
+                onChanged: (value) {
+                  artistEditBloc.add(ArtistEditChangeName(artistName: value));
                 },
               ),
               const SizedBox(
                 height: AppStyles.formInputVerticalSpacing,
               ),
               TextFormField(
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Image url',
                   hintText: 'http://image.com/myimage',
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      artistEditBloc.add(
+                          const ArtistEditChangeImageUrl(artistImageUrl: null));
+                    },
+                    icon: const Icon(Icons.delete),
+                  ),
                 ),
                 initialValue: state.initialArtist?.imageUrl,
-                onChanged: (artistImageUrl) {
+                onChanged: (value) {
                   artistEditBloc.add(
-                      ArtistEditChangeImageUrl(artistImageUrl: artistImageUrl));
+                    ArtistEditChangeImageUrl(artistImageUrl: value),
+                  );
                 },
               ),
             ],

@@ -20,6 +20,7 @@ class MomentEditBloc extends Bloc<MomentEditEvent, MomentEditState> {
     on<MomentEditChangeEndTime>(_onMomentEditChangeEndTime);
     on<MomentEditChangeFigure>(_onMomentEditChangeFigure);
     on<MomentEditChangeVideo>(_onMomentEditChangeVideo);
+    on<MomentEditRemoveArtist>(_onMomentEditRemoveArtist);
     on<MomentEditChangeArtists>(_onMomentEditChangeArtists);
     on<MomentEditSubmit>(_onMomentEditSubmit);
     on<MomentEditDelete>(_onMomentEditDelete);
@@ -47,6 +48,7 @@ class MomentEditBloc extends Bloc<MomentEditEvent, MomentEditState> {
         status: MomentEditStatus.ready,
         ofId: Optional.fromNullable(event.momentId),
         initialMoment: Optional.fromNullable(momentViewModel),
+        error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
@@ -83,7 +85,7 @@ class MomentEditBloc extends Bloc<MomentEditEvent, MomentEditState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onMomentEditChangeFigure');
     emit(state.copyWith(
-      figure: Optional.of(event.figure),
+      figure: Optional.fromNullable(event.figure),
     ));
   }
 
@@ -97,13 +99,32 @@ class MomentEditBloc extends Bloc<MomentEditEvent, MomentEditState> {
     ));
   }
 
+  FutureOr<void> _onMomentEditRemoveArtist(
+    MomentEditRemoveArtist event,
+    Emitter<MomentEditState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onMomentEditRemoveArtist');
+
+    if (state.artists != null) {
+      emit(state.copyWith(
+        artists: Optional.fromNullable(List.of(state.artists!)
+          ..removeWhere((element) => element.id == event.artist.id)),
+      ));
+    } else if (state.initialArtists != null) {
+      emit(state.copyWith(
+        artists: Optional.fromNullable(List.of(state.initialArtists!)
+          ..removeWhere((element) => element.id == event.artist.id)),
+      ));
+    }
+  }
+
   FutureOr<void> _onMomentEditChangeArtists(
     MomentEditChangeArtists event,
     Emitter<MomentEditState> emit,
   ) async {
     if (kDebugMode) print('$runtimeType:_onMomentEditChangeArtist');
     emit(state.copyWith(
-      artists: event.artists,
+      artists: Optional.fromNullable(event.artists),
     ));
   }
 
@@ -121,13 +142,14 @@ class MomentEditBloc extends Bloc<MomentEditEvent, MomentEditState> {
 
       if (state.initialMoment != null) {
         momentViewModel = state.initialMoment!.copyWith(
-            startTime: state.startTime,
-            endTime: Optional.fromNullable(state.endTime));
+          startTime: state.startTime,
+          endTime: state.endTime,
+        );
         momentViewModel.incrementVersion();
       } else {
         momentViewModel = MomentViewModel.createNew(
           startTime: state.startTime!,
-          endTime: state.endTime,
+          endTime: state.endTime?.orNull,
           figureId: state.figure!.id,
           videoId: state.video!.id,
         );
@@ -137,11 +159,10 @@ class MomentEditBloc extends Bloc<MomentEditEvent, MomentEditState> {
           await momentRepository.save(mapper.toMomentEntity(momentViewModel));
       momentViewModel = mapper.toMomentViewModel(momentEntity);
 
-      emit(state.copyWith(
+      emit(MomentEditState(
         status: MomentEditStatus.editSuccess,
-        ofId: Optional.of(momentViewModel.id),
-        initialMoment: Optional.of(momentViewModel),
-        error: const Optional.absent(),
+        ofId: momentViewModel.id,
+        initialMoment: momentViewModel,
       ));
     } on Error catch (error) {
       emit(state.copyWith(

@@ -20,7 +20,7 @@ class InitialCircleAvatar extends StatefulWidget {
   }) : assert(radius == null || (minRadius == null && maxRadius == null));
 
   @override
-  _InitialCircleAvatarState createState() => _InitialCircleAvatarState();
+  State<InitialCircleAvatar> createState() => _InitialCircleAvatarState();
 }
 
 class _InitialCircleAvatarState extends State<InitialCircleAvatar> {

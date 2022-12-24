@@ -6,12 +6,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ArtistListPage extends StatelessWidget
-    implements EntityListPageParams, ArtistListWidgetParams {
+    implements EntityListPageParams<ArtistViewModel>, ArtistListWidgetParams {
   /// EntityListPageParams
   @override
   final bool showAppBar;
   @override
   final String? titleText;
+  @override
+  final bool shouldSelectOne;
+  @override
+  final bool shouldSelectMultiple;
+  @override
+  final List<ArtistViewModel>? preselectedItems;
 
   /// ArtistListWidgetParams
   @override
@@ -31,6 +37,9 @@ class ArtistListPage extends StatelessWidget
     /// Page params
     this.showAppBar = true,
     this.titleText,
+    this.shouldSelectOne = false,
+    this.shouldSelectMultiple = false,
+    this.preselectedItems,
 
     /// ArtistListWidgetParams
     this.artistListBloc,
@@ -38,7 +47,8 @@ class ArtistListPage extends StatelessWidget
     this.ofDance,
     this.ofFigure,
     this.ofVideo,
-  }) : assert(artistListBloc == null ||
+  })  : assert(shouldSelectOne == false || shouldSelectMultiple == false),
+        assert(artistListBloc == null ||
             ofSearch == null ||
             (ofDance == null && ofFigure == null && ofVideo == null));
 
@@ -50,6 +60,7 @@ class ArtistListPage extends StatelessWidget
       ofDance: ofDance,
       ofFigure: ofFigure,
       ofVideo: ofVideo,
+      preselectedArtists: preselectedItems,
       child: BlocBuilder<ArtistListBloc, ArtistListState>(
         builder: (context, state) {
           final artistListBloc = BlocProvider.of<ArtistListBloc>(context);
@@ -75,9 +86,18 @@ class ArtistListPage extends StatelessWidget
                 onCanceled: () {
                   artistListBloc.add(const ArtistListUnselect());
                 },
-                onDeleted: () {
-                  artistListBloc.add(const ArtistListDelete());
-                },
+                onDeleted: (state.selectedArtists.isNotEmpty)
+                    ? () {
+                        artistListBloc.add(const ArtistListDelete());
+                      }
+                    : null,
+                onConfirmed: (state.selectedArtists.isNotEmpty &&
+                        shouldSelectMultiple)
+                    ? () {
+                        AutoRouter.of(context)
+                            .pop<List<ArtistViewModel>>(state.selectedArtists);
+                      }
+                    : null,
               );
             }
           }
@@ -86,7 +106,7 @@ class ArtistListPage extends StatelessWidget
             appBar: appBar,
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                AutoRouter.of(context).push(ArtistCreateRoute());
+                AutoRouter.of(context).push(const ArtistCreateRoute());
               },
               child: const Icon(MdiIcons.plus),
             ),

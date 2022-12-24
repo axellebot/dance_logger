@@ -28,6 +28,9 @@ class ArtistListBlocProvider extends StatelessWidget
   @override
   final String? ofVideo;
 
+  /// Selection
+  final List<ArtistViewModel>? preselectedArtists;
+
   /// Widget params
   final Widget child;
 
@@ -41,6 +44,9 @@ class ArtistListBlocProvider extends StatelessWidget
     this.ofFigure,
     this.ofVideo,
 
+    /// Selection
+    this.preselectedArtists,
+
     /// Widget params
     required this.child,
   }) : assert(artistListBloc == null ||
@@ -49,24 +55,36 @@ class ArtistListBlocProvider extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    return (artistListBloc != null)
-        ? BlocProvider<ArtistListBloc>.value(
-            value: artistListBloc!,
-            child: child,
-          )
-        : BlocProvider(
-            create: (context) => ArtistListBloc(
-              artistRepository:
-                  Provider.of<ArtistRepository>(context, listen: false),
-              mapper: ModelMapper(),
-            )..add(ArtistListLoad(
-                ofSearch: ofSearch,
-                ofDance: ofDance,
-                ofFigure: ofFigure,
-                ofVideo: ofVideo,
-              )),
-            child: child,
+    if (artistListBloc != null) {
+      return BlocProvider<ArtistListBloc>.value(
+        value: artistListBloc!,
+        child: child,
+      );
+    } else {
+      return BlocProvider(
+        create: (context) {
+          final artistListBloc = ArtistListBloc(
+            artistRepository:
+                Provider.of<ArtistRepository>(context, listen: false),
+            mapper: ModelMapper(),
           );
+
+          if (preselectedArtists?.isNotEmpty ?? false) {
+            artistListBloc.add(ArtistListSelect(artists: preselectedArtists!));
+          }
+
+          artistListBloc.add(ArtistListLoad(
+            ofSearch: ofSearch,
+            ofDance: ofDance,
+            ofFigure: ofFigure,
+            ofVideo: ofVideo,
+          ));
+
+          return artistListBloc;
+        },
+        child: child,
+      );
+    }
   }
 }
 
@@ -177,9 +195,9 @@ class _ArtistListViewState extends State<ArtistListView> {
                       if (state.selectedArtists.isEmpty) {
                         return ArtistListTile(
                           artist: artist,
-                          onLongPress: () {
+                          onLongPress: (item) {
                             artistListBloc.add(
-                              ArtistListSelect(artist: artist),
+                              ArtistListSelect(artists: [item]),
                             );
                           },
                         );
@@ -191,8 +209,8 @@ class _ArtistListViewState extends State<ArtistListView> {
                           onChanged: (bool? value) {
                             artistListBloc.add(
                               (value == true)
-                                  ? ArtistListSelect(artist: artist)
-                                  : ArtistListUnselect(artist: artist),
+                                  ? ArtistListSelect(artists: [artist])
+                                  : ArtistListUnselect(artists: [artist]),
                             );
                           },
                         );

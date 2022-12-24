@@ -58,34 +58,34 @@ class FigureListRefresh extends FigureListEvent {
 }
 
 class FigureListSelect extends FigureListEvent {
-  final FigureViewModel figure;
+  final List<FigureViewModel> figures;
 
   const FigureListSelect({
-    required this.figure,
+    required this.figures,
   });
 
   @override
-  List<Object?> get props => [figure];
+  List<Object?> get props => [figures];
 
   @override
   String toString() => 'FigureListSelect{'
-      'figure: $figure'
+      'figures: $figures'
       '}';
 }
 
 class FigureListUnselect extends FigureListEvent {
-  final FigureViewModel? figure;
+  final List<FigureViewModel>? figures;
 
   const FigureListUnselect({
-    this.figure,
+    this.figures,
   });
 
   @override
-  List<Object?> get props => [figure];
+  List<Object?> get props => [figures];
 
   @override
   String toString() => 'FigureListUnselect{'
-      'figure: $figure'
+      'figures: $figures'
       '}';
 }
 

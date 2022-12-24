@@ -6,8 +6,8 @@ class PracticeListTile extends StatelessWidget {
   final PracticeViewModel practice;
 
   /// ListTile options
-  final GestureTapCallback? onTap;
-  final GestureLongPressCallback? onLongPress;
+  final ItemCallback<PracticeViewModel>? onTap;
+  final ItemCallback<PracticeViewModel>? onLongPress;
   final bool selected;
 
   const PracticeListTile({
@@ -24,13 +24,20 @@ class PracticeListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text('${practice.doneAt}'),
-      onTap: onTap ??
-          () {
-            AutoRouter.of(context).push(
-              PracticeDetailsRoute(practiceId: practice.id),
-            );
-          },
-      onLongPress: onLongPress,
+      onTap: onTap != null
+          ? () {
+              onTap!(practice);
+            }
+          : () {
+              AutoRouter.of(context).push(
+                PracticeDetailsRoute(practiceId: practice.id),
+              );
+            },
+      onLongPress: (onLongPress != null)
+          ? () {
+              onLongPress!(practice);
+            }
+          : null,
       selected: selected,
     );
   }

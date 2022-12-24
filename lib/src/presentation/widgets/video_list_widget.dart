@@ -28,6 +28,9 @@ class VideoListBlocProvider extends StatelessWidget
   @override
   final String? ofFigure;
 
+  /// Selection
+  final List<VideoViewModel>? preselectedVideos;
+
   /// Widget params
   final Widget child;
 
@@ -41,6 +44,9 @@ class VideoListBlocProvider extends StatelessWidget
     this.ofDance,
     this.ofFigure,
 
+    /// Selection
+    this.preselectedVideos,
+
     /// Widget params
     required this.child,
   }) : assert(videoListBloc == null ||
@@ -49,24 +55,35 @@ class VideoListBlocProvider extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    return (videoListBloc != null)
-        ? BlocProvider<VideoListBloc>.value(
-            value: videoListBloc!,
-            child: child,
-          )
-        : BlocProvider<VideoListBloc>(
-            create: (context) => VideoListBloc(
-              videoRepository:
-                  Provider.of<VideoRepository>(context, listen: false),
-              mapper: ModelMapper(),
-            )..add(VideoListLoad(
-                ofSearch: ofSearch,
-                ofArtist: ofArtist,
-                ofDance: ofDance,
-                ofFigure: ofFigure,
-              )),
-            child: child,
+    if ((videoListBloc != null)) {
+      return BlocProvider<VideoListBloc>.value(
+        value: videoListBloc!,
+        child: child,
+      );
+    } else {
+      return BlocProvider<VideoListBloc>(
+        create: (context) {
+          final videoListBloc = VideoListBloc(
+            videoRepository:
+                Provider.of<VideoRepository>(context, listen: false),
+            mapper: ModelMapper(),
           );
+
+          if (preselectedVideos?.isNotEmpty ?? false) {
+            videoListBloc.add(VideoListSelect(videos: preselectedVideos!));
+          }
+
+          videoListBloc.add(VideoListLoad(
+            ofSearch: ofSearch,
+            ofArtist: ofArtist,
+            ofDance: ofDance,
+            ofFigure: ofFigure,
+          ));
+          return videoListBloc;
+        },
+        child: child,
+      );
+    }
   }
 }
 
@@ -177,9 +194,9 @@ class _VideoListViewState extends State<VideoListView> {
                       if (state.selectedVideos.isEmpty) {
                         return VideoListTile(
                           video: video,
-                          onLongPress: () {
+                          onLongPress: (item) {
                             videoListBloc.add(
-                              VideoListSelect(video: video),
+                              VideoListSelect(videos: [item]),
                             );
                           },
                         );
@@ -191,8 +208,8 @@ class _VideoListViewState extends State<VideoListView> {
                           onChanged: (bool? value) {
                             videoListBloc.add(
                               (value == true)
-                                  ? VideoListSelect(video: video)
-                                  : VideoListUnselect(video: video),
+                                  ? VideoListSelect(videos: [video])
+                                  : VideoListUnselect(videos: [video]),
                             );
                           },
                         );

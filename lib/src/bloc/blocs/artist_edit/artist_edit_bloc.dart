@@ -73,8 +73,13 @@ class ArtistEditBloc extends Bloc<ArtistEditEvent, ArtistEditState> {
   ) async {
     if (kDebugMode) print('$runtimeType:_onArtistEditChangeImageUrl');
 
+    String? imageUrl;
+    if (event.artistImageUrl != null) {
+      imageUrl = event.artistImageUrl!.isNotEmpty ? event.artistImageUrl : null;
+    }
+
     emit(state.copyWith(
-      artistImageUrl: Optional.fromNullable(event.artistImageUrl),
+      artistImageUrl: Optional.fromNullable(imageUrl),
     ));
   }
 
@@ -93,13 +98,13 @@ class ArtistEditBloc extends Bloc<ArtistEditEvent, ArtistEditState> {
       if (state.initialArtist != null) {
         artistViewModel = state.initialArtist!.copyWith(
           name: state.artistName,
-          imageUrl: Optional.fromNullable(state.artistImageUrl),
+          imageUrl: state.artistImageUrl,
         );
         artistViewModel.incrementVersion();
       } else {
         artistViewModel = ArtistViewModel.createNew(
           name: state.artistName!,
-          imageUrl: state.artistImageUrl,
+          imageUrl: state.artistImageUrl?.orNull,
         );
       }
 

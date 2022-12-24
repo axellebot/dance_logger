@@ -8,6 +8,7 @@ class AppPaths {
   static const String kPathVideos = 'videos';
   static const String kPathFigures = 'figures';
   static const String kPathPractices = 'practices';
+  static const String kPathMoments = 'moments';
 
   /// Params ID
   static const String kParamDanceId = 'danceId';
@@ -15,6 +16,7 @@ class AppPaths {
   static const String kParamVideoId = 'videoId';
   static const String kParamFigureId = 'figureId';
   static const String kParamPracticeId = 'practiceId';
+  static const String kParamMomentId = 'momentId';
 
   /// View
   static const String kViewCreate = 'create';

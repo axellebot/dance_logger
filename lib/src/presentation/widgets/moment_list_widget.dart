@@ -25,6 +25,9 @@ class MomentListBlocProvider extends StatelessWidget
   @override
   final String? ofVideo;
 
+  /// Selection
+  final List<MomentViewModel>? preselectedMoments;
+
   /// Widget params
   final Widget child;
 
@@ -37,6 +40,9 @@ class MomentListBlocProvider extends StatelessWidget
     this.ofFigure,
     this.ofVideo,
 
+    /// Selection
+    this.preselectedMoments,
+
     /// Widget params
     required this.child,
   }) : assert(momentListBloc == null ||
@@ -44,23 +50,35 @@ class MomentListBlocProvider extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    return (momentListBloc != null)
-        ? BlocProvider<MomentListBloc>.value(
-            value: momentListBloc!,
-            child: child,
-          )
-        : BlocProvider(
-            create: (context) => MomentListBloc(
-              momentRepository:
-                  Provider.of<MomentRepository>(context, listen: false),
-              mapper: ModelMapper(),
-            )..add(MomentListLoad(
-                ofArtist: ofArtist,
-                ofFigure: ofFigure,
-                ofVideo: ofVideo,
-              )),
-            child: child,
+    if ((momentListBloc != null)) {
+      return BlocProvider<MomentListBloc>.value(
+        value: momentListBloc!,
+        child: child,
+      );
+    } else {
+      return BlocProvider(
+        create: (context) {
+          final momentListBloc = MomentListBloc(
+            momentRepository:
+                Provider.of<MomentRepository>(context, listen: false),
+            mapper: ModelMapper(),
           );
+
+          if (preselectedMoments?.isNotEmpty ?? false) {
+            momentListBloc.add(MomentListSelect(moments: preselectedMoments!));
+          }
+
+          momentListBloc.add(MomentListLoad(
+            ofArtist: ofArtist,
+            ofFigure: ofFigure,
+            ofVideo: ofVideo,
+          ));
+
+          return momentListBloc;
+        },
+        child: child,
+      );
+    }
   }
 }
 
@@ -172,9 +190,9 @@ class _MomentListViewState extends State<MomentListView> {
                       if (state.selectedMoments.isEmpty) {
                         return MomentListTile(
                           moment: moment,
-                          onLongPress: () {
+                          onLongPress: (item) {
                             momentListBloc.add(
-                              MomentListSelect(moment: moment),
+                              MomentListSelect(moments: [item]),
                             );
                           },
                         );
@@ -186,8 +204,8 @@ class _MomentListViewState extends State<MomentListView> {
                           onChanged: (bool? value) {
                             momentListBloc.add(
                               (value == true)
-                                  ? MomentListSelect(moment: moment)
-                                  : MomentListUnselect(moment: moment),
+                                  ? MomentListSelect(moments: [moment])
+                                  : MomentListUnselect(moments: [moment]),
                             );
                           },
                         );

@@ -40,9 +40,9 @@ class PracticeDetailState extends Equatable {
   }) {
     return PracticeDetailState(
       status: status ?? this.status,
-      ofId: ofId?.orNull ?? this.ofId,
-      practice: practice?.orNull ?? this.practice,
-      error: error?.orNull ?? this.error,
+      ofId: ofId != null ? ofId.orNull : this.ofId,
+      practice: practice != null ? practice.orNull : this.practice,
+      error: error != null ? error.orNull : this.error,
     );
   }
 

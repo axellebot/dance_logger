@@ -44,13 +44,15 @@ class VideoEditBloc extends Bloc<VideoEditEvent, VideoEditState> {
 
       emit(state.copyWith(
         status: VideoEditStatus.ready,
+        ofId: Optional.fromNullable(event.videoId),
         initialVideo: Optional.fromNullable(videoViewModel),
         error: const Optional.absent(),
       ));
     } on Error catch (error) {
-      emit(VideoEditState(
+      emit(state.copyWith(
         status: VideoEditStatus.failure,
-        error: error,
+        ofId: Optional.fromNullable(event.videoId),
+        error: Optional.fromNullable(error),
       ));
     }
   }

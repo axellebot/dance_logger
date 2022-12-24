@@ -16,7 +16,7 @@ class ArtistEditState extends Equatable {
   final String? ofId;
   final ArtistViewModel? initialArtist;
   final String? artistName;
-  final String? artistImageUrl;
+  final Optional<String>? artistImageUrl;
   final Error? error;
 
   const ArtistEditState({
@@ -29,8 +29,7 @@ class ArtistEditState extends Equatable {
   }) : super();
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         status,
         ofId,
         initialArtist,
@@ -49,11 +48,12 @@ class ArtistEditState extends Equatable {
   }) {
     return ArtistEditState(
       status: status ?? this.status,
-      ofId: ofId?.orNull ?? this.ofId,
-      initialArtist: initialArtist?.orNull ?? this.initialArtist,
-      artistName: artistName?.orNull ?? this.artistName,
-      artistImageUrl: artistImageUrl?.orNull ?? this.artistImageUrl,
-      error: error?.orNull ?? this.error,
+      ofId: ofId != null ? ofId.orNull : this.ofId,
+      initialArtist:
+          initialArtist != null ? initialArtist.orNull : this.initialArtist,
+      artistName: artistName != null ? artistName.orNull : this.artistName,
+      artistImageUrl: artistImageUrl ?? this.artistImageUrl,
+      error: error != null ? error.orNull : this.error,
     );
   }
 

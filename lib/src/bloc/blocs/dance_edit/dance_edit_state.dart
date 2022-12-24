@@ -27,8 +27,7 @@ class DanceEditState extends Equatable {
   }) : super();
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         status,
         ofId,
         initialDance,
@@ -45,10 +44,11 @@ class DanceEditState extends Equatable {
   }) {
     return DanceEditState(
       status: status ?? this.status,
-      ofId: ofId?.orNull ?? this.ofId,
-      initialDance: initialDance?.orNull ?? this.initialDance,
-      danceName: danceName?.orNull ?? this.danceName,
-      error: error?.orNull ?? this.error,
+      ofId: ofId != null ? ofId.orNull : this.ofId,
+      initialDance:
+          initialDance != null ? initialDance.orNull : this.initialDance,
+      danceName: danceName != null ? danceName.orNull : this.danceName,
+      error: error != null ? error.orNull : this.error,
     );
   }
 
