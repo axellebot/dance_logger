@@ -1,5 +1,5 @@
 abstract class EntityListPageParams<Item> {
-  /// Page params
+  /// List Page params
   final bool? showAppBar;
   final String? titleText;
   final bool shouldSelectOne;

@@ -14,7 +14,11 @@ abstract class ConfigurationEvent extends Equatable {
 class ConfigLoad extends ConfigurationEvent {}
 
 class ConfigChange extends ConfigurationEvent {
+  final String? fileDir;
   final String? fileName;
 
-  const ConfigChange({required this.fileName});
+  const ConfigChange({
+    required this.fileDir,
+    required this.fileName,
+  });
 }

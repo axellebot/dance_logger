@@ -29,23 +29,14 @@ class RepoWrapper extends StatelessWidget {
     return BlocBuilder<ConfigurationBloc, ConfigState>(
       builder: (context, ConfigState state) {
         switch (state.status) {
-          case ConfigStatus.notReady:
           case ConfigStatus.ready:
-            late AppPrefsRepository appPrefsRepository;
+            /// Display normal app
             late List<Provider> providers;
 
-            if (state.status == ConfigStatus.notReady) {
-              appPrefsRepository = state.appPrefsRepository!;
-              providers = <Provider>[
-                RepositoryProvider<AppPrefsRepository>.value(
-                  value: state.appPrefsRepository!,
-                ),
-              ];
-            } else if (state.status == ConfigStatus.ready) {
               /// Dependency Injection of repositories
               /// Use updateShouldNotify to make dependencies available in
               /// `initState` methods of children widgets
-              appPrefsRepository = state.appPrefsRepository!;
+           final AppPrefsRepository appPrefsRepository = state.appPrefsRepository!;
               providers = <Provider>[
                 RepositoryProvider<AppPrefsRepository>.value(
                   value: appPrefsRepository,
@@ -69,7 +60,6 @@ class RepoWrapper extends StatelessWidget {
                   value: state.videoRepository!,
                 ),
               ];
-            }
             return MultiProvider(
               providers: providers,
               child: BlocProvider<AppBloc>(

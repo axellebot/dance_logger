@@ -64,7 +64,13 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
       emit(state.copyWith(
         status: ConfigStatus.loading,
       ));
-      await _appPrefsRepository?.saveFileDir(await _getDefaultFileDirPath());
+      await danceDatabaseManager?.close();
+
+      /// Set fileDir
+      event.fileDir != null
+          ? await  _appPrefsRepository?.saveFileDir(event.fileDir!)
+          : await _appPrefsRepository?.deleteFileName();
+      /// Set fileName
       event.fileName != null
           ? await _appPrefsRepository?.saveFileName(event.fileName!)
           : await _appPrefsRepository?.deleteFileName();
@@ -85,86 +91,81 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
     if (kDebugMode) print('$runtimeType:_loadConfig');
 
     try {
-      String? fileDirPath = await _appPrefsRepository?.getFileDir();
-      String? fileName = await _appPrefsRepository?.getFileName();
+      String? fileDirPath = await _appPrefsRepository?.getFileDir()?? await _getDefaultFileDirPath();
+      String? fileName = await _appPrefsRepository?.getFileName() ?? 'dance_logger.db';
 
-      if (fileDirPath != null && fileName != null) {
-        String filePath = join(fileDirPath, fileName);
+      String filePath = join(
+        fileDirPath ,
+        fileName,
+      );
 
-        // Database manager
-        await danceDatabaseManager?.close();
-        danceDatabaseManager = DanceDatabaseManager(
-          filePath: filePath,
-        );
-        await danceDatabaseManager!.open();
+      // Database manager
+      await danceDatabaseManager?.close();
+      danceDatabaseManager = DanceDatabaseManager(
+        filePath: filePath,
+      );
+      await danceDatabaseManager!.open();
 
-        // Data Stores
-        final DanceDataStore databaseDanceDataStore = danceDatabaseManager!;
-        final ArtistDataStore databaseArtistDataStore = danceDatabaseManager!;
-        final FigureDataStore databaseFigureDataStore = danceDatabaseManager!;
-        final MomentDataStore databaseMomentDataStore = danceDatabaseManager!;
-        final PracticeDataStore databasePracticeDataStore =
-            danceDatabaseManager!;
-        final VideoDataStore databaseVideoDataStore = danceDatabaseManager!;
+      // Data Stores
+      final DanceDataStore databaseDanceDataStore = danceDatabaseManager!;
+      final ArtistDataStore databaseArtistDataStore = danceDatabaseManager!;
+      final FigureDataStore databaseFigureDataStore = danceDatabaseManager!;
+      final MomentDataStore databaseMomentDataStore = danceDatabaseManager!;
+      final PracticeDataStore databasePracticeDataStore = danceDatabaseManager!;
+      final VideoDataStore databaseVideoDataStore = danceDatabaseManager!;
 
-        // Data Store Factories
-        final artistDataStoreFactory = ArtistDataStoreFactory(
-          databaseDataStore: databaseArtistDataStore,
-        );
-        final danceDataStoreFactory = DanceDataStoreFactory(
-          databaseDataStore: databaseDanceDataStore,
-        );
-        final figureDataStoreFactory = FigureDataStoreFactory(
-          databaseDataStore: databaseFigureDataStore,
-        );
-        final momentDataStoreFactory = MomentDataStoreFactory(
-          databaseDataStore: databaseMomentDataStore,
-        );
-        final practiceDataStoreFactory = PracticeDataStoreFactory(
-          databaseDataStore: databasePracticeDataStore,
-        );
-        final videoDataStoreFactory = VideoDataStoreFactory(
-          databaseDataStore: databaseVideoDataStore,
-        );
+      // Data Store Factories
+      final artistDataStoreFactory = ArtistDataStoreFactory(
+        databaseDataStore: databaseArtistDataStore,
+      );
+      final danceDataStoreFactory = DanceDataStoreFactory(
+        databaseDataStore: databaseDanceDataStore,
+      );
+      final figureDataStoreFactory = FigureDataStoreFactory(
+        databaseDataStore: databaseFigureDataStore,
+      );
+      final momentDataStoreFactory = MomentDataStoreFactory(
+        databaseDataStore: databaseMomentDataStore,
+      );
+      final practiceDataStoreFactory = PracticeDataStoreFactory(
+        databaseDataStore: databasePracticeDataStore,
+      );
+      final videoDataStoreFactory = VideoDataStoreFactory(
+        databaseDataStore: databaseVideoDataStore,
+      );
 
-        // Repositories
-        _artistRepository = ImplArtistRepository(
-          factory: artistDataStoreFactory,
-        );
-        _danceRepository = ImplDanceRepository(
-          factory: danceDataStoreFactory,
-        );
-        _figureRepository = ImplFigureRepository(
-          factory: figureDataStoreFactory,
-        );
-        _momentRepository = ImplMomentRepository(
-          factory: momentDataStoreFactory,
-        );
-        _practiceRepository = ImplPracticeRepository(
-          factory: practiceDataStoreFactory,
-        );
-        _videoRepository = ImplVideoRepository(
-          factory: videoDataStoreFactory,
-        );
+      // Repositories
+      _artistRepository = ImplArtistRepository(
+        factory: artistDataStoreFactory,
+      );
+      _danceRepository = ImplDanceRepository(
+        factory: danceDataStoreFactory,
+      );
+      _figureRepository = ImplFigureRepository(
+        factory: figureDataStoreFactory,
+      );
+      _momentRepository = ImplMomentRepository(
+        factory: momentDataStoreFactory,
+      );
+      _practiceRepository = ImplPracticeRepository(
+        factory: practiceDataStoreFactory,
+      );
+      _videoRepository = ImplVideoRepository(
+        factory: videoDataStoreFactory,
+      );
 
-        emit(state.copyWith(
-          status: ConfigStatus.ready,
-          fileDir: fileDirPath,
-          fileName: fileName,
-          appPrefsRepository: _appPrefsRepository!,
-          artistRepository: _artistRepository!,
-          danceRepository: _danceRepository!,
-          figureRepository: _figureRepository!,
-          momentRepository: _momentRepository!,
-          practiceRepository: _practiceRepository!,
-          videoRepository: _videoRepository!,
-        ));
-      } else {
-        emit(state.copyWith(
-          status: ConfigStatus.notReady,
-          appPrefsRepository: _appPrefsRepository!,
-        ));
-      }
+      emit(state.copyWith(
+        status: ConfigStatus.ready,
+        fileDir: fileDirPath,
+        fileName: fileName,
+        appPrefsRepository: _appPrefsRepository!,
+        artistRepository: _artistRepository!,
+        danceRepository: _danceRepository!,
+        figureRepository: _figureRepository!,
+        momentRepository: _momentRepository!,
+        practiceRepository: _practiceRepository!,
+        videoRepository: _videoRepository!,
+      ));
     } on Error catch (error) {
       emit(state.copyWith(
         status: ConfigStatus.failure,

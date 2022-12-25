@@ -16,7 +16,6 @@ class DatabaseFileSetupTile extends StatelessWidget {
           case ConfigStatus.initial:
           case ConfigStatus.loading:
             return const LoadingTile();
-          case ConfigStatus.notReady:
           case ConfigStatus.ready:
             String? dirPath;
             String? fileName;
@@ -89,6 +88,7 @@ class DatabaseFileSettingDialog extends StatelessWidget {
             child: const Text('Reset'),
             onPressed: () {
               configBloc.add(const ConfigChange(
+                fileDir:null,
                 fileName: null,
               ));
             },
@@ -98,6 +98,7 @@ class DatabaseFileSettingDialog extends StatelessWidget {
             onPressed: () {
               if (formKey.currentState!.validate()) {
                 configBloc.add(ConfigChange(
+                  fileDir: null, /// TODO: Replace when flutter will have device explorer capability
                   fileName: fieldController.text,
                 ));
               }

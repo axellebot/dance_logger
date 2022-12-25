@@ -1,7 +1,12 @@
 import 'package:dance/domain.dart';
 import 'package:equatable/equatable.dart';
 
-enum ConfigStatus { initial, loading, notReady, ready, failure }
+enum ConfigStatus {
+  initial,
+  loading,
+  ready,
+  failure,
+}
 
 class ConfigState extends Equatable {
   final ConfigStatus status;

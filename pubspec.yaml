@@ -38,13 +38,13 @@ dependencies:
   shared_preferences: ^2.0.15 # Storage
   path: ^1.8.1 # Path
   intl: ^0.17.0 # Translations
-  share_plus: ^4.0.10
+  share_plus: ^6.3.0
 
   youtube_player_flutter: ^8.1.0
   pull_to_refresh: ^2.0.0 # Overridden by patched version
   duration_picker: ^1.1.0+1 # Duration picker for form
 
-  material_design_icons_flutter: ^5.0.6595 # Material Design Icons
+  material_design_icons_flutter: ^6.0.7096 # Material Design Icons
   cupertino_icons: ^1.0.5 # Cupertino Icons
   settings_ui: ^2.0.2
 

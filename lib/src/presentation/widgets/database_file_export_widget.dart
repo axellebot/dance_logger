@@ -17,10 +17,10 @@ class DatabaseFileExportTile extends StatelessWidget {
         switch (state.status) {
           case ConfigStatus.ready:
             enabled = true;
-            shareFct =
-                () => Share.shareFiles([join(state.fileDir!, state.fileName!)]);
+            shareFct = () => Share.shareXFiles([
+                  XFile(join(state.fileDir!, state.fileName!)),
+                ]);
             break;
-          case ConfigStatus.notReady:
           default:
             enabled = false;
             break;
