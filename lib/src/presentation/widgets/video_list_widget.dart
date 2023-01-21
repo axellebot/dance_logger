@@ -290,7 +290,7 @@ class VideosSection extends StatelessWidget
                     },
               ),
               SizedBox(
-                height: AppStyles.cardHeight,
+                height: AppStyles.videoSectionHeight,
                 child: VideoListView(
                   videoListBloc: BlocProvider.of<VideoListBloc>(context),
                   scrollDirection: Axis.horizontal,

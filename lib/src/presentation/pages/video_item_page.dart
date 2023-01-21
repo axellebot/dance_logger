@@ -81,31 +81,17 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
           builder: (BuildContext context, VideoDetailState state) {
             final VideoDetailBloc videoDetailBloc =
                 BlocProvider.of<VideoDetailBloc>(context);
+
+            Widget? thumbnail = (isYoutube(state.video?.url ?? ""))
+                ? Image.network(
+                    'https://img.youtube.com/vi/${getYoutubeId(state.video!.url)}/mqdefault.jpg',
+                    fit: BoxFit.cover,
+                  )
+                : Container();
+
             return Scaffold(
               body: CustomScrollView(
                 slivers: <Widget>[
-                  SliverAppBar(
-                    pinned: true,
-                    snap: false,
-                    floating: false,
-                    actions: [
-                      IconButton(
-                        onPressed: () {
-                          AutoRouter.of(context).push(
-                            VideoEditRoute(
-                              videoId: state.video!.id,
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.edit),
-                      ),
-                      DeleteIconButton(
-                        onDeleted: () {
-                          videoDetailBloc.add(const VideoDetailDelete());
-                        },
-                      )
-                    ],
-                  ),
                   SliverFillRemaining(
                     child: SmartRefresher(
                       controller: _refreshController,
@@ -115,40 +101,95 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                       },
                       child: ListView(
                         children: <Widget>[
-                          if (_videoController != null)
-                            ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxHeight:
-                                    MediaQuery.of(context).size.height * 0.3,
-                              ),
-                              child: Hero(
-                                tag: 'img-${state.video!.id}',
-                                child: AspectRatio(
-                                  aspectRatio: 16 / 9,
-                                  child: YoutubePlayer(
-                                    controller: _videoController!,
-                                  ),
-                                ),
+                          ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxHeight:
+                                  MediaQuery.of(context).size.height * 0.3,
+                            ),
+                            child: Hero(
+                              tag:
+                                  'img-${state.video?.id ?? state.ofId ?? "not_loaded"}',
+                              child: AspectRatio(
+                                aspectRatio: 16 / 9,
+                                child: (_videoController != null)
+                                    ? YoutubePlayer(
+                                        thumbnail: thumbnail,
+                                        controller: _videoController!,
+                                        bottomActions: [
+                                          TextButton(
+                                            onPressed: () => showBottomSheet(
+                                              context: context,
+                                              builder: (context) =>
+                                                  MomentListView(
+                                                ofVideo: state.video!.id,
+                                              ),
+                                            ),
+                                            child: const Text('Moments >'),
+                                          ),
+                                          const SizedBox(width: 14.0),
+                                          CurrentPosition(),
+                                          const SizedBox(width: 8.0),
+                                          ProgressBar(
+                                            isExpanded: true,
+                                          ),
+                                          RemainingDuration(),
+                                          const PlaybackSpeedButton(),
+                                          // FullScreenButton(),
+                                        ],
+                                      )
+                                    : thumbnail,
                               ),
                             ),
+                          ),
                           if (state.video != null)
                             ListTile(
                               title: Text(state.video!.name),
                               subtitle: Text(state.video!.url),
-                              trailing: const Icon(Icons.copy),
-                              onTap: () {
-                                Clipboard.setData(
-                                    ClipboardData(text: state.video!.url));
-                              },
                             ),
-                          if (state.video != null)
-                            MomentsSection(
-                              // label: 'Moments of ${state.video!.name}',
-                              ofVideo: state.video!.id,
-                              onItemTap: (moment) {
-                                _videoController?.seekTo(moment.startTime);
-                              },
+                          SizedBox(
+                            height: 40,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                const SizedBox(width: 10),
+                                ActionChip(
+                                  label: const Text("Copy URL"),
+                                  avatar: const Icon(Icons.copy),
+                                  onPressed: () {
+                                    Clipboard.setData(
+                                        ClipboardData(text: state.video!.url));
+                                  },
+                                ),
+                                const SizedBox(width: 10),
+                                ActionChip(
+                                  label: const Text("Edit"),
+                                  avatar: const Icon(Icons.edit),
+                                  onPressed: () {
+                                    AutoRouter.of(context).push(
+                                      VideoEditRoute(
+                                        videoId: state.video!.id,
+                                      ),
+                                    );
+                                  },
+                                ),
+                                const SizedBox(width: 10),
+                                DeleteActionChip(
+                                  onDeleted: () {
+                                    videoDetailBloc
+                                        .add(const VideoDetailDelete());
+                                  },
+                                )
+                              ],
                             ),
+                          ),
+                          // if (state.video != null)
+                          //   MomentsSection(
+                          //     // label: 'Moments of ${state.video!.name}',
+                          //     ofVideo: state.video!.id,
+                          //     onItemTap: (moment) {
+                          //       _videoController?.seekTo(moment.startTime);
+                          //     },
+                          //   ),
                           if (state.video != null)
                             FiguresSection(
                               // label: 'Figures of ${state.video!.name}',
@@ -189,6 +230,13 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
     // Pauses video while navigating to next page.
     _videoController?.pause();
     super.deactivate();
+  }
+
+  @override
+  void activate() {
+    super.activate();
+    // Play video while navigating back here.
+    _videoController?.play();
   }
 
   @override

@@ -26,19 +26,23 @@ class VideoListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(video.name),
-      leading: (isYoutube(video.url))
-          ? Hero(
-              tag: 'img-${video.id}',
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(
-                    AppStyles.videoListTileThumbnailRadius),
-                child: Image.network(
-                  'https://img.youtube.com/vi/${getYoutubeId(video.url)}/mqdefault.jpg',
-                  fit: BoxFit.cover,
-                ),
-              ),
-            )
-          : null,
+      leading: Hero(
+        tag: 'img-${video.id}',
+        child: AspectRatio(
+          aspectRatio: 16 / 9,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(
+              AppStyles.videoListTileThumbnailRadius,
+            ),
+            child: (isYoutube(video.url))
+                ? Image.network(
+                    'https://img.youtube.com/vi/${getYoutubeId(video.url)}/mqdefault.jpg',
+                    fit: BoxFit.cover,
+                  )
+                : Container(),
+          ),
+        ),
+      ),
       subtitle: Text(video.url),
       onTap: () {
         AutoRouter.of(context).push(
@@ -92,30 +96,50 @@ class VideoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        AutoRouter.of(context).push(
+    onTap() => AutoRouter.of(context).push(
           VideoDetailsRoute(videoId: video.id),
         );
-      },
+    return Padding(
+      padding: const EdgeInsets.all(AppStyles.itemPadding),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: Hero(
               tag: 'img-${video.id}',
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(
-                    AppStyles.videoListTileThumbnailRadius),
-                child: Image.network(
-                  'https://img.youtube.com/vi/${getYoutubeId(video.url)}/mqdefault.jpg',
-                  fit: BoxFit.cover,
+              child: Material(
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    AppStyles.videoListTileThumbnailRadius,
+                  ),
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(
+                    AppStyles.videoListTileThumbnailRadius,
+                  ),
+                  onTap: onTap,
+                  child: Image.network(
+                    'https://img.youtube.com/vi/${getYoutubeId(video.url)}/mqdefault.jpg',
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
           ),
-          Text(
-            video.name,
-          ),
+          GestureDetector(
+            onTap: onTap,
+            child: Column(
+              children: [
+                const SizedBox(height: 5),
+                Text(
+                  video.name,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.left,
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );

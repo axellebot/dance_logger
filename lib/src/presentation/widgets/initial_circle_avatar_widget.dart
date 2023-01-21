@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 class InitialCircleAvatar extends StatefulWidget {
   final String text;
-  final double elevation;
   final ImageProvider? backgroundImage;
   final double? radius;
   final double? minRadius;
@@ -12,7 +11,6 @@ class InitialCircleAvatar extends StatefulWidget {
   const InitialCircleAvatar({
     super.key,
     this.text = '',
-    this.elevation = 0.0,
     this.backgroundImage,
     this.radius,
     this.minRadius,
@@ -42,26 +40,12 @@ class _InitialCircleAvatarState extends State<InitialCircleAvatar> {
 
   @override
   Widget build(BuildContext context) {
-    return _checkLoading == true
-        ? Material(
-            shape: const CircleBorder(),
-            elevation: widget.elevation,
-            child: CircleAvatar(
-              minRadius: widget.minRadius,
-              maxRadius: widget.maxRadius,
-              radius: widget.radius,
-              child: Text(getInitials(widget.text)),
-            ),
-          )
-        : Material(
-            shape: const CircleBorder(),
-            elevation: widget.elevation,
-            child: CircleAvatar(
-              minRadius: widget.minRadius,
-              maxRadius: widget.maxRadius,
-              radius: widget.radius,
-              backgroundImage: widget.backgroundImage,
-            ),
-          );
+    return CircleAvatar(
+      minRadius: widget.minRadius,
+      maxRadius: widget.maxRadius,
+      radius: widget.radius,
+      backgroundImage: (!_checkLoading) ? widget.backgroundImage : null,
+      child: (_checkLoading) ? Text(getInitials(widget.text)) : null,
+    );
   }
 }

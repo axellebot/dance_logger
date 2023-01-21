@@ -25,7 +25,10 @@ class ArtistListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(artist.name),
+      title: Text(
+        artist.name,
+        overflow: TextOverflow.ellipsis,
+      ),
       leading: Hero(
         tag: 'img-${artist.id}',
         child: InitialCircleAvatar(
@@ -76,47 +79,67 @@ class CheckboxArtistListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CheckboxListTile(
-      title: Text(artist.name),
+      title: Text(
+        artist.name,
+        overflow: TextOverflow.ellipsis,
+      ),
       value: value,
       onChanged: onChanged,
     );
   }
 }
 
-class ArtistAvatar extends StatelessWidget {
+class ArtistCard extends StatelessWidget {
   final ArtistViewModel artist;
 
-  const ArtistAvatar({
+  const ArtistCard({
     super.key,
     required this.artist,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: AppStyles.cardHeight,
-      child: GestureDetector(
-        onTap: () {
-          AutoRouter.of(context).push(
-            ArtistDetailsRoute(artistId: artist.id),
-          );
-        },
-        child: Column(
-          children: [
-            Expanded(
-              child: Hero(
-                tag: 'img-${artist.id}',
-                child: InitialCircleAvatar(
-                  text: artist.name,
-                  backgroundImage: NetworkImage(
-                    artist.imageUrl!,
+    onTap() => AutoRouter.of(context).push(
+          ArtistDetailsRoute(artistId: artist.id),
+        );
+
+    return Padding(
+      padding: const EdgeInsets.all(AppStyles.itemPadding),
+      child: Column(
+        children: [
+          Expanded(
+            child: Hero(
+              tag: 'img-${artist.id}',
+              child: Material(
+                clipBehavior: Clip.antiAlias,
+                shape: const CircleBorder(),
+                child: InkWell(
+                  onTap: onTap,
+                  child: InitialCircleAvatar(
+                    text: artist.name,
+                    backgroundImage: (artist.imageUrl) != null
+                        ? NetworkImage(
+                            artist.imageUrl!,
+                          )
+                        : null,
                   ),
                 ),
               ),
             ),
-            Text(artist.name)
-          ],
-        ),
+          ),
+          GestureDetector(
+            onTap: onTap,
+            child: Column(
+              children: [
+                const SizedBox(height: 5),
+                Text(
+                  artist.name,
+                  overflow: TextOverflow.ellipsis,
+                )
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -137,7 +160,7 @@ class ArtistForm extends StatelessWidget {
               TextFormField(
                 decoration: const InputDecoration(
                   labelText: 'Name',
-                  hintText: 'Name',
+                  hintText: 'John Doe',
                 ),
                 initialValue: state.initialArtist?.name,
                 onChanged: (value) {

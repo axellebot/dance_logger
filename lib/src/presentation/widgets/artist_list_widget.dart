@@ -216,7 +216,7 @@ class _ArtistListViewState extends State<ArtistListView> {
                         );
                       }
                     case Axis.horizontal:
-                      return ArtistAvatar(artist: artist);
+                      return ArtistCard(artist: artist);
                   }
                 },
               ),

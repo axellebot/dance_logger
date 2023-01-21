@@ -23,7 +23,10 @@ class FigureListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(figure.name),
+      title: Text(
+        figure.name,
+        overflow: TextOverflow.ellipsis,
+      ),
       onTap: (onTap != null)
           ? () {
               onTap!(figure);
@@ -62,7 +65,10 @@ class CheckboxFigureListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CheckboxListTile(
-      title: Text(figure.name),
+      title: Text(
+        figure.name,
+        overflow: TextOverflow.ellipsis,
+      ),
       value: value,
       onChanged: onChanged,
     );
@@ -94,7 +100,10 @@ class FigureCard extends StatelessWidget {
           child: Container(
             padding: AppStyles.cardPadding,
             child: Center(
-              child: Text(figure.name),
+              child: Text(
+                figure.name,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
         ),

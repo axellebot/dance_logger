@@ -25,7 +25,10 @@ class DanceListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(dance.name),
+      title: Text(
+        dance.name,
+        overflow: TextOverflow.ellipsis,
+      ),
       onTap: (onTap != null)
           ? () {
               onTap!(dance);
@@ -64,7 +67,10 @@ class CheckboxDanceListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CheckboxListTile(
-      title: Text(dance.name),
+      title: Text(
+        dance.name,
+        overflow: TextOverflow.ellipsis,
+      ),
       value: value,
       onChanged: onChanged,
     );
@@ -100,7 +106,10 @@ class DanceCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text(dance.name),
+                Text(
+                  dance.name,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
             ),
           ),
@@ -122,7 +131,10 @@ class DanceChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Chip(
-        label: Text(dance.name),
+        label: Text(
+          dance.name,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
     );
   }

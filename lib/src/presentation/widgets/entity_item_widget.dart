@@ -4,6 +4,34 @@ import 'package:intl/intl.dart';
 typedef ItemCallback<T> = void Function(T element);
 typedef ItemsCallback<T> = void Function(List<T> elements);
 
+class DeleteActionChip extends StatelessWidget {
+  final VoidCallback onDeleted;
+
+  const DeleteActionChip({
+    super.key,
+    required this.onDeleted,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return ActionChip(
+      label: const Text("Delete"),
+      avatar: const Icon(Icons.delete),
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return DeleteDialog(
+              onConfirmed: onDeleted,
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
 class DeleteIconButton extends StatelessWidget {
   final VoidCallback onDeleted;
 
