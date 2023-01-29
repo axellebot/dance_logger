@@ -190,6 +190,7 @@ class _MomentListViewState extends State<MomentListView> {
                       if (state.selectedMoments.isEmpty) {
                         return MomentListTile(
                           moment: moment,
+                          onTap: widget.onItemTap,
                           onLongPress: (item) {
                             momentListBloc.add(
                               MomentListSelect(moments: [item]),

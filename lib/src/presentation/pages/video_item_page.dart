@@ -35,95 +35,115 @@ class VideoDetailsPage extends StatefulWidget implements AutoRouteWrapper {
 
 class _VideoDetailsPage extends State<VideoDetailsPage> {
   YoutubePlayerController? _videoController;
+  final DraggableScrollableController _bottomSheetController =
+      DraggableScrollableController();
 
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
+  GlobalKey videoPlayerWidgetKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
-    return BlocListener<VideoDetailBloc, VideoDetailState>(
-      listenWhen: (VideoDetailState previous, VideoDetailState current) =>
-          previous.video?.id != current.video?.id,
-      listener: (BuildContext context, VideoDetailState state) {
-        if (state.video != null) {
-          final String? videoId =
-              YoutubePlayer.convertUrlToId(state.video!.url);
-          if (videoId != null) {
-            _videoController?.dispose();
-            _videoController = YoutubePlayerController(
-              initialVideoId: videoId,
-              flags: const YoutubePlayerFlags(
-                showLiveFullscreenButton: false,
-              ),
-            );
-          } else {
-            _videoController?.dispose();
-            _videoController = null;
-          }
-        } else {
-          _videoController?.dispose();
-          _videoController = null;
-        }
-      },
-      child: BlocListener<VideoDetailBloc, VideoDetailState>(
-        listener: (context, state) {
-          switch (state.status) {
-            case VideoDetailStatus.refreshingSuccess:
-              _refreshController.refreshCompleted();
-              break;
-            case VideoDetailStatus.refreshingFailure:
-              _refreshController.refreshFailed();
-              break;
-            default:
-          }
-        },
-        child: BlocBuilder<VideoDetailBloc, VideoDetailState>(
-          builder: (BuildContext context, VideoDetailState state) {
-            final VideoDetailBloc videoDetailBloc =
-                BlocProvider.of<VideoDetailBloc>(context);
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<VideoDetailBloc, VideoDetailState>(
+            listenWhen: (VideoDetailState previous, VideoDetailState current) =>
+                previous.video?.id != current.video?.id,
+            listener: (BuildContext context, VideoDetailState state) {
+              if (state.video != null) {
+                final String? videoId =
+                    YoutubePlayer.convertUrlToId(state.video!.url);
+                if (videoId != null) {
+                  _videoController?.dispose();
+                  _videoController = YoutubePlayerController(
+                    initialVideoId: videoId,
+                    flags: const YoutubePlayerFlags(
+                      showLiveFullscreenButton: false,
+                    ),
+                  );
+                } else {
+                  _videoController?.dispose();
+                  _videoController = null;
+                }
+              } else {
+                _videoController?.dispose();
+                _videoController = null;
+              }
+            }),
+        BlocListener<VideoDetailBloc, VideoDetailState>(
+          listener: (context, state) {
+            switch (state.status) {
+              case VideoDetailStatus.refreshingSuccess:
+                _refreshController.refreshCompleted();
+                break;
+              case VideoDetailStatus.refreshingFailure:
+                _refreshController.refreshFailed();
+                break;
+              default:
+            }
+          },
+        ),
+      ],
+      child: BlocBuilder<VideoDetailBloc, VideoDetailState>(
+        builder: (BuildContext context, VideoDetailState state) {
+          final VideoDetailBloc videoDetailBloc =
+              BlocProvider.of<VideoDetailBloc>(context);
 
-            Widget? thumbnail = (isYoutube(state.video?.url ?? ""))
-                ? Image.network(
-                    'https://img.youtube.com/vi/${getYoutubeId(state.video!.url)}/mqdefault.jpg',
-                    fit: BoxFit.cover,
-                  )
-                : Container();
-
-            return Scaffold(
-              body: CustomScrollView(
-                slivers: <Widget>[
-                  SliverFillRemaining(
-                    child: SmartRefresher(
-                      controller: _refreshController,
-                      enablePullDown: true,
-                      onRefresh: () {
-                        videoDetailBloc.add(const VideoDetailRefresh());
-                      },
-                      child: ListView(
-                        children: <Widget>[
-                          ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxHeight:
-                                  MediaQuery.of(context).size.height * 0.3,
-                            ),
-                            child: Hero(
+          return Scaffold(
+            body: SafeArea(
+              child: Builder(
+                builder: (context) {
+                  double videoPlayerFactor =
+                      ((9 / 16) * MediaQuery.of(context).size.width) /
+                          MediaQuery.of(context).size.height;
+                  double remoteFactor = 1 - videoPlayerFactor;
+                  return BlocListener<VideoDetailBloc, VideoDetailState>(
+                    listenWhen:
+                        (VideoDetailState previous, VideoDetailState current) =>
+                            previous.remoteOpened != current.remoteOpened,
+                    listener: (BuildContext context, VideoDetailState state) {
+                      if (state.remoteOpened != null) {
+                        if (state.remoteOpened!) {
+                          _bottomSheetController.animateTo(
+                            remoteFactor,
+                            duration: const Duration(seconds: 1),
+                            curve: Curves.easeInOutCubic,
+                          );
+                        } else {
+                          _bottomSheetController.animateTo(
+                            0.0,
+                            duration: const Duration(seconds: 1),
+                            curve: Curves.easeInOutCubic,
+                          );
+                        }
+                      }
+                    },
+                    child: Stack(
+                      children: [
+                        Column(
+                          children: [
+                            Hero(
                               tag:
                                   'img-${state.video?.id ?? state.ofId ?? "not_loaded"}',
                               child: AspectRatio(
+                                key: videoPlayerWidgetKey,
                                 aspectRatio: 16 / 9,
                                 child: (_videoController != null)
                                     ? YoutubePlayer(
-                                        thumbnail: thumbnail,
+                                        thumbnail: VideoThumbnail(
+                                            url: state.video?.url),
                                         controller: _videoController!,
                                         bottomActions: [
                                           TextButton(
-                                            onPressed: () => showBottomSheet(
-                                              context: context,
-                                              builder: (context) =>
-                                                  MomentListView(
-                                                ofVideo: state.video!.id,
-                                              ),
-                                            ),
+                                            onPressed: () {
+                                              videoDetailBloc
+                                                  .add(VideoDetailToggleRemote(
+                                                opened: !(state.remoteOpened ??
+                                                        false) ??
+                                                    false,
+                                              ));
+                                            },
                                             child: const Text('Moments >'),
                                           ),
                                           const SizedBox(width: 14.0),
@@ -137,90 +157,158 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                                           // FullScreenButton(),
                                         ],
                                       )
-                                    : thumbnail,
+                                    : VideoThumbnail(url: state.video?.url),
                               ),
                             ),
-                          ),
-                          if (state.video != null)
-                            ListTile(
-                              title: Text(state.video!.name),
-                              subtitle: Text(state.video!.url),
-                            ),
-                          SizedBox(
-                            height: 40,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: [
-                                const SizedBox(width: 10),
-                                ActionChip(
-                                  label: const Text("Copy URL"),
-                                  avatar: const Icon(Icons.copy),
-                                  onPressed: () {
-                                    Clipboard.setData(
-                                        ClipboardData(text: state.video!.url));
-                                  },
-                                ),
-                                const SizedBox(width: 10),
-                                ActionChip(
-                                  label: const Text("Edit"),
-                                  avatar: const Icon(Icons.edit),
-                                  onPressed: () {
-                                    AutoRouter.of(context).push(
-                                      VideoEditRoute(
-                                        videoId: state.video!.id,
-                                      ),
-                                    );
-                                  },
-                                ),
-                                const SizedBox(width: 10),
-                                DeleteActionChip(
-                                  onDeleted: () {
-                                    videoDetailBloc
-                                        .add(const VideoDetailDelete());
-                                  },
-                                )
-                              ],
-                            ),
-                          ),
-                          // if (state.video != null)
-                          //   MomentsSection(
-                          //     // label: 'Moments of ${state.video!.name}',
-                          //     ofVideo: state.video!.id,
-                          //     onItemTap: (moment) {
-                          //       _videoController?.seekTo(moment.startTime);
-                          //     },
-                          //   ),
-                          if (state.video != null)
-                            FiguresSection(
-                              // label: 'Figures of ${state.video!.name}',
-                              ofVideo: state.video!.id,
-                            ),
-                          if (state.video != null)
-                            ArtistsSection(
-                              label: 'Cast',
-                              // label: 'Artists of ${state.video!.name}',
-                              ofVideo: state.video!.id,
-                            ),
-                          if (state.video != null)
-                            DancesSection(
-                              // label: 'Dances of ${state.video!.name}',
-                              ofVideo: state.video!.id,
-                            ),
-                          if (state.video != null)
-                            EntityInfoListTile(
-                              createdAt: state.video!.createdAt,
-                              updateAt: state.video!.updatedAt,
-                              version: state.video!.version,
-                            ),
-                        ],
-                      ),
+                            // CustomScrollView(
+                            //   slivers: [
+                            //     SliverToBoxAdapter(
+                            //       child: Column(
+                            //         mainAxisSize: MainAxisSize.min,
+                            //         children: [
+                            //           ListTile(
+                            //             title: Text(
+                            //                 state.video?.name ?? 'Video Title'),
+                            //             subtitle: Text(
+                            //                 state.video?.url ?? 'Video url'),
+                            //           ),
+                            //           SizedBox(
+                            //             height: 40,
+                            //             child: ListView(
+                            //               scrollDirection: Axis.horizontal,
+                            //               children: [
+                            //                 const SizedBox(width: 10),
+                            //                 ActionChip(
+                            //                   label: const Text("Copy URL"),
+                            //                   avatar: const Icon(Icons.copy),
+                            //                   onPressed: () {
+                            //                     Clipboard.setData(ClipboardData(
+                            //                         text: state.video!.url));
+                            //                   },
+                            //                 ),
+                            //                 const SizedBox(width: 10),
+                            //                 ActionChip(
+                            //                   label: const Text("Edit"),
+                            //                   avatar: const Icon(Icons.edit),
+                            //                   onPressed: () {
+                            //                     AutoRouter.of(context).push(
+                            //                       VideoEditRoute(
+                            //                         videoId: state.video!.id,
+                            //                       ),
+                            //                     );
+                            //                   },
+                            //                 ),
+                            //                 const SizedBox(width: 10),
+                            //                 DeleteActionChip(
+                            //                   onDeleted: () {
+                            //                     videoDetailBloc.add(
+                            //                         const VideoDetailDelete());
+                            //                   },
+                            //                 )
+                            //               ],
+                            //             ),
+                            //           ),
+                            //         ],
+                            //       ),
+                            //     ),
+                            //     SliverFillRemaining(
+                            //       child: SmartRefresher(
+                            //         controller: _refreshController,
+                            //         enablePullDown: true,
+                            //         onRefresh: () {
+                            //           videoDetailBloc
+                            //               .add(const VideoDetailRefresh());
+                            //         },
+                            //         child: ListView(
+                            //           children: <Widget>[
+                            //             if (state.video != null)
+                            //               FiguresSection(
+                            //                 // label: 'Figures of ${state.video!.name}',
+                            //                 ofVideo: state.video!.id,
+                            //               ),
+                            //             if (state.video != null)
+                            //               ArtistsSection(
+                            //                 label: 'Cast',
+                            //                 // label: 'Artists of ${state.video!.name}',
+                            //                 ofVideo: state.video!.id,
+                            //               ),
+                            //             if (state.video != null)
+                            //               DancesSection(
+                            //                 // label: 'Dances of ${state.video!.name}',
+                            //                 ofVideo: state.video!.id,
+                            //               ),
+                            //             if (state.video != null)
+                            //               EntityInfoListTile(
+                            //                 createdAt: state.video!.createdAt,
+                            //                 updateAt: state.video!.updatedAt,
+                            //                 version: state.video!.version,
+                            //               ),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
+                          ],
+                        ),
+                        DraggableScrollableSheet(
+                          expand: true,
+                          snap: true,
+                          minChildSize: 0.0,
+                          maxChildSize: 1.0,
+                          initialChildSize: 0.0,
+                          snapSizes: [
+                            remoteFactor,
+                          ],
+                          controller: _bottomSheetController,
+                          builder: (BuildContext context,
+                              ScrollController scrollController) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                color:
+                                    Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(10.0),
+                                    topRight: Radius.circular(10.0)),
+                              ),
+                              clipBehavior: Clip.antiAlias,
+                              child: CustomScrollView(
+                                controller: scrollController,
+                                slivers: [
+                                  SliverPersistentHeader(
+                                    pinned: true,
+                                    delegate: MomentHeaderDelegate(
+                                      onExit: () {
+                                        videoDetailBloc
+                                            .add(const VideoDetailToggleRemote(
+                                          opened: false,
+                                        ));
+                                      },
+                                    ),
+                                  ),
+                                  SliverFillRemaining(
+                                    child: MomentListView(
+                                      ofVideo: state.video!.id,
+                                      onItemTap:
+                                          (MomentViewModel momentViewModel) {
+                                        _videoController
+                                            ?.seekTo(momentViewModel.startTime);
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                  );
+                },
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -242,6 +330,8 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
   @override
   void dispose() {
     _videoController?.dispose();
+    _bottomSheetController?.dispose();
+    _refreshController?.dispose();
     super.dispose();
   }
 }
@@ -323,4 +413,58 @@ class VideoEditPage extends StatelessWidget implements AutoRouteWrapper {
       child: this,
     );
   }
+}
+
+class MomentHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final VoidCallback? onExit;
+
+  MomentHeaderDelegate({this.onExit});
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 8),
+        Center(
+          child: Container(
+            width: 40,
+            height: 6,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        ListTile(
+          trailing: IconButton(
+            onPressed: onExit,
+            icon: const Icon(Icons.close),
+          ),
+          title: const Text(
+            'Moments',
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const Divider(thickness: 1.0),
+      ],
+    );
+  }
+
+  @override
+  double get maxExtent => 100;
+
+  @override
+  double get minExtent => 100;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      true;
 }

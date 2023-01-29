@@ -15,12 +15,14 @@ class VideoDetailState extends Equatable {
   final VideoDetailStatus status;
   final String? ofId;
   final VideoViewModel? video;
+  final bool? remoteOpened;
   final Error? error;
 
   const VideoDetailState({
     this.status = VideoDetailStatus.initial,
     this.ofId,
     this.video,
+    this.remoteOpened,
     this.error,
   }) : super();
 
@@ -29,6 +31,7 @@ class VideoDetailState extends Equatable {
         status,
         ofId,
         video,
+        remoteOpened,
         error,
       ];
 
@@ -36,12 +39,15 @@ class VideoDetailState extends Equatable {
     VideoDetailStatus? status,
     Optional<String>? ofId,
     Optional<VideoViewModel>? video,
+    Optional<bool>? remoteOpened,
     Optional<Error>? error,
   }) {
     return VideoDetailState(
       status: status ?? this.status,
       ofId: ofId != null ? ofId.orNull : this.ofId,
       video: video != null ? video.orNull : this.video,
+      remoteOpened:
+          remoteOpened != null ? remoteOpened.orNull : this.remoteOpened,
       error: error != null ? error.orNull : this.error,
     );
   }
@@ -50,6 +56,7 @@ class VideoDetailState extends Equatable {
   String toString() => 'VideoDetailLoaded{'
       'status: $status, '
       'video: $video, '
+      'remoteOpened: $remoteOpened, '
       'error: $error'
       '}';
 }

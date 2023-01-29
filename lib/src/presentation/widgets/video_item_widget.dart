@@ -189,3 +189,25 @@ class VideoForm extends StatelessWidget {
     );
   }
 }
+
+class VideoThumbnail extends StatelessWidget {
+  final String? url;
+
+  const VideoThumbnail({
+    Key? key,
+    this.url,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (url != null) {
+      return isYoutube(url!)
+          ? Image.network(
+              'https://img.youtube.com/vi/${getYoutubeId(url!)}/mqdefault.jpg',
+              fit: BoxFit.cover,
+            )
+          : Container();
+    }
+    return Container();
+  }
+}

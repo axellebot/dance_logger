@@ -42,3 +42,17 @@ class VideoDetailDelete extends VideoDetailEvent {
   @override
   List<Object?> get props => [];
 }
+
+class VideoDetailToggleRemote extends VideoDetailEvent {
+  final bool opened;
+
+  const VideoDetailToggleRemote({required this.opened}) : super();
+
+  @override
+  String toString() => 'VideoDetailToggleRemote{ '
+      'opened: $opened'
+      '}';
+
+  @override
+  List<Object?> get props => [];
+}

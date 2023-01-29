@@ -44,6 +44,7 @@ class VideoEditState extends Equatable {
     Optional<VideoViewModel>? initialVideo,
     Optional<String>? videoName,
     Optional<String>? videoUrl,
+    Optional<bool>? remoteOpened,
     Optional<Error>? error,
   }) {
     return VideoEditState(
@@ -53,6 +54,7 @@ class VideoEditState extends Equatable {
           initialVideo != null ? initialVideo.orNull : this.initialVideo,
       videoName: videoName != null ? videoName.orNull : this.videoName,
       videoUrl: videoUrl != null ? videoUrl.orNull : this.videoUrl,
+
       error: error != null ? error.orNull : this.error,
     );
   }

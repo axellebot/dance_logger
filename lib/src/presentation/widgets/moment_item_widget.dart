@@ -26,7 +26,10 @@ class MomentListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text('${moment.startTime}-${moment.endTime}'),
+      title: (moment.endTime != null)
+          ? Text(
+              '${printDuration(moment.startTime)}-${printDuration(moment.endTime)}')
+          : Text('${printDuration(moment.startTime)}'),
       onTap: (onTap != null)
           ? () {
               onTap!(moment);
@@ -61,7 +64,10 @@ class CheckboxMomentListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CheckboxListTile(
-      title: Text('${moment.startTime}-${moment.endTime}'),
+      title: (moment.endTime != null)
+          ? Text(
+              '${printDuration(moment.startTime)}-${printDuration(moment.endTime)}')
+          : Text('${printDuration(moment.startTime)}'),
       value: value,
       onChanged: onChanged,
     );
