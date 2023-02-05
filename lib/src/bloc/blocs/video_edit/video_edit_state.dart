@@ -54,7 +54,6 @@ class VideoEditState extends Equatable {
           initialVideo != null ? initialVideo.orNull : this.initialVideo,
       videoName: videoName != null ? videoName.orNull : this.videoName,
       videoUrl: videoUrl != null ? videoUrl.orNull : this.videoUrl,
-
       error: error != null ? error.orNull : this.error,
     );
   }

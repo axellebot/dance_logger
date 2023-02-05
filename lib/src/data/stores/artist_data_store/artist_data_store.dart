@@ -18,7 +18,6 @@ abstract class ArtistDataStore {
 
   FutureOr<List<ArtistDataModel>> getArtistsOfSearch(
     String search, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,
@@ -26,7 +25,6 @@ abstract class ArtistDataStore {
 
   FutureOr<List<ArtistDataModel>> getArtistsOfDance(
     String danceId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,
@@ -34,7 +32,6 @@ abstract class ArtistDataStore {
 
   FutureOr<List<ArtistDataModel>> getArtistsOfVideo(
     String videoId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,
@@ -42,7 +39,6 @@ abstract class ArtistDataStore {
 
   FutureOr<List<ArtistDataModel>> getArtistsOfMoment(
     String timeId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,
@@ -50,7 +46,6 @@ abstract class ArtistDataStore {
 
   FutureOr<List<ArtistDataModel>> getArtistsOfFigure(
     String figureId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,

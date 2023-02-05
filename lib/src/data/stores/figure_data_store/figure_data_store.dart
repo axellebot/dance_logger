@@ -18,7 +18,6 @@ abstract class FigureDataStore {
 
   FutureOr<List<FigureDataModel>> getFiguresOfArtist(
     String artistId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,
@@ -26,7 +25,6 @@ abstract class FigureDataStore {
 
   FutureOr<List<FigureDataModel>> getFiguresOfDance(
     String danceId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,
@@ -34,7 +32,6 @@ abstract class FigureDataStore {
 
   FutureOr<List<FigureDataModel>> getFiguresOfVideo(
     String videoId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,

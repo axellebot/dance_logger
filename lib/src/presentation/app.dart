@@ -30,36 +30,38 @@ class RepoWrapper extends StatelessWidget {
       builder: (context, ConfigState state) {
         switch (state.status) {
           case ConfigStatus.ready:
+
             /// Display normal app
             late List<Provider> providers;
 
-              /// Dependency Injection of repositories
-              /// Use updateShouldNotify to make dependencies available in
-              /// `initState` methods of children widgets
-           final AppPrefsRepository appPrefsRepository = state.appPrefsRepository!;
-              providers = <Provider>[
-                RepositoryProvider<AppPrefsRepository>.value(
-                  value: appPrefsRepository,
-                ),
-                RepositoryProvider<ArtistRepository>.value(
-                  value: state.artistRepository!,
-                ),
-                RepositoryProvider<DanceRepository>.value(
-                  value: state.danceRepository!,
-                ),
-                RepositoryProvider<FigureRepository>.value(
-                  value: state.figureRepository!,
-                ),
-                RepositoryProvider<MomentRepository>.value(
-                  value: state.momentRepository!,
-                ),
-                RepositoryProvider<PracticeRepository>.value(
-                  value: state.practiceRepository!,
-                ),
-                RepositoryProvider<VideoRepository>.value(
-                  value: state.videoRepository!,
-                ),
-              ];
+            /// Dependency Injection of repositories
+            /// Use updateShouldNotify to make dependencies available in
+            /// `initState` methods of children widgets
+            final AppPrefsRepository appPrefsRepository =
+                state.appPrefsRepository!;
+            providers = <Provider>[
+              RepositoryProvider<AppPrefsRepository>.value(
+                value: appPrefsRepository,
+              ),
+              RepositoryProvider<ArtistRepository>.value(
+                value: state.artistRepository!,
+              ),
+              RepositoryProvider<DanceRepository>.value(
+                value: state.danceRepository!,
+              ),
+              RepositoryProvider<FigureRepository>.value(
+                value: state.figureRepository!,
+              ),
+              RepositoryProvider<MomentRepository>.value(
+                value: state.momentRepository!,
+              ),
+              RepositoryProvider<PracticeRepository>.value(
+                value: state.practiceRepository!,
+              ),
+              RepositoryProvider<VideoRepository>.value(
+                value: state.videoRepository!,
+              ),
+            ];
             return MultiProvider(
               providers: providers,
               child: BlocProvider<AppBloc>(

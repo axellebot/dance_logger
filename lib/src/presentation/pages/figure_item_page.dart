@@ -4,7 +4,7 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 
 class FigureDetailsPage extends StatefulWidget implements AutoRouteWrapper {
   final String figureId;
@@ -32,8 +32,9 @@ class FigureDetailsPage extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _FigureDetailsPageState extends State<FigureDetailsPage> {
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  final EasyRefreshController _refreshController = EasyRefreshController(
+    controlFinishRefresh: true,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +42,10 @@ class _FigureDetailsPageState extends State<FigureDetailsPage> {
       listener: (context, state) {
         switch (state.status) {
           case FigureDetailStatus.refreshingSuccess:
-            _refreshController.refreshCompleted();
+            _refreshController.finishRefresh(IndicatorResult.success);
             break;
           case FigureDetailStatus.refreshingFailure:
-            _refreshController.refreshFailed();
+            _refreshController.finishRefresh(IndicatorResult.fail);
             break;
           default:
         }
@@ -66,9 +67,8 @@ class _FigureDetailsPageState extends State<FigureDetailsPage> {
                       : const Text('Figure detail'),
                 ),
                 SliverFillRemaining(
-                  child: SmartRefresher(
+                  child: EasyRefresh(
                     controller: _refreshController,
-                    enablePullDown: true,
                     onRefresh: () {
                       figureDetailBloc.add(const FigureDetailRefresh());
                     },
@@ -105,6 +105,12 @@ class _FigureDetailsPageState extends State<FigureDetailsPage> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
   }
 }
 

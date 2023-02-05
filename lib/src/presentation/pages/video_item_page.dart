@@ -2,10 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoDetailsPage extends StatefulWidget implements AutoRouteWrapper {
@@ -38,10 +38,9 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
   final DraggableScrollableController _bottomSheetController =
       DraggableScrollableController();
 
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-
-  GlobalKey videoPlayerWidgetKey = GlobalKey();
+  final EasyRefreshController _refreshController = EasyRefreshController(
+    controlFinishRefresh: true,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -75,10 +74,10 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
           listener: (context, state) {
             switch (state.status) {
               case VideoDetailStatus.refreshingSuccess:
-                _refreshController.refreshCompleted();
+                _refreshController.finishRefresh(IndicatorResult.success);
                 break;
               case VideoDetailStatus.refreshingFailure:
-                _refreshController.refreshFailed();
+                _refreshController.finishRefresh(IndicatorResult.fail);
                 break;
               default:
             }
@@ -121,135 +120,135 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                     },
                     child: Stack(
                       children: [
-                        Column(
-                          children: [
-                            Hero(
-                              tag:
-                                  'img-${state.video?.id ?? state.ofId ?? "not_loaded"}',
-                              child: AspectRatio(
-                                key: videoPlayerWidgetKey,
-                                aspectRatio: 16 / 9,
-                                child: (_videoController != null)
-                                    ? YoutubePlayer(
-                                        thumbnail: VideoThumbnail(
-                                            url: state.video?.url),
-                                        controller: _videoController!,
-                                        bottomActions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              videoDetailBloc
-                                                  .add(VideoDetailToggleRemote(
-                                                opened: !(state.remoteOpened ??
-                                                        false) ??
-                                                    false,
-                                              ));
-                                            },
-                                            child: const Text('Moments >'),
-                                          ),
-                                          const SizedBox(width: 14.0),
-                                          CurrentPosition(),
-                                          const SizedBox(width: 8.0),
-                                          ProgressBar(
-                                            isExpanded: true,
-                                          ),
-                                          RemainingDuration(),
-                                          const PlaybackSpeedButton(),
-                                          // FullScreenButton(),
-                                        ],
-                                      )
-                                    : VideoThumbnail(url: state.video?.url),
+                        EasyRefresh(
+                          controller: _refreshController,
+                          header: const ClassicHeader(
+                            position: IndicatorPosition.locator,
+                          ),
+                          onRefresh: () {
+                            videoDetailBloc.add(const VideoDetailRefresh());
+                          },
+                          child: CustomScrollView(
+                            slivers: [
+                              SliverToBoxAdapter(
+                                child: Hero(
+                                  tag:
+                                      'img-${state.video?.id ?? state.ofId ?? "not_loaded"}',
+                                  child: AspectRatio(
+                                    aspectRatio: 16 / 9,
+                                    child: (_videoController != null)
+                                        ? YoutubePlayer(
+                                            thumbnail: VideoThumbnail(
+                                                url: state.video?.url),
+                                            controller: _videoController!,
+                                            bottomActions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  videoDetailBloc.add(
+                                                      VideoDetailToggleRemote(
+                                                    opened:
+                                                        !(state.remoteOpened ??
+                                                                false) ??
+                                                            false,
+                                                  ));
+                                                },
+                                                child: const Text('Moments >'),
+                                              ),
+                                              const SizedBox(width: 14.0),
+                                              CurrentPosition(),
+                                              const SizedBox(width: 8.0),
+                                              ProgressBar(
+                                                isExpanded: true,
+                                              ),
+                                              RemainingDuration(),
+                                              const PlaybackSpeedButton(),
+                                              // FullScreenButton(),
+                                            ],
+                                          )
+                                        : VideoThumbnail(url: state.video?.url),
+                                  ),
+                                ),
                               ),
-                            ),
-                            // CustomScrollView(
-                            //   slivers: [
-                            //     SliverToBoxAdapter(
-                            //       child: Column(
-                            //         mainAxisSize: MainAxisSize.min,
-                            //         children: [
-                            //           ListTile(
-                            //             title: Text(
-                            //                 state.video?.name ?? 'Video Title'),
-                            //             subtitle: Text(
-                            //                 state.video?.url ?? 'Video url'),
-                            //           ),
-                            //           SizedBox(
-                            //             height: 40,
-                            //             child: ListView(
-                            //               scrollDirection: Axis.horizontal,
-                            //               children: [
-                            //                 const SizedBox(width: 10),
-                            //                 ActionChip(
-                            //                   label: const Text("Copy URL"),
-                            //                   avatar: const Icon(Icons.copy),
-                            //                   onPressed: () {
-                            //                     Clipboard.setData(ClipboardData(
-                            //                         text: state.video!.url));
-                            //                   },
-                            //                 ),
-                            //                 const SizedBox(width: 10),
-                            //                 ActionChip(
-                            //                   label: const Text("Edit"),
-                            //                   avatar: const Icon(Icons.edit),
-                            //                   onPressed: () {
-                            //                     AutoRouter.of(context).push(
-                            //                       VideoEditRoute(
-                            //                         videoId: state.video!.id,
-                            //                       ),
-                            //                     );
-                            //                   },
-                            //                 ),
-                            //                 const SizedBox(width: 10),
-                            //                 DeleteActionChip(
-                            //                   onDeleted: () {
-                            //                     videoDetailBloc.add(
-                            //                         const VideoDetailDelete());
-                            //                   },
-                            //                 )
-                            //               ],
-                            //             ),
-                            //           ),
-                            //         ],
-                            //       ),
-                            //     ),
-                            //     SliverFillRemaining(
-                            //       child: SmartRefresher(
-                            //         controller: _refreshController,
-                            //         enablePullDown: true,
-                            //         onRefresh: () {
-                            //           videoDetailBloc
-                            //               .add(const VideoDetailRefresh());
-                            //         },
-                            //         child: ListView(
-                            //           children: <Widget>[
-                            //             if (state.video != null)
-                            //               FiguresSection(
-                            //                 // label: 'Figures of ${state.video!.name}',
-                            //                 ofVideo: state.video!.id,
-                            //               ),
-                            //             if (state.video != null)
-                            //               ArtistsSection(
-                            //                 label: 'Cast',
-                            //                 // label: 'Artists of ${state.video!.name}',
-                            //                 ofVideo: state.video!.id,
-                            //               ),
-                            //             if (state.video != null)
-                            //               DancesSection(
-                            //                 // label: 'Dances of ${state.video!.name}',
-                            //                 ofVideo: state.video!.id,
-                            //               ),
-                            //             if (state.video != null)
-                            //               EntityInfoListTile(
-                            //                 createdAt: state.video!.createdAt,
-                            //                 updateAt: state.video!.updatedAt,
-                            //                 version: state.video!.version,
-                            //               ),
-                            //           ],
-                            //         ),
-                            //       ),
-                            //     ),
-                            //   ],
-                            // ),
-                          ],
+                              SliverToBoxAdapter(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ListTile(
+                                      title: Text(
+                                          state.video?.name ?? 'Video Title'),
+                                      subtitle:
+                                          Text(state.video?.url ?? 'Video url'),
+                                    ),
+                                    SizedBox(
+                                      height: 40,
+                                      child: ListView(
+                                        scrollDirection: Axis.horizontal,
+                                        children: [
+                                          const SizedBox(width: 10),
+                                          ActionChip(
+                                            label: const Text("Copy URL"),
+                                            avatar: const Icon(Icons.copy),
+                                            onPressed: () {
+                                              Clipboard.setData(ClipboardData(
+                                                  text: state.video!.url));
+                                            },
+                                          ),
+                                          const SizedBox(width: 10),
+                                          ActionChip(
+                                            label: const Text("Edit"),
+                                            avatar: const Icon(Icons.edit),
+                                            onPressed: () {
+                                              AutoRouter.of(context).push(
+                                                VideoEditRoute(
+                                                  videoId: state.video!.id,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          const SizedBox(width: 10),
+                                          DeleteActionChip(
+                                            onDeleted: () {
+                                              videoDetailBloc.add(
+                                                  const VideoDetailDelete());
+                                            },
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const HeaderLocator.sliver(),
+                              SliverFillRemaining(
+                                child: ListView(
+                                  children: <Widget>[
+                                    if (state.video != null)
+                                      FiguresSection(
+                                        // label: 'Figures of ${state.video!.name}',
+                                        ofVideo: state.video!.id,
+                                      ),
+                                    if (state.video != null)
+                                      ArtistsSection(
+                                        label: 'Cast',
+                                        // label: 'Artists of ${state.video!.name}',
+                                        ofVideo: state.video!.id,
+                                      ),
+                                    if (state.video != null)
+                                      DancesSection(
+                                        // label: 'Dances of ${state.video!.name}',
+                                        ofVideo: state.video!.id,
+                                      ),
+                                    if (state.video != null)
+                                      EntityInfoListTile(
+                                        createdAt: state.video!.createdAt,
+                                        updateAt: state.video!.updatedAt,
+                                        version: state.video!.version,
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         DraggableScrollableSheet(
                           expand: true,
@@ -330,8 +329,8 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
   @override
   void dispose() {
     _videoController?.dispose();
-    _bottomSheetController?.dispose();
-    _refreshController?.dispose();
+    _bottomSheetController.dispose();
+    _refreshController.dispose();
     super.dispose();
   }
 }

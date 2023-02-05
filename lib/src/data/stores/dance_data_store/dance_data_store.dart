@@ -18,7 +18,6 @@ abstract class DanceDataStore {
 
   FutureOr<List<DanceDataModel>> getDancesOfSearch(
     String search, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,
@@ -26,7 +25,6 @@ abstract class DanceDataStore {
 
   FutureOr<List<DanceDataModel>> getDancesOfArtist(
     String artistId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,
@@ -34,7 +32,6 @@ abstract class DanceDataStore {
 
   FutureOr<List<DanceDataModel>> getDancesOfVideo(
     String videoId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,

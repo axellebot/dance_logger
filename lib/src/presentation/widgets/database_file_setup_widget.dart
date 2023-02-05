@@ -88,7 +88,7 @@ class DatabaseFileSettingDialog extends StatelessWidget {
             child: const Text('Reset'),
             onPressed: () {
               configBloc.add(const ConfigChange(
-                fileDir:null,
+                fileDir: null,
                 fileName: null,
               ));
             },
@@ -98,7 +98,9 @@ class DatabaseFileSettingDialog extends StatelessWidget {
             onPressed: () {
               if (formKey.currentState!.validate()) {
                 configBloc.add(ConfigChange(
-                  fileDir: null, /// TODO: Replace when flutter will have device explorer capability
+                  fileDir: null,
+
+                  /// TODO: Replace when flutter will have device explorer capability
                   fileName: fieldController.text,
                 ));
               }

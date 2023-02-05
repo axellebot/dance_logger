@@ -18,7 +18,6 @@ abstract class PracticeDataStore {
 
   FutureOr<List<PracticeDataModel>> getPracticesOfFigure(
     String figureId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,
@@ -26,7 +25,6 @@ abstract class PracticeDataStore {
 
   FutureOr<List<PracticeDataModel>> getPracticesOfUser(
     String userId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,

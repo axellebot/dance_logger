@@ -1,10 +1,10 @@
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 abstract class MomentListWidgetParams implements MomentListParams {
   /// ListBloc params
@@ -129,8 +129,10 @@ class MomentListView extends StatefulWidget
 }
 
 class _MomentListViewState extends State<MomentListView> {
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  final EasyRefreshController _refreshController = EasyRefreshController(
+    controlFinishRefresh: true,
+    controlFinishLoad: true,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -144,19 +146,19 @@ class _MomentListViewState extends State<MomentListView> {
           switch (state.status) {
             case MomentListStatus.loadingSuccess:
               if (!state.hasReachedMax) {
-                _refreshController.loadComplete();
+                _refreshController.finishLoad();
               } else {
-                _refreshController.loadNoData();
+                _refreshController.finishLoad(IndicatorResult.noMore);
               }
               break;
             case MomentListStatus.loadingFailure:
-              _refreshController.loadFailed();
+              _refreshController.finishLoad(IndicatorResult.fail);
               break;
             case MomentListStatus.refreshingSuccess:
-              _refreshController.refreshCompleted(resetFooterState: true);
+              _refreshController.finishRefresh(IndicatorResult.success);
               break;
             case MomentListStatus.refreshingFailure:
-              _refreshController.refreshFailed();
+              _refreshController.finishRefresh(IndicatorResult.fail);
               break;
             default:
           }
@@ -165,17 +167,20 @@ class _MomentListViewState extends State<MomentListView> {
           builder: (BuildContext context, MomentListState state) {
             final momentListBloc = BlocProvider.of<MomentListBloc>(context);
 
-            return SmartRefresher(
+            return EasyRefresh(
               controller: _refreshController,
-              enablePullDown: true,
-              enablePullUp: true,
+              header: (widget.scrollDirection == Axis.horizontal)
+                  ? const MaterialHeader()
+                  : null,
+              footer: (widget.scrollDirection == Axis.horizontal)
+                  ? const MaterialFooter()
+                  : null,
               onRefresh: () {
                 momentListBloc.add(const MomentListRefresh());
               },
-              onLoading: () {
+              onLoad: () {
                 momentListBloc.add(const MomentListLoadMore());
               },
-              scrollDirection: widget.scrollDirection,
               child: ListView.builder(
                 scrollDirection: widget.scrollDirection,
                 physics: widget.physics,
@@ -224,6 +229,12 @@ class _MomentListViewState extends State<MomentListView> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
   }
 }
 

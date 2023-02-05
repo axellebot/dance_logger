@@ -4,7 +4,7 @@ import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 
 class DanceDetailsPage extends StatefulWidget implements AutoRouteWrapper {
   final String danceId;
@@ -32,8 +32,9 @@ class DanceDetailsPage extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _DanceDetailsPageState extends State<DanceDetailsPage> {
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  final EasyRefreshController _refreshController = EasyRefreshController(
+    controlFinishRefresh: true,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +42,10 @@ class _DanceDetailsPageState extends State<DanceDetailsPage> {
       listener: (context, state) {
         switch (state.status) {
           case DanceDetailStatus.refreshingSuccess:
-            _refreshController.refreshCompleted();
+            _refreshController.finishRefresh(IndicatorResult.success);
             break;
           case DanceDetailStatus.refreshingFailure:
-            _refreshController.refreshFailed();
+            _refreshController.finishRefresh(IndicatorResult.fail);
             break;
           default:
         }
@@ -82,7 +83,7 @@ class _DanceDetailsPageState extends State<DanceDetailsPage> {
                   ],
                 ),
                 SliverFillRemaining(
-                  child: SmartRefresher(
+                  child: EasyRefresh(
                     controller: _refreshController,
                     onRefresh: () {
                       danceDetailBloc.add(const DanceDetailRefresh());
@@ -120,6 +121,12 @@ class _DanceDetailsPageState extends State<DanceDetailsPage> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
   }
 }
 

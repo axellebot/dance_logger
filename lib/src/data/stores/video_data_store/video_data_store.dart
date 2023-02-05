@@ -18,7 +18,6 @@ abstract class VideoDataStore {
 
   FutureOr<List<VideoDataModel>> getVideosOfSearch(
     String search, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,
@@ -26,7 +25,6 @@ abstract class VideoDataStore {
 
   FutureOr<List<VideoDataModel>> getVideosOfArtist(
     String artistId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,
@@ -34,7 +32,6 @@ abstract class VideoDataStore {
 
   FutureOr<List<VideoDataModel>> getVideosOfDance(
     String danceId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,
@@ -42,7 +39,6 @@ abstract class VideoDataStore {
 
   FutureOr<List<VideoDataModel>> getVideosOfFigure(
     String figureId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,

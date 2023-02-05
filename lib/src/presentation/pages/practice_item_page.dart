@@ -2,9 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PracticeDetailsPage extends StatefulWidget implements AutoRouteWrapper {
   final String practiceId;
@@ -33,8 +33,9 @@ class PracticeDetailsPage extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _PracticeDetailsPageState extends State<PracticeDetailsPage> {
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  final EasyRefreshController _refreshController = EasyRefreshController(
+    controlFinishRefresh: true,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +43,10 @@ class _PracticeDetailsPageState extends State<PracticeDetailsPage> {
       listener: (context, state) {
         switch (state.status) {
           case PracticeDetailStatus.refreshingSuccess:
-            _refreshController.refreshCompleted();
+            _refreshController.finishRefresh(IndicatorResult.success);
             break;
           case PracticeDetailStatus.refreshingFailure:
-            _refreshController.refreshFailed();
+            _refreshController.finishRefresh(IndicatorResult.fail);
             break;
           default:
         }
@@ -84,7 +85,7 @@ class _PracticeDetailsPageState extends State<PracticeDetailsPage> {
                 ),
               ),
               SliverFillRemaining(
-                child: SmartRefresher(
+                child: EasyRefresh(
                   controller: _refreshController,
                   onRefresh: () {
                     practiceDetailBloc.add(const PracticeDetailRefresh());
@@ -107,6 +108,12 @@ class _PracticeDetailsPageState extends State<PracticeDetailsPage> {
         );
       }),
     );
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
   }
 }
 

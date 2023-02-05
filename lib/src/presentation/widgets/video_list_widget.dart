@@ -2,10 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 abstract class VideoListWidgetParams implements VideoListParams {
   /// ListBloc params
@@ -132,8 +132,10 @@ class VideoListView extends StatefulWidget
 }
 
 class _VideoListViewState extends State<VideoListView> {
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  final EasyRefreshController _refreshController = EasyRefreshController(
+    controlFinishRefresh: true,
+    controlFinishLoad: true,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -148,19 +150,19 @@ class _VideoListViewState extends State<VideoListView> {
           switch (state.status) {
             case VideoListStatus.loadingSuccess:
               if (!state.hasReachedMax) {
-                _refreshController.loadComplete();
+                _refreshController.finishLoad();
               } else {
-                _refreshController.loadNoData();
+                _refreshController.finishLoad(IndicatorResult.noMore);
               }
               break;
             case VideoListStatus.loadingFailure:
-              _refreshController.loadFailed();
+              _refreshController.finishLoad(IndicatorResult.fail);
               break;
             case VideoListStatus.refreshingSuccess:
-              _refreshController.refreshCompleted(resetFooterState: true);
+              _refreshController.finishRefresh(IndicatorResult.success);
               break;
             case VideoListStatus.refreshingFailure:
-              _refreshController.refreshFailed();
+              _refreshController.finishRefresh(IndicatorResult.fail);
               break;
             default:
           }
@@ -169,17 +171,20 @@ class _VideoListViewState extends State<VideoListView> {
           builder: (BuildContext context, VideoListState state) {
             final videoListBloc = BlocProvider.of<VideoListBloc>(context);
 
-            return SmartRefresher(
+            return EasyRefresh(
               controller: _refreshController,
-              enablePullDown: true,
-              enablePullUp: true,
+              header: (widget.scrollDirection == Axis.horizontal)
+                  ? const MaterialHeader()
+                  : null,
+              footer: (widget.scrollDirection == Axis.horizontal)
+                  ? const MaterialFooter()
+                  : null,
               onRefresh: () {
                 videoListBloc.add(const VideoListRefresh());
               },
-              onLoading: () {
+              onLoad: () {
                 videoListBloc.add(const VideoListLoadMore());
               },
-              scrollDirection: widget.scrollDirection,
               child: ListView.builder(
                 scrollDirection: widget.scrollDirection,
                 physics: widget.physics,
@@ -224,6 +229,12 @@ class _VideoListViewState extends State<VideoListView> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
   }
 }
 

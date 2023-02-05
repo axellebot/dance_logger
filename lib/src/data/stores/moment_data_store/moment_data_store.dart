@@ -18,7 +18,6 @@ abstract class MomentDataStore {
 
   FutureOr<List<MomentDataModel>> getMomentsOfFigure(
     String figureId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,
@@ -26,7 +25,6 @@ abstract class MomentDataStore {
 
   FutureOr<List<MomentDataModel>> getMomentsOfVideo(
     String videoId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,
@@ -34,7 +32,6 @@ abstract class MomentDataStore {
 
   FutureOr<List<MomentDataModel>> getMomentsOfArtist(
     String artistId, {
-
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,

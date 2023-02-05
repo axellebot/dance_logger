@@ -68,8 +68,9 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
 
       /// Set fileDir
       event.fileDir != null
-          ? await  _appPrefsRepository?.saveFileDir(event.fileDir!)
+          ? await _appPrefsRepository?.saveFileDir(event.fileDir!)
           : await _appPrefsRepository?.deleteFileName();
+
       /// Set fileName
       event.fileName != null
           ? await _appPrefsRepository?.saveFileName(event.fileName!)
@@ -91,11 +92,13 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigState> {
     if (kDebugMode) print('$runtimeType:_loadConfig');
 
     try {
-      String? fileDirPath = await _appPrefsRepository?.getFileDir()?? await _getDefaultFileDirPath();
-      String? fileName = await _appPrefsRepository?.getFileName() ?? 'dance_logger.db';
+      String? fileDirPath = await _appPrefsRepository?.getFileDir() ??
+          await _getDefaultFileDirPath();
+      String? fileName =
+          await _appPrefsRepository?.getFileName() ?? 'dance_logger.db';
 
       String filePath = join(
-        fileDirPath ,
+        fileDirPath,
         fileName,
       );
 

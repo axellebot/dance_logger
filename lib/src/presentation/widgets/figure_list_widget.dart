@@ -2,10 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dance/bloc.dart';
 import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 abstract class FigureListBlocParams implements FigureListParams {
   /// ListBloc params
@@ -132,8 +132,10 @@ class FigureListView extends StatefulWidget
 }
 
 class _FigureListViewState extends State<FigureListView> {
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  final EasyRefreshController _refreshController = EasyRefreshController(
+    controlFinishRefresh: true,
+    controlFinishLoad: true,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -147,19 +149,19 @@ class _FigureListViewState extends State<FigureListView> {
           switch (state.status) {
             case FigureListStatus.loadingSuccess:
               if (!state.hasReachedMax) {
-                _refreshController.loadComplete();
+                _refreshController.finishLoad();
               } else {
-                _refreshController.loadNoData();
+                _refreshController.finishLoad(IndicatorResult.noMore);
               }
               break;
             case FigureListStatus.loadingFailure:
-              _refreshController.loadFailed();
+              _refreshController.finishLoad(IndicatorResult.fail);
               break;
             case FigureListStatus.refreshingSuccess:
-              _refreshController.refreshCompleted(resetFooterState: true);
+              _refreshController.finishRefresh(IndicatorResult.success);
               break;
             case FigureListStatus.refreshingFailure:
-              _refreshController.refreshFailed();
+              _refreshController.finishRefresh(IndicatorResult.fail);
               break;
             default:
           }
@@ -168,17 +170,20 @@ class _FigureListViewState extends State<FigureListView> {
           builder: (context, FigureListState state) {
             final figureListBloc = BlocProvider.of<FigureListBloc>(context);
 
-            return SmartRefresher(
+            return EasyRefresh(
               controller: _refreshController,
-              enablePullDown: true,
-              enablePullUp: true,
+              header: (widget.scrollDirection == Axis.horizontal)
+                  ? const MaterialHeader()
+                  : null,
+              footer: (widget.scrollDirection == Axis.horizontal)
+                  ? const MaterialFooter()
+                  : null,
               onRefresh: () {
                 figureListBloc.add(const FigureListRefresh());
               },
-              onLoading: () {
+              onLoad: () {
                 figureListBloc.add(const FigureListLoadMore());
               },
-              scrollDirection: widget.scrollDirection,
               child: ListView.builder(
                 scrollDirection: widget.scrollDirection,
                 physics: widget.physics,
@@ -224,6 +229,12 @@ class _FigureListViewState extends State<FigureListView> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
   }
 }
 
