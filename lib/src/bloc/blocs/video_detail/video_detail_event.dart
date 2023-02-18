@@ -1,4 +1,5 @@
 import 'package:dance/bloc.dart';
+import 'package:dance/presentation.dart';
 import 'package:equatable/equatable.dart';
 
 /// [VideoDetailEvent] that must be dispatch to [VideoDetailBloc]
@@ -7,6 +8,22 @@ abstract class VideoDetailEvent extends Equatable {
 
   @override
   String toString() => 'VideoDetailEvent{}';
+}
+
+class VideoDetailLazyLoad extends VideoDetailEvent {
+  final VideoViewModel video;
+
+  const VideoDetailLazyLoad({
+    required this.video,
+  }) : super();
+
+  @override
+  String toString() => 'VideoDetailLoad{'
+      'video: $video'
+      '}';
+
+  @override
+  List<Object?> get props => [video];
 }
 
 class VideoDetailLoad extends VideoDetailEvent {

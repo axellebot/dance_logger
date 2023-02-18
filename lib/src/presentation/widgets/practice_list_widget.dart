@@ -15,8 +15,7 @@ abstract class PracticeListWidgetParams implements PracticeListParams {
   PracticeListWidgetParams(this.practiceListBloc);
 }
 
-class PracticeListBlocProvider extends StatelessWidget
-    implements PracticeListWidgetParams {
+class PracticeListBlocProvider extends StatelessWidget implements PracticeListWidgetParams {
   /// PracticeListWidgetParams
   @override
   final PracticeListBloc? practiceListBloc;
@@ -51,10 +50,7 @@ class PracticeListBlocProvider extends StatelessWidget
     /// Widget params
     required this.child,
   }) : assert(practiceListBloc == null ||
-            (ofArtistId == null &&
-                ofDanceId == null &&
-                ofFigureId == null &&
-                ofVideoId == null));
+            (ofArtistId == null && ofDanceId == null && ofFigureId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
@@ -67,14 +63,12 @@ class PracticeListBlocProvider extends StatelessWidget
       return BlocProvider<PracticeListBloc>(
         create: (context) {
           final practiceListBloc = PracticeListBloc(
-            practiceRepository:
-                Provider.of<PracticeRepository>(context, listen: false),
+            practiceRepository: Provider.of<PracticeRepository>(context, listen: false),
             mapper: ModelMapper(),
           );
 
           if (preselectedPractices?.isNotEmpty ?? false) {
-            practiceListBloc
-                .add(PracticeListSelect(practices: preselectedPractices!));
+            practiceListBloc.add(PracticeListSelect(practices: preselectedPractices!));
           }
 
           practiceListBloc.add(PracticeListLoad(
@@ -92,8 +86,7 @@ class PracticeListBlocProvider extends StatelessWidget
   }
 }
 
-class PracticeListView extends StatefulWidget
-    implements PracticeListWidgetParams, EntityListViewParams {
+class PracticeListView extends StatefulWidget implements PracticeListWidgetParams, EntityListViewParams {
   /// PracticeListWidgetParams
   @override
   final PracticeListBloc? practiceListBloc;
@@ -129,10 +122,7 @@ class PracticeListView extends StatefulWidget
     this.physics,
     this.padding,
   }) : assert(practiceListBloc == null ||
-            (ofArtistId == null &&
-                ofDanceId == null &&
-                ofFigureId == null &&
-                ofVideoId == null));
+            (ofArtistId == null && ofDanceId == null && ofFigureId == null && ofVideoId == null));
 
   @override
   State<PracticeListView> createState() => _PracticeListViewState();
@@ -180,12 +170,8 @@ class _PracticeListViewState extends State<PracticeListView> {
 
             return EasyRefresh(
               controller: _refreshController,
-              header: (widget.scrollDirection == Axis.horizontal)
-                  ? const MaterialHeader()
-                  : null,
-              footer: (widget.scrollDirection == Axis.horizontal)
-                  ? const MaterialFooter()
-                  : null,
+              header: (widget.scrollDirection == Axis.horizontal) ? const MaterialHeader() : null,
+              footer: (widget.scrollDirection == Axis.horizontal) ? const MaterialFooter() : null,
               onRefresh: () {
                 practiceListBloc.add(const PracticeListRefresh());
               },
@@ -199,13 +185,12 @@ class _PracticeListViewState extends State<PracticeListView> {
                 itemCount: state.practices.length,
                 itemBuilder: (context, index) {
                   final PracticeViewModel practice = state.practices[index];
-                  final PracticeListBloc practiceListBloc =
-                      BlocProvider.of<PracticeListBloc>(context);
+                  final PracticeListBloc practiceListBloc = BlocProvider.of<PracticeListBloc>(context);
                   switch (widget.scrollDirection) {
                     case Axis.vertical:
                       if (state.selectedPractices.isEmpty) {
                         return PracticeListTile(
-                          practice: practice,
+                          ofPractice: practice,
                           onLongPress: (item) {
                             practiceListBloc.add(
                               PracticeListSelect(practices: [item]),
@@ -214,9 +199,8 @@ class _PracticeListViewState extends State<PracticeListView> {
                         );
                       } else {
                         return CheckboxPracticeListTile(
-                          practice: practice,
-                          value: state.selectedPractices
-                              .any((element) => element.id == practice.id),
+                          ofPractice: practice,
+                          value: state.selectedPractices.any((element) => element.id == practice.id),
                           onChanged: (bool? value) {
                             practiceListBloc.add(
                               (value == true)
@@ -227,7 +211,7 @@ class _PracticeListViewState extends State<PracticeListView> {
                         );
                       }
                     case Axis.horizontal:
-                      return PracticeCard(practice: practice);
+                      return PracticeCard(ofPractice: practice);
                   }
                 },
               ),
@@ -245,8 +229,7 @@ class _PracticeListViewState extends State<PracticeListView> {
   }
 }
 
-class PracticesSection extends StatelessWidget
-    implements PracticeListWidgetParams, EntitiesSectionWidgetParams {
+class PracticesSection extends StatelessWidget implements PracticeListWidgetParams, EntitiesSectionWidgetParams {
   /// PracticeListWidgetParams
   @override
   final PracticeListBloc? practiceListBloc;
@@ -279,10 +262,7 @@ class PracticesSection extends StatelessWidget
     this.label,
     this.onSectionTap,
   }) : assert(practiceListBloc == null ||
-            (ofArtistId == null &&
-                ofDanceId == null &&
-                ofFigureId == null &&
-                ofVideoId == null));
+            (ofArtistId == null && ofDanceId == null && ofFigureId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
@@ -303,8 +283,7 @@ class PracticesSection extends StatelessWidget
                     () {
                       AutoRouter.of(context).push(
                         PracticeListRoute(
-                          practiceListBloc:
-                              BlocProvider.of<PracticeListBloc>(context),
+                          practiceListBloc: BlocProvider.of<PracticeListBloc>(context),
                         ),
                       );
                     },

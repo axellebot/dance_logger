@@ -4,6 +4,9 @@ import 'package:quiver/core.dart';
 
 enum PracticeDetailStatus {
   initial,
+  loading,
+  loadingSuccess,
+  loadingFailure,
   refreshing,
   refreshingSuccess,
   refreshingFailure,
@@ -13,13 +16,13 @@ enum PracticeDetailStatus {
 
 class PracticeDetailState extends Equatable {
   final PracticeDetailStatus status;
-  final String? ofId;
+  final String? ofPracticeId;
   final PracticeViewModel? practice;
   final Error? error;
 
   const PracticeDetailState({
     this.status = PracticeDetailStatus.initial,
-    this.ofId,
+    this.ofPracticeId,
     this.practice,
     this.error,
   }) : super();
@@ -27,20 +30,20 @@ class PracticeDetailState extends Equatable {
   @override
   List<Object?> get props => [
         status,
-        ofId,
+        ofPracticeId,
         practice,
         error,
       ];
 
   PracticeDetailState copyWith({
     PracticeDetailStatus? status,
-    Optional<String>? ofId,
+    Optional<String>? ofPracticeId,
     Optional<PracticeViewModel>? practice,
     Optional<Error>? error,
   }) {
     return PracticeDetailState(
       status: status ?? this.status,
-      ofId: ofId != null ? ofId.orNull : this.ofId,
+      ofPracticeId: ofPracticeId != null ? ofPracticeId.orNull : this.ofPracticeId,
       practice: practice != null ? practice.orNull : this.practice,
       error: error != null ? error.orNull : this.error,
     );
@@ -49,7 +52,7 @@ class PracticeDetailState extends Equatable {
   @override
   String toString() => 'PracticeDetailLoaded{'
       'status: $status, '
-      'ofId: $ofId, '
+      'ofPracticeId: $ofPracticeId, '
       'practice: $practice, '
       'error: $error'
       '}';

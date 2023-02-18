@@ -15,38 +15,50 @@ class ArtistDetailBloc extends Bloc<ArtistDetailEvent, ArtistDetailState> {
     required this.artistRepository,
     required this.mapper,
   }) : super(const ArtistDetailState()) {
+    on<ArtistDetailLazyLoad>(_onArtistDetailLazyLoad);
     on<ArtistDetailLoad>(_onArtistDetailLoad);
     on<ArtistDetailRefresh>(_onArtistDetailRefresh);
     on<ArtistDetailDelete>(_onArtistDelete);
+  }
+
+  FutureOr<void> _onArtistDetailLazyLoad(
+    ArtistDetailLazyLoad event,
+    Emitter<ArtistDetailState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onArtistDetailLazyLoad');
+
+    emit(state.copyWith(
+      status: ArtistDetailStatus.loadingSuccess,
+      ofArtistId: Optional.of(event.artist.id),
+      artist: Optional.of(event.artist),
+    ));
   }
 
   FutureOr<void> _onArtistDetailLoad(
     ArtistDetailLoad event,
     Emitter<ArtistDetailState> emit,
   ) async {
-    if (kDebugMode) print('$runtimeType:_onArtistLoad');
+    if (kDebugMode) print('$runtimeType:_onArtistDetailLoad');
 
     try {
       emit(state.copyWith(
-        status: ArtistDetailStatus.refreshing,
-        ofId: Optional.of(event.artistId),
+        status: ArtistDetailStatus.loading,
+        ofArtistId: Optional.of(event.artistId),
       ));
 
-      ArtistEntity artistDataModel =
-          await artistRepository.getById(event.artistId);
-      ArtistViewModel artistViewModel =
-          mapper.toArtistViewModel(artistDataModel);
+      ArtistEntity artistDataModel = await artistRepository.getById(event.artistId);
+      ArtistViewModel artistViewModel = mapper.toArtistViewModel(artistDataModel);
 
       emit(state.copyWith(
-        status: ArtistDetailStatus.refreshingSuccess,
-        ofId: Optional.of(artistViewModel.id),
+        status: ArtistDetailStatus.loadingSuccess,
+        ofArtistId: Optional.of(artistViewModel.id),
         artist: Optional.of(artistViewModel),
         error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: ArtistDetailStatus.refreshingFailure,
-        ofId: Optional.of(event.artistId),
+        status: ArtistDetailStatus.loadingFailure,
+        ofArtistId: Optional.of(event.artistId),
         error: Optional.of(error),
       ));
     }
@@ -63,14 +75,12 @@ class ArtistDetailBloc extends Bloc<ArtistDetailEvent, ArtistDetailState> {
         status: ArtistDetailStatus.refreshing,
       ));
 
-      ArtistEntity artistDataModel =
-          await artistRepository.getById(state.ofId!);
-      ArtistViewModel artistViewModel =
-          mapper.toArtistViewModel(artistDataModel);
+      ArtistEntity artistDataModel = await artistRepository.getById(state.ofArtistId!);
+      ArtistViewModel artistViewModel = mapper.toArtistViewModel(artistDataModel);
 
       emit(state.copyWith(
         status: ArtistDetailStatus.refreshingSuccess,
-        ofId: Optional.of(artistViewModel.id),
+        ofArtistId: Optional.of(artistViewModel.id),
         artist: Optional.of(artistViewModel),
         error: const Optional.absent(),
       ));

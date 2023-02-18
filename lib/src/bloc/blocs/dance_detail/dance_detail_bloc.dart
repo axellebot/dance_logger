@@ -15,9 +15,23 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
     required this.danceRepository,
     required this.mapper,
   }) : super(const DanceDetailState()) {
+    on<DanceDetailLazyLoad>(_onDanceDetailLazyLoad);
     on<DanceDetailLoad>(_onDanceDetailLoad);
     on<DanceDetailRefresh>(_onDanceDetailRefresh);
     on<DanceDetailDelete>(_onDanceDelete);
+  }
+
+  FutureOr<void> _onDanceDetailLazyLoad(
+    DanceDetailLazyLoad event,
+    Emitter<DanceDetailState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onDanceDetailLazyLoad');
+
+    emit(state.copyWith(
+      status: DanceDetailStatus.loadingSuccess,
+      ofDanceId: Optional.of(event.dance.id),
+      dance: Optional.of(event.dance),
+    ));
   }
 
   FutureOr<void> _onDanceDetailLoad(
@@ -28,23 +42,23 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
 
     try {
       emit(state.copyWith(
-        status: DanceDetailStatus.refreshing,
-        ofId: Optional.of(event.danceId),
+        status: DanceDetailStatus.loading,
+        ofDanceId: Optional.of(event.danceId),
       ));
 
       DanceEntity danceDataModel = await danceRepository.getById(event.danceId);
       DanceViewModel danceViewModel = mapper.toDanceViewModel(danceDataModel);
 
       emit(state.copyWith(
-        status: DanceDetailStatus.refreshingSuccess,
-        ofId: Optional.of(danceViewModel.id),
+        status: DanceDetailStatus.loadingSuccess,
+        ofDanceId: Optional.of(danceViewModel.id),
         dance: Optional.of(danceViewModel),
         error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: DanceDetailStatus.refreshingFailure,
-        ofId: Optional.of(event.danceId),
+        status: DanceDetailStatus.loadingFailure,
+        ofDanceId: Optional.of(event.danceId),
         error: Optional.of(error),
       ));
     }
@@ -61,12 +75,12 @@ class DanceDetailBloc extends Bloc<DanceDetailEvent, DanceDetailState> {
         status: DanceDetailStatus.refreshing,
       ));
 
-      DanceEntity danceDataModel = await danceRepository.getById(state.ofId!);
+      DanceEntity danceDataModel = await danceRepository.getById(state.ofDanceId!);
       DanceViewModel danceViewModel = mapper.toDanceViewModel(danceDataModel);
 
       emit(state.copyWith(
         status: DanceDetailStatus.refreshingSuccess,
-        ofId: Optional.of(danceViewModel.id),
+        ofDanceId: Optional.of(danceViewModel.id),
         dance: Optional.of(danceViewModel),
         error: const Optional.absent(),
       ));

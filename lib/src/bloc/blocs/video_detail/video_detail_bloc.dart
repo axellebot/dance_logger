@@ -15,10 +15,24 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
     required this.videoRepository,
     required this.mapper,
   }) : super(const VideoDetailState()) {
+    on<VideoDetailLazyLoad>(_onVideoDetailLazyLoad);
     on<VideoDetailLoad>(_onVideoDetailLoad);
     on<VideoDetailRefresh>(_onVideoDetailRefresh);
     on<VideoDetailDelete>(_onVideoDelete);
     on<VideoDetailToggleRemote>(_onToggleRemote);
+  }
+
+  FutureOr<void> _onVideoDetailLazyLoad(
+    VideoDetailLazyLoad event,
+    Emitter<VideoDetailState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onVideoDetailLazyLoad');
+
+    emit(state.copyWith(
+      status: VideoDetailStatus.loadingSuccess,
+      ofVideoId: Optional.of(event.video.id),
+      video: Optional.of(event.video),
+    ));
   }
 
   FutureOr<void> _onVideoDetailLoad(
@@ -29,23 +43,23 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
 
     try {
       emit(state.copyWith(
-        status: VideoDetailStatus.refreshing,
-        ofId: Optional.of(event.videoId),
+        status: VideoDetailStatus.loading,
+        ofVideoId: Optional.of(event.videoId),
       ));
 
       VideoEntity videoDataModel = await videoRepository.getById(event.videoId);
       VideoViewModel videoViewModel = mapper.toVideoViewModel(videoDataModel);
 
       emit(state.copyWith(
-        status: VideoDetailStatus.refreshingSuccess,
-        ofId: Optional.of(videoViewModel.id),
+        status: VideoDetailStatus.loadingSuccess,
+        ofVideoId: Optional.of(videoViewModel.id),
         video: Optional.of(videoViewModel),
         error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: VideoDetailStatus.refreshingFailure,
-        ofId: Optional.of(event.videoId),
+        status: VideoDetailStatus.loadingFailure,
+        ofVideoId: Optional.of(event.videoId),
         error: Optional.of(error),
       ));
     }
@@ -61,12 +75,12 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
         status: VideoDetailStatus.refreshing,
       ));
 
-      VideoEntity videoDataModel = await videoRepository.getById(state.ofId!);
+      VideoEntity videoDataModel = await videoRepository.getById(state.ofVideoId!);
       VideoViewModel videoViewModel = mapper.toVideoViewModel(videoDataModel);
 
       emit(state.copyWith(
         status: VideoDetailStatus.refreshingSuccess,
-        ofId: Optional.of(videoViewModel.id),
+        ofVideoId: Optional.of(videoViewModel.id),
         video: Optional.of(videoViewModel),
         error: const Optional.absent(),
       ));

@@ -7,26 +7,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
 @RoutePage()
-class FigureDetailsPage extends StatefulWidget implements AutoRouteWrapper {
-  final String figureId;
+class FigureDetailsPage extends StatefulWidget implements FigureDetailWidgetParams, AutoRouteWrapper {
+  /// FigureDetailWidgetParams
+  @override
+  final FigureDetailBloc? figureDetailBloc;
+  @override
+  final FigureViewModel? ofFigure;
+  @override
+  final String? ofFigureId;
 
   const FigureDetailsPage({
     super.key,
-    @pathParam required this.figureId,
-  });
+
+    /// FigureDetailWidgetParams
+    this.figureDetailBloc,
+    this.ofFigure,
+    @pathParam this.ofFigureId,
+  }) : assert(figureDetailBloc == null || ofFigure == null || ofFigureId == null);
 
   @override
   State<FigureDetailsPage> createState() => _FigureDetailsPageState();
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return BlocProvider<FigureDetailBloc>(
-      create: (BuildContext context) {
-        return FigureDetailBloc(
-          figureRepository: RepositoryProvider.of<FigureRepository>(context),
-          mapper: ModelMapper(),
-        )..add(FigureDetailLoad(figureId: figureId));
-      },
+    return FigureDetailBlocProvider(
+      figureDetailBloc: figureDetailBloc,
+      ofFigure: ofFigure,
+      ofFigureId: ofFigureId,
       child: this,
     );
   }
@@ -53,8 +60,7 @@ class _FigureDetailsPageState extends State<FigureDetailsPage> {
       },
       child: BlocBuilder<FigureDetailBloc, FigureDetailState>(
         builder: (BuildContext context, FigureDetailState state) {
-          final FigureDetailBloc figureDetailBloc =
-              BlocProvider.of<FigureDetailBloc>(context);
+          final FigureDetailBloc figureDetailBloc = BlocProvider.of<FigureDetailBloc>(context);
           return Scaffold(
             body: CustomScrollView(
               slivers: <Widget>[
@@ -63,9 +69,7 @@ class _FigureDetailsPageState extends State<FigureDetailsPage> {
                   snap: false,
                   floating: false,
                   stretch: true,
-                  title: (state.figure != null)
-                      ? Text(state.figure!.name)
-                      : const Text('Figure detail'),
+                  title: (state.figure != null) ? Text(state.figure!.name) : const Text('Figure detail'),
                 ),
                 SliverFillRemaining(
                   child: EasyRefresh(

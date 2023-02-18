@@ -16,8 +16,7 @@ abstract class FigureListBlocParams implements FigureListParams {
   );
 }
 
-class FigureListBlocProvider extends StatelessWidget
-    implements FigureListBlocParams {
+class FigureListBlocProvider extends StatelessWidget implements FigureListBlocParams {
   /// FigureListBlocParams
   @override
   final FigureListBloc? figureListBloc;
@@ -48,8 +47,7 @@ class FigureListBlocProvider extends StatelessWidget
 
     /// Widget params
     required this.child,
-  }) : assert(figureListBloc == null ||
-            (ofArtistId == null && ofDanceId == null && ofVideoId == null));
+  }) : assert(figureListBloc == null || (ofArtistId == null && ofDanceId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +60,7 @@ class FigureListBlocProvider extends StatelessWidget
       return BlocProvider<FigureListBloc>(
         create: (context) {
           final figureListBloc = FigureListBloc(
-            figureRepository:
-                Provider.of<FigureRepository>(context, listen: false),
+            figureRepository: Provider.of<FigureRepository>(context, listen: false),
             mapper: ModelMapper(),
           );
 
@@ -85,8 +82,7 @@ class FigureListBlocProvider extends StatelessWidget
   }
 }
 
-class FigureListView extends StatefulWidget
-    implements FigureListBlocParams, EntityListViewParams {
+class FigureListView extends StatefulWidget implements FigureListBlocParams, EntityListViewParams {
   /// FigureListWidgetParams
   @override
   final FigureListBloc? figureListBloc;
@@ -124,8 +120,7 @@ class FigureListView extends StatefulWidget
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
-  }) : assert(figureListBloc == null ||
-            (ofArtistId == null && ofDanceId == null && ofVideoId == null));
+  }) : assert(figureListBloc == null || (ofArtistId == null && ofDanceId == null && ofVideoId == null));
 
   @override
   State<FigureListView> createState() => _FigureListViewState();
@@ -172,12 +167,8 @@ class _FigureListViewState extends State<FigureListView> {
 
             return EasyRefresh(
               controller: _refreshController,
-              header: (widget.scrollDirection == Axis.horizontal)
-                  ? const MaterialHeader()
-                  : null,
-              footer: (widget.scrollDirection == Axis.horizontal)
-                  ? const MaterialFooter()
-                  : null,
+              header: (widget.scrollDirection == Axis.horizontal) ? const MaterialHeader() : null,
+              footer: (widget.scrollDirection == Axis.horizontal) ? const MaterialFooter() : null,
               onRefresh: () {
                 figureListBloc.add(const FigureListRefresh());
               },
@@ -191,13 +182,12 @@ class _FigureListViewState extends State<FigureListView> {
                 itemCount: state.figures.length,
                 itemBuilder: (context, index) {
                   final FigureViewModel figure = state.figures[index];
-                  final FigureListBloc artistListBloc =
-                      BlocProvider.of<FigureListBloc>(context);
+                  final FigureListBloc artistListBloc = BlocProvider.of<FigureListBloc>(context);
                   switch (widget.scrollDirection) {
                     case Axis.vertical:
                       if (state.selectedFigures.isEmpty) {
                         return FigureListTile(
-                          figure: figure,
+                          ofFigure: figure,
                           onTap: widget.onSelect,
                           onLongPress: (item) {
                             artistListBloc.add(
@@ -207,9 +197,8 @@ class _FigureListViewState extends State<FigureListView> {
                         );
                       } else {
                         return CheckboxFigureListTile(
-                          figure: figure,
-                          value: state.selectedFigures
-                              .any((element) => element.id == figure.id),
+                          ofFigure: figure,
+                          value: state.selectedFigures.any((element) => element.id == figure.id),
                           onChanged: (bool? value) {
                             artistListBloc.add(
                               (value == true)
@@ -220,7 +209,9 @@ class _FigureListViewState extends State<FigureListView> {
                         );
                       }
                     case Axis.horizontal:
-                      return FigureCard(figure: figure);
+                      return FigureCard(
+                        ofFigure: figure,
+                      );
                   }
                 },
               ),
@@ -238,8 +229,7 @@ class _FigureListViewState extends State<FigureListView> {
   }
 }
 
-class FiguresSection extends StatelessWidget
-    implements FigureListBlocParams, EntitiesSectionWidgetParams {
+class FiguresSection extends StatelessWidget implements FigureListBlocParams, EntitiesSectionWidgetParams {
   /// FigureListWidgetParams
   @override
   final FigureListBloc? figureListBloc;
@@ -268,8 +258,7 @@ class FiguresSection extends StatelessWidget
     /// EntitiesSectionWidgetParams
     this.label,
     this.onSectionTap,
-  }) : assert(figureListBloc == null ||
-            (ofArtistId == null && ofDanceId == null && ofVideoId == null));
+  }) : assert(figureListBloc == null || (ofArtistId == null && ofDanceId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
@@ -290,8 +279,7 @@ class FiguresSection extends StatelessWidget
                     () {
                       AutoRouter.of(context).push(
                         FigureListRoute(
-                          figureListBloc:
-                              BlocProvider.of<FigureListBloc>(context),
+                          figureListBloc: BlocProvider.of<FigureListBloc>(context),
                         ),
                       );
                     },

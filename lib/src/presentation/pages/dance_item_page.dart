@@ -7,26 +7,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
 @RoutePage()
-class DanceDetailsPage extends StatefulWidget implements AutoRouteWrapper {
-  final String danceId;
+class DanceDetailsPage extends StatefulWidget implements DanceDetailWidgetParams, AutoRouteWrapper {
+  @override
+  final DanceDetailBloc? danceDetailBloc;
+  @override
+  final DanceViewModel? ofDance;
+  @override
+  final String? ofDanceId;
 
   const DanceDetailsPage({
     super.key,
-    @pathParam required this.danceId,
-  });
+    this.danceDetailBloc,
+    this.ofDance,
+    @pathParam this.ofDanceId,
+  }) : assert(danceDetailBloc == null || ofDance == null || ofDanceId == null);
 
   @override
   State<DanceDetailsPage> createState() => _DanceDetailsPageState();
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return BlocProvider<DanceDetailBloc>(
-      create: (BuildContext context) {
-        return DanceDetailBloc(
-          danceRepository: RepositoryProvider.of<DanceRepository>(context),
-          mapper: ModelMapper(),
-        )..add(DanceDetailLoad(danceId: danceId));
-      },
+    return DanceDetailBlocProvider(
+      danceDetailBloc: danceDetailBloc,
+      ofDance: ofDance,
+      ofDanceId: ofDanceId,
       child: this,
     );
   }
@@ -53,8 +57,7 @@ class _DanceDetailsPageState extends State<DanceDetailsPage> {
       },
       child: BlocBuilder<DanceDetailBloc, DanceDetailState>(
         builder: (BuildContext context, DanceDetailState state) {
-          final DanceDetailBloc danceDetailBloc =
-              BlocProvider.of<DanceDetailBloc>(context);
+          final DanceDetailBloc danceDetailBloc = BlocProvider.of<DanceDetailBloc>(context);
           return Scaffold(
             body: CustomScrollView(
               slivers: <Widget>[
@@ -62,15 +65,13 @@ class _DanceDetailsPageState extends State<DanceDetailsPage> {
                   pinned: true,
                   snap: false,
                   floating: false,
-                  title: (state.dance != null)
-                      ? Text(state.dance!.name)
-                      : const Text('Dance detail'),
+                  title: Text(state.dance?.name ?? 'Dance detail'),
                   actions: [
                     IconButton(
                       onPressed: () {
                         AutoRouter.of(context).push(
                           DanceEditRoute(
-                            danceId: state.dance!.id,
+                            danceId: state.dance?.id,
                           ),
                         );
                       },

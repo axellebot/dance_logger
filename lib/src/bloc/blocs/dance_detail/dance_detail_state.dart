@@ -4,6 +4,9 @@ import 'package:quiver/core.dart';
 
 enum DanceDetailStatus {
   initial,
+  loading,
+  loadingSuccess,
+  loadingFailure,
   refreshing,
   refreshingSuccess,
   refreshingFailure,
@@ -13,13 +16,13 @@ enum DanceDetailStatus {
 
 class DanceDetailState extends Equatable {
   final DanceDetailStatus status;
-  final String? ofId;
+  final String? ofDanceId;
   final DanceViewModel? dance;
   final Error? error;
 
   const DanceDetailState({
     this.status = DanceDetailStatus.initial,
-    this.ofId,
+    this.ofDanceId,
     this.dance,
     this.error,
   }) : super();
@@ -27,20 +30,20 @@ class DanceDetailState extends Equatable {
   @override
   List<Object?> get props => [
         status,
-        ofId,
+        ofDanceId,
         dance,
         error,
       ];
 
   DanceDetailState copyWith({
     DanceDetailStatus? status,
-    Optional<String>? ofId,
+    Optional<String>? ofDanceId,
     Optional<DanceViewModel>? dance,
     Optional<Error>? error,
   }) {
     return DanceDetailState(
       status: status ?? this.status,
-      ofId: ofId != null ? ofId.orNull : this.ofId,
+      ofDanceId: ofDanceId != null ? ofDanceId.orNull : this.ofDanceId,
       dance: dance != null ? dance.orNull : this.dance,
       error: error != null ? error.orNull : this.error,
     );
@@ -49,7 +52,7 @@ class DanceDetailState extends Equatable {
   @override
   String toString() => 'DanceDetailLoaded{'
       'status: $status, '
-      'ofId: $ofId, '
+      'ofDanceId: $ofDanceId, '
       'dance: $dance, '
       'error: $error'
       '}';

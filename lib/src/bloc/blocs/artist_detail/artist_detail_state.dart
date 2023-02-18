@@ -4,6 +4,9 @@ import 'package:quiver/core.dart';
 
 enum ArtistDetailStatus {
   initial,
+  loading,
+  loadingSuccess,
+  loadingFailure,
   refreshing,
   refreshingSuccess,
   refreshingFailure,
@@ -13,13 +16,13 @@ enum ArtistDetailStatus {
 
 class ArtistDetailState extends Equatable {
   final ArtistDetailStatus status;
-  final String? ofId;
+  final String? ofArtistId;
   final ArtistViewModel? artist;
   final Error? error;
 
   const ArtistDetailState({
     this.status = ArtistDetailStatus.initial,
-    this.ofId,
+    this.ofArtistId,
     this.artist,
     this.error,
   }) : super();
@@ -27,20 +30,20 @@ class ArtistDetailState extends Equatable {
   @override
   List<Object?> get props => [
         status,
-        ofId,
+        ofArtistId,
         artist,
         error,
       ];
 
   ArtistDetailState copyWith({
     ArtistDetailStatus? status,
-    Optional<String>? ofId,
+    Optional<String>? ofArtistId,
     Optional<ArtistViewModel>? artist,
     Optional<Error>? error,
   }) {
     return ArtistDetailState(
       status: status ?? this.status,
-      ofId: ofId != null ? ofId.orNull : this.ofId,
+      ofArtistId: ofArtistId != null ? ofArtistId.orNull : this.ofArtistId,
       artist: artist != null ? artist.orNull : this.artist,
       error: error != null ? error.orNull : this.error,
     );
@@ -49,7 +52,7 @@ class ArtistDetailState extends Equatable {
   @override
   String toString() => 'ArtistDetailState{'
       'status: $status, '
-      'ofId: $ofId, '
+      'ofArtistId: $ofArtistId, '
       'artist: $artist, '
       'error: $error'
       '}';

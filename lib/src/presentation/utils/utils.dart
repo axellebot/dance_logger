@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 String getInitials(String nameString) {
-  if (nameString.isEmpty) return ' ';
+  if (nameString.isEmpty) return '';
 
   List<String> nameArray =
       nameString.replaceAll(RegExp(r'\s+\b|\b\s'), ' ').split(' ');
@@ -12,7 +12,8 @@ String getInitials(String nameString) {
   return initials;
 }
 
-bool isYoutube(String url) {
+bool isYoutube(String? url) {
+  if (url == null) return false;
   RegExp regex = RegExp(
       r'^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$');
   return regex.hasMatch(url);

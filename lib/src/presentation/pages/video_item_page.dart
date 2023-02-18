@@ -9,26 +9,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 @RoutePage()
-class VideoDetailsPage extends StatefulWidget implements AutoRouteWrapper {
-  final String videoId;
+class VideoDetailsPage extends StatefulWidget implements VideoDetailWidgetParams, AutoRouteWrapper {
+  /// VideoDetailWidgetParams
+  @override
+  final VideoDetailBloc? videoDetailBloc;
+  @override
+  final VideoViewModel? ofVideo;
+  @override
+  final String? ofVideoId;
 
   const VideoDetailsPage({
     super.key,
-    @pathParam required this.videoId,
-  });
+
+    /// VideoDetailWidgetParams
+    this.videoDetailBloc,
+    this.ofVideo,
+    @pathParam this.ofVideoId,
+  }) : assert(videoDetailBloc == null || ofVideo == null || ofVideoId == null);
 
   @override
   State<StatefulWidget> createState() => _VideoDetailsPage();
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return BlocProvider<VideoDetailBloc>(
-      create: (BuildContext context) {
-        return VideoDetailBloc(
-          videoRepository: RepositoryProvider.of<VideoRepository>(context),
-          mapper: ModelMapper(),
-        )..add(VideoDetailLoad(videoId: videoId));
-      },
+    return VideoDetailBlocProvider(
+      videoDetailBloc: videoDetailBloc,
+      ofVideo: ofVideo,
+      ofVideoId: ofVideoId,
       child: this,
     );
   }
@@ -36,8 +43,7 @@ class VideoDetailsPage extends StatefulWidget implements AutoRouteWrapper {
 
 class _VideoDetailsPage extends State<VideoDetailsPage> {
   YoutubePlayerController? _videoController;
-  final DraggableScrollableController _bottomSheetController =
-      DraggableScrollableController();
+  final DraggableScrollableController _bottomSheetController = DraggableScrollableController();
 
   final EasyRefreshController _refreshController = EasyRefreshController(
     controlFinishRefresh: true,
@@ -45,63 +51,42 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<VideoDetailBloc, VideoDetailState>(
-            listenWhen: (VideoDetailState previous, VideoDetailState current) =>
-                previous.video?.id != current.video?.id,
-            listener: (BuildContext context, VideoDetailState state) {
-              if (state.video != null) {
-                final String? videoId =
-                    YoutubePlayer.convertUrlToId(state.video!.url);
-                if (videoId != null) {
-                  _videoController?.dispose();
-                  _videoController = YoutubePlayerController(
-                    initialVideoId: videoId,
-                    flags: const YoutubePlayerFlags(
-                      showLiveFullscreenButton: false,
-                    ),
-                  );
-                } else {
-                  _videoController?.dispose();
-                  _videoController = null;
-                }
-              } else {
-                _videoController?.dispose();
-                _videoController = null;
-              }
-            }),
-        BlocListener<VideoDetailBloc, VideoDetailState>(
-          listener: (context, state) {
-            switch (state.status) {
-              case VideoDetailStatus.refreshingSuccess:
-                _refreshController.finishRefresh(IndicatorResult.success);
-                break;
-              case VideoDetailStatus.refreshingFailure:
-                _refreshController.finishRefresh(IndicatorResult.fail);
-                break;
-              default:
-            }
-          },
-        ),
-      ],
+    return BlocListener<VideoDetailBloc, VideoDetailState>(
+      listener: (context, state) {
+        switch (state.status) {
+          case VideoDetailStatus.refreshingSuccess:
+            _refreshController.finishRefresh(IndicatorResult.success);
+            break;
+          case VideoDetailStatus.refreshingFailure:
+            _refreshController.finishRefresh(IndicatorResult.fail);
+            break;
+          default:
+        }
+      },
       child: BlocBuilder<VideoDetailBloc, VideoDetailState>(
         builder: (BuildContext context, VideoDetailState state) {
-          final VideoDetailBloc videoDetailBloc =
-              BlocProvider.of<VideoDetailBloc>(context);
+          final VideoDetailBloc videoDetailBloc = BlocProvider.of<VideoDetailBloc>(context);
+          final String? videoId = YoutubePlayer.convertUrlToId(state.video?.url ?? '');
+          if (videoId != null && _videoController?.initialVideoId != videoId) {
+            _videoController?.dispose();
+            _videoController = YoutubePlayerController(
+              initialVideoId: videoId,
+              flags: const YoutubePlayerFlags(
+                showLiveFullscreenButton: false,
+              ),
+            );
+          }
 
           return Scaffold(
             body: SafeArea(
               child: Builder(
                 builder: (context) {
                   double videoPlayerFactor =
-                      ((9 / 16) * MediaQuery.of(context).size.width) /
-                          MediaQuery.of(context).size.height;
+                      ((9 / 16) * MediaQuery.of(context).size.width) / MediaQuery.of(context).size.height;
                   double remoteFactor = 1 - videoPlayerFactor;
                   return BlocListener<VideoDetailBloc, VideoDetailState>(
-                    listenWhen:
-                        (VideoDetailState previous, VideoDetailState current) =>
-                            previous.remoteOpened != current.remoteOpened,
+                    listenWhen: (VideoDetailState previous, VideoDetailState current) =>
+                        previous.remoteOpened != current.remoteOpened,
                     listener: (BuildContext context, VideoDetailState state) {
                       if (state.remoteOpened != null) {
                         if (state.remoteOpened!) {
@@ -133,23 +118,21 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                             slivers: [
                               SliverToBoxAdapter(
                                 child: Hero(
-                                  tag:
-                                      'img-${state.video?.id ?? state.ofId ?? "not_loaded"}',
+                                  tag: 'img-${state.video?.id ?? state.ofVideoId}',
+                                  transitionOnUserGestures: false,
                                   child: AspectRatio(
                                     aspectRatio: 16 / 9,
                                     child: (_videoController != null)
                                         ? YoutubePlayer(
                                             thumbnail: VideoThumbnail(
-                                                url: state.video?.url),
+                                              url: state.video?.url,
+                                            ),
                                             controller: _videoController!,
                                             bottomActions: [
                                               TextButton(
                                                 onPressed: () {
-                                                  videoDetailBloc.add(
-                                                      VideoDetailToggleRemote(
-                                                    opened:
-                                                        !(state.remoteOpened ??
-                                                                false),
+                                                  videoDetailBloc.add(VideoDetailToggleRemote(
+                                                    opened: !(state.remoteOpened ?? false) ,
                                                   ));
                                                 },
                                                 child: const Text('Moments >'),
@@ -174,10 +157,8 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     ListTile(
-                                      title: Text(
-                                          state.video?.name ?? 'Video Title'),
-                                      subtitle:
-                                          Text(state.video?.url ?? 'Video url'),
+                                      title: Text(state.video?.name ?? 'Video Title'),
+                                      subtitle: Text(state.video?.url ?? 'Video url'),
                                     ),
                                     SizedBox(
                                       height: 40,
@@ -189,8 +170,7 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                                             label: const Text("Copy URL"),
                                             avatar: const Icon(Icons.copy),
                                             onPressed: () {
-                                              Clipboard.setData(ClipboardData(
-                                                  text: state.video!.url));
+                                              Clipboard.setData(ClipboardData(text: state.video!.url));
                                             },
                                           ),
                                           const SizedBox(width: 10),
@@ -200,7 +180,7 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                                             onPressed: () {
                                               AutoRouter.of(context).push(
                                                 VideoEditRoute(
-                                                  videoId: state.video!.id,
+                                                  videoId: state.video?.id,
                                                 ),
                                               );
                                             },
@@ -208,8 +188,7 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                                           const SizedBox(width: 10),
                                           DeleteActionChip(
                                             onDeleted: () {
-                                              videoDetailBloc.add(
-                                                  const VideoDetailDelete());
+                                              videoDetailBloc.add(const VideoDetailDelete());
                                             },
                                           )
                                         ],
@@ -260,15 +239,12 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                             remoteFactor,
                           ],
                           controller: _bottomSheetController,
-                          builder: (BuildContext context,
-                              ScrollController scrollController) {
+                          builder: (BuildContext context, ScrollController scrollController) {
                             return Container(
                               decoration: BoxDecoration(
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor,
+                                color: Theme.of(context).scaffoldBackgroundColor,
                                 borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(10.0),
-                                    topRight: Radius.circular(10.0)),
+                                    topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
                               ),
                               clipBehavior: Clip.antiAlias,
                               child: CustomScrollView(
@@ -278,8 +254,7 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                                     pinned: true,
                                     delegate: MomentHeaderDelegate(
                                       onExit: () {
-                                        videoDetailBloc
-                                            .add(const VideoDetailToggleRemote(
+                                        videoDetailBloc.add(const VideoDetailToggleRemote(
                                           opened: false,
                                         ));
                                       },
@@ -288,10 +263,8 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                                   SliverFillRemaining(
                                     child: MomentListView(
                                       ofVideoId: state.video!.id,
-                                      onItemTap:
-                                          (MomentViewModel momentViewModel) {
-                                        _videoController
-                                            ?.seekTo(momentViewModel.startTime);
+                                      onItemTap: (MomentViewModel momentViewModel) {
+                                        _videoController?.seekTo(momentViewModel.startTime);
                                       },
                                     ),
                                   ),
@@ -361,8 +334,7 @@ class VideoEditPage extends StatelessWidget implements AutoRouteWrapper {
             return ErrorPage(error: state.error!);
           case VideoEditStatus.ready:
           case VideoEditStatus.editSuccess:
-            final VideoEditBloc videoEditBloc =
-                BlocProvider.of<VideoEditBloc>(context);
+            final VideoEditBloc videoEditBloc = BlocProvider.of<VideoEditBloc>(context);
             return Scaffold(
               appBar: AppBar(
                 leading: IconButton(
@@ -422,8 +394,7 @@ class MomentHeaderDelegate extends SliverPersistentHeaderDelegate {
   MomentHeaderDelegate({this.onExit});
 
   @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -466,6 +437,5 @@ class MomentHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => 100;
 
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
-      true;
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => true;
 }

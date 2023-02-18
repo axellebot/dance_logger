@@ -5,10 +5,18 @@ import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+// TODO : Add `MomentDetailWidgetParams` and `MomentDetailBlocProvider`
+// abstract class MomentDetailWidgetParams implements MomentDetailParams {
+//   final MomentDetailBloc? momentDetailBloc;
+//   final MomentViewModel? ofMoment;
+//
+//   MomentDetailWidgetParams(this.momentDetailBloc, this.ofMoment);
+// }
+
 class MomentListTile extends StatelessWidget {
   final MomentViewModel moment;
 
-  /// ListTile options
+  /// ListTile parameters
   final ItemCallback<MomentViewModel>? onTap;
   final ItemCallback<MomentViewModel>? onLongPress;
   final bool selected;
@@ -17,7 +25,7 @@ class MomentListTile extends StatelessWidget {
     super.key,
     required this.moment,
 
-    /// ListTile options
+    /// ListTile parameters
     this.onTap,
     this.onLongPress,
     this.selected = false,
@@ -27,8 +35,7 @@ class MomentListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: (moment.endTime != null)
-          ? Text(
-              '${printDuration(moment.startTime)}-${printDuration(moment.endTime)}')
+          ? Text('${printDuration(moment.startTime)}-${printDuration(moment.endTime)}')
           : Text('${printDuration(moment.startTime)}'),
       onTap: (onTap != null)
           ? () {
@@ -48,7 +55,7 @@ class MomentListTile extends StatelessWidget {
 class CheckboxMomentListTile extends StatelessWidget {
   final MomentViewModel moment;
 
-  /// CheckboxLitTile options
+  /// CheckboxLitTile parameters
   final bool? value;
   final ValueChanged<bool?>? onChanged;
 
@@ -56,7 +63,7 @@ class CheckboxMomentListTile extends StatelessWidget {
     super.key,
     required this.moment,
 
-    /// CheckboxLitTile options
+    /// CheckboxLitTile parameters
     required this.value,
     required this.onChanged,
   });
@@ -65,8 +72,7 @@ class CheckboxMomentListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return CheckboxListTile(
       title: (moment.endTime != null)
-          ? Text(
-              '${printDuration(moment.startTime)}-${printDuration(moment.endTime)}')
+          ? Text('${printDuration(moment.startTime)}-${printDuration(moment.endTime)}')
           : Text('${printDuration(moment.startTime)}'),
       value: value,
       onChanged: onChanged,
@@ -94,8 +100,7 @@ class MomentChip extends StatelessWidget {
       },
       child: Chip(
         label: (moment.endTime != null)
-            ? Text(
-                '${printDuration(moment.startTime)}-${printDuration(moment.endTime!)}')
+            ? Text('${printDuration(moment.startTime)}-${printDuration(moment.endTime!)}')
             : Text(printDuration(moment.startTime)!),
         deleteIcon: const Icon(Icons.edit),
         onDeleted: () {
@@ -121,8 +126,7 @@ class _MomentFormState extends State<MomentForm> {
 
   @override
   Widget build(BuildContext context) {
-    final MomentEditBloc momentEditBloc =
-        BlocProvider.of<MomentEditBloc>(context);
+    final MomentEditBloc momentEditBloc = BlocProvider.of<MomentEditBloc>(context);
     return BlocListener<MomentEditBloc, MomentEditState>(
       listener: (context, state) {
         // String? startFieldValue =
@@ -150,8 +154,7 @@ class _MomentFormState extends State<MomentForm> {
       },
       child: BlocBuilder<MomentEditBloc, MomentEditState>(
         builder: (BuildContext context, MomentEditState state) {
-          Duration? initialStartTime =
-              state.startTime ?? state.initialMoment?.startTime;
+          Duration? initialStartTime = state.startTime ?? state.initialMoment?.startTime;
           Duration? initialEndTime;
           if (state.endTime != null) {
             initialEndTime = state.endTime!.orNull;
@@ -218,26 +221,21 @@ class _MomentFormState extends State<MomentForm> {
                 TextButton(
                   onPressed: () async {
                     List<ArtistViewModel>? artists =
-                        await AutoRouter.of(context)
-                            .push<List<ArtistViewModel>>(ArtistListRoute(
+                        await AutoRouter.of(context).push<List<ArtistViewModel>>(ArtistListRoute(
                       shouldSelectMultiple: true,
                       preselectedItems: state.artists ?? state.initialArtists,
                     ));
                     if (artists != null) {
-                      momentEditBloc
-                          .add(MomentEditChangeArtists(artists: artists));
+                      momentEditBloc.add(MomentEditChangeArtists(artists: artists));
                     }
                   },
                   child: const Text('Add artist'),
                 ),
                 ListView.builder(
                   shrinkWrap: true,
-                  itemCount: state.artists?.length ??
-                      state.initialArtists?.length ??
-                      0,
+                  itemCount: state.artists?.length ?? state.initialArtists?.length ?? 0,
                   itemBuilder: (context, index) {
-                    ArtistViewModel? item =
-                        state.artists?[index] ?? state.initialArtists?[index];
+                    ArtistViewModel? item = state.artists?[index] ?? state.initialArtists?[index];
 
                     return Dismissible(
                       key: Key(item!.id),
@@ -271,8 +269,7 @@ class _MomentFormState extends State<MomentForm> {
                   initialValue: state.figure?.name ?? state.initialFigure?.name,
                   onTap: () async {
                     List<FigureViewModel>? results =
-                        await AutoRouter.of(context)
-                            .push<List<FigureViewModel>>(FigureListRoute(
+                        await AutoRouter.of(context).push<List<FigureViewModel>>(FigureListRoute(
                       shouldSelectOne: true,
                     ));
                     if (results?.isNotEmpty ?? false) {

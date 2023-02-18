@@ -14,8 +14,7 @@ abstract class VideoListWidgetParams implements VideoListParams {
   VideoListWidgetParams(this.videoListBloc);
 }
 
-class VideoListBlocProvider extends StatelessWidget
-    implements VideoListWidgetParams {
+class VideoListBlocProvider extends StatelessWidget implements VideoListWidgetParams {
   /// VideoListWidgetParams
   @override
   final VideoListBloc? videoListBloc;
@@ -64,8 +63,7 @@ class VideoListBlocProvider extends StatelessWidget
       return BlocProvider<VideoListBloc>(
         create: (context) {
           final videoListBloc = VideoListBloc(
-            videoRepository:
-                Provider.of<VideoRepository>(context, listen: false),
+            videoRepository: Provider.of<VideoRepository>(context, listen: false),
             mapper: ModelMapper(),
           );
 
@@ -87,8 +85,7 @@ class VideoListBlocProvider extends StatelessWidget
   }
 }
 
-class VideoListView extends StatefulWidget
-    implements VideoListWidgetParams, EntityListViewParams {
+class VideoListView extends StatefulWidget implements VideoListWidgetParams, EntityListViewParams {
   /// VideoListWidgetParams
   @override
   final VideoListBloc? videoListBloc;
@@ -173,12 +170,8 @@ class _VideoListViewState extends State<VideoListView> {
 
             return EasyRefresh(
               controller: _refreshController,
-              header: (widget.scrollDirection == Axis.horizontal)
-                  ? const MaterialHeader()
-                  : null,
-              footer: (widget.scrollDirection == Axis.horizontal)
-                  ? const MaterialFooter()
-                  : null,
+              header: (widget.scrollDirection == Axis.horizontal) ? const MaterialHeader() : null,
+              footer: (widget.scrollDirection == Axis.horizontal) ? const MaterialFooter() : null,
               onRefresh: () {
                 videoListBloc.add(const VideoListRefresh());
               },
@@ -192,13 +185,12 @@ class _VideoListViewState extends State<VideoListView> {
                 itemCount: state.videos.length,
                 itemBuilder: (context, index) {
                   final VideoViewModel video = state.videos[index];
-                  final VideoListBloc videoListBloc =
-                      BlocProvider.of<VideoListBloc>(context);
+                  final VideoListBloc videoListBloc = BlocProvider.of<VideoListBloc>(context);
                   switch (widget.scrollDirection) {
                     case Axis.vertical:
                       if (state.selectedVideos.isEmpty) {
                         return VideoListTile(
-                          video: video,
+                          ofVideo: video,
                           onLongPress: (item) {
                             videoListBloc.add(
                               VideoListSelect(videos: [item]),
@@ -208,13 +200,10 @@ class _VideoListViewState extends State<VideoListView> {
                       } else {
                         return CheckboxVideoListTile(
                           video: video,
-                          value: state.selectedVideos
-                              .any((element) => element.id == video.id),
+                          value: state.selectedVideos.any((element) => element.id == video.id),
                           onChanged: (bool? value) {
                             videoListBloc.add(
-                              (value == true)
-                                  ? VideoListSelect(videos: [video])
-                                  : VideoListUnselect(videos: [video]),
+                              (value == true) ? VideoListSelect(videos: [video]) : VideoListUnselect(videos: [video]),
                             );
                           },
                         );
@@ -238,8 +227,7 @@ class _VideoListViewState extends State<VideoListView> {
   }
 }
 
-class VideosSection extends StatelessWidget
-    implements VideoListWidgetParams, EntitiesSectionWidgetParams {
+class VideosSection extends StatelessWidget implements VideoListWidgetParams, EntitiesSectionWidgetParams {
   /// VideoListWidgetParams
   @override
   final VideoListBloc? videoListBloc;
@@ -294,8 +282,7 @@ class VideosSection extends StatelessWidget
                     () {
                       AutoRouter.of(context).push(
                         VideoListRoute(
-                          videoListBloc:
-                              BlocProvider.of<VideoListBloc>(context),
+                          videoListBloc: BlocProvider.of<VideoListBloc>(context),
                         ),
                       );
                     },

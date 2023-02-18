@@ -8,14 +8,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 abstract class ArtistListWidgetParams implements ArtistListParams {
-  /// ListBloc params
   final ArtistListBloc? artistListBloc;
 
   ArtistListWidgetParams(this.artistListBloc);
 }
 
-class ArtistListBlocProvider extends StatelessWidget
-    implements ArtistListWidgetParams {
+class ArtistListBlocProvider extends StatelessWidget implements ArtistListWidgetParams {
   /// ArtistListWidgetParams
   @override
   final ArtistListBloc? artistListBloc;
@@ -64,8 +62,7 @@ class ArtistListBlocProvider extends StatelessWidget
       return BlocProvider(
         create: (context) {
           final artistListBloc = ArtistListBloc(
-            artistRepository:
-                Provider.of<ArtistRepository>(context, listen: false),
+            artistRepository: Provider.of<ArtistRepository>(context, listen: false),
             mapper: ModelMapper(),
           );
 
@@ -88,8 +85,7 @@ class ArtistListBlocProvider extends StatelessWidget
   }
 }
 
-class ArtistListView extends StatefulWidget
-    implements ArtistListWidgetParams, EntityListViewParams {
+class ArtistListView extends StatefulWidget implements ArtistListWidgetParams, EntityListViewParams {
   /// ArtistListWidgetParams
   @override
   final ArtistListBloc? artistListBloc;
@@ -174,12 +170,8 @@ class _ArtistListViewState extends State<ArtistListView> {
 
             return EasyRefresh(
               controller: _refreshController,
-              header: (widget.scrollDirection == Axis.horizontal)
-                  ? const MaterialHeader()
-                  : null,
-              footer: (widget.scrollDirection == Axis.horizontal)
-                  ? const MaterialFooter()
-                  : null,
+              header: (widget.scrollDirection == Axis.horizontal) ? const MaterialHeader() : null,
+              footer: (widget.scrollDirection == Axis.horizontal) ? const MaterialFooter() : null,
               onRefresh: () {
                 artistListBloc.add(const ArtistListRefresh());
               },
@@ -193,13 +185,12 @@ class _ArtistListViewState extends State<ArtistListView> {
                 itemCount: state.artists.length,
                 itemBuilder: (context, index) {
                   final ArtistViewModel artist = state.artists[index];
-                  final ArtistListBloc artistListBloc =
-                      BlocProvider.of<ArtistListBloc>(context);
+                  final ArtistListBloc artistListBloc = BlocProvider.of<ArtistListBloc>(context);
                   switch (widget.scrollDirection) {
                     case Axis.vertical:
                       if (state.selectedArtists.isEmpty) {
                         return ArtistListTile(
-                          artist: artist,
+                          ofArtist: artist,
                           onLongPress: (item) {
                             artistListBloc.add(
                               ArtistListSelect(artists: [item]),
@@ -208,9 +199,8 @@ class _ArtistListViewState extends State<ArtistListView> {
                         );
                       } else {
                         return CheckboxArtistListTile(
-                          artist: artist,
-                          value: state.selectedArtists
-                              .any((element) => element.id == artist.id),
+                          ofArtist: artist,
+                          value: state.selectedArtists.any((element) => element.id == artist.id),
                           onChanged: (bool? value) {
                             artistListBloc.add(
                               (value == true)
@@ -221,7 +211,7 @@ class _ArtistListViewState extends State<ArtistListView> {
                         );
                       }
                     case Axis.horizontal:
-                      return ArtistCard(artist: artist);
+                      return ArtistCard(ofArtist: artist);
                   }
                 },
               ),
@@ -239,8 +229,7 @@ class _ArtistListViewState extends State<ArtistListView> {
   }
 }
 
-class ArtistsSection extends StatelessWidget
-    implements ArtistListWidgetParams, EntitiesSectionWidgetParams {
+class ArtistsSection extends StatelessWidget implements ArtistListWidgetParams, EntitiesSectionWidgetParams {
   /// EntitiesSectionWidgetParams
   @override
   final String? label;
@@ -295,8 +284,7 @@ class ArtistsSection extends StatelessWidget
                     () {
                       AutoRouter.of(context).push(
                         ArtistListRoute(
-                          artistListBloc:
-                              BlocProvider.of<ArtistListBloc>(context),
+                          artistListBloc: BlocProvider.of<ArtistListBloc>(context),
                         ),
                       );
                     },

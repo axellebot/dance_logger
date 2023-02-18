@@ -14,7 +14,6 @@ class DeleteActionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return ActionChip(
       label: const Text("Delete"),
       avatar: const Icon(Icons.delete),
@@ -42,7 +41,6 @@ class DeleteIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return IconButton(
       onPressed: () {
         showDialog(
@@ -81,10 +79,8 @@ class EntityInfoListTile extends StatelessWidget {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (updateAt != null && version != null && version! > 1)
-            Text('Updated at: ${dateFormat.format(updateAt!)}'),
-          if (createdAt != null)
-            Text('Created at: ${dateFormat.format(createdAt!)}'),
+          if (updateAt != null && version != null && version! > 1) Text('Updated at: ${dateFormat.format(updateAt!)}'),
+          if (createdAt != null) Text('Created at: ${dateFormat.format(createdAt!)}'),
           if (version != null) Text('Version #${version!}'),
         ],
       ),

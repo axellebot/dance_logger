@@ -15,9 +15,23 @@ class FigureDetailBloc extends Bloc<FigureDetailEvent, FigureDetailState> {
     required this.figureRepository,
     required this.mapper,
   }) : super(const FigureDetailState()) {
+    on<FigureDetailLazyLoad>(_onFigureDetailLazyLoad);
     on<FigureDetailLoad>(_onFigureDetailLoad);
     on<FigureDetailRefresh>(_onFigureDetailRefresh);
     on<FigureDetailDelete>(_onFigureDelete);
+  }
+
+  FutureOr<void> _onFigureDetailLazyLoad(
+    FigureDetailLazyLoad event,
+    Emitter<FigureDetailState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onFigureDetailLazyLoad');
+
+    emit(state.copyWith(
+      status: FigureDetailStatus.loadingSuccess,
+      ofFigureId: Optional.of(event.figure.id),
+      figure: Optional.of(event.figure),
+    ));
   }
 
   FutureOr<void> _onFigureDetailLoad(
@@ -28,25 +42,23 @@ class FigureDetailBloc extends Bloc<FigureDetailEvent, FigureDetailState> {
 
     try {
       emit(state.copyWith(
-        status: FigureDetailStatus.refreshing,
-        ofId: Optional.of(event.figureId),
+        status: FigureDetailStatus.loading,
+        ofFigureId: Optional.of(event.figureId),
       ));
 
-      FigureEntity figureDataModel =
-          await figureRepository.getById(event.figureId);
-      FigureViewModel figureViewModel =
-          mapper.toFigureViewModel(figureDataModel);
+      FigureEntity figureDataModel = await figureRepository.getById(event.figureId);
+      FigureViewModel figureViewModel = mapper.toFigureViewModel(figureDataModel);
 
       emit(state.copyWith(
-        status: FigureDetailStatus.refreshingSuccess,
-        ofId: Optional.of(figureViewModel.id),
+        status: FigureDetailStatus.loadingSuccess,
+        ofFigureId: Optional.of(figureViewModel.id),
         figure: Optional.of(figureViewModel),
         error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: FigureDetailStatus.refreshingFailure,
-        ofId: Optional.of(event.figureId),
+        status: FigureDetailStatus.loadingFailure,
+        ofFigureId: Optional.of(event.figureId),
         error: Optional.of(error),
       ));
     }
@@ -63,14 +75,12 @@ class FigureDetailBloc extends Bloc<FigureDetailEvent, FigureDetailState> {
         status: FigureDetailStatus.refreshing,
       ));
 
-      FigureEntity figureDataModel =
-          await figureRepository.getById(state.ofId!);
-      FigureViewModel figureViewModel =
-          mapper.toFigureViewModel(figureDataModel);
+      FigureEntity figureDataModel = await figureRepository.getById(state.ofFigureId!);
+      FigureViewModel figureViewModel = mapper.toFigureViewModel(figureDataModel);
 
       emit(state.copyWith(
         status: FigureDetailStatus.refreshingSuccess,
-        ofId: Optional.of(figureViewModel.id),
+        ofFigureId: Optional.of(figureViewModel.id),
         figure: Optional.of(figureViewModel),
         error: const Optional.absent(),
       ));

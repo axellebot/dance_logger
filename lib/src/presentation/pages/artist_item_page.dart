@@ -7,26 +7,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
-class ArtistDetailsPage extends StatefulWidget implements AutoRouteWrapper {
-  final String artistId;
+class ArtistDetailsPage extends StatefulWidget implements ArtistDetailWidgetParams, AutoRouteWrapper {
+  /// ArtistDetailWidgetParams
+  @override
+  final ArtistDetailBloc? artistDetailBloc;
+  @override
+  final ArtistViewModel? ofArtist;
+  @override
+  final String? ofArtistId;
 
   const ArtistDetailsPage({
     super.key,
-    @pathParam required this.artistId,
-  });
+
+    /// ArtistDetailWidgetParams
+    this.artistDetailBloc,
+    this.ofArtist,
+    @pathParam this.ofArtistId,
+  }) : assert(artistDetailBloc == null || ofArtist == null || ofArtistId == null);
 
   @override
   State<ArtistDetailsPage> createState() => _ArtistDetailsPageState();
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return BlocProvider<ArtistDetailBloc>(
-      create: (BuildContext context) {
-        return ArtistDetailBloc(
-          artistRepository: RepositoryProvider.of<ArtistRepository>(context),
-          mapper: ModelMapper(),
-        )..add(ArtistDetailLoad(artistId: artistId));
-      },
+    return ArtistDetailBlocProvider(
+      artistDetailBloc: artistDetailBloc,
+      ofArtist: ofArtist,
+      ofArtistId: ofArtistId,
       child: this,
     );
   }
@@ -59,7 +66,8 @@ class _ArtistDetailsPageState extends State<ArtistDetailsPage> {
                   fit: StackFit.expand,
                   children: <Widget>[
                     Hero(
-                      tag: 'img-${state.artist!.id}',
+                      tag: 'img-${state.artist?.id ?? state.ofArtistId}',
+                      transitionOnUserGestures: false,
                       child: Image.network(
                         state.artist!.imageUrl!,
                         fit: BoxFit.cover,
@@ -84,7 +92,7 @@ class _ArtistDetailsPageState extends State<ArtistDetailsPage> {
                       StretchMode.blurBackground,
                       StretchMode.zoomBackground,
                     ],
-                    title: (state.artist != null) ? Text(state.artist!.name) : const Text('Artist detail'),
+                    title: Text(state.artist?.name ?? 'Artist detail'),
                     background: background,
                   ),
                   actions: [
@@ -92,7 +100,7 @@ class _ArtistDetailsPageState extends State<ArtistDetailsPage> {
                       onPressed: () {
                         AutoRouter.of(context).push(
                           ArtistEditRoute(
-                            artistId: state.artist!.id,
+                            artistId: state.artist?.id,
                           ),
                         );
                       },

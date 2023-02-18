@@ -15,8 +15,7 @@ abstract class DanceListWidgetParams implements DanceListParams {
   DanceListWidgetParams(this.danceListBloc);
 }
 
-class DanceListBlocProvider extends StatelessWidget
-    implements DanceListWidgetParams {
+class DanceListBlocProvider extends StatelessWidget implements DanceListWidgetParams {
   /// DanceListWidgetParams
   @override
   final DanceListBloc? danceListBloc;
@@ -47,9 +46,7 @@ class DanceListBlocProvider extends StatelessWidget
 
     /// Widget params
     required this.child,
-  }) : assert(danceListBloc == null ||
-            ofSearch == null ||
-            (ofArtistId == null && ofVideoId == null));
+  }) : assert(danceListBloc == null || ofSearch == null || (ofArtistId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +59,7 @@ class DanceListBlocProvider extends StatelessWidget
       return BlocProvider(
         create: (context) {
           final danceListBloc = DanceListBloc(
-            danceRepository:
-                Provider.of<DanceRepository>(context, listen: false),
+            danceRepository: Provider.of<DanceRepository>(context, listen: false),
             mapper: ModelMapper(),
           );
 
@@ -84,8 +80,7 @@ class DanceListBlocProvider extends StatelessWidget
   }
 }
 
-class DanceListView extends StatefulWidget
-    implements DanceListWidgetParams, EntityListViewParams {
+class DanceListView extends StatefulWidget implements DanceListWidgetParams, EntityListViewParams {
   /// DanceListWidgetParams
   @override
   final DanceListBloc? danceListBloc;
@@ -117,9 +112,7 @@ class DanceListView extends StatefulWidget
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
-  }) : assert(danceListBloc == null ||
-            ofSearch == null ||
-            (ofArtistId == null && ofVideoId == null));
+  }) : assert(danceListBloc == null || ofSearch == null || (ofArtistId == null && ofVideoId == null));
 
   @override
   State<DanceListView> createState() => _DanceListViewState();
@@ -166,12 +159,8 @@ class _DanceListViewState extends State<DanceListView> {
 
             return EasyRefresh(
               controller: _refreshController,
-              header: (widget.scrollDirection == Axis.horizontal)
-                  ? const MaterialHeader()
-                  : null,
-              footer: (widget.scrollDirection == Axis.horizontal)
-                  ? const MaterialFooter()
-                  : null,
+              header: (widget.scrollDirection == Axis.horizontal) ? const MaterialHeader() : null,
+              footer: (widget.scrollDirection == Axis.horizontal) ? const MaterialFooter() : null,
               onRefresh: () {
                 danceListBloc.add(const DanceListRefresh());
               },
@@ -185,13 +174,12 @@ class _DanceListViewState extends State<DanceListView> {
                 itemCount: state.dances.length,
                 itemBuilder: (context, index) {
                   final DanceViewModel dance = state.dances[index];
-                  final DanceListBloc danceListBloc =
-                      BlocProvider.of<DanceListBloc>(context);
+                  final DanceListBloc danceListBloc = BlocProvider.of<DanceListBloc>(context);
                   switch (widget.scrollDirection) {
                     case Axis.vertical:
                       if (state.selectedDances.isEmpty) {
                         return DanceListTile(
-                          dance: dance,
+                          ofDance: dance,
                           onLongPress: (item) {
                             danceListBloc.add(
                               DanceListSelect(dances: [item]),
@@ -200,20 +188,17 @@ class _DanceListViewState extends State<DanceListView> {
                         );
                       } else {
                         return CheckboxDanceListTile(
-                          dance: dance,
-                          value: state.selectedDances
-                              .any((element) => element.id == dance.id),
+                          ofDance: dance,
+                          value: state.selectedDances.any((element) => element.id == dance.id),
                           onChanged: (bool? value) {
                             danceListBloc.add(
-                              (value == true)
-                                  ? DanceListSelect(dances: [dance])
-                                  : DanceListUnselect(dances: [dance]),
+                              (value == true) ? DanceListSelect(dances: [dance]) : DanceListUnselect(dances: [dance]),
                             );
                           },
                         );
                       }
                     case Axis.horizontal:
-                      return DanceCard(dance: dance);
+                      return DanceCard(ofDance: dance);
                   }
                 },
               ),
@@ -231,8 +216,7 @@ class _DanceListViewState extends State<DanceListView> {
   }
 }
 
-class DancesSection extends StatelessWidget
-    implements DanceListWidgetParams, EntitiesSectionWidgetParams {
+class DancesSection extends StatelessWidget implements DanceListWidgetParams, EntitiesSectionWidgetParams {
   /// EntitiesSectionWidgetParams
   @override
   final String? label;
@@ -261,9 +245,7 @@ class DancesSection extends StatelessWidget
     /// EntitiesSectionWidgetParams
     this.label,
     this.onSectionTap,
-  }) : assert(danceListBloc == null ||
-            ofSearch == null ||
-            (ofArtistId == null && ofVideoId == null));
+  }) : assert(danceListBloc == null || ofSearch == null || (ofArtistId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
@@ -283,8 +265,7 @@ class DancesSection extends StatelessWidget
                     () {
                       AutoRouter.of(context).push(
                         DanceListRoute(
-                          danceListBloc:
-                              BlocProvider.of<DanceListBloc>(context),
+                          danceListBloc: BlocProvider.of<DanceListBloc>(context),
                         ),
                       );
                     },

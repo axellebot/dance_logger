@@ -6,8 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 @RoutePage<List<DanceViewModel>>()
-class DanceListPage extends StatelessWidget
-    implements EntityListPageParams<DanceViewModel>, DanceListWidgetParams {
+class DanceListPage extends StatelessWidget implements EntityListPageParams<DanceViewModel>, DanceListWidgetParams {
   /// EntityListPageParams
   @override
   final bool showAppBar;
@@ -17,6 +16,8 @@ class DanceListPage extends StatelessWidget
   final bool shouldSelectOne;
   @override
   final bool shouldSelectMultiple;
+  @override
+  final List<DanceViewModel>? preselectedItems;
 
   /// DanceListWidgetParams
   @override
@@ -27,8 +28,6 @@ class DanceListPage extends StatelessWidget
   final String? ofArtistId;
   @override
   final String? ofVideoId;
-  @override
-  final List<DanceViewModel>? preselectedItems;
 
   const DanceListPage({
     super.key,
@@ -87,11 +86,9 @@ class DanceListPage extends StatelessWidget
                         danceListBloc.add(const DanceListDelete());
                       }
                     : null,
-                onConfirmed: (state.selectedDances.isNotEmpty &&
-                        shouldSelectMultiple)
+                onConfirmed: (state.selectedDances.isNotEmpty && shouldSelectMultiple)
                     ? () {
-                        AutoRouter.of(context)
-                            .pop<List<DanceViewModel>>(state.selectedDances);
+                        AutoRouter.of(context).pop<List<DanceViewModel>>(state.selectedDances);
                       }
                     : null,
               );

@@ -1,8 +1,13 @@
 export './artist_detail_params.dart';
 export './artist_list_params.dart';
+export './dance_detail_params.dart';
 export './dance_list_params.dart';
 export './entity_list_params.dart';
+export './figure_detail_params.dart';
 export './figure_list_params.dart';
+export './moment_detail_params.dart';
 export './moment_list_params.dart';
+export './practice_detail_params.dart';
 export './practice_list_params.dart';
+export './video_detail_params.dart';
 export './video_list_params.dart';

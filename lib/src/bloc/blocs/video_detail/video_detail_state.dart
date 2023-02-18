@@ -4,6 +4,9 @@ import 'package:quiver/core.dart';
 
 enum VideoDetailStatus {
   initial,
+  loading,
+  loadingSuccess,
+  loadingFailure,
   refreshing,
   refreshingSuccess,
   refreshingFailure,
@@ -13,14 +16,14 @@ enum VideoDetailStatus {
 
 class VideoDetailState extends Equatable {
   final VideoDetailStatus status;
-  final String? ofId;
+  final String? ofVideoId;
   final VideoViewModel? video;
   final bool? remoteOpened;
   final Error? error;
 
   const VideoDetailState({
     this.status = VideoDetailStatus.initial,
-    this.ofId,
+    this.ofVideoId,
     this.video,
     this.remoteOpened,
     this.error,
@@ -29,7 +32,7 @@ class VideoDetailState extends Equatable {
   @override
   List<Object?> get props => [
         status,
-        ofId,
+        ofVideoId,
         video,
         remoteOpened,
         error,
@@ -37,24 +40,24 @@ class VideoDetailState extends Equatable {
 
   VideoDetailState copyWith({
     VideoDetailStatus? status,
-    Optional<String>? ofId,
+    Optional<String>? ofVideoId,
     Optional<VideoViewModel>? video,
     Optional<bool>? remoteOpened,
     Optional<Error>? error,
   }) {
     return VideoDetailState(
       status: status ?? this.status,
-      ofId: ofId != null ? ofId.orNull : this.ofId,
+      ofVideoId: ofVideoId != null ? ofVideoId.orNull : this.ofVideoId,
       video: video != null ? video.orNull : this.video,
-      remoteOpened:
-          remoteOpened != null ? remoteOpened.orNull : this.remoteOpened,
+      remoteOpened: remoteOpened != null ? remoteOpened.orNull : this.remoteOpened,
       error: error != null ? error.orNull : this.error,
     );
   }
 
   @override
-  String toString() => 'VideoDetailLoaded{'
+  String toString() => 'VideoDetailState{'
       'status: $status, '
+      'ofVideoId: $ofVideoId, '
       'video: $video, '
       'remoteOpened: $remoteOpened, '
       'error: $error'

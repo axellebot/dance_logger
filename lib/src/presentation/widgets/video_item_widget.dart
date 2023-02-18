@@ -1,60 +1,150 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:dance/bloc.dart';
+import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
-class VideoListTile extends StatelessWidget {
-  final VideoViewModel video;
+abstract class VideoDetailWidgetParams implements VideoDetailParams {
+  final VideoDetailBloc? videoDetailBloc;
+  final VideoViewModel? ofVideo;
 
-  /// ListTile options
+  VideoDetailWidgetParams(this.videoDetailBloc, this.ofVideo);
+}
+
+class VideoDetailBlocProvider extends StatelessWidget implements VideoDetailWidgetParams {
+  /// VideoDetailWidgetParams
+  @override
+  final VideoDetailBloc? videoDetailBloc;
+  @override
+  final VideoViewModel? ofVideo;
+  @override
+  final String? ofVideoId;
+
+  /// Widget params
+  final Widget child;
+
+  const VideoDetailBlocProvider({
+    super.key,
+
+    /// VideoDetailWidgetParams
+    this.videoDetailBloc,
+    this.ofVideo,
+    this.ofVideoId,
+
+    /// Widget params
+    required this.child,
+  }) : assert(videoDetailBloc == null || ofVideo == null || ofVideoId == null);
+
+  @override
+  Widget build(BuildContext context) {
+    if (videoDetailBloc != null) {
+      return BlocProvider<VideoDetailBloc>.value(
+        value: videoDetailBloc!,
+        child: child,
+      );
+    } else {
+      return BlocProvider<VideoDetailBloc>(
+        create: (context) {
+          final videoDetailBloc = VideoDetailBloc(
+            videoRepository: Provider.of<VideoRepository>(context, listen: false),
+            mapper: ModelMapper(),
+          );
+
+          if (ofVideo != null) {
+            videoDetailBloc.add((VideoDetailLazyLoad(video: ofVideo!)));
+          } else if (ofVideoId != null) {
+            videoDetailBloc.add((VideoDetailLoad(videoId: ofVideoId!)));
+          }
+
+          return videoDetailBloc;
+        },
+        child: child,
+      );
+    }
+  }
+}
+
+class VideoListTile extends StatelessWidget implements VideoDetailWidgetParams {
+  /// VideoDetailWidgetParams
+  @override
+  final VideoDetailBloc? videoDetailBloc;
+  @override
+  final VideoViewModel? ofVideo;
+  @override
+  final String? ofVideoId;
+
+  /// ListTile parameters
   final ItemCallback<VideoViewModel>? onTap;
   final ItemCallback<VideoViewModel>? onLongPress;
   final bool selected;
 
   const VideoListTile({
     super.key,
-    required this.video,
 
-    /// ListTile options
+    /// VideoDetailWidgetParams
+    this.videoDetailBloc,
+    this.ofVideo,
+    this.ofVideoId,
+
+    /// ListTile parameters
     this.onTap,
     this.onLongPress,
     this.selected = false,
-  });
+  }) : assert(videoDetailBloc == null || ofVideo == null || ofVideoId == null);
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(video.name),
-      leading: Hero(
-        tag: 'img-${video.id}',
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(
-              AppStyles.videoListTileThumbnailRadius,
+    return VideoDetailBlocProvider(
+      videoDetailBloc: videoDetailBloc,
+      ofVideo: ofVideo,
+      ofVideoId: ofVideoId,
+      child: BlocBuilder<VideoDetailBloc, VideoDetailState>(
+        builder: (BuildContext context, VideoDetailState state) {
+          return ListTile(
+            title: Text(
+              '${state.video?.name}',
+              overflow: TextOverflow.ellipsis,
             ),
-            child: (isYoutube(video.url))
-                ? Image.network(
-                    'https://img.youtube.com/vi/${getYoutubeId(video.url)}/mqdefault.jpg',
-                    fit: BoxFit.cover,
-                  )
-                : Container(),
-          ),
-        ),
+            leading: Hero(
+              tag: 'img-${state.video?.id ?? state.ofVideoId}',
+              transitionOnUserGestures: false,
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                    AppStyles.videoListTileThumbnailRadius,
+                  ),
+                  child: (isYoutube(state.video?.url))
+                      ? Image.network(
+                          'https://img.youtube.com/vi/${getYoutubeId(state.video!.url)}/mqdefault.jpg',
+                          fit: BoxFit.cover,
+                        )
+                      : Container(),
+                ),
+              ),
+            ),
+            subtitle: Text(
+              '${state.video?.url}',
+              overflow: TextOverflow.ellipsis,
+            ),
+            onTap: () {
+              AutoRouter.of(context).push(
+                VideoDetailsRoute(
+                  videoDetailBloc: BlocProvider.of<VideoDetailBloc>(context),
+                ),
+              );
+            },
+            onLongPress: (onLongPress != null)
+                ? () {
+                    onLongPress!(state.video!);
+                  }
+                : null,
+            selected: selected,
+          );
+        },
       ),
-      subtitle: Text(video.url),
-      onTap: () {
-        AutoRouter.of(context).push(
-          VideoDetailsRoute(videoId: video.id),
-        );
-      },
-      onLongPress: (onLongPress != null)
-          ? () {
-              onLongPress!(video);
-            }
-          : null,
-      selected: selected,
     );
   }
 }
@@ -62,7 +152,7 @@ class VideoListTile extends StatelessWidget {
 class CheckboxVideoListTile extends StatelessWidget {
   final VideoViewModel video;
 
-  /// CheckboxLitTile options
+  /// CheckboxLitTile parameters
   final bool? value;
   final ValueChanged<bool?>? onChanged;
 
@@ -70,7 +160,7 @@ class CheckboxVideoListTile extends StatelessWidget {
     super.key,
     required this.video,
 
-    /// CheckboxLitTile options
+    /// CheckboxLitTile parameters
     required this.value,
     required this.onChanged,
   });
@@ -97,7 +187,9 @@ class VideoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     onTap() => AutoRouter.of(context).push(
-          VideoDetailsRoute(videoId: video.id),
+          VideoDetailsRoute(
+            videoDetailBloc: BlocProvider.of<VideoDetailBloc>(context),
+          ),
         );
     return Padding(
       padding: const EdgeInsets.all(AppStyles.itemPadding),
@@ -107,6 +199,7 @@ class VideoCard extends StatelessWidget {
           Expanded(
             child: Hero(
               tag: 'img-${video.id}',
+              transitionOnUserGestures: false,
               child: Material(
                 clipBehavior: Clip.antiAlias,
                 shape: RoundedRectangleBorder(

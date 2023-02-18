@@ -7,26 +7,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
-class PracticeDetailsPage extends StatefulWidget implements AutoRouteWrapper {
-  final String practiceId;
+class PracticeDetailsPage extends StatefulWidget implements PracticeDetailWidgetParams, AutoRouteWrapper {
+  /// PracticeDetailWidgetParams
+  @override
+  final PracticeDetailBloc? practiceDetailBloc;
+  @override
+  final PracticeViewModel? ofPractice;
+  @override
+  final String? ofPracticeId;
 
   const PracticeDetailsPage({
     super.key,
-    @pathParam required this.practiceId,
-  });
+
+    /// PracticeDetailWidgetParams
+    this.practiceDetailBloc,
+    this.ofPractice,
+    @pathParam this.ofPracticeId,
+  }) : assert(practiceDetailBloc == null || ofPractice == null || ofPracticeId == null);
 
   @override
   State<PracticeDetailsPage> createState() => _PracticeDetailsPageState();
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return BlocProvider<PracticeDetailBloc>(
-      create: (BuildContext context) {
-        return PracticeDetailBloc(
-          practiceRepository: RepositoryProvider.of<PracticeRepository>(context),
-          mapper: ModelMapper(),
-        )..add(PracticeDetailLoad(practiceId: practiceId));
-      },
+    return PracticeDetailBlocProvider(
+      practiceDetailBloc: practiceDetailBloc,
+      ofPractice: ofPractice,
+      ofPracticeId: ofPracticeId,
       child: this,
     );
   }
@@ -59,7 +66,7 @@ class _PracticeDetailsPageState extends State<PracticeDetailsPage> {
             onPressed: () {
               AutoRouter.of(context).push(
                 PracticeEditRoute(
-                  practiceId: state.practice!.id,
+                  practiceId: state.practice?.id,
                 ),
               );
             },

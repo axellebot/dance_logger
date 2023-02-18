@@ -4,6 +4,9 @@ import 'package:quiver/core.dart';
 
 enum FigureDetailStatus {
   initial,
+  loading,
+  loadingSuccess,
+  loadingFailure,
   refreshing,
   refreshingSuccess,
   refreshingFailure,
@@ -13,13 +16,13 @@ enum FigureDetailStatus {
 
 class FigureDetailState extends Equatable {
   final FigureDetailStatus status;
-  final String? ofId;
+  final String? ofFigureId;
   final FigureViewModel? figure;
   final Error? error;
 
   const FigureDetailState({
     this.status = FigureDetailStatus.initial,
-    this.ofId,
+    this.ofFigureId,
     this.figure,
     this.error,
   }) : super();
@@ -27,20 +30,20 @@ class FigureDetailState extends Equatable {
   @override
   List<Object?> get props => [
         status,
-        ofId,
+        ofFigureId,
         figure,
         error,
       ];
 
   FigureDetailState copyWith({
     FigureDetailStatus? status,
-    Optional<String>? ofId,
+    Optional<String>? ofFigureId,
     Optional<FigureViewModel>? figure,
     Optional<Error>? error,
   }) {
     return FigureDetailState(
       status: status ?? this.status,
-      ofId: ofId != null ? ofId.orNull : this.ofId,
+      ofFigureId: ofFigureId != null ? ofFigureId.orNull : this.ofFigureId,
       figure: figure != null ? figure.orNull : this.figure,
       error: error != null ? error.orNull : this.error,
     );
@@ -49,7 +52,7 @@ class FigureDetailState extends Equatable {
   @override
   String toString() => 'FigureDetailLoaded{'
       'status: $status, '
-      'ofId: $ofId, '
+      'ofId: $ofFigureId, '
       'figure: $figure, '
       'error: $error'
       '}';

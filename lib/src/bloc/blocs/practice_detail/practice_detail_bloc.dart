@@ -7,8 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiver/core.dart';
 
-class PracticeDetailBloc
-    extends Bloc<PracticeDetailEvent, PracticeDetailState> {
+class PracticeDetailBloc extends Bloc<PracticeDetailEvent, PracticeDetailState> {
   final PracticeRepository practiceRepository;
   final ModelMapper mapper;
 
@@ -16,9 +15,23 @@ class PracticeDetailBloc
     required this.practiceRepository,
     required this.mapper,
   }) : super(const PracticeDetailState()) {
+    on<PracticeDetailLazyLoad>(_onPracticeDetailLazyLoad);
     on<PracticeDetailLoad>(_onPracticeDetailLoad);
     on<PracticeDetailRefresh>(_onPracticeDetailRefresh);
     on<PracticeDetailDelete>(_onPracticeDelete);
+  }
+
+  FutureOr<void> _onPracticeDetailLazyLoad(
+    PracticeDetailLazyLoad event,
+    Emitter<PracticeDetailState> emit,
+  ) async {
+    if (kDebugMode) print('$runtimeType:_onPracticeDetailLazyLoad');
+
+    emit(state.copyWith(
+      status: PracticeDetailStatus.loadingSuccess,
+      ofPracticeId: Optional.of(event.practice.id),
+      practice: Optional.of(event.practice),
+    ));
   }
 
   FutureOr<void> _onPracticeDetailLoad(
@@ -29,25 +42,23 @@ class PracticeDetailBloc
 
     try {
       emit(state.copyWith(
-        status: PracticeDetailStatus.refreshing,
-        ofId: Optional.of(event.practiceId),
+        status: PracticeDetailStatus.loading,
+        ofPracticeId: Optional.of(event.practiceId),
       ));
 
-      PracticeEntity practiceDataModel =
-          await practiceRepository.getById(event.practiceId);
-      PracticeViewModel practiceViewModel =
-          mapper.toPracticeViewModel(practiceDataModel);
+      PracticeEntity practiceDataModel = await practiceRepository.getById(event.practiceId);
+      PracticeViewModel practiceViewModel = mapper.toPracticeViewModel(practiceDataModel);
 
       emit(state.copyWith(
-        status: PracticeDetailStatus.refreshingSuccess,
-        ofId: Optional.of(practiceViewModel.id),
+        status: PracticeDetailStatus.loadingSuccess,
+        ofPracticeId: Optional.of(practiceViewModel.id),
         practice: Optional.of(practiceViewModel),
         error: const Optional.absent(),
       ));
     } on Error catch (error) {
       emit(state.copyWith(
-        status: PracticeDetailStatus.refreshingFailure,
-        ofId: Optional.of(event.practiceId),
+        status: PracticeDetailStatus.loadingFailure,
+        ofPracticeId: Optional.of(event.practiceId),
         error: Optional.of(error),
       ));
     }
@@ -64,14 +75,12 @@ class PracticeDetailBloc
         status: PracticeDetailStatus.refreshing,
       ));
 
-      PracticeEntity practiceDataModel =
-          await practiceRepository.getById(state.ofId!);
-      PracticeViewModel practiceViewModel =
-          mapper.toPracticeViewModel(practiceDataModel);
+      PracticeEntity practiceDataModel = await practiceRepository.getById(state.ofPracticeId!);
+      PracticeViewModel practiceViewModel = mapper.toPracticeViewModel(practiceDataModel);
 
       emit(state.copyWith(
         status: PracticeDetailStatus.refreshingSuccess,
-        ofId: Optional.of(practiceViewModel.id),
+        ofPracticeId: Optional.of(practiceViewModel.id),
         practice: Optional.of(practiceViewModel),
         error: const Optional.absent(),
       ));

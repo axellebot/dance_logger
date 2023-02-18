@@ -1,145 +1,267 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:dance/bloc.dart';
+import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
-class ArtistListTile extends StatelessWidget {
-  final ArtistViewModel artist;
+abstract class ArtistDetailWidgetParams implements ArtistDetailParams {
+  final ArtistDetailBloc? artistDetailBloc;
+  final ArtistViewModel? ofArtist;
 
-  /// ListTile options
+  ArtistDetailWidgetParams(this.artistDetailBloc, this.ofArtist);
+}
+
+class ArtistDetailBlocProvider extends StatelessWidget implements ArtistDetailWidgetParams {
+  /// ArtistDetailWidgetParams
+  @override
+  final ArtistDetailBloc? artistDetailBloc;
+  @override
+  final ArtistViewModel? ofArtist;
+  @override
+  final String? ofArtistId;
+
+  /// Widget params
+  final Widget child;
+
+  const ArtistDetailBlocProvider({
+    super.key,
+
+    /// ArtistDetailWidgetParams
+    this.artistDetailBloc,
+    this.ofArtist,
+    this.ofArtistId,
+
+    /// Widget params
+    required this.child,
+  }) : assert(artistDetailBloc == null || ofArtist == null || ofArtistId == null);
+
+  @override
+  Widget build(BuildContext context) {
+    if (artistDetailBloc != null) {
+      return BlocProvider<ArtistDetailBloc>.value(
+        value: artistDetailBloc!,
+        child: child,
+      );
+    } else {
+      return BlocProvider<ArtistDetailBloc>(
+        create: (context) {
+          final artistDetailBloc = ArtistDetailBloc(
+            artistRepository: Provider.of<ArtistRepository>(context, listen: false),
+            mapper: ModelMapper(),
+          );
+
+          if (ofArtist != null) {
+            artistDetailBloc.add((ArtistDetailLazyLoad(artist: ofArtist!)));
+          } else if (ofArtistId != null) {
+            artistDetailBloc.add((ArtistDetailLoad(artistId: ofArtistId!)));
+          }
+
+          return artistDetailBloc;
+        },
+        child: child,
+      );
+    }
+  }
+}
+
+class ArtistListTile extends StatelessWidget implements ArtistDetailWidgetParams {
+  /// ArtistDetailWidgetParams
+  @override
+  final ArtistDetailBloc? artistDetailBloc;
+  @override
+  final ArtistViewModel? ofArtist;
+  @override
+  final String? ofArtistId;
+
+  /// ListTile parameters
   final ItemCallback<ArtistViewModel>? onTap;
   final ItemCallback<ArtistViewModel>? onLongPress;
   final bool selected;
 
   const ArtistListTile({
     super.key,
-    required this.artist,
 
-    /// ListTile options
+    /// ArtistDetailWidgetParams
+    this.artistDetailBloc,
+    this.ofArtist,
+    this.ofArtistId,
+
+    /// ListTile parameters
     this.onTap,
     this.onLongPress,
     this.selected = false,
-  });
+  }) : assert(artistDetailBloc == null || ofArtist == null || ofArtistId == null);
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(
-        artist.name,
-        overflow: TextOverflow.ellipsis,
+    return ArtistDetailBlocProvider(
+      artistDetailBloc: artistDetailBloc,
+      ofArtist: ofArtist,
+      ofArtistId: ofArtistId,
+      child: BlocBuilder<ArtistDetailBloc, ArtistDetailState>(
+        builder: (BuildContext context, ArtistDetailState state) {
+          return ListTile(
+            title: Text(
+              '${state.artist?.name}',
+              overflow: TextOverflow.ellipsis,
+            ),
+            leading: Hero(
+              tag: 'img-${state.artist?.id ?? state.ofArtistId}',
+              transitionOnUserGestures: false,
+              child: InitialCircleAvatar(
+                text: '${state.artist?.name}',
+                image: (state.artist?.imageUrl != null)
+                    ? NetworkImage(
+                        state.artist!.imageUrl!,
+                      )
+                    : null,
+                radius: AppStyles.artistThumbnailRadius,
+              ),
+            ),
+            onTap: (onTap != null)
+                ? () {
+                    onTap!(state.artist!);
+                  }
+                : () {
+                    AutoRouter.of(context).push(
+                      ArtistDetailsRoute(artistDetailBloc: BlocProvider.of<ArtistDetailBloc>(context)),
+                    );
+                  },
+            onLongPress: (onLongPress != null)
+                ? () {
+                    onLongPress!(state.artist!);
+                  }
+                : null,
+            selected: selected,
+          );
+        },
       ),
-      leading: Hero(
-        tag: 'img-${artist.id}',
-        child: InitialCircleAvatar(
-          text: artist.name,
-          backgroundImage: (artist.imageUrl != null)
-              ? NetworkImage(
-                  artist.imageUrl!,
-                )
-              : null,
-          radius: AppStyles.artistThumbnailRadius,
-        ),
-      ),
-      onTap: (onTap != null)
-          ? () {
-              onTap!(artist);
-            }
-          : () {
-              AutoRouter.of(context).push(
-                ArtistDetailsRoute(artistId: artist.id),
-              );
-            },
-      onLongPress: (onLongPress != null)
-          ? () {
-              onLongPress!(artist);
-            }
-          : null,
-      selected: selected,
     );
   }
 }
 
-class CheckboxArtistListTile extends StatelessWidget {
-  final ArtistViewModel artist;
+class CheckboxArtistListTile extends StatelessWidget implements ArtistDetailWidgetParams {
+  /// ArtistDetailWidgetParams
+  @override
+  final ArtistDetailBloc? artistDetailBloc;
+  @override
+  final ArtistViewModel? ofArtist;
+  @override
+  final String? ofArtistId;
 
-  /// CheckboxLitTile options
+  /// CheckboxLitTile parameters
   final bool? value;
   final ValueChanged<bool?>? onChanged;
 
   const CheckboxArtistListTile({
     super.key,
-    required this.artist,
 
-    /// CheckboxLitTile options
+    /// ArtistDetailWidgetParams
+    this.artistDetailBloc,
+    this.ofArtist,
+    this.ofArtistId,
+
+    /// CheckboxLitTile parameters
     required this.value,
     required this.onChanged,
-  });
+  }) : assert(artistDetailBloc == null || ofArtist == null || ofArtistId == null);
 
   @override
   Widget build(BuildContext context) {
-    return CheckboxListTile(
-      title: Text(
-        artist.name,
-        overflow: TextOverflow.ellipsis,
+    return ArtistDetailBlocProvider(
+      artistDetailBloc: artistDetailBloc,
+      ofArtist: ofArtist,
+      ofArtistId: ofArtistId,
+      child: BlocBuilder<ArtistDetailBloc, ArtistDetailState>(
+        builder: (BuildContext context, ArtistDetailState state) {
+          return CheckboxListTile(
+            title: Text(
+              '${state.artist?.name}',
+              overflow: TextOverflow.ellipsis,
+            ),
+            value: value,
+            onChanged: onChanged,
+          );
+        },
       ),
-      value: value,
-      onChanged: onChanged,
     );
   }
 }
 
-class ArtistCard extends StatelessWidget {
-  final ArtistViewModel artist;
+class ArtistCard extends StatelessWidget implements ArtistDetailWidgetParams {
+  /// ArtistDetailWidgetParams
+  @override
+  final ArtistDetailBloc? artistDetailBloc;
+  @override
+  final ArtistViewModel? ofArtist;
+  @override
+  final String? ofArtistId;
 
   const ArtistCard({
     super.key,
-    required this.artist,
-  });
+
+    /// ArtistDetailWidgetParams
+    this.artistDetailBloc,
+    this.ofArtist,
+    this.ofArtistId,
+  }) : assert(artistDetailBloc == null || ofArtist == null || ofArtistId == null);
 
   @override
   Widget build(BuildContext context) {
-    onTap() => AutoRouter.of(context).push(
-          ArtistDetailsRoute(artistId: artist.id),
-        );
-
-    return Padding(
-      padding: const EdgeInsets.all(AppStyles.itemPadding),
-      child: Column(
-        children: [
-          Expanded(
-            child: Hero(
-              tag: 'img-${artist.id}',
-              child: Material(
-                clipBehavior: Clip.antiAlias,
-                shape: const CircleBorder(),
-                child: InkWell(
-                  onTap: onTap,
-                  child: InitialCircleAvatar(
-                    text: artist.name,
-                    backgroundImage: (artist.imageUrl) != null
-                        ? NetworkImage(
-                            artist.imageUrl!,
-                          )
-                        : null,
-                  ),
+    return ArtistDetailBlocProvider(
+      artistDetailBloc: artistDetailBloc,
+      ofArtist: ofArtist,
+      ofArtistId: ofArtistId,
+      child: BlocBuilder<ArtistDetailBloc, ArtistDetailState>(
+        builder: (BuildContext context, ArtistDetailState state) {
+          onTap() => AutoRouter.of(context).push(
+                ArtistDetailsRoute(
+                  artistDetailBloc: BlocProvider.of<ArtistDetailBloc>(context),
                 ),
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: onTap,
+              );
+          return Padding(
+            padding: const EdgeInsets.all(AppStyles.itemPadding),
             child: Column(
               children: [
-                const SizedBox(height: 5),
-                Text(
-                  artist.name,
-                  overflow: TextOverflow.ellipsis,
-                )
+                Expanded(
+                  child: Hero(
+                    tag: 'img-${state.artist?.id ?? state.ofArtistId}',
+                    transitionOnUserGestures: false,
+                    child: Material(
+                      clipBehavior: Clip.antiAlias,
+                      shape: const CircleBorder(),
+                      child: InkWell(
+                        onTap: onTap,
+                        child: InitialCircleAvatar(
+                          text: '${state.artist?.name}',
+                          image: (state.artist?.imageUrl) != null
+                              ? NetworkImage(
+                                  state.artist!.imageUrl!,
+                                )
+                              : null,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: onTap,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 5),
+                      Text(
+                        '${state.artist?.name}',
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -150,8 +272,7 @@ class ArtistForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ArtistEditBloc artistEditBloc =
-        BlocProvider.of<ArtistEditBloc>(context);
+    final ArtistEditBloc artistEditBloc = BlocProvider.of<ArtistEditBloc>(context);
     return BlocBuilder<ArtistEditBloc, ArtistEditState>(
       builder: (BuildContext context, ArtistEditState state) {
         return Form(
@@ -176,8 +297,7 @@ class ArtistForm extends StatelessWidget {
                   hintText: 'http://image.com/myimage',
                   suffixIcon: IconButton(
                     onPressed: () {
-                      artistEditBloc.add(
-                          const ArtistEditChangeImageUrl(artistImageUrl: null));
+                      artistEditBloc.add(const ArtistEditChangeImageUrl(artistImageUrl: null));
                     },
                     icon: const Icon(Icons.delete),
                   ),
