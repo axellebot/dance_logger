@@ -108,15 +108,15 @@ class ImplArtistRepository extends ArtistRepository {
 
   @override
   FutureOr<List<ArtistEntity>> getArtistsOfMoment(
-    String timeId, {
+    String momentId, {
     required Offset offset,
 
     /// TODO: Add filters
     /// TODO: Add sort
   }) async {
-    if (kDebugMode) print('$runtimeType:getArtistsOfMoment($timeId)');
+    if (kDebugMode) print('$runtimeType:getArtistsOfMoment($momentId)');
     return await factory.databaseDataStore.getArtistsOfMoment(
-      timeId,
+      momentId,
       offset: offset,
     );
   }

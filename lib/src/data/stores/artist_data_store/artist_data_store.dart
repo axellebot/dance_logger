@@ -38,7 +38,7 @@ abstract class ArtistDataStore {
   });
 
   FutureOr<List<ArtistDataModel>> getArtistsOfMoment(
-    String timeId, {
+    String momentId, {
     /// TODO: Add filters
     /// TODO: Add sort
     required Offset offset,

@@ -29,7 +29,7 @@ abstract class ArtistRepository extends EntityRepository<ArtistEntity> {
   });
 
   FutureOr<List<ArtistEntity>> getArtistsOfMoment(
-    String timeId, {
+    String momentId, {
     required Offset offset,
 
     /// TODO: Add filters
