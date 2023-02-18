@@ -24,13 +24,13 @@ class PracticeListPage extends StatelessWidget
   @override
   final PracticeListBloc? practiceListBloc;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   const PracticeListPage({
     super.key,
@@ -44,25 +44,25 @@ class PracticeListPage extends StatelessWidget
 
     /// PracticeListWidgetParams
     this.practiceListBloc,
-    this.ofArtist,
-    this.ofDance,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofFigureId,
+    this.ofVideoId,
   })  : assert(shouldSelectOne == false || shouldSelectMultiple == false),
         assert(practiceListBloc == null ||
-            (ofArtist == null &&
-                ofDance == null &&
-                ofFigure == null &&
-                ofVideo == null));
+            (ofArtistId == null &&
+                ofDanceId == null &&
+                ofFigureId == null &&
+                ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
     return PracticeListBlocProvider(
       practiceListBloc: practiceListBloc,
-      ofArtist: ofArtist,
-      ofDance: ofDance,
-      ofFigure: ofFigure,
-      ofVideo: ofVideo,
+      ofArtistId: ofArtistId,
+      ofDanceId: ofDanceId,
+      ofFigureId: ofFigureId,
+      ofVideoId: ofVideoId,
       preselectedPractices: preselectedItems,
       child: BlocBuilder<PracticeListBloc, PracticeListState>(
         builder: (context, state) {

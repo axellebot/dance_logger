@@ -37,18 +37,18 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
       final List<ArtistViewModel> artistViewModels;
       artistViewModels = await _fetchArtists(
         ofSearch: event.ofSearch,
-        ofDance: event.ofDance,
-        ofFigure: event.ofFigure,
-        ofVideo: event.ofVideo,
+        ofDanceId: event.ofDanceId,
+        ofFigureId: event.ofFigureId,
+        ofVideoId: event.ofVideoId,
         offset: 0,
       );
 
       emit(state.copyWith(
         status: ArtistListStatus.loadingSuccess,
         ofSearch: Optional.fromNullable(event.ofSearch),
-        ofDance: Optional.fromNullable(event.ofDance),
-        ofFigure: Optional.fromNullable(event.ofFigure),
-        ofVideo: Optional.fromNullable(event.ofVideo),
+        ofDanceId: Optional.fromNullable(event.ofDanceId),
+        ofFigureId: Optional.fromNullable(event.ofFigureId),
+        ofVideoId: Optional.fromNullable(event.ofVideoId),
         artists: artistViewModels,
         hasReachedMax: false,
         error: const Optional.absent(),
@@ -75,9 +75,9 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
       final List<ArtistViewModel> artistViewModels;
       artistViewModels = await _fetchArtists(
         ofSearch: state.ofSearch,
-        ofDance: state.ofDance,
-        ofFigure: state.ofFigure,
-        ofVideo: state.ofVideo,
+        ofDanceId: state.ofDanceId,
+        ofFigureId: state.ofFigureId,
+        ofVideoId: state.ofVideoId,
         offset: state.artists.length,
       );
 
@@ -108,9 +108,9 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
 
       List<ArtistViewModel> artistViewModels = await _fetchArtists(
         ofSearch: state.ofSearch,
-        ofDance: state.ofDance,
-        ofFigure: state.ofFigure,
-        ofVideo: state.ofVideo,
+        ofDanceId: state.ofDanceId,
+        ofFigureId: state.ofFigureId,
+        ofVideoId: state.ofVideoId,
         offset: 0,
       );
 
@@ -196,14 +196,14 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
 
   Future<List<ArtistViewModel>> _fetchArtists({
     String? ofSearch,
-    String? ofDance,
-    String? ofFigure,
-    String? ofVideo,
+    String? ofDanceId,
+    String? ofFigureId,
+    String? ofVideoId,
     required int offset,
     int limit = 10,
   }) async {
     assert(ofSearch == null ||
-        (ofDance == null && ofFigure == null && ofVideo == null));
+        (ofDanceId == null && ofFigureId == null && ofVideoId == null));
     if (kDebugMode) print('$runtimeType:_fetchArtists');
 
     List<ArtistEntity> artistEntities;
@@ -216,25 +216,25 @@ class ArtistListBloc extends Bloc<ArtistListEvent, ArtistListState> {
           limit: limit,
         ),
       );
-    } else if (ofDance != null) {
+    } else if (ofDanceId != null) {
       artistEntities = await artistRepository.getArtistsOfDance(
-        ofDance,
+        ofDanceId,
         offset: Offset(
           offset: offset,
           limit: limit,
         ),
       );
-    } else if (ofVideo != null) {
+    } else if (ofVideoId != null) {
       artistEntities = await artistRepository.getArtistsOfVideo(
-        ofVideo,
+        ofVideoId,
         offset: Offset(
           offset: offset,
           limit: limit,
         ),
       );
-    } else if (ofFigure != null) {
+    } else if (ofFigureId != null) {
       artistEntities = await artistRepository.getArtistsOfFigure(
-        ofFigure,
+        ofFigureId,
         offset: Offset(
           offset: offset,
           limit: limit,

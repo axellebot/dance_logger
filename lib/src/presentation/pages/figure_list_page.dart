@@ -24,11 +24,11 @@ class FigureListPage extends StatelessWidget
   @override
   final FigureListBloc? figureListBloc;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   const FigureListPage({
     super.key,
@@ -42,20 +42,20 @@ class FigureListPage extends StatelessWidget
 
     /// FigureListParams
     this.figureListBloc,
-    this.ofArtist,
-    this.ofDance,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofVideoId,
   })  : assert(shouldSelectOne == false || shouldSelectMultiple == false),
         assert(figureListBloc == null ||
-            (ofArtist == null && ofDance == null && ofVideo == null));
+            (ofArtistId == null && ofDanceId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
     return FigureListBlocProvider(
       figureListBloc: figureListBloc,
-      ofArtist: ofArtist,
-      ofDance: ofDance,
-      ofVideo: ofVideo,
+      ofArtistId: ofArtistId,
+      ofDanceId: ofDanceId,
+      ofVideoId: ofVideoId,
       preselectedFigures: preselectedItems,
       child: BlocBuilder<FigureListBloc, FigureListState>(
         builder: (context, state) {

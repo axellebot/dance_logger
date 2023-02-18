@@ -13,31 +13,31 @@ abstract class PracticeListEvent extends Equatable {
 class PracticeListLoad extends PracticeListEvent implements PracticeListParams {
   /// PracticeListParams
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   const PracticeListLoad({
     /// PracticeListParams
-    this.ofArtist,
-    this.ofDance,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofFigureId,
+    this.ofVideoId,
   });
 
   @override
-  List<Object?> get props => [ofArtist, ofDance, ofFigure, ofVideo];
+  List<Object?> get props => [ofArtistId, ofDanceId, ofFigureId, ofVideoId];
 
   @override
   String toString() => 'PracticeListLoadMore{'
-      'ofArtist: $ofArtist, '
-      'ofDance: $ofDance, '
-      'ofFigure: $ofFigure, '
-      'ofVideo: $ofVideo'
+      'ofArtist: $ofArtistId, '
+      'ofDanceId: $ofDanceId, '
+      'ofFigureId: $ofFigureId, '
+      'ofVideoId: $ofVideoId'
       '}';
 }
 

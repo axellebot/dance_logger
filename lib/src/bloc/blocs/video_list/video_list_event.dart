@@ -15,30 +15,30 @@ class VideoListLoad extends VideoListEvent implements VideoListParams {
   @override
   final String? ofSearch;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
 
   const VideoListLoad({
     /// VideoListParams
     this.ofSearch,
-    this.ofArtist,
-    this.ofDance,
-    this.ofFigure,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofFigureId,
   }) : assert(ofSearch == null ||
-            (ofArtist == null && ofDance == null && ofFigure == null));
+            (ofArtistId == null && ofDanceId == null && ofFigureId == null));
 
   @override
-  List<Object?> get props => [ofSearch, ofArtist, ofDance, ofFigure];
+  List<Object?> get props => [ofSearch, ofArtistId, ofDanceId, ofFigureId];
 
   @override
   String toString() => 'VideoListLoad{'
       'ofSearch: $ofSearch, '
-      'ofArtist: $ofArtist, '
-      'ofDance: $ofDance, '
-      'ofFigure: $ofFigure'
+      'ofArtistId: $ofArtistId, '
+      'ofDanceId: $ofDanceId, '
+      'ofFigureId: $ofFigureId'
       '}';
 }
 

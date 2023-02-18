@@ -1,5 +1,7 @@
 abstract class SearchListParams {
   final String? ofSearch;
 
-  SearchListParams(this.ofSearch);
+  SearchListParams(
+    this.ofSearch,
+  );
 }

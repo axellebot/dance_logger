@@ -22,11 +22,11 @@ class ArtistListBlocProvider extends StatelessWidget
   @override
   final String? ofSearch;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   /// Selection
   final List<ArtistViewModel>? preselectedArtists;
@@ -40,9 +40,9 @@ class ArtistListBlocProvider extends StatelessWidget
     /// ArtistListWidgetParams
     this.artistListBloc,
     this.ofSearch,
-    this.ofDance,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofDanceId,
+    this.ofFigureId,
+    this.ofVideoId,
 
     /// Selection
     this.preselectedArtists,
@@ -51,7 +51,7 @@ class ArtistListBlocProvider extends StatelessWidget
     required this.child,
   }) : assert(artistListBloc == null ||
             ofSearch == null ||
-            (ofDance == null && ofFigure == null && ofVideo == null));
+            (ofDanceId == null && ofFigureId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +75,9 @@ class ArtistListBlocProvider extends StatelessWidget
 
           artistListBloc.add(ArtistListLoad(
             ofSearch: ofSearch,
-            ofDance: ofDance,
-            ofFigure: ofFigure,
-            ofVideo: ofVideo,
+            ofDanceId: ofDanceId,
+            ofFigureId: ofFigureId,
+            ofVideoId: ofVideoId,
           ));
 
           return artistListBloc;
@@ -96,11 +96,11 @@ class ArtistListView extends StatefulWidget
   @override
   final String? ofSearch;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   /// EntityListViewParams
   @override
@@ -116,9 +116,9 @@ class ArtistListView extends StatefulWidget
     /// ArtistListWidgetParams
     this.artistListBloc,
     this.ofSearch,
-    this.ofDance,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofDanceId,
+    this.ofFigureId,
+    this.ofVideoId,
 
     /// EntityListViewParams
     this.scrollDirection = Axis.vertical,
@@ -126,7 +126,7 @@ class ArtistListView extends StatefulWidget
     this.padding,
   }) : assert(artistListBloc == null ||
             ofSearch == null ||
-            (ofDance == null && ofFigure == null && ofVideo == null));
+            (ofDanceId == null && ofFigureId == null && ofVideoId == null));
 
   @override
   State<ArtistListView> createState() => _ArtistListViewState();
@@ -143,9 +143,9 @@ class _ArtistListViewState extends State<ArtistListView> {
     return ArtistListBlocProvider(
       artistListBloc: widget.artistListBloc,
       ofSearch: widget.ofSearch,
-      ofDance: widget.ofDance,
-      ofFigure: widget.ofFigure,
-      ofVideo: widget.ofVideo,
+      ofDanceId: widget.ofDanceId,
+      ofFigureId: widget.ofFigureId,
+      ofVideoId: widget.ofVideoId,
       child: BlocListener<ArtistListBloc, ArtistListState>(
         listener: (context, ArtistListState state) {
           switch (state.status) {
@@ -253,11 +253,11 @@ class ArtistsSection extends StatelessWidget
   @override
   final String? ofSearch;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   const ArtistsSection({
     super.key,
@@ -269,21 +269,21 @@ class ArtistsSection extends StatelessWidget
     /// ArtistListWidgetParams
     this.artistListBloc,
     this.ofSearch,
-    this.ofDance,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofDanceId,
+    this.ofFigureId,
+    this.ofVideoId,
   }) : assert(artistListBloc == null ||
             ofSearch == null ||
-            (ofDance == null && ofFigure == null && ofVideo == null));
+            (ofDanceId == null && ofFigureId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
     return ArtistListBlocProvider(
       artistListBloc: artistListBloc,
       ofSearch: ofSearch,
-      ofDance: ofDance,
-      ofFigure: ofFigure,
-      ofVideo: ofVideo,
+      ofDanceId: ofDanceId,
+      ofFigureId: ofFigureId,
+      ofVideoId: ofVideoId,
       child: Builder(
         builder: (context) {
           return Column(

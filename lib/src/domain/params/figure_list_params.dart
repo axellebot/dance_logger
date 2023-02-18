@@ -1,7 +1,11 @@
 abstract class FigureListParams {
-  final String? ofArtist;
-  final String? ofDance;
-  final String? ofVideo;
+  final String? ofArtistId;
+  final String? ofDanceId;
+  final String? ofVideoId;
 
-  FigureListParams(this.ofArtist, this.ofDance, this.ofVideo);
+  FigureListParams(
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofVideoId,
+  );
 }

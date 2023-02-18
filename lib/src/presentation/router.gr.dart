@@ -35,12 +35,170 @@ abstract class _$AppRouter extends RootStackRouter {
           preselectedItems: args.preselectedItems,
           artistListBloc: args.artistListBloc,
           ofSearch: args.ofSearch,
-          ofDance: args.ofDance,
-          ofFigure: args.ofFigure,
+          ofDanceId: args.ofDanceId,
+          ofFigureId: args.ofFigureId,
+          ofVideoId: args.ofVideoId,
+        ),
+      );
+    },
+<<<<<<< HEAD
+||||||| parent of 13f7c84 (Change id parameters name to be more explicit)
+    ArtistCreateRoute.name: (routeData) {
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(child: const ArtistCreatePage()),
+      );
+    },
+    ArtistDetailsRoute.name: (routeData) {
+      final args = routeData.argsAs<ArtistDetailsRouteArgs>();
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(
+            child: ArtistDetailsPage(
+          key: args.key,
+          artistId: args.artistId,
+        )),
+      );
+    },
+    ArtistEditRoute.name: (routeData) {
+      final args = routeData.argsAs<ArtistEditRouteArgs>(
+          orElse: () => const ArtistEditRouteArgs());
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(
+            child: ArtistEditPage(
+          key: args.key,
+          artistId: args.artistId,
+        )),
+      );
+    },
+    DanceListRoute.name: (routeData) {
+      final args = routeData.argsAs<DanceListRouteArgs>(
+          orElse: () => const DanceListRouteArgs());
+      return MaterialPageX<List<DanceViewModel>>(
+        routeData: routeData,
+        child: DanceListPage(
+          key: args.key,
+          showAppBar: args.showAppBar,
+          titleText: args.titleText,
+          shouldSelectOne: args.shouldSelectOne,
+          shouldSelectMultiple: args.shouldSelectMultiple,
+          preselectedItems: args.preselectedItems,
+          danceListBloc: args.danceListBloc,
+          ofSearch: args.ofSearch,
+          ofArtist: args.ofArtist,
           ofVideo: args.ofVideo,
         ),
       );
     },
+    DanceCreateRoute.name: (routeData) {
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(child: const DanceCreatePage()),
+      );
+    },
+    DanceDetailsRoute.name: (routeData) {
+      final args = routeData.argsAs<DanceDetailsRouteArgs>();
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(
+            child: DanceDetailsPage(
+          key: args.key,
+          danceId: args.danceId,
+        )),
+      );
+    },
+    DanceEditRoute.name: (routeData) {
+      final args = routeData.argsAs<DanceEditRouteArgs>(
+          orElse: () => const DanceEditRouteArgs());
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(
+            child: DanceEditPage(
+          key: args.key,
+          danceId: args.danceId,
+        )),
+      );
+    },
+=======
+    ArtistCreateRoute.name: (routeData) {
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(child: const ArtistCreatePage()),
+      );
+    },
+    ArtistDetailsRoute.name: (routeData) {
+      final args = routeData.argsAs<ArtistDetailsRouteArgs>();
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(
+            child: ArtistDetailsPage(
+          key: args.key,
+          artistId: args.artistId,
+        )),
+      );
+    },
+    ArtistEditRoute.name: (routeData) {
+      final args = routeData.argsAs<ArtistEditRouteArgs>(
+          orElse: () => const ArtistEditRouteArgs());
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(
+            child: ArtistEditPage(
+          key: args.key,
+          artistId: args.artistId,
+        )),
+      );
+    },
+    DanceListRoute.name: (routeData) {
+      final args = routeData.argsAs<DanceListRouteArgs>(
+          orElse: () => const DanceListRouteArgs());
+      return MaterialPageX<List<DanceViewModel>>(
+        routeData: routeData,
+        child: DanceListPage(
+          key: args.key,
+          showAppBar: args.showAppBar,
+          titleText: args.titleText,
+          shouldSelectOne: args.shouldSelectOne,
+          shouldSelectMultiple: args.shouldSelectMultiple,
+          preselectedItems: args.preselectedItems,
+          danceListBloc: args.danceListBloc,
+          ofSearch: args.ofSearch,
+          ofArtistId: args.ofArtistId,
+          ofVideoId: args.ofVideoId,
+        ),
+      );
+    },
+    DanceCreateRoute.name: (routeData) {
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(child: const DanceCreatePage()),
+      );
+    },
+    DanceDetailsRoute.name: (routeData) {
+      final args = routeData.argsAs<DanceDetailsRouteArgs>();
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(
+            child: DanceDetailsPage(
+          key: args.key,
+          danceId: args.danceId,
+        )),
+      );
+    },
+    DanceEditRoute.name: (routeData) {
+      final args = routeData.argsAs<DanceEditRouteArgs>(
+          orElse: () => const DanceEditRouteArgs());
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(
+            child: DanceEditPage(
+          key: args.key,
+          danceId: args.danceId,
+        )),
+      );
+    },
+>>>>>>> 13f7c84 (Change id parameters name to be more explicit)
     FigureListRoute.name: (routeData) {
       final args = routeData.argsAs<FigureListRouteArgs>(
           orElse: () => const FigureListRouteArgs());
@@ -54,9 +212,9 @@ abstract class _$AppRouter extends RootStackRouter {
           shouldSelectMultiple: args.shouldSelectMultiple,
           preselectedItems: args.preselectedItems,
           figureListBloc: args.figureListBloc,
-          ofArtist: args.ofArtist,
-          ofDance: args.ofDance,
-          ofVideo: args.ofVideo,
+          ofArtistId: args.ofArtistId,
+          ofDanceId: args.ofDanceId,
+          ofVideoId: args.ofVideoId,
         ),
       );
     },
@@ -176,10 +334,10 @@ abstract class _$AppRouter extends RootStackRouter {
           shouldSelectMultiple: args.shouldSelectMultiple,
           preselectedItems: args.preselectedItems,
           practiceListBloc: args.practiceListBloc,
-          ofArtist: args.ofArtist,
-          ofDance: args.ofDance,
-          ofFigure: args.ofFigure,
-          ofVideo: args.ofVideo,
+          ofArtistId: args.ofArtistId,
+          ofDanceId: args.ofDanceId,
+          ofFigureId: args.ofFigureId,
+          ofVideoId: args.ofVideoId,
         ),
       );
     },
@@ -293,9 +451,9 @@ abstract class _$AppRouter extends RootStackRouter {
           preselectedItems: args.preselectedItems,
           videoListBloc: args.videoListBloc,
           ofSearch: args.ofSearch,
-          ofArtist: args.ofArtist,
-          ofDance: args.ofDance,
-          ofFigure: args.ofFigure,
+          ofArtistId: args.ofArtistId,
+          ofDanceId: args.ofDanceId,
+          ofFigureId: args.ofFigureId,
         ),
       );
     },
@@ -334,10 +492,20 @@ class ArtistListRoute extends PageRouteInfo<ArtistListRouteArgs> {
     List<ArtistViewModel>? preselectedItems,
     ArtistListBloc? artistListBloc,
     String? ofSearch,
+<<<<<<< HEAD
     String? ofDance,
     String? ofFigure,
     String? ofVideo,
     List<PageRouteInfo>? children,
+||||||| parent of 13f7c84 (Change id parameters name to be more explicit)
+    String? ofDance,
+    String? ofFigure,
+    String? ofVideo,
+=======
+    String? ofDanceId,
+    String? ofFigureId,
+    String? ofVideoId,
+>>>>>>> 13f7c84 (Change id parameters name to be more explicit)
   }) : super(
           ArtistListRoute.name,
           args: ArtistListRouteArgs(
@@ -349,9 +517,9 @@ class ArtistListRoute extends PageRouteInfo<ArtistListRouteArgs> {
             preselectedItems: preselectedItems,
             artistListBloc: artistListBloc,
             ofSearch: ofSearch,
-            ofDance: ofDance,
-            ofFigure: ofFigure,
-            ofVideo: ofVideo,
+            ofDanceId: ofDanceId,
+            ofFigureId: ofFigureId,
+            ofVideoId: ofVideoId,
           ),
           initialChildren: children,
         );
@@ -372,9 +540,9 @@ class ArtistListRouteArgs {
     this.preselectedItems,
     this.artistListBloc,
     this.ofSearch,
-    this.ofDance,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofDanceId,
+    this.ofFigureId,
+    this.ofVideoId,
   });
 
   final Key? key;
@@ -393,19 +561,491 @@ class ArtistListRouteArgs {
 
   final String? ofSearch;
 
-  final String? ofDance;
+  final String? ofDanceId;
 
-  final String? ofFigure;
+  final String? ofFigureId;
+
+  final String? ofVideoId;
+
+  @override
+  String toString() {
+    return 'ArtistListRouteArgs{key: $key, showAppBar: $showAppBar, titleText: $titleText, shouldSelectOne: $shouldSelectOne, shouldSelectMultiple: $shouldSelectMultiple, preselectedItems: $preselectedItems, artistListBloc: $artistListBloc, ofSearch: $ofSearch, ofDanceId: $ofDanceId, ofFigureId: $ofFigureId, ofVideoId: $ofVideoId}';
+  }
+}
+
+/// generated route for
+<<<<<<< HEAD
+||||||| parent of 13f7c84 (Change id parameters name to be more explicit)
+/// [ArtistCreatePage]
+class ArtistCreateRoute extends PageRouteInfo<void> {
+  const ArtistCreateRoute()
+      : super(
+          ArtistCreateRoute.name,
+          path: 'artists/create',
+        );
+
+  static const String name = 'ArtistCreateRoute';
+}
+
+/// generated route for
+/// [ArtistDetailsPage]
+class ArtistDetailsRoute extends PageRouteInfo<ArtistDetailsRouteArgs> {
+  ArtistDetailsRoute({
+    Key? key,
+    required String artistId,
+  }) : super(
+          ArtistDetailsRoute.name,
+          path: 'artists/:artistId/details',
+          args: ArtistDetailsRouteArgs(
+            key: key,
+            artistId: artistId,
+          ),
+        );
+
+  static const String name = 'ArtistDetailsRoute';
+}
+
+class ArtistDetailsRouteArgs {
+  const ArtistDetailsRouteArgs({
+    this.key,
+    required this.artistId,
+  });
+
+  final Key? key;
+
+  final String artistId;
+
+  @override
+  String toString() {
+    return 'ArtistDetailsRouteArgs{key: $key, artistId: $artistId}';
+  }
+}
+
+/// generated route for
+/// [ArtistEditPage]
+class ArtistEditRoute extends PageRouteInfo<ArtistEditRouteArgs> {
+  ArtistEditRoute({
+    Key? key,
+    String? artistId,
+  }) : super(
+          ArtistEditRoute.name,
+          path: 'artists/:artistId/edit',
+          args: ArtistEditRouteArgs(
+            key: key,
+            artistId: artistId,
+          ),
+        );
+
+  static const String name = 'ArtistEditRoute';
+}
+
+class ArtistEditRouteArgs {
+  const ArtistEditRouteArgs({
+    this.key,
+    this.artistId,
+  });
+
+  final Key? key;
+
+  final String? artistId;
+
+  @override
+  String toString() {
+    return 'ArtistEditRouteArgs{key: $key, artistId: $artistId}';
+  }
+}
+
+/// generated route for
+/// [DanceListPage]
+class DanceListRoute extends PageRouteInfo<DanceListRouteArgs> {
+  DanceListRoute({
+    Key? key,
+    bool showAppBar = true,
+    String? titleText,
+    bool shouldSelectOne = false,
+    bool shouldSelectMultiple = false,
+    List<DanceViewModel>? preselectedItems,
+    DanceListBloc? danceListBloc,
+    String? ofSearch,
+    String? ofArtist,
+    String? ofVideo,
+  }) : super(
+          DanceListRoute.name,
+          path: 'dances',
+          args: DanceListRouteArgs(
+            key: key,
+            showAppBar: showAppBar,
+            titleText: titleText,
+            shouldSelectOne: shouldSelectOne,
+            shouldSelectMultiple: shouldSelectMultiple,
+            preselectedItems: preselectedItems,
+            danceListBloc: danceListBloc,
+            ofSearch: ofSearch,
+            ofArtist: ofArtist,
+            ofVideo: ofVideo,
+          ),
+        );
+
+  static const String name = 'DanceListRoute';
+}
+
+class DanceListRouteArgs {
+  const DanceListRouteArgs({
+    this.key,
+    this.showAppBar = true,
+    this.titleText,
+    this.shouldSelectOne = false,
+    this.shouldSelectMultiple = false,
+    this.preselectedItems,
+    this.danceListBloc,
+    this.ofSearch,
+    this.ofArtist,
+    this.ofVideo,
+  });
+
+  final Key? key;
+
+  final bool showAppBar;
+
+  final String? titleText;
+
+  final bool shouldSelectOne;
+
+  final bool shouldSelectMultiple;
+
+  final List<DanceViewModel>? preselectedItems;
+
+  final DanceListBloc? danceListBloc;
+
+  final String? ofSearch;
+
+  final String? ofArtist;
 
   final String? ofVideo;
 
   @override
   String toString() {
-    return 'ArtistListRouteArgs{key: $key, showAppBar: $showAppBar, titleText: $titleText, shouldSelectOne: $shouldSelectOne, shouldSelectMultiple: $shouldSelectMultiple, preselectedItems: $preselectedItems, artistListBloc: $artistListBloc, ofSearch: $ofSearch, ofDance: $ofDance, ofFigure: $ofFigure, ofVideo: $ofVideo}';
+    return 'DanceListRouteArgs{key: $key, showAppBar: $showAppBar, titleText: $titleText, shouldSelectOne: $shouldSelectOne, shouldSelectMultiple: $shouldSelectMultiple, preselectedItems: $preselectedItems, danceListBloc: $danceListBloc, ofSearch: $ofSearch, ofArtist: $ofArtist, ofVideo: $ofVideo}';
   }
 }
 
 /// generated route for
+/// [DanceCreatePage]
+class DanceCreateRoute extends PageRouteInfo<void> {
+  const DanceCreateRoute()
+      : super(
+          DanceCreateRoute.name,
+          path: 'dances/create',
+        );
+
+  static const String name = 'DanceCreateRoute';
+}
+
+/// generated route for
+/// [DanceDetailsPage]
+class DanceDetailsRoute extends PageRouteInfo<DanceDetailsRouteArgs> {
+  DanceDetailsRoute({
+    Key? key,
+    required String danceId,
+  }) : super(
+          DanceDetailsRoute.name,
+          path: 'dances/:danceId/details',
+          args: DanceDetailsRouteArgs(
+            key: key,
+            danceId: danceId,
+          ),
+        );
+
+  static const String name = 'DanceDetailsRoute';
+}
+
+class DanceDetailsRouteArgs {
+  const DanceDetailsRouteArgs({
+    this.key,
+    required this.danceId,
+  });
+
+  final Key? key;
+
+  final String danceId;
+
+  @override
+  String toString() {
+    return 'DanceDetailsRouteArgs{key: $key, danceId: $danceId}';
+  }
+}
+
+/// generated route for
+/// [DanceEditPage]
+class DanceEditRoute extends PageRouteInfo<DanceEditRouteArgs> {
+  DanceEditRoute({
+    Key? key,
+    String? danceId,
+  }) : super(
+          DanceEditRoute.name,
+          path: 'dances/:danceId/edit',
+          args: DanceEditRouteArgs(
+            key: key,
+            danceId: danceId,
+          ),
+        );
+
+  static const String name = 'DanceEditRoute';
+}
+
+class DanceEditRouteArgs {
+  const DanceEditRouteArgs({
+    this.key,
+    this.danceId,
+  });
+
+  final Key? key;
+
+  final String? danceId;
+
+  @override
+  String toString() {
+    return 'DanceEditRouteArgs{key: $key, danceId: $danceId}';
+  }
+}
+
+/// generated route for
+=======
+/// [ArtistCreatePage]
+class ArtistCreateRoute extends PageRouteInfo<void> {
+  const ArtistCreateRoute()
+      : super(
+          ArtistCreateRoute.name,
+          path: 'artists/create',
+        );
+
+  static const String name = 'ArtistCreateRoute';
+}
+
+/// generated route for
+/// [ArtistDetailsPage]
+class ArtistDetailsRoute extends PageRouteInfo<ArtistDetailsRouteArgs> {
+  ArtistDetailsRoute({
+    Key? key,
+    required String artistId,
+  }) : super(
+          ArtistDetailsRoute.name,
+          path: 'artists/:artistId/details',
+          args: ArtistDetailsRouteArgs(
+            key: key,
+            artistId: artistId,
+          ),
+        );
+
+  static const String name = 'ArtistDetailsRoute';
+}
+
+class ArtistDetailsRouteArgs {
+  const ArtistDetailsRouteArgs({
+    this.key,
+    required this.artistId,
+  });
+
+  final Key? key;
+
+  final String artistId;
+
+  @override
+  String toString() {
+    return 'ArtistDetailsRouteArgs{key: $key, artistId: $artistId}';
+  }
+}
+
+/// generated route for
+/// [ArtistEditPage]
+class ArtistEditRoute extends PageRouteInfo<ArtistEditRouteArgs> {
+  ArtistEditRoute({
+    Key? key,
+    String? artistId,
+  }) : super(
+          ArtistEditRoute.name,
+          path: 'artists/:artistId/edit',
+          args: ArtistEditRouteArgs(
+            key: key,
+            artistId: artistId,
+          ),
+        );
+
+  static const String name = 'ArtistEditRoute';
+}
+
+class ArtistEditRouteArgs {
+  const ArtistEditRouteArgs({
+    this.key,
+    this.artistId,
+  });
+
+  final Key? key;
+
+  final String? artistId;
+
+  @override
+  String toString() {
+    return 'ArtistEditRouteArgs{key: $key, artistId: $artistId}';
+  }
+}
+
+/// generated route for
+/// [DanceListPage]
+class DanceListRoute extends PageRouteInfo<DanceListRouteArgs> {
+  DanceListRoute({
+    Key? key,
+    bool showAppBar = true,
+    String? titleText,
+    bool shouldSelectOne = false,
+    bool shouldSelectMultiple = false,
+    List<DanceViewModel>? preselectedItems,
+    DanceListBloc? danceListBloc,
+    String? ofSearch,
+    String? ofArtistId,
+    String? ofVideoId,
+  }) : super(
+          DanceListRoute.name,
+          path: 'dances',
+          args: DanceListRouteArgs(
+            key: key,
+            showAppBar: showAppBar,
+            titleText: titleText,
+            shouldSelectOne: shouldSelectOne,
+            shouldSelectMultiple: shouldSelectMultiple,
+            preselectedItems: preselectedItems,
+            danceListBloc: danceListBloc,
+            ofSearch: ofSearch,
+            ofArtistId: ofArtistId,
+            ofVideoId: ofVideoId,
+          ),
+        );
+
+  static const String name = 'DanceListRoute';
+}
+
+class DanceListRouteArgs {
+  const DanceListRouteArgs({
+    this.key,
+    this.showAppBar = true,
+    this.titleText,
+    this.shouldSelectOne = false,
+    this.shouldSelectMultiple = false,
+    this.preselectedItems,
+    this.danceListBloc,
+    this.ofSearch,
+    this.ofArtistId,
+    this.ofVideoId,
+  });
+
+  final Key? key;
+
+  final bool showAppBar;
+
+  final String? titleText;
+
+  final bool shouldSelectOne;
+
+  final bool shouldSelectMultiple;
+
+  final List<DanceViewModel>? preselectedItems;
+
+  final DanceListBloc? danceListBloc;
+
+  final String? ofSearch;
+
+  final String? ofArtistId;
+
+  final String? ofVideoId;
+
+  @override
+  String toString() {
+    return 'DanceListRouteArgs{key: $key, showAppBar: $showAppBar, titleText: $titleText, shouldSelectOne: $shouldSelectOne, shouldSelectMultiple: $shouldSelectMultiple, preselectedItems: $preselectedItems, danceListBloc: $danceListBloc, ofSearch: $ofSearch, ofArtistId: $ofArtistId, ofVideoId: $ofVideoId}';
+  }
+}
+
+/// generated route for
+/// [DanceCreatePage]
+class DanceCreateRoute extends PageRouteInfo<void> {
+  const DanceCreateRoute()
+      : super(
+          DanceCreateRoute.name,
+          path: 'dances/create',
+        );
+
+  static const String name = 'DanceCreateRoute';
+}
+
+/// generated route for
+/// [DanceDetailsPage]
+class DanceDetailsRoute extends PageRouteInfo<DanceDetailsRouteArgs> {
+  DanceDetailsRoute({
+    Key? key,
+    required String danceId,
+  }) : super(
+          DanceDetailsRoute.name,
+          path: 'dances/:danceId/details',
+          args: DanceDetailsRouteArgs(
+            key: key,
+            danceId: danceId,
+          ),
+        );
+
+  static const String name = 'DanceDetailsRoute';
+}
+
+class DanceDetailsRouteArgs {
+  const DanceDetailsRouteArgs({
+    this.key,
+    required this.danceId,
+  });
+
+  final Key? key;
+
+  final String danceId;
+
+  @override
+  String toString() {
+    return 'DanceDetailsRouteArgs{key: $key, danceId: $danceId}';
+  }
+}
+
+/// generated route for
+/// [DanceEditPage]
+class DanceEditRoute extends PageRouteInfo<DanceEditRouteArgs> {
+  DanceEditRoute({
+    Key? key,
+    String? danceId,
+  }) : super(
+          DanceEditRoute.name,
+          path: 'dances/:danceId/edit',
+          args: DanceEditRouteArgs(
+            key: key,
+            danceId: danceId,
+          ),
+        );
+
+  static const String name = 'DanceEditRoute';
+}
+
+class DanceEditRouteArgs {
+  const DanceEditRouteArgs({
+    this.key,
+    this.danceId,
+  });
+
+  final Key? key;
+
+  final String? danceId;
+
+  @override
+  String toString() {
+    return 'DanceEditRouteArgs{key: $key, danceId: $danceId}';
+  }
+}
+
+/// generated route for
+>>>>>>> 13f7c84 (Change id parameters name to be more explicit)
 /// [FigureListPage]
 class FigureListRoute extends PageRouteInfo<FigureListRouteArgs> {
   FigureListRoute({
@@ -416,10 +1056,20 @@ class FigureListRoute extends PageRouteInfo<FigureListRouteArgs> {
     bool shouldSelectMultiple = false,
     List<FigureViewModel>? preselectedItems,
     FigureListBloc? figureListBloc,
+<<<<<<< HEAD
     String? ofArtist,
     String? ofDance,
     String? ofVideo,
     List<PageRouteInfo>? children,
+||||||| parent of 13f7c84 (Change id parameters name to be more explicit)
+    String? ofArtist,
+    String? ofDance,
+    String? ofVideo,
+=======
+    String? ofArtistId,
+    String? ofDanceId,
+    String? ofVideoId,
+>>>>>>> 13f7c84 (Change id parameters name to be more explicit)
   }) : super(
           FigureListRoute.name,
           args: FigureListRouteArgs(
@@ -430,9 +1080,9 @@ class FigureListRoute extends PageRouteInfo<FigureListRouteArgs> {
             shouldSelectMultiple: shouldSelectMultiple,
             preselectedItems: preselectedItems,
             figureListBloc: figureListBloc,
-            ofArtist: ofArtist,
-            ofDance: ofDance,
-            ofVideo: ofVideo,
+            ofArtistId: ofArtistId,
+            ofDanceId: ofDanceId,
+            ofVideoId: ofVideoId,
           ),
           initialChildren: children,
         );
@@ -452,9 +1102,9 @@ class FigureListRouteArgs {
     this.shouldSelectMultiple = false,
     this.preselectedItems,
     this.figureListBloc,
-    this.ofArtist,
-    this.ofDance,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofVideoId,
   });
 
   final Key? key;
@@ -471,15 +1121,15 @@ class FigureListRouteArgs {
 
   final FigureListBloc? figureListBloc;
 
-  final String? ofArtist;
+  final String? ofArtistId;
 
-  final String? ofDance;
+  final String? ofDanceId;
 
-  final String? ofVideo;
+  final String? ofVideoId;
 
   @override
   String toString() {
-    return 'FigureListRouteArgs{key: $key, showAppBar: $showAppBar, titleText: $titleText, shouldSelectOne: $shouldSelectOne, shouldSelectMultiple: $shouldSelectMultiple, preselectedItems: $preselectedItems, figureListBloc: $figureListBloc, ofArtist: $ofArtist, ofDance: $ofDance, ofVideo: $ofVideo}';
+    return 'FigureListRouteArgs{key: $key, showAppBar: $showAppBar, titleText: $titleText, shouldSelectOne: $shouldSelectOne, shouldSelectMultiple: $shouldSelectMultiple, preselectedItems: $preselectedItems, figureListBloc: $figureListBloc, ofArtistId: $ofArtistId, ofDanceId: $ofDanceId, ofVideoId: $ofVideoId}';
   }
 }
 
@@ -807,11 +1457,23 @@ class PracticeListRoute extends PageRouteInfo<PracticeListRouteArgs> {
     bool shouldSelectMultiple = false,
     List<PracticeViewModel>? preselectedItems,
     PracticeListBloc? practiceListBloc,
+<<<<<<< HEAD
     String? ofArtist,
     String? ofDance,
     String? ofFigure,
     String? ofVideo,
     List<PageRouteInfo>? children,
+||||||| parent of 13f7c84 (Change id parameters name to be more explicit)
+    String? ofArtist,
+    String? ofDance,
+    String? ofFigure,
+    String? ofVideo,
+=======
+    String? ofArtistId,
+    String? ofDanceId,
+    String? ofFigureId,
+    String? ofVideoId,
+>>>>>>> 13f7c84 (Change id parameters name to be more explicit)
   }) : super(
           PracticeListRoute.name,
           args: PracticeListRouteArgs(
@@ -822,10 +1484,10 @@ class PracticeListRoute extends PageRouteInfo<PracticeListRouteArgs> {
             shouldSelectMultiple: shouldSelectMultiple,
             preselectedItems: preselectedItems,
             practiceListBloc: practiceListBloc,
-            ofArtist: ofArtist,
-            ofDance: ofDance,
-            ofFigure: ofFigure,
-            ofVideo: ofVideo,
+            ofArtistId: ofArtistId,
+            ofDanceId: ofDanceId,
+            ofFigureId: ofFigureId,
+            ofVideoId: ofVideoId,
           ),
           initialChildren: children,
         );
@@ -845,10 +1507,10 @@ class PracticeListRouteArgs {
     this.shouldSelectMultiple = false,
     this.preselectedItems,
     this.practiceListBloc,
-    this.ofArtist,
-    this.ofDance,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofFigureId,
+    this.ofVideoId,
   });
 
   final Key? key;
@@ -865,17 +1527,17 @@ class PracticeListRouteArgs {
 
   final PracticeListBloc? practiceListBloc;
 
-  final String? ofArtist;
+  final String? ofArtistId;
 
-  final String? ofDance;
+  final String? ofDanceId;
 
-  final String? ofFigure;
+  final String? ofFigureId;
 
-  final String? ofVideo;
+  final String? ofVideoId;
 
   @override
   String toString() {
-    return 'PracticeListRouteArgs{key: $key, showAppBar: $showAppBar, titleText: $titleText, shouldSelectOne: $shouldSelectOne, shouldSelectMultiple: $shouldSelectMultiple, preselectedItems: $preselectedItems, practiceListBloc: $practiceListBloc, ofArtist: $ofArtist, ofDance: $ofDance, ofFigure: $ofFigure, ofVideo: $ofVideo}';
+    return 'PracticeListRouteArgs{key: $key, showAppBar: $showAppBar, titleText: $titleText, shouldSelectOne: $shouldSelectOne, shouldSelectMultiple: $shouldSelectMultiple, preselectedItems: $preselectedItems, practiceListBloc: $practiceListBloc, ofArtistId: $ofArtistId, ofDanceId: $ofDanceId, ofFigureId: $ofFigureId, ofVideoId: $ofVideoId}';
   }
 }
 
@@ -1164,10 +1826,20 @@ class VideoListRoute extends PageRouteInfo<VideoListRouteArgs> {
     List<VideoViewModel>? preselectedItems,
     VideoListBloc? videoListBloc,
     String? ofSearch,
+<<<<<<< HEAD
     String? ofArtist,
     String? ofDance,
     String? ofFigure,
     List<PageRouteInfo>? children,
+||||||| parent of 13f7c84 (Change id parameters name to be more explicit)
+    String? ofArtist,
+    String? ofDance,
+    String? ofFigure,
+=======
+    String? ofArtistId,
+    String? ofDanceId,
+    String? ofFigureId,
+>>>>>>> 13f7c84 (Change id parameters name to be more explicit)
   }) : super(
           VideoListRoute.name,
           args: VideoListRouteArgs(
@@ -1179,9 +1851,9 @@ class VideoListRoute extends PageRouteInfo<VideoListRouteArgs> {
             preselectedItems: preselectedItems,
             videoListBloc: videoListBloc,
             ofSearch: ofSearch,
-            ofArtist: ofArtist,
-            ofDance: ofDance,
-            ofFigure: ofFigure,
+            ofArtistId: ofArtistId,
+            ofDanceId: ofDanceId,
+            ofFigureId: ofFigureId,
           ),
           initialChildren: children,
         );
@@ -1202,9 +1874,9 @@ class VideoListRouteArgs {
     this.preselectedItems,
     this.videoListBloc,
     this.ofSearch,
-    this.ofArtist,
-    this.ofDance,
-    this.ofFigure,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofFigureId,
   });
 
   final Key? key;
@@ -1223,15 +1895,15 @@ class VideoListRouteArgs {
 
   final String? ofSearch;
 
-  final String? ofArtist;
+  final String? ofArtistId;
 
-  final String? ofDance;
+  final String? ofDanceId;
 
-  final String? ofFigure;
+  final String? ofFigureId;
 
   @override
   String toString() {
-    return 'VideoListRouteArgs{key: $key, showAppBar: $showAppBar, titleText: $titleText, shouldSelectOne: $shouldSelectOne, shouldSelectMultiple: $shouldSelectMultiple, preselectedItems: $preselectedItems, videoListBloc: $videoListBloc, ofSearch: $ofSearch, ofArtist: $ofArtist, ofDance: $ofDance, ofFigure: $ofFigure}';
+    return 'VideoListRouteArgs{key: $key, showAppBar: $showAppBar, titleText: $titleText, shouldSelectOne: $shouldSelectOne, shouldSelectMultiple: $shouldSelectMultiple, preselectedItems: $preselectedItems, videoListBloc: $videoListBloc, ofSearch: $ofSearch, ofArtistId: $ofArtistId, ofDanceId: $ofDanceId, ofFigureId: $ofFigureId}';
   }
 }
 

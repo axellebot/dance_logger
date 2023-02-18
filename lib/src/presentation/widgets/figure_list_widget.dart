@@ -22,11 +22,11 @@ class FigureListBlocProvider extends StatelessWidget
   @override
   final FigureListBloc? figureListBloc;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   /// Selection
   final List<FigureViewModel>? preselectedFigures;
@@ -39,9 +39,9 @@ class FigureListBlocProvider extends StatelessWidget
 
     /// FigureListBlocParams
     this.figureListBloc,
-    this.ofArtist,
-    this.ofDance,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofVideoId,
 
     /// Selection
     this.preselectedFigures,
@@ -49,7 +49,7 @@ class FigureListBlocProvider extends StatelessWidget
     /// Widget params
     required this.child,
   }) : assert(figureListBloc == null ||
-            (ofArtist == null && ofDance == null && ofVideo == null));
+            (ofArtistId == null && ofDanceId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +72,9 @@ class FigureListBlocProvider extends StatelessWidget
           }
 
           figureListBloc.add(FigureListLoad(
-            ofArtist: ofArtist,
-            ofDance: ofDance,
-            ofVideo: ofVideo,
+            ofArtistId: ofArtistId,
+            ofDanceId: ofDanceId,
+            ofVideoId: ofVideoId,
           ));
 
           return figureListBloc;
@@ -91,11 +91,11 @@ class FigureListView extends StatefulWidget
   @override
   final FigureListBloc? figureListBloc;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   /// EntityListViewParams
   @override
@@ -113,9 +113,9 @@ class FigureListView extends StatefulWidget
 
     /// FigureListWidgetParams
     this.figureListBloc,
-    this.ofArtist,
-    this.ofDance,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofVideoId,
 
     /// Misc
     this.onSelect,
@@ -125,7 +125,7 @@ class FigureListView extends StatefulWidget
     this.physics,
     this.padding,
   }) : assert(figureListBloc == null ||
-            (ofArtist == null && ofDance == null && ofVideo == null));
+            (ofArtistId == null && ofDanceId == null && ofVideoId == null));
 
   @override
   State<FigureListView> createState() => _FigureListViewState();
@@ -141,9 +141,9 @@ class _FigureListViewState extends State<FigureListView> {
   Widget build(BuildContext context) {
     return FigureListBlocProvider(
       figureListBloc: widget.figureListBloc,
-      ofArtist: widget.ofArtist,
-      ofDance: widget.ofDance,
-      ofVideo: widget.ofVideo,
+      ofArtistId: widget.ofArtistId,
+      ofDanceId: widget.ofDanceId,
+      ofVideoId: widget.ofVideoId,
       child: BlocListener<FigureListBloc, FigureListState>(
         listener: (context, FigureListState state) {
           switch (state.status) {
@@ -244,11 +244,11 @@ class FiguresSection extends StatelessWidget
   @override
   final FigureListBloc? figureListBloc;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   /// EntitiesSectionWidgetParams
   @override
@@ -261,23 +261,23 @@ class FiguresSection extends StatelessWidget
 
     /// FigureListWidgetParams
     this.figureListBloc,
-    this.ofArtist,
-    this.ofDance,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofVideoId,
 
     /// EntitiesSectionWidgetParams
     this.label,
     this.onSectionTap,
   }) : assert(figureListBloc == null ||
-            (ofArtist == null && ofDance == null && ofVideo == null));
+            (ofArtistId == null && ofDanceId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
     return FigureListBlocProvider(
       figureListBloc: figureListBloc,
-      ofArtist: ofArtist,
-      ofDance: ofDance,
-      ofVideo: ofVideo,
+      ofArtistId: ofArtistId,
+      ofDanceId: ofDanceId,
+      ofVideoId: ofVideoId,
       child: Builder(
         builder: (context) {
           return Column(

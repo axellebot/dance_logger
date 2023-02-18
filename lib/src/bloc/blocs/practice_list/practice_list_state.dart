@@ -18,13 +18,13 @@ class PracticeListState extends Equatable implements PracticeListParams {
   final PracticeListStatus status;
 
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   final List<PracticeViewModel> practices;
   final bool hasReachedMax;
@@ -33,10 +33,10 @@ class PracticeListState extends Equatable implements PracticeListParams {
 
   const PracticeListState({
     this.status = PracticeListStatus.initial,
-    this.ofArtist,
-    this.ofDance,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofFigureId,
+    this.ofVideoId,
     this.practices = const <PracticeViewModel>[],
     this.hasReachedMax = false,
     this.selectedPractices = const <PracticeViewModel>[],
@@ -46,10 +46,10 @@ class PracticeListState extends Equatable implements PracticeListParams {
   @override
   List<Object?> get props => [
         status,
-        ofArtist,
-        ofDance,
-        ofFigure,
-        ofVideo,
+        ofArtistId,
+        ofDanceId,
+        ofFigureId,
+        ofVideoId,
         practices,
         hasReachedMax,
         selectedPractices,
@@ -59,9 +59,9 @@ class PracticeListState extends Equatable implements PracticeListParams {
   PracticeListState copyWith({
     PracticeListStatus? status,
     String? ofArtist,
-    String? ofDance,
-    String? ofFigure,
-    String? ofVideo,
+    String? ofDanceId,
+    String? ofFigureId,
+    String? ofVideoId,
     List<PracticeViewModel>? practices,
     bool? hasReachedMax,
     List<PracticeViewModel>? selectedPractices,
@@ -69,10 +69,10 @@ class PracticeListState extends Equatable implements PracticeListParams {
   }) {
     return PracticeListState(
       status: status ?? this.status,
-      ofArtist: ofArtist ?? this.ofArtist,
-      ofDance: ofDance ?? this.ofDance,
-      ofFigure: ofFigure ?? this.ofFigure,
-      ofVideo: ofVideo ?? this.ofVideo,
+      ofArtistId: ofArtist ?? this.ofArtistId,
+      ofDanceId: ofDanceId ?? this.ofDanceId,
+      ofFigureId: ofFigureId ?? this.ofFigureId,
+      ofVideoId: ofVideoId ?? this.ofVideoId,
       practices: practices ?? this.practices,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       selectedPractices: selectedPractices ?? this.selectedPractices,
@@ -83,10 +83,10 @@ class PracticeListState extends Equatable implements PracticeListParams {
   @override
   String toString() => 'PracticeListState{'
       'status: $status, '
-      'ofArtist: $ofArtist, '
-      'ofDance: $ofDance, '
-      'ofFigure: $ofFigure, '
-      'ofVideo: $ofVideo, '
+      'ofArtist: $ofArtistId, '
+      'ofDanceId: $ofDanceId, '
+      'ofFigureId: $ofFigureId, '
+      'ofVideoId: $ofVideoId, '
       'practices: $practices, '
       'hasReachedMax: $hasReachedMax, '
       'selectedPractices: $selectedPractices, '

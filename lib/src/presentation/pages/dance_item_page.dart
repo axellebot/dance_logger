@@ -94,17 +94,17 @@ class _DanceDetailsPageState extends State<DanceDetailsPage> {
                         if (state.dance != null)
                           ArtistsSection(
                             // label: 'Artists of ${state.dance!.name}',
-                            ofDance: state.dance!.id,
+                            ofDanceId: state.dance!.id,
                           ),
                         if (state.dance != null)
                           FiguresSection(
                             // label: 'Figures of ${state.dance!.name}',
-                            ofDance: state.dance!.id,
+                            ofDanceId: state.dance!.id,
                           ),
                         if (state.dance != null)
                           VideosSection(
                             // label: 'Videos of ${state.dance!.name}',
-                            ofDance: state.dance!.id,
+                            ofDanceId: state.dance!.id,
                           ),
                         if (state.dance != null)
                           EntityInfoListTile(

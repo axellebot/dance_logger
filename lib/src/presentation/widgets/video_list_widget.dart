@@ -22,11 +22,11 @@ class VideoListBlocProvider extends StatelessWidget
   @override
   final String? ofSearch;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
 
   /// Selection
   final List<VideoViewModel>? preselectedVideos;
@@ -40,9 +40,9 @@ class VideoListBlocProvider extends StatelessWidget
     /// VideoListWidgetParams
     this.videoListBloc,
     this.ofSearch,
-    this.ofArtist,
-    this.ofDance,
-    this.ofFigure,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofFigureId,
 
     /// Selection
     this.preselectedVideos,
@@ -51,7 +51,7 @@ class VideoListBlocProvider extends StatelessWidget
     required this.child,
   }) : assert(videoListBloc == null ||
             ofSearch == null ||
-            (ofArtist == null && ofDance == null && ofFigure == null));
+            (ofArtistId == null && ofDanceId == null && ofFigureId == null));
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +75,9 @@ class VideoListBlocProvider extends StatelessWidget
 
           videoListBloc.add(VideoListLoad(
             ofSearch: ofSearch,
-            ofArtist: ofArtist,
-            ofDance: ofDance,
-            ofFigure: ofFigure,
+            ofArtistId: ofArtistId,
+            ofDanceId: ofDanceId,
+            ofFigureId: ofFigureId,
           ));
           return videoListBloc;
         },
@@ -95,11 +95,11 @@ class VideoListView extends StatefulWidget
   @override
   final String? ofSearch;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
 
   /// EntityListViewParams
   @override
@@ -115,9 +115,9 @@ class VideoListView extends StatefulWidget
     /// VideoListWidgetParams
     this.videoListBloc,
     this.ofSearch,
-    this.ofArtist,
-    this.ofDance,
-    this.ofFigure,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofFigureId,
 
     /// EntityListViewParams
     this.scrollDirection = Axis.vertical,
@@ -125,7 +125,7 @@ class VideoListView extends StatefulWidget
     this.padding,
   }) : assert(videoListBloc == null ||
             ofSearch == null ||
-            (ofArtist == null && ofDance == null && ofFigure == null));
+            (ofArtistId == null && ofDanceId == null && ofFigureId == null));
 
   @override
   State<VideoListView> createState() => _VideoListViewState();
@@ -142,9 +142,9 @@ class _VideoListViewState extends State<VideoListView> {
     return VideoListBlocProvider(
       videoListBloc: widget.videoListBloc,
       ofSearch: widget.ofSearch,
-      ofArtist: widget.ofArtist,
-      ofDance: widget.ofDance,
-      ofFigure: widget.ofFigure,
+      ofArtistId: widget.ofArtistId,
+      ofDanceId: widget.ofDanceId,
+      ofFigureId: widget.ofFigureId,
       child: BlocListener<VideoListBloc, VideoListState>(
         listener: (context, VideoListState state) {
           switch (state.status) {
@@ -246,11 +246,11 @@ class VideosSection extends StatelessWidget
   @override
   final String? ofSearch;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
 
   /// EntitiesSectionWidgetParams
   @override
@@ -264,25 +264,25 @@ class VideosSection extends StatelessWidget
     /// VideoListWidgetParams
     this.videoListBloc,
     this.ofSearch,
-    this.ofArtist,
-    this.ofDance,
-    this.ofFigure,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofFigureId,
 
     /// EntitiesSectionWidgetParams
     this.label,
     this.onSectionTap,
   }) : assert(videoListBloc == null ||
             ofSearch == null ||
-            (ofArtist == null && ofDance == null && ofFigure == null));
+            (ofArtistId == null && ofDanceId == null && ofFigureId == null));
 
   @override
   Widget build(BuildContext context) {
     return VideoListBlocProvider(
       videoListBloc: videoListBloc,
       ofSearch: ofSearch,
-      ofArtist: ofArtist,
-      ofDance: ofDance,
-      ofFigure: ofFigure,
+      ofArtistId: ofArtistId,
+      ofDanceId: ofDanceId,
+      ofFigureId: ofFigureId,
       child: Builder(
         builder: (context) {
           return Column(

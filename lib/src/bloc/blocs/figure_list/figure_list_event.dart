@@ -13,27 +13,27 @@ abstract class FigureListEvent extends Equatable {
 class FigureListLoad extends FigureListEvent implements FigureListParams {
   /// FigureListParams
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   const FigureListLoad({
     /// FigureListParams
-    this.ofArtist,
-    this.ofDance,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofVideoId,
   });
 
   @override
-  List<Object?> get props => [ofArtist, ofDance, ofVideo];
+  List<Object?> get props => [ofArtistId, ofDanceId, ofVideoId];
 
   @override
   String toString() => 'FigureListLoadMore{'
-      'ofArtist: $ofArtist, '
-      'ofDance: $ofDance, '
-      'ofVideo: $ofVideo'
+      'ofArtistId: $ofArtistId, '
+      'ofDanceId: $ofDanceId, '
+      'ofVideoId: $ofVideoId'
       '}';
 }
 

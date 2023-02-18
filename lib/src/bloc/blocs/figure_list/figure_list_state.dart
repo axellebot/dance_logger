@@ -18,11 +18,11 @@ class FigureListState extends Equatable implements FigureListParams {
   final FigureListStatus status;
 
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   final List<FigureViewModel> figures;
   final bool hasReachedMax;
@@ -31,9 +31,9 @@ class FigureListState extends Equatable implements FigureListParams {
 
   const FigureListState({
     this.status = FigureListStatus.initial,
-    this.ofArtist,
-    this.ofDance,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofVideoId,
     this.figures = const <FigureViewModel>[],
     this.hasReachedMax = false,
     this.selectedFigures = const <FigureViewModel>[],
@@ -43,9 +43,9 @@ class FigureListState extends Equatable implements FigureListParams {
   @override
   List<Object?> get props => [
         status,
-        ofArtist,
-        ofDance,
-        ofVideo,
+        ofArtistId,
+        ofDanceId,
+        ofVideoId,
         figures,
         hasReachedMax,
         selectedFigures,
@@ -54,9 +54,9 @@ class FigureListState extends Equatable implements FigureListParams {
 
   FigureListState copyWith({
     FigureListStatus? status,
-    String? ofArtist,
-    String? ofDance,
-    String? ofVideo,
+    String? ofArtistId,
+    String? ofDanceId,
+    String? ofVideoId,
     List<FigureViewModel>? figures,
     bool? hasReachedMax,
     List<FigureViewModel>? selectedFigures,
@@ -64,9 +64,9 @@ class FigureListState extends Equatable implements FigureListParams {
   }) {
     return FigureListState(
       status: status ?? this.status,
-      ofArtist: ofArtist ?? this.ofArtist,
-      ofDance: ofDance ?? this.ofDance,
-      ofVideo: ofVideo ?? this.ofVideo,
+      ofArtistId: ofArtistId ?? this.ofArtistId,
+      ofDanceId: ofDanceId ?? this.ofDanceId,
+      ofVideoId: ofVideoId ?? this.ofVideoId,
       figures: figures ?? this.figures,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       selectedFigures: selectedFigures ?? this.selectedFigures,
@@ -77,9 +77,9 @@ class FigureListState extends Equatable implements FigureListParams {
   @override
   String toString() => 'FigureListState{'
       'status: $status, '
-      'ofArtist: $ofArtist, '
-      'ofDance: $ofDance, '
-      'ofVideo: $ofVideo, '
+      'ofArtistId: $ofArtistId, '
+      'ofDanceId: $ofDanceId, '
+      'ofVideoId: $ofVideoId, '
       'figures: $figures, '
       'hasReachedMax: $hasReachedMax, '
       'selectedFigures: $selectedFigures, '

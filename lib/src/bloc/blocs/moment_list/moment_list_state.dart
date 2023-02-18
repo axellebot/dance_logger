@@ -18,11 +18,11 @@ class MomentListState extends Equatable implements MomentListParams {
   final MomentListStatus status;
 
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   final List<MomentViewModel> moments;
   final bool hasReachedMax;
@@ -31,9 +31,9 @@ class MomentListState extends Equatable implements MomentListParams {
 
   const MomentListState({
     this.status = MomentListStatus.initial,
-    this.ofArtist,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofFigureId,
+    this.ofVideoId,
     this.moments = const <MomentViewModel>[],
     this.hasReachedMax = false,
     this.selectedMoments = const <MomentViewModel>[],
@@ -43,9 +43,9 @@ class MomentListState extends Equatable implements MomentListParams {
   @override
   List<Object?> get props => [
         status,
-        ofArtist,
-        ofFigure,
-        ofVideo,
+        ofArtistId,
+        ofFigureId,
+        ofVideoId,
         moments,
         hasReachedMax,
         selectedMoments,
@@ -54,9 +54,9 @@ class MomentListState extends Equatable implements MomentListParams {
 
   MomentListState copyWith({
     MomentListStatus? status,
-    String? ofArtist,
-    String? ofFigure,
-    String? ofVideo,
+    String? ofArtistId,
+    String? ofFigureId,
+    String? ofVideoId,
     List<MomentViewModel>? moments,
     bool? hasReachedMax,
     List<MomentViewModel>? selectedMoments,
@@ -64,9 +64,9 @@ class MomentListState extends Equatable implements MomentListParams {
   }) {
     return MomentListState(
       status: status ?? this.status,
-      ofArtist: ofArtist ?? this.ofArtist,
-      ofFigure: ofFigure ?? this.ofFigure,
-      ofVideo: ofVideo ?? this.ofVideo,
+      ofArtistId: ofArtistId ?? this.ofArtistId,
+      ofFigureId: ofFigureId ?? this.ofFigureId,
+      ofVideoId: ofVideoId ?? this.ofVideoId,
       moments: moments ?? this.moments,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       selectedMoments: selectedMoments ?? this.selectedMoments,
@@ -77,9 +77,9 @@ class MomentListState extends Equatable implements MomentListParams {
   @override
   String toString() => 'MomentListState{'
       'status: $status, '
-      'ofArtist: $ofArtist, '
-      'ofFigure: $ofFigure, '
-      'ofVideo: $ofVideo, '
+      'ofArtistId: $ofArtistId, '
+      'ofFigureId: $ofFigureId, '
+      'ofVideoId: $ofVideoId, '
       'moments: $moments, '
       'hasReachedMax: $hasReachedMax, '
       'selectedMoments: $selectedMoments, '

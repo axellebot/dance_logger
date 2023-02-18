@@ -1,3 +1,4 @@
+export './artist_detail_params.dart';
 export './artist_list_params.dart';
 export './dance_list_params.dart';
 export './entity_list_params.dart';

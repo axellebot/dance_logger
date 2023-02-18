@@ -19,11 +19,11 @@ class MomentListBlocProvider extends StatelessWidget
   @override
   final MomentListBloc? momentListBloc;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   /// Selection
   final List<MomentViewModel>? preselectedMoments;
@@ -36,9 +36,9 @@ class MomentListBlocProvider extends StatelessWidget
 
     /// MomentListWidgetParams
     this.momentListBloc,
-    this.ofArtist,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofFigureId,
+    this.ofVideoId,
 
     /// Selection
     this.preselectedMoments,
@@ -46,7 +46,7 @@ class MomentListBlocProvider extends StatelessWidget
     /// Widget params
     required this.child,
   }) : assert(momentListBloc == null ||
-            (ofArtist == null && ofFigure == null && ofVideo == null));
+            (ofArtistId == null && ofFigureId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
@@ -69,9 +69,9 @@ class MomentListBlocProvider extends StatelessWidget
           }
 
           momentListBloc.add(MomentListLoad(
-            ofArtist: ofArtist,
-            ofFigure: ofFigure,
-            ofVideo: ofVideo,
+            ofArtistId: ofArtistId,
+            ofFigureId: ofFigureId,
+            ofVideoId: ofVideoId,
           ));
 
           return momentListBloc;
@@ -88,11 +88,11 @@ class MomentListView extends StatefulWidget
   @override
   final MomentListBloc? momentListBloc;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   /// Custom
   final ItemCallback<MomentViewModel>? onItemTap;
@@ -110,9 +110,9 @@ class MomentListView extends StatefulWidget
 
     /// MomentListWidgetParams
     this.momentListBloc,
-    this.ofArtist,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofFigureId,
+    this.ofVideoId,
 
     /// Custom
     this.onItemTap,
@@ -122,7 +122,7 @@ class MomentListView extends StatefulWidget
     this.physics,
     this.padding,
   }) : assert(momentListBloc == null ||
-            (ofArtist == null && ofFigure == null && ofVideo == null));
+            (ofArtistId == null && ofFigureId == null && ofVideoId == null));
 
   @override
   State<MomentListView> createState() => _MomentListViewState();
@@ -138,9 +138,9 @@ class _MomentListViewState extends State<MomentListView> {
   Widget build(BuildContext context) {
     return MomentListBlocProvider(
       momentListBloc: widget.momentListBloc,
-      ofArtist: widget.ofArtist,
-      ofFigure: widget.ofFigure,
-      ofVideo: widget.ofVideo,
+      ofArtistId: widget.ofArtistId,
+      ofFigureId: widget.ofFigureId,
+      ofVideoId: widget.ofVideoId,
       child: BlocListener<MomentListBloc, MomentListState>(
         listener: (context, MomentListState state) {
           switch (state.status) {
@@ -244,11 +244,11 @@ class MomentsSection extends StatelessWidget
   @override
   final MomentListBloc? momentListBloc;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   /// EntitiesSectionWidgetParams
   @override
@@ -264,9 +264,9 @@ class MomentsSection extends StatelessWidget
 
     /// MomentListWidgetParams
     this.momentListBloc,
-    this.ofArtist,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofFigureId,
+    this.ofVideoId,
 
     /// EntitiesSectionWidgetParams
     this.label,
@@ -275,15 +275,15 @@ class MomentsSection extends StatelessWidget
     /// Custom
     this.onItemTap,
   }) : assert(momentListBloc == null ||
-            (ofArtist == null && ofFigure == null && ofVideo == null));
+            (ofArtistId == null && ofFigureId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
     return MomentListBlocProvider(
       momentListBloc: momentListBloc,
-      ofArtist: ofArtist,
-      ofFigure: ofFigure,
-      ofVideo: ofVideo,
+      ofArtistId: ofArtistId,
+      ofFigureId: ofFigureId,
+      ofVideoId: ofVideoId,
       child: Builder(
         builder: (context) {
           return Column(

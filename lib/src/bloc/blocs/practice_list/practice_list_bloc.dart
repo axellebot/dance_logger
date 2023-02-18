@@ -35,16 +35,16 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
 
       final List<PracticeViewModel> practiceViewModels;
       practiceViewModels = await _fetchPractices(
-        ofDance: event.ofDance,
-        ofFigure: event.ofFigure,
-        ofVideo: event.ofVideo,
+        ofDanceId: event.ofDanceId,
+        ofFigureId: event.ofFigureId,
+        ofVideoId: event.ofVideoId,
         offset: 0,
       );
       emit(state.copyWith(
         status: PracticeListStatus.loadingSuccess,
-        ofDance: event.ofDance,
-        ofFigure: event.ofFigure,
-        ofVideo: event.ofVideo,
+        ofDanceId: event.ofDanceId,
+        ofFigureId: event.ofFigureId,
+        ofVideoId: event.ofVideoId,
         practices: practiceViewModels,
         hasReachedMax: false,
       ));
@@ -67,10 +67,10 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
 
       final List<PracticeViewModel> practiceViewModels;
       practiceViewModels = await _fetchPractices(
-        ofArtist: state.ofArtist,
-        ofDance: state.ofDance,
-        ofFigure: state.ofFigure,
-        ofVideo: state.ofVideo,
+        ofArtist: state.ofArtistId,
+        ofDanceId: state.ofDanceId,
+        ofFigureId: state.ofFigureId,
+        ofVideoId: state.ofVideoId,
         offset: state.practices.length,
       );
 
@@ -97,10 +97,10 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
       ));
 
       List<PracticeViewModel> practiceViewModels = await _fetchPractices(
-        ofArtist: state.ofArtist,
-        ofDance: state.ofDance,
-        ofFigure: state.ofFigure,
-        ofVideo: state.ofVideo,
+        ofArtist: state.ofArtistId,
+        ofDanceId: state.ofDanceId,
+        ofFigureId: state.ofFigureId,
+        ofVideoId: state.ofVideoId,
         offset: 0,
       );
 
@@ -183,17 +183,17 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
 
   Future<List<PracticeViewModel>> _fetchPractices({
     String? ofArtist,
-    String? ofDance,
-    String? ofFigure,
-    String? ofVideo,
+    String? ofDanceId,
+    String? ofFigureId,
+    String? ofVideoId,
     required int offset,
     int limit = 10,
   }) async {
     List<PracticeEntity> practiceEntities;
 
-    if (ofFigure != null) {
+    if (ofFigureId != null) {
       practiceEntities = await practiceRepository.getPracticesOfFigure(
-        ofFigure,
+        ofFigureId,
         offset: Offset(
           offset: offset,
           limit: limit,

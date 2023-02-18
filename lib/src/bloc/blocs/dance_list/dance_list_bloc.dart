@@ -38,16 +38,16 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
       final List<DanceViewModel> danceViewModels;
       danceViewModels = await _fetchDances(
         ofSearch: event.ofSearch,
-        ofArtist: event.ofArtist,
-        ofVideo: event.ofVideo,
+        ofArtistId: event.ofArtistId,
+        ofVideoId: event.ofVideoId,
         offset: 0,
       );
 
       emit(state.copyWith(
         status: DanceListStatus.loadingSuccess,
         ofSearch: Optional.fromNullable(event.ofSearch),
-        ofArtist: Optional.fromNullable(event.ofArtist),
-        ofVideo: Optional.fromNullable(event.ofVideo),
+        ofArtistId: Optional.fromNullable(event.ofArtistId),
+        ofVideoId: Optional.fromNullable(event.ofVideoId),
         dances: danceViewModels,
         hasReachedMax: danceViewModels.isEmpty,
         error: const Optional.absent(),
@@ -75,8 +75,8 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
       final List<DanceViewModel> danceViewModels;
       danceViewModels = await _fetchDances(
         ofSearch: state.ofSearch,
-        ofArtist: state.ofArtist,
-        ofVideo: state.ofVideo,
+        ofArtistId: state.ofArtistId,
+        ofVideoId: state.ofVideoId,
         offset: state.dances.length,
       );
 
@@ -107,8 +107,8 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
 
       List<DanceViewModel> danceViewModels = await _fetchDances(
         ofSearch: state.ofSearch,
-        ofArtist: state.ofArtist,
-        ofVideo: state.ofVideo,
+        ofArtistId: state.ofArtistId,
+        ofVideoId: state.ofVideoId,
         offset: 0,
       );
 
@@ -195,12 +195,12 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
 
   Future<List<DanceViewModel>> _fetchDances({
     String? ofSearch,
-    String? ofArtist,
-    String? ofVideo,
+    String? ofArtistId,
+    String? ofVideoId,
     required int offset,
     int limit = 10,
   }) async {
-    assert(ofSearch == null || (ofArtist == null && ofVideo == null));
+    assert(ofSearch == null || (ofArtistId == null && ofVideoId == null));
     if (kDebugMode) print('$runtimeType:_fetchDances');
 
     List<DanceEntity> danceEntities;
@@ -213,17 +213,17 @@ class DanceListBloc extends Bloc<DanceListEvent, DanceListState> {
           limit: limit,
         ),
       );
-    } else if (ofArtist != null) {
+    } else if (ofArtistId != null) {
       danceEntities = await danceRepository.getDancesOfArtist(
-        ofArtist,
+        ofArtistId,
         offset: Offset(
           offset: offset,
           limit: limit,
         ),
       );
-    } else if (ofVideo != null) {
+    } else if (ofVideoId != null) {
       danceEntities = await danceRepository.getDancesOfVideo(
-        ofVideo,
+        ofVideoId,
         offset: Offset(
           offset: offset,
           limit: limit,

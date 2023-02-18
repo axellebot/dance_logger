@@ -23,9 +23,9 @@ class DanceListBlocProvider extends StatelessWidget
   @override
   final String? ofSearch;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   /// Selection
   final List<DanceViewModel>? preselectedDances;
@@ -39,8 +39,8 @@ class DanceListBlocProvider extends StatelessWidget
     /// DanceListWidgetParams
     this.ofSearch,
     this.danceListBloc,
-    this.ofArtist,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofVideoId,
 
     /// Selection
     this.preselectedDances,
@@ -49,7 +49,7 @@ class DanceListBlocProvider extends StatelessWidget
     required this.child,
   }) : assert(danceListBloc == null ||
             ofSearch == null ||
-            (ofArtist == null && ofVideo == null));
+            (ofArtistId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +73,8 @@ class DanceListBlocProvider extends StatelessWidget
 
           danceListBloc.add(DanceListLoad(
             ofSearch: ofSearch,
-            ofArtist: ofArtist,
-            ofVideo: ofVideo,
+            ofArtistId: ofArtistId,
+            ofVideoId: ofVideoId,
           ));
           return danceListBloc;
         },
@@ -92,9 +92,9 @@ class DanceListView extends StatefulWidget
   @override
   final String? ofSearch;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   /// EntityListViewParams
   @override
@@ -110,8 +110,8 @@ class DanceListView extends StatefulWidget
     /// DanceListWidgetParams
     this.danceListBloc,
     this.ofSearch,
-    this.ofArtist,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofVideoId,
 
     /// EntityListViewParams
     this.scrollDirection = Axis.vertical,
@@ -119,7 +119,7 @@ class DanceListView extends StatefulWidget
     this.padding,
   }) : assert(danceListBloc == null ||
             ofSearch == null ||
-            (ofArtist == null && ofVideo == null));
+            (ofArtistId == null && ofVideoId == null));
 
   @override
   State<DanceListView> createState() => _DanceListViewState();
@@ -136,8 +136,8 @@ class _DanceListViewState extends State<DanceListView> {
     return DanceListBlocProvider(
       danceListBloc: widget.danceListBloc,
       ofSearch: widget.ofSearch,
-      ofArtist: widget.ofArtist,
-      ofVideo: widget.ofVideo,
+      ofArtistId: widget.ofArtistId,
+      ofVideoId: widget.ofVideoId,
       child: BlocListener<DanceListBloc, DanceListState>(
         listener: (context, DanceListState state) {
           switch (state.status) {
@@ -245,9 +245,9 @@ class DancesSection extends StatelessWidget
   @override
   final String? ofSearch;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   const DancesSection({
     super.key,
@@ -255,23 +255,23 @@ class DancesSection extends StatelessWidget
     /// DanceListWidgetParams
     this.danceListBloc,
     this.ofSearch,
-    this.ofArtist,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofVideoId,
 
     /// EntitiesSectionWidgetParams
     this.label,
     this.onSectionTap,
   }) : assert(danceListBloc == null ||
             ofSearch == null ||
-            (ofArtist == null && ofVideo == null));
+            (ofArtistId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
     return DanceListBlocProvider(
       danceListBloc: danceListBloc,
       ofSearch: ofSearch,
-      ofArtist: ofArtist,
-      ofVideo: ofVideo,
+      ofArtistId: ofArtistId,
+      ofVideoId: ofVideoId,
       child: Builder(
         builder: (context) {
           return Column(

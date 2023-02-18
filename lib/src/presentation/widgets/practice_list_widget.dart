@@ -21,13 +21,13 @@ class PracticeListBlocProvider extends StatelessWidget
   @override
   final PracticeListBloc? practiceListBloc;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   /// Selection
   final List<PracticeViewModel>? preselectedPractices;
@@ -40,10 +40,10 @@ class PracticeListBlocProvider extends StatelessWidget
 
     /// PracticeListWidgetParams
     this.practiceListBloc,
-    this.ofArtist,
-    this.ofDance,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofFigureId,
+    this.ofVideoId,
 
     /// Selection
     this.preselectedPractices,
@@ -51,10 +51,10 @@ class PracticeListBlocProvider extends StatelessWidget
     /// Widget params
     required this.child,
   }) : assert(practiceListBloc == null ||
-            (ofArtist == null &&
-                ofDance == null &&
-                ofFigure == null &&
-                ofVideo == null));
+            (ofArtistId == null &&
+                ofDanceId == null &&
+                ofFigureId == null &&
+                ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
@@ -78,10 +78,10 @@ class PracticeListBlocProvider extends StatelessWidget
           }
 
           practiceListBloc.add(PracticeListLoad(
-            ofArtist: ofArtist,
-            ofDance: ofDance,
-            ofFigure: ofFigure,
-            ofVideo: ofVideo,
+            ofArtistId: ofArtistId,
+            ofDanceId: ofDanceId,
+            ofFigureId: ofFigureId,
+            ofVideoId: ofVideoId,
           ));
 
           return practiceListBloc;
@@ -98,13 +98,13 @@ class PracticeListView extends StatefulWidget
   @override
   final PracticeListBloc? practiceListBloc;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   /// EntityListViewParams
   @override
@@ -119,20 +119,20 @@ class PracticeListView extends StatefulWidget
 
     /// PracticeListWidgetParams
     this.practiceListBloc,
-    this.ofArtist,
-    this.ofDance,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofFigureId,
+    this.ofVideoId,
 
     /// EntityListViewParams
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
   }) : assert(practiceListBloc == null ||
-            (ofArtist == null &&
-                ofDance == null &&
-                ofFigure == null &&
-                ofVideo == null));
+            (ofArtistId == null &&
+                ofDanceId == null &&
+                ofFigureId == null &&
+                ofVideoId == null));
 
   @override
   State<PracticeListView> createState() => _PracticeListViewState();
@@ -148,10 +148,10 @@ class _PracticeListViewState extends State<PracticeListView> {
   Widget build(BuildContext context) {
     return PracticeListBlocProvider(
       practiceListBloc: widget.practiceListBloc,
-      ofArtist: widget.ofArtist,
-      ofDance: widget.ofDance,
-      ofFigure: widget.ofFigure,
-      ofVideo: widget.ofVideo,
+      ofArtistId: widget.ofArtistId,
+      ofDanceId: widget.ofDanceId,
+      ofFigureId: widget.ofFigureId,
+      ofVideoId: widget.ofVideoId,
       child: BlocListener<PracticeListBloc, PracticeListState>(
         listener: (context, PracticeListState state) {
           switch (state.status) {
@@ -251,13 +251,13 @@ class PracticesSection extends StatelessWidget
   @override
   final PracticeListBloc? practiceListBloc;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   /// EntitiesSectionWidgetParams
   @override
@@ -270,28 +270,28 @@ class PracticesSection extends StatelessWidget
 
     /// PracticeListWidgetParams
     this.practiceListBloc,
-    this.ofArtist,
-    this.ofDance,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofFigureId,
+    this.ofVideoId,
 
     /// EntitiesSectionWidgetParams
     this.label,
     this.onSectionTap,
   }) : assert(practiceListBloc == null ||
-            (ofArtist == null &&
-                ofDance == null &&
-                ofFigure == null &&
-                ofVideo == null));
+            (ofArtistId == null &&
+                ofDanceId == null &&
+                ofFigureId == null &&
+                ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
     return PracticeListBlocProvider(
       practiceListBloc: practiceListBloc,
-      ofArtist: ofArtist,
-      ofDance: ofDance,
-      ofFigure: ofFigure,
-      ofVideo: ofVideo,
+      ofArtistId: ofArtistId,
+      ofDanceId: ofDanceId,
+      ofFigureId: ofFigureId,
+      ofVideoId: ofVideoId,
       child: Builder(
         builder: (context) {
           return Column(

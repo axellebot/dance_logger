@@ -15,25 +15,25 @@ class DanceListLoad extends DanceListEvent implements DanceListParams {
   @override
   final String? ofSearch;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   const DanceListLoad({
     /// DanceListParams
     this.ofSearch,
-    this.ofArtist,
-    this.ofVideo,
-  }) : assert(ofSearch == null || (ofArtist == null && ofVideo == null));
+    this.ofArtistId,
+    this.ofVideoId,
+  }) : assert(ofSearch == null || (ofArtistId == null && ofVideoId == null));
 
   @override
-  List<Object?> get props => [ofSearch, ofArtist, ofVideo];
+  List<Object?> get props => [ofSearch, ofArtistId, ofVideoId];
 
   @override
   String toString() => 'DanceListLoad{'
       'ofSearch: $ofSearch, '
-      'ofArtist: $ofArtist, '
-      'ofVideo: $ofVideo'
+      'ofArtist: $ofArtistId, '
+      'ofVideo: $ofVideoId'
       '}';
 }
 

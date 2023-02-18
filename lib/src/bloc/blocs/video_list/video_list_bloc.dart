@@ -37,18 +37,18 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
       final List<VideoViewModel> videoViewModels;
       videoViewModels = await _fetchVideos(
         ofSearch: event.ofSearch,
-        ofArtist: event.ofArtist,
-        ofDance: event.ofDance,
-        ofFigure: event.ofFigure,
+        ofArtistId: event.ofArtistId,
+        ofDanceId: event.ofDanceId,
+        ofFigureId: event.ofFigureId,
         offset: 0,
       );
 
       emit(state.copyWith(
         status: VideoListStatus.loadingSuccess,
         ofSearch: Optional.fromNullable(event.ofSearch),
-        ofArtist: Optional.fromNullable(event.ofArtist),
-        ofDance: Optional.fromNullable(event.ofDance),
-        ofFigure: Optional.fromNullable(event.ofFigure),
+        ofArtistId: Optional.fromNullable(event.ofArtistId),
+        ofDanceId: Optional.fromNullable(event.ofDanceId),
+        ofFigureId: Optional.fromNullable(event.ofFigureId),
         videos: videoViewModels,
         hasReachedMax: false,
         error: const Optional.absent(),
@@ -75,9 +75,9 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
       final List<VideoViewModel> videoViewModels;
       videoViewModels = await _fetchVideos(
         ofSearch: state.ofSearch,
-        ofArtist: state.ofArtist,
-        ofDance: state.ofDance,
-        ofFigure: state.ofFigure,
+        ofArtistId: state.ofArtistId,
+        ofDanceId: state.ofDanceId,
+        ofFigureId: state.ofFigureId,
         offset: state.videos.length,
       );
 
@@ -108,9 +108,9 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
 
       List<VideoViewModel> videoViewModels = await _fetchVideos(
         ofSearch: state.ofSearch,
-        ofArtist: state.ofArtist,
-        ofDance: state.ofDance,
-        ofFigure: state.ofFigure,
+        ofArtistId: state.ofArtistId,
+        ofDanceId: state.ofDanceId,
+        ofFigureId: state.ofFigureId,
         offset: 0,
       );
 
@@ -196,14 +196,14 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
 
   Future<List<VideoViewModel>> _fetchVideos({
     String? ofSearch,
-    String? ofArtist,
-    String? ofDance,
-    String? ofFigure,
+    String? ofArtistId,
+    String? ofDanceId,
+    String? ofFigureId,
     required int offset,
     int limit = 10,
   }) async {
     assert(ofSearch == null ||
-        (ofArtist == null && ofDance == null && ofFigure == null));
+        (ofArtistId == null && ofDanceId == null && ofFigureId == null));
     if (kDebugMode) print('$runtimeType:_fetchVideos');
 
     List<VideoEntity> videoEntities;
@@ -215,25 +215,25 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
           limit: limit,
         ),
       );
-    } else if (ofArtist != null) {
+    } else if (ofArtistId != null) {
       videoEntities = await videoRepository.getVideosOfArtist(
-        ofArtist,
+        ofArtistId,
         offset: Offset(
           offset: offset,
           limit: limit,
         ),
       );
-    } else if (ofDance != null) {
+    } else if (ofDanceId != null) {
       videoEntities = await videoRepository.getVideosOfDance(
-        ofDance,
+        ofDanceId,
         offset: Offset(
           offset: offset,
           limit: limit,
         ),
       );
-    } else if (ofFigure != null) {
+    } else if (ofFigureId != null) {
       videoEntities = await videoRepository.getVideosOfFigure(
-        ofFigure,
+        ofFigureId,
         offset: Offset(
           offset: offset,
           limit: limit,

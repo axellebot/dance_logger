@@ -14,27 +14,27 @@ abstract class MomentListEvent extends Equatable {
 class MomentListLoad extends MomentListEvent implements MomentListParams {
   /// MomentListParams
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   const MomentListLoad({
     /// MomentListParams
-    this.ofArtist,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofFigureId,
+    this.ofVideoId,
   });
 
   @override
-  List<Object?> get props => [ofArtist, ofFigure, ofVideo];
+  List<Object?> get props => [ofArtistId, ofFigureId, ofVideoId];
 
   @override
   String toString() => 'MomentListLoad{'
-      'ofDance: $ofArtist, '
-      'ofFigure: $ofFigure, '
-      'ofVideo: $ofVideo'
+      'ofArtistId: $ofArtistId, '
+      'ofFigure: $ofFigureId, '
+      'ofVideo: $ofVideoId'
       '}';
 }
 

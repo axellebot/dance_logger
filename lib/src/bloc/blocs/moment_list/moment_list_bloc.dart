@@ -35,16 +35,16 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
 
       final List<MomentViewModel> momentViewModels;
       momentViewModels = await _fetchMoments(
-        ofArtist: event.ofArtist,
-        ofFigure: event.ofFigure,
-        ofVideo: event.ofVideo,
+        ofArtistId: event.ofArtistId,
+        ofFigureId: event.ofFigureId,
+        ofVideoId: event.ofVideoId,
         offset: 0,
       );
       emit(MomentListState(
         status: MomentListStatus.loadingSuccess,
-        ofArtist: event.ofArtist,
-        ofFigure: event.ofFigure,
-        ofVideo: event.ofVideo,
+        ofArtistId: event.ofArtistId,
+        ofFigureId: event.ofFigureId,
+        ofVideoId: event.ofVideoId,
         moments: momentViewModels,
         hasReachedMax: false,
       ));
@@ -69,9 +69,9 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
 
       final List<MomentViewModel> momentViewModels;
       momentViewModels = await _fetchMoments(
-        ofArtist: state.ofArtist,
-        ofFigure: state.ofFigure,
-        ofVideo: state.ofVideo,
+        ofArtistId: state.ofArtistId,
+        ofFigureId: state.ofFigureId,
+        ofVideoId: state.ofVideoId,
         offset: state.moments.length,
       );
 
@@ -100,9 +100,9 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
       ));
 
       List<MomentViewModel> momentViewModels = await _fetchMoments(
-        ofArtist: state.ofArtist,
-        ofFigure: state.ofFigure,
-        ofVideo: state.ofVideo,
+        ofArtistId: state.ofArtistId,
+        ofFigureId: state.ofFigureId,
+        ofVideoId: state.ofVideoId,
         offset: 0,
       );
 
@@ -185,34 +185,34 @@ class MomentListBloc extends Bloc<MomentListEvent, MomentListState> {
   }
 
   Future<List<MomentViewModel>> _fetchMoments({
-    String? ofArtist,
-    String? ofFigure,
-    String? ofVideo,
+    String? ofArtistId,
+    String? ofFigureId,
+    String? ofVideoId,
     required int offset,
     int limit = 10,
   }) async {
     if (kDebugMode) print('$runtimeType:_fetchMoments');
 
     List<MomentEntity> momentEntities;
-    if (ofArtist != null) {
+    if (ofArtistId != null) {
       momentEntities = await momentRepository.getMomentsOfArtist(
-        ofArtist,
+        ofArtistId,
         offset: Offset(
           offset: offset,
           limit: limit,
         ),
       );
-    } else if (ofFigure != null) {
+    } else if (ofFigureId != null) {
       momentEntities = await momentRepository.getMomentsOfFigure(
-        ofFigure,
+        ofFigureId,
         offset: Offset(
           offset: offset,
           limit: limit,
         ),
       );
-    } else if (ofVideo != null) {
+    } else if (ofVideoId != null) {
       momentEntities = await momentRepository.getMomentsOfVideo(
-        ofVideo,
+        ofVideoId,
         offset: Offset(
           offset: offset,
           limit: limit,

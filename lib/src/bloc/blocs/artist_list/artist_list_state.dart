@@ -21,11 +21,11 @@ class ArtistListState extends Equatable implements ArtistListParams {
   @override
   final String? ofSearch;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   final List<ArtistViewModel> artists;
   final bool hasReachedMax;
@@ -35,23 +35,23 @@ class ArtistListState extends Equatable implements ArtistListParams {
   const ArtistListState({
     this.status = ArtistListStatus.initial,
     this.ofSearch,
-    this.ofDance,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofDanceId,
+    this.ofFigureId,
+    this.ofVideoId,
     this.artists = const <ArtistViewModel>[],
     this.hasReachedMax = false,
     this.selectedArtists = const <ArtistViewModel>[],
     this.error,
   }) : assert(ofSearch == null ||
-            (ofDance == null && ofFigure == null && ofVideo == null));
+            (ofDanceId == null && ofFigureId == null && ofVideoId == null));
 
   @override
   List<Object?> get props => [
         status,
         ofSearch,
-        ofDance,
-        ofFigure,
-        ofVideo,
+        ofDanceId,
+        ofFigureId,
+        ofVideoId,
         artists,
         hasReachedMax,
         selectedArtists,
@@ -61,9 +61,9 @@ class ArtistListState extends Equatable implements ArtistListParams {
   ArtistListState copyWith({
     ArtistListStatus? status,
     Optional<String>? ofSearch,
-    Optional<String>? ofDance,
-    Optional<String>? ofFigure,
-    Optional<String>? ofVideo,
+    Optional<String>? ofDanceId,
+    Optional<String>? ofFigureId,
+    Optional<String>? ofVideoId,
     List<ArtistViewModel>? artists,
     bool? hasReachedMax,
     List<ArtistViewModel>? selectedArtists,
@@ -72,9 +72,9 @@ class ArtistListState extends Equatable implements ArtistListParams {
     return ArtistListState(
       status: status ?? this.status,
       ofSearch: ofSearch != null ? ofSearch.orNull : this.ofSearch,
-      ofDance: ofDance != null ? ofDance.orNull : this.ofDance,
-      ofFigure: ofFigure != null ? ofFigure.orNull : this.ofFigure,
-      ofVideo: ofVideo != null ? ofVideo.orNull : this.ofVideo,
+      ofDanceId: ofDanceId != null ? ofDanceId.orNull : this.ofDanceId,
+      ofFigureId: ofFigureId != null ? ofFigureId.orNull : this.ofFigureId,
+      ofVideoId: ofVideoId != null ? ofVideoId.orNull : this.ofVideoId,
       artists: artists ?? this.artists,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       selectedArtists: selectedArtists ?? this.selectedArtists,
@@ -86,9 +86,9 @@ class ArtistListState extends Equatable implements ArtistListParams {
   String toString() => 'ArtistListState{'
       'status: $status, '
       'ofSearch: $ofSearch, '
-      'ofDance: $ofDance, '
-      'ofFigure: $ofFigure, '
-      'ofVideo: $ofVideo, '
+      'ofDanceId: $ofDanceId, '
+      'ofFigureId: $ofFigureId, '
+      'ofVideoId: $ofVideoId, '
       'artists: $artists, '
       'hasReachedMax: $hasReachedMax, '
       'selectedArtists: $selectedArtists, '

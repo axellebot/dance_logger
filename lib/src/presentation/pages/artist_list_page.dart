@@ -26,11 +26,11 @@ class ArtistListPage extends StatelessWidget
   @override
   final String? ofSearch;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   const ArtistListPage({
     super.key,
@@ -45,22 +45,22 @@ class ArtistListPage extends StatelessWidget
     /// ArtistListWidgetParams
     this.artistListBloc,
     this.ofSearch,
-    this.ofDance,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofDanceId,
+    this.ofFigureId,
+    this.ofVideoId,
   })  : assert(shouldSelectOne == false || shouldSelectMultiple == false),
         assert(artistListBloc == null ||
             ofSearch == null ||
-            (ofDance == null && ofFigure == null && ofVideo == null));
+            (ofDanceId == null && ofFigureId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
     return ArtistListBlocProvider(
       artistListBloc: artistListBloc,
       ofSearch: ofSearch,
-      ofDance: ofDance,
-      ofFigure: ofFigure,
-      ofVideo: ofVideo,
+      ofDanceId: ofDanceId,
+      ofFigureId: ofFigureId,
+      ofVideoId: ofVideoId,
       preselectedArtists: preselectedItems,
       child: BlocBuilder<ArtistListBloc, ArtistListState>(
         builder: (context, state) {

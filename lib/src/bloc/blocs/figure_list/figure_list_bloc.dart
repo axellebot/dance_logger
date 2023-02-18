@@ -35,17 +35,17 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
 
       final List<FigureViewModel> figureViewModels;
       figureViewModels = await _fetchFigures(
-        ofArtist: event.ofArtist,
-        ofDance: event.ofDance,
-        ofVideo: event.ofVideo,
+        ofArtistId: event.ofArtistId,
+        ofDanceId: event.ofDanceId,
+        ofVideoId: event.ofVideoId,
         offset: 0,
       );
 
       emit(state.copyWith(
         status: FigureListStatus.loadingSuccess,
-        ofArtist: event.ofArtist,
-        ofDance: event.ofDance,
-        ofVideo: event.ofVideo,
+        ofArtistId: event.ofArtistId,
+        ofDanceId: event.ofDanceId,
+        ofVideoId: event.ofVideoId,
         figures: figureViewModels,
         hasReachedMax: figureViewModels.isEmpty,
       ));
@@ -70,9 +70,9 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
 
       final List<FigureViewModel> figureViewModels;
       figureViewModels = await _fetchFigures(
-        ofArtist: state.ofArtist,
-        ofDance: state.ofDance,
-        ofVideo: state.ofVideo,
+        ofArtistId: state.ofArtistId,
+        ofDanceId: state.ofDanceId,
+        ofVideoId: state.ofVideoId,
         offset: state.figures.length,
       );
 
@@ -101,9 +101,9 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
       ));
 
       List<FigureViewModel> figureViewModels = await _fetchFigures(
-        ofArtist: state.ofArtist,
-        ofDance: state.ofDance,
-        ofVideo: state.ofVideo,
+        ofArtistId: state.ofArtistId,
+        ofDanceId: state.ofDanceId,
+        ofVideoId: state.ofVideoId,
         offset: 0,
       );
 
@@ -186,34 +186,34 @@ class FigureListBloc extends Bloc<FigureListEvent, FigureListState> {
   }
 
   Future<List<FigureViewModel>> _fetchFigures({
-    String? ofArtist,
-    String? ofDance,
-    String? ofVideo,
+    String? ofArtistId,
+    String? ofDanceId,
+    String? ofVideoId,
     required int offset,
     int limit = 10,
   }) async {
     if (kDebugMode) print('$runtimeType:_fetchFigures');
 
     List<FigureEntity> figureEntities;
-    if (ofArtist != null) {
+    if (ofArtistId != null) {
       figureEntities = await figureRepository.getFiguresOfArtist(
-        ofArtist,
+        ofArtistId,
         offset: Offset(
           offset: offset,
           limit: limit,
         ),
       );
-    } else if (ofDance != null) {
+    } else if (ofDanceId != null) {
       figureEntities = await figureRepository.getFiguresOfDance(
-        ofDance,
+        ofDanceId,
         offset: Offset(
           offset: offset,
           limit: limit,
         ),
       );
-    } else if (ofVideo != null) {
+    } else if (ofVideoId != null) {
       figureEntities = await figureRepository.getFiguresOfVideo(
-        ofVideo,
+        ofVideoId,
         offset: Offset(
           offset: offset,
           limit: limit,

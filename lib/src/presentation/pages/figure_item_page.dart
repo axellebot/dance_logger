@@ -78,17 +78,17 @@ class _FigureDetailsPageState extends State<FigureDetailsPage> {
                         if (state.figure != null)
                           ArtistsSection(
                             // label: 'Artists of ${state.figure!.name}',
-                            ofFigure: state.figure!.id,
+                            ofFigureId: state.figure!.id,
                           ),
                         if (state.figure != null)
                           VideosSection(
                             // label: 'Videos of ${state.figure!.name}',
-                            ofFigure: state.figure!.id,
+                            ofFigureId: state.figure!.id,
                           ),
                         if (state.figure != null)
                           PracticesSection(
                             // label: 'Practices of ${state.figure!.name}',
-                            ofFigure: state.figure!.id,
+                            ofFigureId: state.figure!.id,
                           ),
                         if (state.figure != null)
                           EntityInfoListTile(

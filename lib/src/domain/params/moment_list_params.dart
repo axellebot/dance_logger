@@ -1,7 +1,11 @@
 abstract class MomentListParams {
-  final String? ofArtist;
-  final String? ofFigure;
-  final String? ofVideo;
+  final String? ofArtistId;
+  final String? ofFigureId;
+  final String? ofVideoId;
 
-  MomentListParams(this.ofArtist, this.ofFigure, this.ofVideo);
+  MomentListParams(
+    this.ofArtistId,
+    this.ofFigureId,
+    this.ofVideoId,
+  );
 }

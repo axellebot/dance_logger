@@ -24,9 +24,9 @@ class DanceListPage extends StatelessWidget
   @override
   final DanceListBloc? danceListBloc;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
   @override
   final List<DanceViewModel>? preselectedItems;
 
@@ -43,20 +43,20 @@ class DanceListPage extends StatelessWidget
     /// DanceListWidgetParams
     this.danceListBloc,
     this.ofSearch,
-    this.ofArtist,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofVideoId,
   })  : assert(shouldSelectOne == false || shouldSelectMultiple == false),
         assert(danceListBloc == null ||
             ofSearch == null ||
-            (ofArtist == null && ofVideo == null));
+            (ofArtistId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
     return DanceListBlocProvider(
       danceListBloc: danceListBloc,
       ofSearch: ofSearch,
-      ofArtist: ofArtist,
-      ofVideo: ofVideo,
+      ofArtistId: ofArtistId,
+      ofVideoId: ofVideoId,
       preselectedDances: preselectedItems,
       child: BlocBuilder<DanceListBloc, DanceListState>(
         builder: (context, state) {

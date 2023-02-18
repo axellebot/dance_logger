@@ -21,9 +21,9 @@ class DanceListState extends Equatable implements DanceListParams {
   @override
   final String? ofSearch;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   final List<DanceViewModel> dances;
   final bool hasReachedMax;
@@ -33,19 +33,19 @@ class DanceListState extends Equatable implements DanceListParams {
   const DanceListState({
     this.status = DanceListStatus.initial,
     this.ofSearch,
-    this.ofArtist,
-    this.ofVideo,
+    this.ofArtistId,
+    this.ofVideoId,
     this.dances = const <DanceViewModel>[],
     this.hasReachedMax = false,
     this.selectedDances = const <DanceViewModel>[],
     this.error,
-  }) : assert(ofSearch == null || (ofArtist == null && ofVideo == null));
+  }) : assert(ofSearch == null || (ofArtistId == null && ofVideoId == null));
 
   @override
   List<Object?> get props => [
         status,
         ofSearch,
-        ofArtist,
+        ofArtistId,
         dances,
         hasReachedMax,
         selectedDances,
@@ -55,8 +55,8 @@ class DanceListState extends Equatable implements DanceListParams {
   DanceListState copyWith({
     DanceListStatus? status,
     Optional<String>? ofSearch,
-    Optional<String>? ofArtist,
-    Optional<String>? ofVideo,
+    Optional<String>? ofArtistId,
+    Optional<String>? ofVideoId,
     List<DanceViewModel>? dances,
     bool? hasReachedMax,
     List<DanceViewModel>? selectedDances,
@@ -65,8 +65,8 @@ class DanceListState extends Equatable implements DanceListParams {
     return DanceListState(
       status: status ?? this.status,
       ofSearch: ofSearch != null ? ofSearch.orNull : this.ofSearch,
-      ofArtist: ofArtist != null ? ofArtist.orNull : this.ofArtist,
-      ofVideo: ofVideo != null ? ofVideo.orNull : this.ofVideo,
+      ofArtistId: ofArtistId != null ? ofArtistId.orNull : this.ofArtistId,
+      ofVideoId: ofVideoId != null ? ofVideoId.orNull : this.ofVideoId,
       dances: dances ?? this.dances,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       selectedDances: selectedDances ?? this.selectedDances,
@@ -78,8 +78,8 @@ class DanceListState extends Equatable implements DanceListParams {
   String toString() => 'DanceListState{'
       'status: $status, '
       'ofSearch: $ofSearch, '
-      'ofArtist: $ofArtist, '
-      'ofVideo: $ofVideo, '
+      'ofArtist: $ofArtistId, '
+      'ofVideo: $ofVideoId, '
       'dances: $dances, '
       'hasReachedMax: $hasReachedMax, '
       'selectedDances: $selectedDances, '

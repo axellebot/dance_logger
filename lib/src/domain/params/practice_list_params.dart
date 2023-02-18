@@ -1,8 +1,13 @@
 abstract class PracticeListParams {
-  final String? ofArtist;
-  final String? ofDance;
-  final String? ofFigure;
-  final String? ofVideo;
+  final String? ofArtistId;
+  final String? ofDanceId;
+  final String? ofFigureId;
+  final String? ofVideoId;
 
-  PracticeListParams(this.ofArtist, this.ofDance, this.ofFigure, this.ofVideo);
+  PracticeListParams(
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofFigureId,
+    this.ofVideoId,
+  );
 }

@@ -15,30 +15,30 @@ class ArtistListLoad extends ArtistListEvent implements ArtistListParams {
   @override
   final String? ofSearch;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
   @override
-  final String? ofVideo;
+  final String? ofVideoId;
 
   const ArtistListLoad({
     /// ArtistListParams
     this.ofSearch,
-    this.ofDance,
-    this.ofFigure,
-    this.ofVideo,
+    this.ofDanceId,
+    this.ofFigureId,
+    this.ofVideoId,
   }) : assert(ofSearch == null ||
-            (ofDance == null && ofFigure == null && ofVideo == null));
+            (ofDanceId == null && ofFigureId == null && ofVideoId == null));
 
   @override
-  List<Object?> get props => [ofSearch, ofDance, ofFigure, ofVideo];
+  List<Object?> get props => [ofSearch, ofDanceId, ofFigureId, ofVideoId];
 
   @override
   String toString() => 'ArtistListLoad{'
       'ofSearch: $ofSearch, '
-      'ofDance: $ofDance, '
-      'ofFigure: $ofFigure, '
-      'ofVideo: $ofVideo'
+      'ofDanceId: $ofDanceId, '
+      'ofFigureId: $ofFigureId, '
+      'ofVideoId: $ofVideoId'
       '}';
 }
 

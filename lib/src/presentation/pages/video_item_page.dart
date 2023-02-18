@@ -225,18 +225,18 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                                     if (state.video != null)
                                       FiguresSection(
                                         // label: 'Figures of ${state.video!.name}',
-                                        ofVideo: state.video!.id,
+                                        ofVideoId: state.video!.id,
                                       ),
                                     if (state.video != null)
                                       ArtistsSection(
                                         label: 'Cast',
                                         // label: 'Artists of ${state.video!.name}',
-                                        ofVideo: state.video!.id,
+                                        ofVideoId: state.video!.id,
                                       ),
                                     if (state.video != null)
                                       DancesSection(
                                         // label: 'Dances of ${state.video!.name}',
-                                        ofVideo: state.video!.id,
+                                        ofVideoId: state.video!.id,
                                       ),
                                     if (state.video != null)
                                       EntityInfoListTile(
@@ -287,7 +287,7 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                                   ),
                                   SliverFillRemaining(
                                     child: MomentListView(
-                                      ofVideo: state.video!.id,
+                                      ofVideoId: state.video!.id,
                                       onItemTap:
                                           (MomentViewModel momentViewModel) {
                                         _videoController

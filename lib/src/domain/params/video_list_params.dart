@@ -1,9 +1,13 @@
 import 'package:dance/domain.dart';
 
 abstract class VideoListParams implements SearchListParams {
-  final String? ofArtist;
-  final String? ofDance;
-  final String? ofFigure;
+  final String? ofArtistId;
+  final String? ofDanceId;
+  final String? ofFigureId;
 
-  VideoListParams(this.ofArtist, this.ofDance, this.ofFigure);
+  VideoListParams(
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofFigureId,
+  );
 }

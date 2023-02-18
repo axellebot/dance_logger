@@ -26,11 +26,11 @@ class VideoListPage extends StatelessWidget
   @override
   final String? ofSearch;
   @override
-  final String? ofArtist;
+  final String? ofArtistId;
   @override
-  final String? ofDance;
+  final String? ofDanceId;
   @override
-  final String? ofFigure;
+  final String? ofFigureId;
 
   const VideoListPage({
     super.key,
@@ -43,22 +43,22 @@ class VideoListPage extends StatelessWidget
     /// VideoListWidgetParams
     this.videoListBloc,
     this.ofSearch,
-    this.ofArtist,
-    this.ofDance,
-    this.ofFigure,
+    this.ofArtistId,
+    this.ofDanceId,
+    this.ofFigureId,
   })  : assert(shouldSelectOne == false || shouldSelectMultiple == false),
         assert(videoListBloc == null ||
             ofSearch == null ||
-            (ofArtist == null && ofDance == null && ofFigure == null));
+            (ofArtistId == null && ofDanceId == null && ofFigureId == null));
 
   @override
   Widget build(BuildContext context) {
     return VideoListBlocProvider(
       videoListBloc: videoListBloc,
       ofSearch: ofSearch,
-      ofArtist: ofArtist,
-      ofDance: ofDance,
-      ofFigure: ofFigure,
+      ofArtistId: ofArtistId,
+      ofDanceId: ofDanceId,
+      ofFigureId: ofFigureId,
       preselectedVideos: preselectedItems,
       child: BlocBuilder<VideoListBloc, VideoListState>(
         builder: (context, state) {
