@@ -19,7 +19,6 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
     on<VideoDetailLoad>(_onVideoDetailLoad);
     on<VideoDetailRefresh>(_onVideoDetailRefresh);
     on<VideoDetailDelete>(_onVideoDelete);
-    on<VideoDetailToggleRemote>(_onToggleRemote);
   }
 
   FutureOr<void> _onVideoDetailLazyLoad(
@@ -107,23 +106,6 @@ class VideoDetailBloc extends Bloc<VideoDetailEvent, VideoDetailState> {
     } on Error catch (error) {
       emit(state.copyWith(
         status: VideoDetailStatus.deleteFailure,
-        error: Optional.of(error),
-      ));
-    }
-  }
-
-  FutureOr<void> _onToggleRemote(
-    VideoDetailToggleRemote event,
-    Emitter<VideoDetailState> emit,
-  ) async {
-    if (kDebugMode) print('$runtimeType:_onToggleRemote');
-    if (state.video == null) return;
-    try {
-      emit(state.copyWith(
-        remoteOpened: Optional.of(event.opened),
-      ));
-    } on Error catch (error) {
-      emit(state.copyWith(
         error: Optional.of(error),
       ));
     }

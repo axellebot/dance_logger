@@ -13,8 +13,7 @@ abstract class MomentListWidgetParams implements MomentListParams {
   MomentListWidgetParams(this.momentListBloc);
 }
 
-class MomentListBlocProvider extends StatelessWidget
-    implements MomentListWidgetParams {
+class MomentListBlocProvider extends StatelessWidget implements MomentListWidgetParams {
   /// MomentListWidgetParams
   @override
   final MomentListBloc? momentListBloc;
@@ -45,8 +44,7 @@ class MomentListBlocProvider extends StatelessWidget
 
     /// Widget params
     required this.child,
-  }) : assert(momentListBloc == null ||
-            (ofArtistId == null && ofFigureId == null && ofVideoId == null));
+  }) : assert(momentListBloc == null || (ofArtistId == null && ofFigureId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +57,7 @@ class MomentListBlocProvider extends StatelessWidget
       return BlocProvider(
         create: (context) {
           final momentListBloc = MomentListBloc(
-            momentRepository:
-                Provider.of<MomentRepository>(context, listen: false),
+            momentRepository: Provider.of<MomentRepository>(context, listen: false),
             mapper: ModelMapper(),
           );
 
@@ -82,8 +79,7 @@ class MomentListBlocProvider extends StatelessWidget
   }
 }
 
-class MomentListView extends StatefulWidget
-    implements MomentListWidgetParams, EntityListViewParams {
+class MomentListView extends StatefulWidget implements MomentListWidgetParams, EntityListViewParams {
   /// MomentListWidgetParams
   @override
   final MomentListBloc? momentListBloc;
@@ -121,8 +117,7 @@ class MomentListView extends StatefulWidget
     this.scrollDirection = Axis.vertical,
     this.physics,
     this.padding,
-  }) : assert(momentListBloc == null ||
-            (ofArtistId == null && ofFigureId == null && ofVideoId == null));
+  }) : assert(momentListBloc == null || (ofArtistId == null && ofFigureId == null && ofVideoId == null));
 
   @override
   State<MomentListView> createState() => _MomentListViewState();
@@ -169,12 +164,8 @@ class _MomentListViewState extends State<MomentListView> {
 
             return EasyRefresh(
               controller: _refreshController,
-              header: (widget.scrollDirection == Axis.horizontal)
-                  ? const MaterialHeader()
-                  : null,
-              footer: (widget.scrollDirection == Axis.horizontal)
-                  ? const MaterialFooter()
-                  : null,
+              header: (widget.scrollDirection == Axis.horizontal) ? const MaterialHeader() : null,
+              footer: (widget.scrollDirection == Axis.horizontal) ? const MaterialFooter() : null,
               onRefresh: () {
                 momentListBloc.add(const MomentListRefresh());
               },
@@ -188,13 +179,12 @@ class _MomentListViewState extends State<MomentListView> {
                 itemCount: state.moments.length,
                 itemBuilder: (context, index) {
                   final MomentViewModel moment = state.moments[index];
-                  final MomentListBloc momentListBloc =
-                      BlocProvider.of<MomentListBloc>(context);
+                  final MomentListBloc momentListBloc = BlocProvider.of<MomentListBloc>(context);
                   switch (widget.scrollDirection) {
                     case Axis.vertical:
                       if (state.selectedMoments.isEmpty) {
                         return MomentListTile(
-                          moment: moment,
+                          ofMoment: moment,
                           onTap: widget.onItemTap,
                           onLongPress: (item) {
                             momentListBloc.add(
@@ -204,9 +194,8 @@ class _MomentListViewState extends State<MomentListView> {
                         );
                       } else {
                         return CheckboxMomentListTile(
-                          moment: moment,
-                          value: state.selectedMoments
-                              .any((element) => element.id == moment.id),
+                          ofMoment: moment,
+                          value: state.selectedMoments.any((element) => element.id == moment.id),
                           onChanged: (bool? value) {
                             momentListBloc.add(
                               (value == true)
@@ -218,7 +207,7 @@ class _MomentListViewState extends State<MomentListView> {
                       }
                     case Axis.horizontal:
                       return MomentChip(
-                        moment: moment,
+                        ofMoment: moment,
                         onTap: widget.onItemTap,
                       );
                   }
@@ -238,8 +227,7 @@ class _MomentListViewState extends State<MomentListView> {
   }
 }
 
-class MomentsSection extends StatelessWidget
-    implements MomentListWidgetParams, EntitiesSectionWidgetParams {
+class MomentsSection extends StatelessWidget implements MomentListWidgetParams, EntitiesSectionWidgetParams {
   /// MomentListWidgetParams
   @override
   final MomentListBloc? momentListBloc;
@@ -274,8 +262,7 @@ class MomentsSection extends StatelessWidget
 
     /// Custom
     this.onItemTap,
-  }) : assert(momentListBloc == null ||
-            (ofArtistId == null && ofFigureId == null && ofVideoId == null));
+  }) : assert(momentListBloc == null || (ofArtistId == null && ofFigureId == null && ofVideoId == null));
 
   @override
   Widget build(BuildContext context) {

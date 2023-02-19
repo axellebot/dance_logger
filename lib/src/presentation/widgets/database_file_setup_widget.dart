@@ -102,7 +102,7 @@ class DatabaseFileSettingDialog extends StatelessWidget {
 
                   /// TODO: Replace when flutter will have device explorer capability
                   fileName: fieldController.text,
-                ));
+                ),);
               }
             },
           ),

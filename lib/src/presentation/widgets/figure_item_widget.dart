@@ -236,3 +236,54 @@ class FigureCard extends StatelessWidget implements FigureDetailWidgetParams {
     );
   }
 }
+
+class FigureTextForMoment extends StatelessWidget implements FigureDetailWidgetParams {
+  /// FigureDetailWidgetParams
+  @override
+  final FigureDetailBloc? figureDetailBloc;
+  @override
+  final FigureViewModel? ofFigure;
+  @override
+  final String? ofFigureId;
+
+  const FigureTextForMoment({
+    super.key,
+
+    /// FigureDetailWidgetParams
+    this.figureDetailBloc,
+    this.ofFigure,
+    this.ofFigureId,
+  }) : assert(figureDetailBloc == null || ofFigure == null || ofFigureId == null, "");
+
+  @override
+  Widget build(BuildContext context) {
+    return FigureDetailBlocProvider(
+      figureDetailBloc: figureDetailBloc,
+      ofFigure: ofFigure,
+      ofFigureId: ofFigureId,
+      child: BlocBuilder<FigureDetailBloc, FigureDetailState>(
+        builder: (BuildContext context, FigureDetailState state) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${state.figure?.name}',
+                overflow: TextOverflow.ellipsis,
+              ),
+              IconButton(
+                onPressed: () {
+                  AutoRouter.of(context).push(
+                    FigureDetailsRoute(
+                      figureDetailBloc: BlocProvider.of<FigureDetailBloc>(context),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.info_outline),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}

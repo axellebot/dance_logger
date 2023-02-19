@@ -103,22 +103,27 @@ class ArtistListTile extends StatelessWidget implements ArtistDetailWidgetParams
       child: BlocBuilder<ArtistDetailBloc, ArtistDetailState>(
         builder: (BuildContext context, ArtistDetailState state) {
           return ListTile(
-            title: Text(
-              '${state.artist?.name}',
-              overflow: TextOverflow.ellipsis,
-            ),
+            title: (state.artist != null)
+                ? Text(
+                    '${state.artist?.name}',
+                    overflow: TextOverflow.ellipsis,
+                  )
+                : const Text('Loading...'),
+            // TODO : Add shimmer text
             leading: Hero(
               tag: 'img-${state.artist?.id ?? state.ofArtistId}',
               transitionOnUserGestures: false,
-              child: InitialCircleAvatar(
-                text: '${state.artist?.name}',
-                image: (state.artist?.imageUrl != null)
-                    ? NetworkImage(
-                        state.artist!.imageUrl!,
-                      )
-                    : null,
-                radius: AppStyles.artistThumbnailRadius,
-              ),
+              child: (state.artist != null)
+                  ? InitialCircleAvatar(
+                      text: '${state.artist?.name}',
+                      image: (state.artist?.imageUrl != null)
+                          ? NetworkImage(
+                              state.artist!.imageUrl!,
+                            )
+                          : null,
+                      radius: AppStyles.artistThumbnailRadius,
+                    )
+                  : const CircularProgressIndicator(),
             ),
             onTap: (onTap != null)
                 ? () {

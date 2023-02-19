@@ -1,20 +1,80 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:dance/bloc.dart';
+import 'package:dance/domain.dart';
 import 'package:dance/presentation.dart';
 import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
-// TODO : Add `MomentDetailWidgetParams` and `MomentDetailBlocProvider`
-// abstract class MomentDetailWidgetParams implements MomentDetailParams {
-//   final MomentDetailBloc? momentDetailBloc;
-//   final MomentViewModel? ofMoment;
-//
-//   MomentDetailWidgetParams(this.momentDetailBloc, this.ofMoment);
-// }
+abstract class MomentDetailWidgetParams implements MomentDetailParams {
+  final MomentDetailBloc? momentDetailBloc;
+  final MomentViewModel? ofMoment;
 
-class MomentListTile extends StatelessWidget {
-  final MomentViewModel moment;
+  MomentDetailWidgetParams(this.momentDetailBloc, this.ofMoment);
+}
+
+class MomentDetailBlocProvider extends StatelessWidget implements MomentDetailWidgetParams {
+  /// MomentDetailWidgetParams
+  @override
+  final MomentDetailBloc? momentDetailBloc;
+  @override
+  final MomentViewModel? ofMoment;
+  @override
+  final String? ofMomentId;
+
+  /// Widget params
+  final Widget child;
+
+  const MomentDetailBlocProvider({
+    super.key,
+
+    /// MomentDetailWidgetParams
+    this.momentDetailBloc,
+    this.ofMoment,
+    this.ofMomentId,
+
+    /// Widget params
+    required this.child,
+  }) : assert(momentDetailBloc == null || ofMoment == null || ofMomentId == null);
+
+  @override
+  Widget build(BuildContext context) {
+    if (momentDetailBloc != null) {
+      return BlocProvider<MomentDetailBloc>.value(
+        value: momentDetailBloc!,
+        child: child,
+      );
+    } else {
+      return BlocProvider<MomentDetailBloc>(
+        create: (context) {
+          final momentDetailBloc = MomentDetailBloc(
+            momentRepository: Provider.of<MomentRepository>(context, listen: false),
+            mapper: ModelMapper(),
+          );
+
+          if (ofMoment != null) {
+            momentDetailBloc.add((MomentDetailLazyLoad(moment: ofMoment!)));
+          } else if (ofMomentId != null) {
+            momentDetailBloc.add((MomentDetailLoad(momentId: ofMomentId!)));
+          }
+
+          return momentDetailBloc;
+        },
+        child: child,
+      );
+    }
+  }
+}
+
+class MomentListTile extends StatelessWidget implements MomentDetailWidgetParams {
+  /// MomentDetailWidgetParams
+  @override
+  final MomentDetailBloc? momentDetailBloc;
+  @override
+  final MomentViewModel? ofMoment;
+  @override
+  final String? ofMomentId;
 
   /// ListTile parameters
   final ItemCallback<MomentViewModel>? onTap;
@@ -23,37 +83,62 @@ class MomentListTile extends StatelessWidget {
 
   const MomentListTile({
     super.key,
-    required this.moment,
+
+    /// MomentDetailWidgetParams
+    this.momentDetailBloc,
+    this.ofMoment,
+    this.ofMomentId,
 
     /// ListTile parameters
     this.onTap,
     this.onLongPress,
     this.selected = false,
-  });
+  }) : assert(momentDetailBloc == null || ofMoment == null || ofMomentId == null);
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: (moment.endTime != null)
-          ? Text('${printDuration(moment.startTime)}-${printDuration(moment.endTime)}')
-          : Text('${printDuration(moment.startTime)}'),
-      onTap: (onTap != null)
-          ? () {
-              onTap!(moment);
-            }
-          : null,
-      onLongPress: (onLongPress != null)
-          ? () {
-              onLongPress!(moment);
-            }
-          : null,
-      selected: selected,
+    return MomentDetailBlocProvider(
+      momentDetailBloc: momentDetailBloc,
+      ofMoment: ofMoment,
+      ofMomentId: ofMomentId,
+      child: BlocBuilder<MomentDetailBloc, MomentDetailState>(
+        builder: (BuildContext context, MomentDetailState state) {
+          return ListTile(
+            title: (state.moment != null)
+                ? (state.moment?.endTime != null)
+                    ? Text('${printDuration(state.moment?.startTime)}-${printDuration(state.moment?.endTime)}')
+                    : Text('${printDuration(state.moment?.startTime)}')
+                : const Text('Loading ...'),
+
+            /// TODO: Add shimmer text
+
+            subtitle: (state.moment != null) ? FigureTextForMoment(ofFigureId: state.moment?.figureId) : null,
+            onTap: (onTap != null)
+                ? () {
+                    onTap!(state.moment!);
+                  }
+                : null,
+            onLongPress: (onLongPress != null)
+                ? () {
+                    onLongPress!(state.moment!);
+                  }
+                : null,
+            selected: selected,
+          );
+        },
+      ),
     );
   }
 }
 
-class CheckboxMomentListTile extends StatelessWidget {
-  final MomentViewModel moment;
+class CheckboxMomentListTile extends StatelessWidget implements MomentDetailWidgetParams {
+  /// MomentDetailWidgetParams
+  @override
+  final MomentDetailBloc? momentDetailBloc;
+  @override
+  final MomentViewModel? ofMoment;
+  @override
+  final String? ofMomentId;
 
   /// CheckboxLitTile parameters
   final bool? value;
@@ -61,52 +146,92 @@ class CheckboxMomentListTile extends StatelessWidget {
 
   const CheckboxMomentListTile({
     super.key,
-    required this.moment,
+
+    /// MomentDetailWidgetParams
+    this.momentDetailBloc,
+    this.ofMoment,
+    this.ofMomentId,
 
     /// CheckboxLitTile parameters
     required this.value,
     required this.onChanged,
-  });
+  }) : assert(momentDetailBloc == null || ofMoment == null || ofMomentId == null);
 
   @override
   Widget build(BuildContext context) {
-    return CheckboxListTile(
-      title: (moment.endTime != null)
-          ? Text('${printDuration(moment.startTime)}-${printDuration(moment.endTime)}')
-          : Text('${printDuration(moment.startTime)}'),
-      value: value,
-      onChanged: onChanged,
+    return MomentDetailBlocProvider(
+      momentDetailBloc: momentDetailBloc,
+      ofMoment: ofMoment,
+      ofMomentId: ofMomentId,
+      child: BlocBuilder<MomentDetailBloc, MomentDetailState>(
+        builder: (BuildContext context, MomentDetailState state) {
+          return CheckboxListTile(
+            title: (state.moment != null)
+                ? (state.moment?.endTime != null)
+                    ? Text('${printDuration(state.moment?.startTime)}-${printDuration(state.moment?.endTime)}')
+                    : Text('${printDuration(state.moment?.startTime)}')
+                : const Text('Loading ...'),
+
+            /// TODO: Add shimmer text
+            value: value,
+            onChanged: onChanged,
+          );
+        },
+      ),
     );
   }
 }
 
-class MomentChip extends StatelessWidget {
-  final MomentViewModel moment;
+class MomentChip extends StatelessWidget implements MomentDetailWidgetParams {
+  /// MomentDetailWidgetParams
+  @override
+  final MomentDetailBloc? momentDetailBloc;
+  @override
+  final MomentViewModel? ofMoment;
+  @override
+  final String? ofMomentId;
+
+  /// Chip parameters
   final ItemCallback<MomentViewModel>? onTap;
 
   const MomentChip({
     super.key,
-    required this.moment,
+
+    /// MomentDetailWidgetParams
+    this.momentDetailBloc,
+    this.ofMoment,
+    this.ofMomentId,
+
+    /// Chip parameters
     this.onTap,
-  });
+  }) : assert(momentDetailBloc == null || ofMoment == null || ofMomentId == null);
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        if (onTap != null) {
-          onTap!(moment);
-        }
-      },
-      child: Chip(
-        label: (moment.endTime != null)
-            ? Text('${printDuration(moment.startTime)}-${printDuration(moment.endTime!)}')
-            : Text(printDuration(moment.startTime)!),
-        deleteIcon: const Icon(Icons.edit),
-        onDeleted: () {
-          AutoRouter.of(context).push(MomentEditRoute(momentId: moment.id));
+    return MomentDetailBlocProvider(
+      momentDetailBloc: momentDetailBloc,
+      ofMoment: ofMoment,
+      ofMomentId: ofMomentId,
+      child: BlocBuilder<MomentDetailBloc, MomentDetailState>(
+        builder: (BuildContext context, MomentDetailState state) {
+          return GestureDetector(
+            onTap: () {
+              if (onTap != null) {
+                onTap!(state.moment!);
+              }
+            },
+            child: Chip(
+              label: (state.moment?.endTime != null)
+                  ? Text('${printDuration(state.moment?.startTime)}-${printDuration(state.moment?.endTime!)}')
+                  : Text(printDuration(state.moment?.startTime)!),
+              deleteIcon: const Icon(Icons.edit),
+              onDeleted: () {
+                AutoRouter.of(context).push(MomentEditRoute(momentId: state.moment?.id));
+              },
+              deleteButtonTooltipMessage: 'Edit',
+            ),
+          );
         },
-        deleteButtonTooltipMessage: 'Edit',
       ),
     );
   }

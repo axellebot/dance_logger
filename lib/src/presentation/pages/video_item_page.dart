@@ -49,6 +49,8 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
     controlFinishRefresh: true,
   );
 
+  final videoRemoteBloc = VideoRemoteBloc();
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<VideoDetailBloc, VideoDetailState>(
@@ -84,10 +86,11 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                   double videoPlayerFactor =
                       ((9 / 16) * MediaQuery.of(context).size.width) / MediaQuery.of(context).size.height;
                   double remoteFactor = 1 - videoPlayerFactor;
-                  return BlocListener<VideoDetailBloc, VideoDetailState>(
-                    listenWhen: (VideoDetailState previous, VideoDetailState current) =>
+                  return BlocListener<VideoRemoteBloc, VideoRemoteState>(
+                    bloc: videoRemoteBloc,
+                    listenWhen: (VideoRemoteState previous, VideoRemoteState current) =>
                         previous.remoteOpened != current.remoteOpened,
-                    listener: (BuildContext context, VideoDetailState state) {
+                    listener: (BuildContext context, VideoRemoteState state) {
                       if (state.remoteOpened != null) {
                         if (state.remoteOpened!) {
                           _bottomSheetController.animateTo(
@@ -129,14 +132,18 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                                             ),
                                             controller: _videoController!,
                                             bottomActions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  videoDetailBloc.add(VideoDetailToggleRemote(
-                                                    opened: !(state.remoteOpened ?? false) ,
-                                                  ));
-                                                },
-                                                child: const Text('Moments >'),
-                                              ),
+                                              BlocBuilder<VideoRemoteBloc, VideoRemoteState>(
+                                                  bloc: videoRemoteBloc,
+                                                  builder: (BuildContext context, VideoRemoteState state) {
+                                                    return TextButton(
+                                                      onPressed: () {
+                                                        videoRemoteBloc.add(VideoRemoteToggleRemote(
+                                                          opened: !(state.remoteOpened ?? false) ,
+                                                        ));
+                                                      },
+                                                      child: const Text('Moments >'),
+                                                    );
+                                                  }),
                                               const SizedBox(width: 14.0),
                                               CurrentPosition(),
                                               const SizedBox(width: 8.0),
@@ -254,7 +261,7 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                                     pinned: true,
                                     delegate: MomentHeaderDelegate(
                                       onExit: () {
-                                        videoDetailBloc.add(const VideoDetailToggleRemote(
+                                        videoRemoteBloc.add(const VideoRemoteToggleRemote(
                                           opened: false,
                                         ));
                                       },
