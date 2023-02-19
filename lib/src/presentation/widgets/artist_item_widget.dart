@@ -182,10 +182,13 @@ class CheckboxArtistListTile extends StatelessWidget implements ArtistDetailWidg
       child: BlocBuilder<ArtistDetailBloc, ArtistDetailState>(
         builder: (BuildContext context, ArtistDetailState state) {
           return CheckboxListTile(
-            title: Text(
-              '${state.artist?.name}',
-              overflow: TextOverflow.ellipsis,
-            ),
+            title: (state.artist != null)
+                ? Text(
+                    '${state.artist?.name}',
+                    overflow: TextOverflow.ellipsis,
+                  )
+                : const Text('Loading...'),
+            // TODO : Add shimmer text
             value: value,
             onChanged: onChanged,
           );
@@ -239,14 +242,16 @@ class ArtistCard extends StatelessWidget implements ArtistDetailWidgetParams {
                       shape: const CircleBorder(),
                       child: InkWell(
                         onTap: onTap,
-                        child: InitialCircleAvatar(
-                          text: '${state.artist?.name}',
-                          image: (state.artist?.imageUrl) != null
-                              ? NetworkImage(
-                                  state.artist!.imageUrl!,
-                                )
-                              : null,
-                        ),
+                        child: (state.artist != null)
+                            ? InitialCircleAvatar(
+                                text: '${state.artist?.name}',
+                                image: (state.artist?.imageUrl) != null
+                                    ? NetworkImage(
+                                        state.artist!.imageUrl!,
+                                      )
+                                    : null,
+                              )
+                            : const CircularProgressIndicator(),
                       ),
                     ),
                   ),
@@ -256,10 +261,13 @@ class ArtistCard extends StatelessWidget implements ArtistDetailWidgetParams {
                   child: Column(
                     children: [
                       const SizedBox(height: 5),
-                      Text(
-                        '${state.artist?.name}',
-                        overflow: TextOverflow.ellipsis,
-                      )
+                      (state.artist != null)
+                          ? Text(
+                              '${state.artist?.name}',
+                              overflow: TextOverflow.ellipsis,
+                            )
+                          : const Text('Loading...'),
+                      // TODO : Add shimmer text
                     ],
                   ),
                 ),
