@@ -17,4 +17,3 @@ export './practice_list/practice_list.dart';
 export './video_detail/video_detail.dart';
 export './video_edit/video_edit.dart';
 export './video_list/video_list.dart';
-export './video_remote/video_remote.dart';
