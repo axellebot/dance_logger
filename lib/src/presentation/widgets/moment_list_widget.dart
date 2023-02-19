@@ -282,7 +282,7 @@ class MomentsSection extends StatelessWidget implements MomentListWidgetParams, 
                 onTap: onSectionTap,
               ),
               SizedBox(
-                height: AppStyles.chipHeight,
+                height: AppStyles.momentSectionHeight,
                 child: MomentListView(
                   momentListBloc: BlocProvider.of<MomentListBloc>(context),
                   scrollDirection: Axis.horizontal,

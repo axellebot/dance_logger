@@ -108,13 +108,13 @@ class VideoListTile extends StatelessWidget implements VideoDetailWidgetParams {
               overflow: TextOverflow.ellipsis,
             ),
             leading: Hero(
-              tag: 'img-${state.video?.id ?? state.ofVideoId}',
+              tag: 'img-video-${state.video?.id ?? state.ofVideoId}',
               transitionOnUserGestures: false,
               child: AspectRatio(
                 aspectRatio: 16 / 9,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(
-                    AppStyles.videoListTileThumbnailRadius,
+                    AppStyles.videoThumbnailRadius,
                   ),
                   child: (isYoutube(state.video?.url))
                       ? Image.network(
@@ -149,8 +149,14 @@ class VideoListTile extends StatelessWidget implements VideoDetailWidgetParams {
   }
 }
 
-class CheckboxVideoListTile extends StatelessWidget {
-  final VideoViewModel video;
+class CheckboxVideoListTile extends StatelessWidget implements VideoDetailWidgetParams {
+  /// VideoDetailWidgetParams
+  @override
+  final VideoDetailBloc? videoDetailBloc;
+  @override
+  final VideoViewModel? ofVideo;
+  @override
+  final String? ofVideoId;
 
   /// CheckboxLitTile parameters
   final bool? value;
@@ -158,7 +164,11 @@ class CheckboxVideoListTile extends StatelessWidget {
 
   const CheckboxVideoListTile({
     super.key,
-    required this.video,
+
+    /// VideoDetailWidgetParams
+    this.videoDetailBloc,
+    this.ofVideo,
+    this.ofVideoId,
 
     /// CheckboxLitTile parameters
     required this.value,
@@ -167,73 +177,105 @@ class CheckboxVideoListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CheckboxListTile(
-      title: Text(video.name),
-      subtitle: Text(video.url),
-      value: value,
-      onChanged: onChanged,
+    return VideoDetailBlocProvider(
+      videoDetailBloc: videoDetailBloc,
+      ofVideo: ofVideo,
+      ofVideoId: ofVideoId,
+      child: BlocBuilder<VideoDetailBloc, VideoDetailState>(
+        builder: (BuildContext context, VideoDetailState state) {
+          return CheckboxListTile(
+            title: (state.video != null) ? Text('${state.video?.name}') : const Text('Loading ...'),
+            subtitle: (state.video != null) ? Text('${state.video?.url}') : const Text('Loading ...'),
+            value: value,
+            onChanged: onChanged,
+          );
+        },
+      ),
     );
   }
 }
 
-class VideoCard extends StatelessWidget {
-  final VideoViewModel video;
+class VideoCard extends StatelessWidget implements VideoDetailWidgetParams {
+  /// VideoDetailWidgetParams
+  @override
+  final VideoDetailBloc? videoDetailBloc;
+  @override
+  final VideoViewModel? ofVideo;
+  @override
+  final String? ofVideoId;
 
   const VideoCard({
     super.key,
-    required this.video,
+
+    /// VideoDetailWidgetParams
+    this.videoDetailBloc,
+    this.ofVideo,
+    this.ofVideoId,
   });
 
   @override
   Widget build(BuildContext context) {
-    onTap() => AutoRouter.of(context).push(
-          VideoDetailsRoute(
-            videoDetailBloc: BlocProvider.of<VideoDetailBloc>(context),
-          ),
-        );
-    return Padding(
-      padding: const EdgeInsets.all(AppStyles.itemPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Hero(
-              tag: 'img-${video.id}',
-              transitionOnUserGestures: false,
-              child: Material(
-                clipBehavior: Clip.antiAlias,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    AppStyles.videoListTileThumbnailRadius,
-                  ),
+    return VideoDetailBlocProvider(
+      videoDetailBloc: videoDetailBloc,
+      ofVideo: ofVideo,
+      ofVideoId: ofVideoId,
+      child: BlocBuilder<VideoDetailBloc, VideoDetailState>(
+        builder: (BuildContext context, VideoDetailState state) {
+          onTap() => AutoRouter.of(context).push(
+                VideoDetailsRoute(
+                  videoDetailBloc: BlocProvider.of<VideoDetailBloc>(context),
                 ),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(
-                    AppStyles.videoListTileThumbnailRadius,
-                  ),
-                  onTap: onTap,
-                  child: Image.network(
-                    'https://img.youtube.com/vi/${getYoutubeId(video.url)}/mqdefault.jpg',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: onTap,
+              );
+          return Padding(
+            padding: const EdgeInsets.all(AppStyles.itemPadding),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 5),
-                Text(
-                  video.name,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.left,
+                Expanded(
+                  child: Hero(
+                    tag: 'img-video-${state.video?.id ?? state.ofVideoId}',
+                    transitionOnUserGestures: false,
+                    child: Material(
+                      clipBehavior: Clip.antiAlias,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppStyles.videoThumbnailRadius,
+                        ),
+                      ),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(
+                          AppStyles.videoThumbnailRadius,
+                        ),
+                        onTap: onTap,
+                        child: (state.video != null && isYoutube(state.video?.url))
+                            ? Image.network(
+                                'https://img.youtube.com/vi/${getYoutubeId(state.video!.url)}/mqdefault.jpg',
+                                fit: BoxFit.cover,
+                              )
+                            : const SizedBox(),
+                      ),
+                    ),
+                  ),
                 ),
+                GestureDetector(
+                  onTap: onTap,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 5),
+                      (state.video != null)
+                          ? Text(
+                              '${state.video?.name}',
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.left,
+                            )
+                          : const Text('Loading ...')
+                    ],
+                  ),
+                )
               ],
             ),
-          )
-        ],
+          );
+        },
       ),
     );
   }

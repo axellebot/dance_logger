@@ -199,7 +199,7 @@ class _VideoListViewState extends State<VideoListView> {
                         );
                       } else {
                         return CheckboxVideoListTile(
-                          video: video,
+                          ofVideo: video,
                           value: state.selectedVideos.any((element) => element.id == video.id),
                           onChanged: (bool? value) {
                             videoListBloc.add(
@@ -209,7 +209,7 @@ class _VideoListViewState extends State<VideoListView> {
                         );
                       }
                     case Axis.horizontal:
-                      return VideoCard(video: video);
+                      return VideoCard(ofVideo: video);
                   }
                 },
               ),

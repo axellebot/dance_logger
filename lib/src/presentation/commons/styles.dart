@@ -92,6 +92,12 @@ class AppStyles {
   static const double listHeaderDefaultHeightMin = 40.0;
 
   /// --------------------------------------------------------------------------
+  ///                                Section
+  /// --------------------------------------------------------------------------
+
+  static const double sectionHeight = 80.0;
+
+  /// --------------------------------------------------------------------------
   ///                                Item
   /// --------------------------------------------------------------------------
 
@@ -125,13 +131,20 @@ class AppStyles {
   /// --------------------------------------------------------------------------
 
   static const double artistThumbnailRadius = 20.0;
+  static const double artistSectionHeight = 120.0;
 
   /// --------------------------------------------------------------------------
   ///                              Video
   /// --------------------------------------------------------------------------
 
-  static const double videoListTileThumbnailRadius = 10.0;
+  static const double videoThumbnailRadius = 10.0;
   static const double videoSectionHeight = 140.0;
+
+  /// --------------------------------------------------------------------------
+  ///                              Video
+  /// --------------------------------------------------------------------------
+
+  static const double momentSectionHeight = chipHeight;
 
   /// Sort
   static const double sortDialogWidth = 200.0;

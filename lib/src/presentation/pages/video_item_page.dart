@@ -49,6 +49,8 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
     controlFinishRefresh: true,
   );
 
+  final ScrollController _scrollController = ScrollController();
+
   double? remoteFactor;
 
   @override
@@ -90,132 +92,120 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                     children: [
                       EasyRefresh(
                         controller: _refreshController,
-                        header: const ClassicHeader(
-                          position: IndicatorPosition.locator,
-                        ),
                         onRefresh: () {
                           videoDetailBloc.add(const VideoDetailRefresh());
                         },
-                        child: CustomScrollView(
-                          slivers: [
-                            SliverToBoxAdapter(
-                              child: Hero(
-                                tag: 'img-${state.video?.id ?? state.ofVideoId}',
-                                transitionOnUserGestures: false,
-                                child: (_videoController != null)
-                                    ? YoutubePlayer(
-                                        aspectRatio: 16 / 9,
-                                        thumbnail: VideoThumbnail(
-                                          url: state.video?.url,
-                                        ),
-                                        controller: _videoController!,
-                                        bottomActions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              if (_bottomSheetController.size <= 0.0) {
-                                                _bottomSheetController.animateTo(
-                                                  remoteFactor!,
-                                                  duration: const Duration(seconds: 1),
-                                                  curve: Curves.easeInOutCubic,
-                                                );
-                                              } else {
-                                                _bottomSheetController.animateTo(
-                                                  0.0,
-                                                  duration: const Duration(seconds: 1),
-                                                  curve: Curves.easeInOutCubic,
-                                                );
-                                              }
-                                            },
-                                            child: const Text('Moments >'),
+                        child: ListView(
+                          controller: _scrollController,
+                          children: [
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Hero(
+                                  tag: 'img-video-${state.video?.id ?? state.ofVideoId}',
+                                  transitionOnUserGestures: false,
+                                  child: (_videoController != null)
+                                      ? YoutubePlayer(
+                                          aspectRatio: 16 / 9,
+                                          thumbnail: VideoThumbnail(
+                                            url: state.video?.url,
                                           ),
-                                          const SizedBox(width: 14.0),
-                                          CurrentPosition(),
-                                          const SizedBox(width: 8.0),
-                                          ProgressBar(
-                                            isExpanded: true,
-                                          ),
-                                          RemainingDuration(),
-                                          const PlaybackSpeedButton(),
-                                          // FullScreenButton(),
-                                        ],
-                                      )
-                                    : VideoThumbnail(url: state.video?.url),
-                              ),
-                            ),
-                            SliverToBoxAdapter(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ListTile(
-                                    title: Text(state.video?.name ?? 'Video Title'),
-                                    subtitle: Text(state.video?.url ?? 'Video url'),
-                                  ),
-                                  SizedBox(
-                                    height: 40,
-                                    child: ListView(
-                                      scrollDirection: Axis.horizontal,
-                                      children: [
-                                        const SizedBox(width: 10),
-                                        ActionChip(
-                                          label: const Text("Copy URL"),
-                                          avatar: const Icon(Icons.copy),
-                                          onPressed: () {
-                                            Clipboard.setData(ClipboardData(text: state.video!.url));
-                                          },
-                                        ),
-                                        const SizedBox(width: 10),
-                                        ActionChip(
-                                          label: const Text("Edit"),
-                                          avatar: const Icon(Icons.edit),
-                                          onPressed: () {
-                                            AutoRouter.of(context).push(
-                                              VideoEditRoute(
-                                                videoId: state.video?.id,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        const SizedBox(width: 10),
-                                        DeleteActionChip(
-                                          onDeleted: () {
-                                            videoDetailBloc.add(const VideoDetailDelete());
-                                          },
+                                          controller: _videoController!,
+                                          bottomActions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                if (_bottomSheetController.size <= 0.0) {
+                                                  _bottomSheetController.animateTo(
+                                                    remoteFactor!,
+                                                    duration: const Duration(seconds: 1),
+                                                    curve: Curves.easeInOutCubic,
+                                                  );
+                                                } else {
+                                                  _bottomSheetController.animateTo(
+                                                    0.0,
+                                                    duration: const Duration(seconds: 1),
+                                                    curve: Curves.easeInOutCubic,
+                                                  );
+                                                }
+                                              },
+                                              child: const Text('Moments >'),
+                                            ),
+                                            const SizedBox(width: 14.0),
+                                            CurrentPosition(),
+                                            const SizedBox(width: 8.0),
+                                            ProgressBar(
+                                              isExpanded: true,
+                                            ),
+                                            RemainingDuration(),
+                                            const PlaybackSpeedButton(),
+                                            // FullScreenButton(),
+                                          ],
                                         )
-                                      ],
-                                    ),
+                                      : VideoThumbnail(url: state.video?.url),
+                                ),
+                                ListTile(
+                                  title: Text(state.video?.name ?? 'Video Title'),
+                                  subtitle: Text(state.video?.url ?? 'Video url'),
+                                ),
+                                SizedBox(
+                                  height: 40,
+                                  child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: [
+                                      const SizedBox(width: 10),
+                                      ActionChip(
+                                        label: const Text("Copy URL"),
+                                        avatar: const Icon(Icons.copy),
+                                        onPressed: () {
+                                          Clipboard.setData(ClipboardData(text: state.video!.url));
+                                        },
+                                      ),
+                                      const SizedBox(width: 10),
+                                      ActionChip(
+                                        label: const Text("Edit"),
+                                        avatar: const Icon(Icons.edit),
+                                        onPressed: () {
+                                          AutoRouter.of(context).push(
+                                            VideoEditRoute(
+                                              videoId: state.video?.id,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      const SizedBox(width: 10),
+                                      DeleteActionChip(
+                                        onDeleted: () {
+                                          videoDetailBloc.add(const VideoDetailDelete());
+                                        },
+                                      )
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            const HeaderLocator.sliver(),
-                            SliverFillRemaining(
-                              child: ListView(
-                                children: <Widget>[
-                                  if (state.video != null)
-                                    FiguresSection(
-                                      // label: 'Figures of ${state.video!.name}',
-                                      ofVideoId: state.video!.id,
-                                    ),
-                                  if (state.video != null)
-                                    ArtistsSection(
-                                      label: 'Cast',
-                                      // label: 'Artists of ${state.video!.name}',
-                                      ofVideoId: state.video!.id,
-                                    ),
-                                  if (state.video != null)
-                                    DancesSection(
-                                      // label: 'Dances of ${state.video!.name}',
-                                      ofVideoId: state.video!.id,
-                                    ),
-                                  if (state.video != null)
-                                    EntityInfoListTile(
-                                      createdAt: state.video!.createdAt,
-                                      updateAt: state.video!.updatedAt,
-                                      version: state.video!.version,
-                                    ),
-                                ],
+                            const Divider(thickness: 1.0),
+                            if (state.video != null)
+                              FiguresSection(
+                                // label: 'Figures of ${state.video!.name}',
+                                ofVideoId: state.video!.id,
                               ),
-                            ),
+                            if (state.video != null)
+                              ArtistsSection(
+                                label: 'Cast',
+                                // label: 'Artists of ${state.video!.name}',
+                                ofVideoId: state.video!.id,
+                              ),
+                            if (state.video != null)
+                              DancesSection(
+                                // label: 'Dances of ${state.video!.name}',
+                                ofVideoId: state.video!.id,
+                              ),
+                            if (state.video != null)
+                              EntityInfoListTile(
+                                createdAt: state.video!.createdAt,
+                                updateAt: state.video!.updatedAt,
+                                version: state.video!.version,
+                              ),
                           ],
                         ),
                       ),
@@ -240,16 +230,45 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                             child: CustomScrollView(
                               controller: scrollController,
                               slivers: [
-                                SliverPersistentHeader(
-                                  pinned: true,
-                                  delegate: MomentHeaderDelegate(
-                                    onExit: () {
-                                      _bottomSheetController.animateTo(
-                                        0.0,
-                                        duration: const Duration(seconds: 1),
-                                        curve: Curves.easeInOutCubic,
-                                      );
-                                    },
+                                SliverToBoxAdapter(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const SizedBox(height: 8),
+                                      Center(
+                                        child: Container(
+                                          width: 40,
+                                          height: 6,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      ListTile(
+                                        trailing: IconButton(
+                                          onPressed: () {
+                                            _bottomSheetController.animateTo(
+                                              0.0,
+                                              duration: const Duration(seconds: 1),
+                                              curve: Curves.easeInOutCubic,
+                                            );
+                                          },
+                                          icon: const Icon(Icons.close),
+                                        ),
+                                        title: const Text(
+                                          'Moments',
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      const Divider(thickness: 1.0),
+                                    ],
                                   ),
                                 ),
                                 SliverFillRemaining(
@@ -377,56 +396,4 @@ class VideoEditPage extends StatelessWidget implements AutoRouteWrapper {
       child: this,
     );
   }
-}
-
-class MomentHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final VoidCallback? onExit;
-
-  MomentHeaderDelegate({this.onExit});
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const SizedBox(height: 8),
-        Center(
-          child: Container(
-            width: 40,
-            height: 6,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        const SizedBox(height: 4),
-        ListTile(
-          trailing: IconButton(
-            onPressed: onExit,
-            icon: const Icon(Icons.close),
-          ),
-          title: const Text(
-            'Moments',
-            textAlign: TextAlign.left,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        const Divider(thickness: 1.0),
-      ],
-    );
-  }
-
-  @override
-  double get maxExtent => 100;
-
-  @override
-  double get minExtent => 100;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => true;
 }

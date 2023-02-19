@@ -289,7 +289,7 @@ class PracticesSection extends StatelessWidget implements PracticeListWidgetPara
                     },
               ),
               SizedBox(
-                height: AppStyles.cardHeight,
+                height: AppStyles.sectionHeight,
                 child: PracticeListView(
                   practiceListBloc: BlocProvider.of<PracticeListBloc>(context),
                   scrollDirection: Axis.horizontal,

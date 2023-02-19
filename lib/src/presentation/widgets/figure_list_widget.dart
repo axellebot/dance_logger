@@ -285,7 +285,7 @@ class FiguresSection extends StatelessWidget implements FigureListBlocParams, En
                     },
               ),
               SizedBox(
-                height: AppStyles.cardHeight,
+                height: AppStyles.sectionHeight,
                 child: FigureListView(
                   figureListBloc: BlocProvider.of<FigureListBloc>(context),
                   scrollDirection: Axis.horizontal,

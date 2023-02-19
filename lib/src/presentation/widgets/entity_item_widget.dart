@@ -92,9 +92,9 @@ class SaveButton extends StatelessWidget {
   final VoidCallback? onSaved;
 
   const SaveButton({
-    Key? key,
+    super.key,
     this.onSaved,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

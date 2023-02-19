@@ -111,7 +111,7 @@ class ArtistListTile extends StatelessWidget implements ArtistDetailWidgetParams
                 : const Text('Loading...'),
             // TODO : Add shimmer text
             leading: Hero(
-              tag: 'img-${state.artist?.id ?? state.ofArtistId}',
+              tag: 'img-artist-${state.artist?.id ?? state.ofArtistId}',
               transitionOnUserGestures: false,
               child: (state.artist != null)
                   ? InitialCircleAvatar(
@@ -235,7 +235,7 @@ class ArtistCard extends StatelessWidget implements ArtistDetailWidgetParams {
               children: [
                 Expanded(
                   child: Hero(
-                    tag: 'img-${state.artist?.id ?? state.ofArtistId}',
+                    tag: 'img-artist-${state.artist?.id ?? state.ofArtistId}',
                     transitionOnUserGestures: false,
                     child: Material(
                       clipBehavior: Clip.antiAlias,

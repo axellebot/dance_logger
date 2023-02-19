@@ -271,7 +271,7 @@ class DancesSection extends StatelessWidget implements DanceListWidgetParams, En
                     },
               ),
               SizedBox(
-                height: AppStyles.cardHeight,
+                height: AppStyles.sectionHeight,
                 child: DanceListView(
                   danceListBloc: BlocProvider.of<DanceListBloc>(context),
                   scrollDirection: Axis.horizontal,

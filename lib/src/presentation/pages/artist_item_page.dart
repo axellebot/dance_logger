@@ -66,7 +66,7 @@ class _ArtistDetailsPageState extends State<ArtistDetailsPage> {
                   fit: StackFit.expand,
                   children: <Widget>[
                     Hero(
-                      tag: 'img-${state.artist?.id ?? state.ofArtistId}',
+                      tag: 'img-artist-${state.artist?.id ?? state.ofArtistId}',
                       transitionOnUserGestures: false,
                       child: Image.network(
                         state.artist!.imageUrl!,

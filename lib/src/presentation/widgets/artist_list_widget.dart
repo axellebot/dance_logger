@@ -290,7 +290,7 @@ class ArtistsSection extends StatelessWidget implements ArtistListWidgetParams, 
                     },
               ),
               SizedBox(
-                height: AppStyles.cardHeight,
+                height: AppStyles.artistSectionHeight,
                 child: ArtistListView(
                   artistListBloc: BlocProvider.of<ArtistListBloc>(context),
                   scrollDirection: Axis.horizontal,
