@@ -150,42 +150,12 @@ class App extends StatelessWidget {
 
   ThemeData _buildTheme({required bool darkMode, required bool ultraDark}) {
     ThemeData themeData;
-
-    if (!darkMode) {
-      themeData = ThemeData(
-        brightness: Brightness.light,
-        colorScheme: const ColorScheme(
-          brightness: Brightness.light,
-          primary: AppStyles.primaryColorLight,
-          onPrimary: AppStyles.onPrimaryColorLight,
-          secondary: AppStyles.secondaryColorLight,
-          onSecondary: AppStyles.onSecondaryColorLight,
-          background: AppStyles.backgroundColorLight,
-          onBackground: AppStyles.onBackgroundColorLight,
-          surface: AppStyles.surfaceColorLight,
-          onSurface: AppStyles.onSurfaceColorLight,
-          error: AppStyles.errorColorLight,
-          onError: AppStyles.onErrorColorLight,
-        ),
-      );
-    } else {
-      themeData = ThemeData(
-        brightness: Brightness.dark,
-        colorScheme: ColorScheme(
-          brightness: Brightness.dark,
-          primary: ultraDark ? AppStyles.primaryColorDarkUltra : AppStyles.primaryColorDark,
-          onPrimary: AppStyles.onPrimaryColorDark,
-          secondary: ultraDark ? AppStyles.secondaryColorDarkUltra : AppStyles.secondaryColorDark,
-          onSecondary: AppStyles.onSecondaryColorDark,
-          background: ultraDark ? AppStyles.backgroundColorDarkUltra : AppStyles.backgroundColorDark,
-          onBackground: AppStyles.onBackgroundColorDark,
-          surface: ultraDark ? AppStyles.surfaceColorDarkUltra : AppStyles.surfaceColorDark,
-          onSurface: AppStyles.onSurfaceColorDark,
-          error: ultraDark ? AppStyles.errorColorDarkUltra : AppStyles.errorColorDark,
-          onError: AppStyles.onErrorColorDark,
-        ),
-      );
-    }
+    
+    themeData = ThemeData(
+      brightness: darkMode ? Brightness.dark : Brightness.light,
+      useMaterial3: true,
+      colorSchemeSeed: AppStyles.appColor,
+    );
 
     themeData = themeData.copyWith(
       inputDecorationTheme: themeData.inputDecorationTheme.copyWith(

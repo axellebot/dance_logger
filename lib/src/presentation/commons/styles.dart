@@ -22,26 +22,7 @@ class AppStyles {
   ///                            Basic Colors
   /// --------------------------------------------------------------------------
 
-  static const Color primaryColorLight = Color(0xFF2196f3);
-  static const Color primaryColorDark = Color(0xFF0069c0);
-  static const Color primaryColorDarkUltra = Color(0xFF0069c0);
-  static const Color secondaryColorLight = Color.fromARGB(255, 245, 82, 0);
-  static const Color secondaryColorDark = Color.fromARGB(255, 188, 63, 0);
-  static const Color secondaryColorDarkUltra = Color.fromARGB(255, 188, 63, 0);
-  static const Color onPrimaryColorLight = Color(0xFFFFFFFF);
-  static const Color onPrimaryColorDark = Color(0xFFFFFFFF);
-  static const Color onSecondaryColorLight = Color(0xFFFFFFFF);
-  static const Color onSecondaryColorDark = Color(0xFFFFFFFF);
-  static const Color backgroundColorLight = Color(0xFFFFFFFF);
-  static const Color backgroundColorDark = Color(0xFF3A3A3A);
-  static const Color backgroundColorDarkUltra = Color.fromRGBO(0, 0, 0, 1);
-  static const Color onBackgroundColorLight = Color(0xFF000000);
-  static const Color onBackgroundColorDark = Color(0xFFFFFFFF);
-  static const Color surfaceColorLight = Color(0xFFFFFFFF);
-  static const Color surfaceColorDark = Color(0xFF3A3A3A);
-  static const Color surfaceColorDarkUltra = Color(0xFF000000);
-  static const Color onSurfaceColorLight = Color(0xFF000000);
-  static const Color onSurfaceColorDark = Color(0xFFFFFFFF);
+  static const Color appColor = Color(0xFF2196f3);
   static const Color errorColorLight = Color(0xFFFF0000);
   static const Color errorColorDark = Color(0xFFFF0000);
   static const Color errorColorDarkUltra = Color(0xFFFF0000);
@@ -115,8 +96,6 @@ class AppStyles {
   /// --------------------------------------------------------------------------
 
   static const double authPageMinHeight = 800.0;
-  static const Color authLoginGradientEnd = primaryColorLight;
-  static const Color authLoginGradientStart = primaryColorDark;
 
   /// --------------------------------------------------------------------------
   ///                          Element Profile

@@ -59,26 +59,26 @@ class ThemeTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  ToggleButtons(
-                    onPressed: (_) {
-                      BlocProvider.of<AppBloc>(context).add(
-                        AppThemeChange(
-                          themeMode: themeMode,
-                          themeUltraDark: !themeUltraDark,
-                        ),
-                      );
-                    },
-                    isSelected: [
-                      themeUltraDark == true,
-                    ],
-                    children: [
-                      Tooltip(
-                        message: AppLocalizations.of(context)!
-                            .settingsThemeDarkUltra,
-                        child: Icon(MdiIcons.batteryHeartVariant),
-                      ),
-                    ],
-                  ),
+                  // ToggleButtons(
+                  //   onPressed: (_) {
+                  //     BlocProvider.of<AppBloc>(context).add(
+                  //       AppThemeChange(
+                  //         themeMode: themeMode,
+                  //         themeUltraDark: !themeUltraDark,
+                  //       ),
+                  //     );
+                  //   },
+                  //   isSelected: [
+                  //     themeUltraDark == true,
+                  //   ],
+                  //   children: [
+                  //     Tooltip(
+                  //       message: AppLocalizations.of(context)!
+                  //           .settingsThemeDarkUltra,
+                  //       child: Icon(MdiIcons.batteryHeartVariant),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             );
