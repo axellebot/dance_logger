@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+@RoutePage<List<VideoViewModel>>()
 class VideoListPage extends StatelessWidget
     implements EntityListPageParams, VideoListWidgetParams {
   /// EntityListPageParams
@@ -105,7 +106,7 @@ class VideoListPage extends StatelessWidget
               onPressed: () {
                 AutoRouter.of(context).push(const VideoCreateRoute());
               },
-              child: const Icon(MdiIcons.plus),
+              child: Icon(MdiIcons.plus),
             ),
             body: VideoListView(
               videoListBloc: videoListBloc,

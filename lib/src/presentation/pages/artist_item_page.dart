@@ -6,12 +6,13 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+@RoutePage()
 class ArtistDetailsPage extends StatefulWidget implements AutoRouteWrapper {
   final String artistId;
 
   const ArtistDetailsPage({
     super.key,
-    required this.artistId,
+    @pathParam required this.artistId,
   });
 
   @override
@@ -52,8 +53,7 @@ class _ArtistDetailsPageState extends State<ArtistDetailsPage> {
       },
       child: BlocBuilder<ArtistDetailBloc, ArtistDetailState>(
         builder: (BuildContext context, ArtistDetailState state) {
-          final ArtistDetailBloc artistDetailBloc =
-              BlocProvider.of<ArtistDetailBloc>(context);
+          final ArtistDetailBloc artistDetailBloc = BlocProvider.of<ArtistDetailBloc>(context);
           Widget? background = (state.artist?.imageUrl != null)
               ? Stack(
                   fit: StackFit.expand,
@@ -84,9 +84,7 @@ class _ArtistDetailsPageState extends State<ArtistDetailsPage> {
                       StretchMode.blurBackground,
                       StretchMode.zoomBackground,
                     ],
-                    title: (state.artist != null)
-                        ? Text(state.artist!.name)
-                        : const Text('Artist detail'),
+                    title: (state.artist != null) ? Text(state.artist!.name) : const Text('Artist detail'),
                     background: background,
                   ),
                   actions: [
@@ -170,10 +168,12 @@ class _ArtistDetailsPageState extends State<ArtistDetailsPage> {
   }
 }
 
+@RoutePage()
 class ArtistCreatePage extends ArtistEditPage {
   const ArtistCreatePage({super.key});
 }
 
+@RoutePage()
 class ArtistEditPage extends StatelessWidget implements AutoRouteWrapper {
   final String? artistId;
 

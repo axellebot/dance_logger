@@ -1,7 +1,7 @@
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 
-class SearchAppBar extends StatelessWidget with PreferredSizeWidget {
+class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? title;
   final String? hintText;
   final VoidCallback? onSearch;
@@ -34,7 +34,7 @@ class SearchAppBar extends StatelessWidget with PreferredSizeWidget {
             clipBehavior: Clip.hardEdge,
             borderRadius: BorderRadius.circular(20),
             child: Container(
-              color: Theme.of(context).backgroundColor,
+              color: Theme.of(context).colorScheme.background,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -52,14 +52,11 @@ class SearchAppBar extends StatelessWidget with PreferredSizeWidget {
                       hintText!,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color:
-                            Theme.of(context).primaryTextTheme.bodyText1?.color,
+                        color: Theme.of(context).colorScheme.onBackground,
                       ),
                     ),
                   ),
-                  if (MediaQuery.of(context).orientation ==
-                      Orientation.portrait)
-                    const QuickSettingsActionButton(),
+                  if (MediaQuery.of(context).orientation == Orientation.portrait) const QuickSettingsActionButton(),
                 ],
               ),
             ),
@@ -73,7 +70,7 @@ class SearchAppBar extends StatelessWidget with PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class SelectionAppBar extends StatelessWidget with PreferredSizeWidget {
+class SelectionAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int count;
   final VoidCallback? onCanceled;
   final VoidCallback? onDeleted;

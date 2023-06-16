@@ -6,12 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
+@RoutePage()
 class FigureDetailsPage extends StatefulWidget implements AutoRouteWrapper {
   final String figureId;
 
   const FigureDetailsPage({
     super.key,
-    required this.figureId,
+    @pathParam required this.figureId,
   });
 
   @override
@@ -114,10 +115,12 @@ class _FigureDetailsPageState extends State<FigureDetailsPage> {
   }
 }
 
+@RoutePage()
 class FigureCreatePage extends FigureEditPage {
   const FigureCreatePage({super.key});
 }
 
+@RoutePage()
 class FigureEditPage extends StatelessWidget implements AutoRouteWrapper {
   final String? figureId;
 

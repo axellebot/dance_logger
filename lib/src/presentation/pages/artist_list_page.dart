@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+@RoutePage<List<ArtistViewModel>>()
 class ArtistListPage extends StatelessWidget
     implements EntityListPageParams<ArtistViewModel>, ArtistListWidgetParams {
   /// EntityListPageParams
@@ -108,7 +109,7 @@ class ArtistListPage extends StatelessWidget
               onPressed: () {
                 AutoRouter.of(context).push(const ArtistCreateRoute());
               },
-              child: const Icon(MdiIcons.plus),
+              child: Icon(MdiIcons.plus),
             ),
             body: ArtistListView(
               artistListBloc: artistListBloc,

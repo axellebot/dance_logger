@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.17.0 <3.0.2'
+  sdk: '>=2.17.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -26,7 +26,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  auto_route: ^5.0.1 # Router
+  auto_route: ^7.4.0 # Router
 
   provider: ^6.0.3 # Dependency Injection
   path_provider: ^2.0.11
@@ -36,15 +36,15 @@ dependencies:
   flutter_bloc: ^8.0.1 # Bloc Pattern Presentation Logic
 
   shared_preferences: ^2.0.15 # Storage
-  path: ^1.8.1 # Path
-  intl: ^0.17.0 # Translations
-  share_plus: ^6.3.0
+  path: ^1.8.3 # Path
+  intl: ^0.18.0 # Translations
+  share_plus: ^7.0.2
 
   youtube_player_flutter: ^8.1.0
   easy_refresh: ^3.3.0+1
-  duration_picker: ^1.1.0+1 # Duration picker for form
+  duration_picker: ^1.1.1 # Duration picker for form
 
-  material_design_icons_flutter: ^6.0.7096 # Material Design Icons
+  material_design_icons_flutter: ^7.0.7296 # Material Design Icons
   cupertino_icons: ^1.0.5 # Cupertino Icons
   settings_ui: ^2.0.2
 
@@ -64,7 +64,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.1
-  auto_route_generator: ^5.0.2 # Generator for auto_route
+  auto_route_generator: ^7.1.1 # Generator for auto_route
   json_serializable: ^6.3.1 # Generator for json_annotation
 
 

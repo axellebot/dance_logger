@@ -8,12 +8,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+@RoutePage()
 class VideoDetailsPage extends StatefulWidget implements AutoRouteWrapper {
   final String videoId;
 
   const VideoDetailsPage({
     super.key,
-    required this.videoId,
+    @pathParam required this.videoId,
   });
 
   @override
@@ -148,8 +149,7 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
                                                       VideoDetailToggleRemote(
                                                     opened:
                                                         !(state.remoteOpened ??
-                                                                false) ??
-                                                            false,
+                                                                false),
                                                   ));
                                                 },
                                                 child: const Text('Moments >'),
@@ -335,10 +335,12 @@ class _VideoDetailsPage extends State<VideoDetailsPage> {
   }
 }
 
+@RoutePage()
 class VideoCreatePage extends VideoEditPage {
   const VideoCreatePage({super.key});
 }
 
+@RoutePage()
 class VideoEditPage extends StatelessWidget implements AutoRouteWrapper {
   final String? videoId;
 

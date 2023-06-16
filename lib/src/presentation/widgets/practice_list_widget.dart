@@ -297,7 +297,7 @@ class PracticesSection extends StatelessWidget
           return Column(
             children: [
               SectionTile(
-                leading: const Icon(MdiIcons.history),
+                leading: Icon(MdiIcons.history),
                 title: Text(label ?? 'Practices'),
                 onTap: onSectionTap ??
                     () {

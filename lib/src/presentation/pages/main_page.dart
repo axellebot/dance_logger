@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+@RoutePage()
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 

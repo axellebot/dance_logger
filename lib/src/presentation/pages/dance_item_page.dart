@@ -6,12 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
+@RoutePage()
 class DanceDetailsPage extends StatefulWidget implements AutoRouteWrapper {
   final String danceId;
 
   const DanceDetailsPage({
     super.key,
-    required this.danceId,
+    @pathParam required this.danceId,
   });
 
   @override
@@ -130,10 +131,12 @@ class _DanceDetailsPageState extends State<DanceDetailsPage> {
   }
 }
 
+@RoutePage()
 class DanceCreatePage extends DanceEditPage {
   const DanceCreatePage({super.key});
 }
 
+@RoutePage()
 class DanceEditPage extends StatelessWidget implements AutoRouteWrapper {
   final String? danceId;
 

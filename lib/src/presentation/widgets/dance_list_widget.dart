@@ -277,7 +277,7 @@ class DancesSection extends StatelessWidget
           return Column(
             children: [
               SectionTile(
-                leading: const Icon(MdiIcons.shoeBallet),
+                leading: Icon(MdiIcons.shoeBallet),
                 title: Text(label ?? 'Dances'),
                 onTap: onSectionTap ??
                     () {

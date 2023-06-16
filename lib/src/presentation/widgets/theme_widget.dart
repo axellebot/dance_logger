@@ -20,7 +20,7 @@ class ThemeTile extends StatelessWidget {
             final bool themeUltraDark = state.themeUltraDark;
 
             return ListTile(
-              leading: const Icon(MdiIcons.themeLightDark),
+              leading: Icon(MdiIcons.themeLightDark),
               title: Text(AppLocalizations.of(context)!.settingsThemeModeCTA),
               trailing: Wrap(
                 direction: Axis.horizontal,
@@ -75,7 +75,7 @@ class ThemeTile extends StatelessWidget {
                       Tooltip(
                         message: AppLocalizations.of(context)!
                             .settingsThemeDarkUltra,
-                        child: const Icon(MdiIcons.batteryHeartVariant),
+                        child: Icon(MdiIcons.batteryHeartVariant),
                       ),
                     ],
                   ),

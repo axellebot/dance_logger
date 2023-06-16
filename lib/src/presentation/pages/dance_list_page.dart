@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+@RoutePage<List<DanceViewModel>>()
 class DanceListPage extends StatelessWidget
     implements EntityListPageParams<DanceViewModel>, DanceListWidgetParams {
   /// EntityListPageParams
@@ -103,7 +104,7 @@ class DanceListPage extends StatelessWidget
               onPressed: () {
                 AutoRouter.of(context).push(const DanceCreateRoute());
               },
-              child: const Icon(MdiIcons.plus),
+              child: Icon(MdiIcons.plus),
             ),
             body: DanceListView(
               danceListBloc: danceListBloc,

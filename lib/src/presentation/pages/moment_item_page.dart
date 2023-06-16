@@ -5,16 +5,18 @@ import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+@RoutePage()
 class MomentCreatePage extends MomentEditPage {
   const MomentCreatePage({super.key});
 }
 
+@RoutePage()
 class MomentEditPage extends StatelessWidget implements AutoRouteWrapper {
   final String? momentId;
 
   const MomentEditPage({
     super.key,
-    this.momentId,
+    @pathParam this.momentId,
   });
 
   @override

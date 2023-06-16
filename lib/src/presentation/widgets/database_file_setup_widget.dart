@@ -22,8 +22,8 @@ class DatabaseFileSetupTile extends StatelessWidget {
             dirPath = state.fileDir;
             fileName = state.fileName;
             return ListTile(
-              leading: const Icon(MdiIcons.file),
-              trailing: const Icon(MdiIcons.pencil),
+              leading: Icon(MdiIcons.file),
+              trailing: Icon(MdiIcons.pencil),
               title: const Text(
                 'Change file name',
               ),

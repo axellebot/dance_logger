@@ -6,12 +6,13 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+@RoutePage()
 class PracticeDetailsPage extends StatefulWidget implements AutoRouteWrapper {
   final String practiceId;
 
   const PracticeDetailsPage({
     super.key,
-    required this.practiceId,
+    @pathParam required this.practiceId,
   });
 
   @override
@@ -22,8 +23,7 @@ class PracticeDetailsPage extends StatefulWidget implements AutoRouteWrapper {
     return BlocProvider<PracticeDetailBloc>(
       create: (BuildContext context) {
         return PracticeDetailBloc(
-          practiceRepository:
-              RepositoryProvider.of<PracticeRepository>(context),
+          practiceRepository: RepositoryProvider.of<PracticeRepository>(context),
           mapper: ModelMapper(),
         )..add(PracticeDetailLoad(practiceId: practiceId));
       },
@@ -53,8 +53,7 @@ class _PracticeDetailsPageState extends State<PracticeDetailsPage> {
       },
       child: BlocBuilder<PracticeDetailBloc, PracticeDetailState>(
           builder: (BuildContext context, PracticeDetailState state) {
-        final PracticeDetailBloc practiceDetailBloc =
-            BlocProvider.of<PracticeDetailBloc>(context);
+        final PracticeDetailBloc practiceDetailBloc = BlocProvider.of<PracticeDetailBloc>(context);
         return Scaffold(
           floatingActionButton: FloatingActionButton(
             onPressed: () {
@@ -79,9 +78,7 @@ class _PracticeDetailsPageState extends State<PracticeDetailsPage> {
                     StretchMode.blurBackground,
                     StretchMode.zoomBackground,
                   ],
-                  title: (state.practice != null)
-                      ? Text('${state.practice!.doneAt}')
-                      : const Text('Practice detail'),
+                  title: (state.practice != null) ? Text('${state.practice!.doneAt}') : const Text('Practice detail'),
                 ),
               ),
               SliverFillRemaining(
@@ -117,10 +114,12 @@ class _PracticeDetailsPageState extends State<PracticeDetailsPage> {
   }
 }
 
+@RoutePage()
 class PracticeCreatePage extends PracticeEditPage {
   const PracticeCreatePage({super.key});
 }
 
+@RoutePage()
 class PracticeEditPage extends StatelessWidget implements AutoRouteWrapper {
   final String? practiceId;
 

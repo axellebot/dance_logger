@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dance/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 
+@RoutePage()
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 

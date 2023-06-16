@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:settings_ui/settings_ui.dart';
 
 /// Wrap all global bloc to configure them
 class ConfigWrapper extends StatelessWidget {
@@ -37,8 +36,7 @@ class RepoWrapper extends StatelessWidget {
             /// Dependency Injection of repositories
             /// Use updateShouldNotify to make dependencies available in
             /// `initState` methods of children widgets
-            final AppPrefsRepository appPrefsRepository =
-                state.appPrefsRepository!;
+            final AppPrefsRepository appPrefsRepository = state.appPrefsRepository!;
             providers = <Provider>[
               RepositoryProvider<AppPrefsRepository>.value(
                 value: appPrefsRepository,
@@ -65,9 +63,7 @@ class RepoWrapper extends StatelessWidget {
             return MultiProvider(
               providers: providers,
               child: BlocProvider<AppBloc>(
-                create: (_) =>
-                    AppBloc(appPreferencesRepository: appPrefsRepository)
-                      ..add(AppLaunch()),
+                create: (_) => AppBloc(appPreferencesRepository: appPrefsRepository)..add(AppLaunch()),
                 child: App(),
               ),
             );
@@ -120,10 +116,8 @@ class App extends StatelessWidget {
             }
             return MaterialApp.router(
               scrollBehavior: MyCustomScrollBehavior(),
-              routerDelegate: appRouter.delegate(),
-              routeInformationParser: appRouter.defaultRouteParser(),
-              onGenerateTitle: (BuildContext context) =>
-                  AppLocalizations.of(context)?.appName ?? 'Dance',
+              routerConfig: appRouter.config(),
+              onGenerateTitle: (BuildContext context) => AppLocalizations.of(context)?.appName ?? 'Dance',
               theme: _buildTheme(
                 darkMode: false,
                 ultraDark: state.themeUltraDark,
@@ -179,25 +173,15 @@ class App extends StatelessWidget {
         brightness: Brightness.dark,
         colorScheme: ColorScheme(
           brightness: Brightness.dark,
-          primary: ultraDark
-              ? AppStyles.primaryColorDarkUltra
-              : AppStyles.primaryColorDark,
+          primary: ultraDark ? AppStyles.primaryColorDarkUltra : AppStyles.primaryColorDark,
           onPrimary: AppStyles.onPrimaryColorDark,
-          secondary: ultraDark
-              ? AppStyles.secondaryColorDarkUltra
-              : AppStyles.secondaryColorDark,
+          secondary: ultraDark ? AppStyles.secondaryColorDarkUltra : AppStyles.secondaryColorDark,
           onSecondary: AppStyles.onSecondaryColorDark,
-          background: ultraDark
-              ? AppStyles.backgroundColorDarkUltra
-              : AppStyles.backgroundColorDark,
+          background: ultraDark ? AppStyles.backgroundColorDarkUltra : AppStyles.backgroundColorDark,
           onBackground: AppStyles.onBackgroundColorDark,
-          surface: ultraDark
-              ? AppStyles.surfaceColorDarkUltra
-              : AppStyles.surfaceColorDark,
+          surface: ultraDark ? AppStyles.surfaceColorDarkUltra : AppStyles.surfaceColorDark,
           onSurface: AppStyles.onSurfaceColorDark,
-          error: ultraDark
-              ? AppStyles.errorColorDarkUltra
-              : AppStyles.errorColorDark,
+          error: ultraDark ? AppStyles.errorColorDarkUltra : AppStyles.errorColorDark,
           onError: AppStyles.onErrorColorDark,
         ),
       );
@@ -271,16 +255,6 @@ class App extends StatelessWidget {
         backgroundColor: themeData.colorScheme.background,
       );
     }
-  }
-
-  SettingsThemeData _buildSettingsTheme(BuildContext context) {
-    final ThemeData appTheme = Theme.of(context);
-
-    return SettingsThemeData(
-      dividerColor: appTheme.dividerColor,
-      settingsSectionBackground: appTheme.backgroundColor,
-      settingsListBackground: appTheme.scaffoldBackgroundColor,
-    );
   }
 }
 

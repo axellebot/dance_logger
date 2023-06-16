@@ -90,7 +90,7 @@ class SectionTile extends StatelessWidget {
       leading: leading,
       title: title,
       trailing: (trailing == null && onTap != null)
-          ? const Icon(MdiIcons.arrowRight)
+          ? Icon(MdiIcons.arrowRight)
           : trailing,
       contentPadding: contentPadding,
       onTap: onTap,

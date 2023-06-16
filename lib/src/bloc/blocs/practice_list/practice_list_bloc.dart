@@ -125,7 +125,7 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
 
     final newSelectedPractices = List.of(state.selectedPractices);
     for (PracticeViewModel practice in event.practices) {
-      newSelectedPractices.removeWhere((element) => element.id == practice.id!);
+      newSelectedPractices.removeWhere((element) => element.id == practice.id);
     }
     newSelectedPractices.addAll(event.practices);
 
@@ -148,7 +148,7 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
 
     final newSelectedPractices = List.of(state.selectedPractices);
     for (PracticeViewModel practice in event.practices!) {
-      newSelectedPractices.removeWhere((element) => element.id == practice.id!);
+      newSelectedPractices.removeWhere((element) => element.id == practice.id);
     }
 
     emit(state.copyWith(
@@ -169,10 +169,8 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
         await practiceRepository.deleteById(practice.id);
         emit(state.copyWith(
           status: PracticeListStatus.deleteSuccess,
-          practices: List.of(state.practices)
-            ..removeWhere((element) => element.id == practice.id),
-          selectedPractices: List.of(state.selectedPractices)
-            ..removeWhere((element) => element.id == practice.id),
+          practices: List.of(state.practices)..removeWhere((element) => element.id == practice.id),
+          selectedPractices: List.of(state.selectedPractices)..removeWhere((element) => element.id == practice.id),
         ));
       }
     } on Error catch (error) {
@@ -211,8 +209,7 @@ class PracticeListBloc extends Bloc<PracticeListEvent, PracticeListState> {
     }
 
     List<PracticeViewModel> practiceViewModels = practiceEntities
-        .map<PracticeViewModel>(
-            (practiceEntity) => mapper.toPracticeViewModel(practiceEntity))
+        .map<PracticeViewModel>((practiceEntity) => mapper.toPracticeViewModel(practiceEntity))
         .toList();
     return practiceViewModels;
   }

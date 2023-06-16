@@ -18,7 +18,7 @@ abstract class CustomErrorWidget extends StatelessWidget {
 ///
 /// See [Icon] widget for more documentation
 class ErrorIcon extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
   final double? size;
   final Color? color;
   final String? semanticLabel;
@@ -26,7 +26,7 @@ class ErrorIcon extends StatelessWidget {
 
   const ErrorIcon({
     super.key,
-    this.icon = MdiIcons.alertCircleOutline,
+    this.icon,
     this.size,
     this.color,
     this.semanticLabel,
@@ -36,9 +36,9 @@ class ErrorIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Icon(
-      icon,
+      icon ?? MdiIcons.alertCircleOutline,
       size: size,
-      color: color ?? Theme.of(context).errorColor,
+      color: color ?? Theme.of(context).colorScheme.error,
       semanticLabel: semanticLabel,
       textDirection: textDirection,
     );
@@ -129,8 +129,7 @@ class ErrorTile extends CustomErrorWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: const ErrorIcon(),
-      title:
-          Text(AppLocalizations.of(context)?.errorOccurred ?? 'Error occurred'),
+      title: Text(AppLocalizations.of(context)?.errorOccurred ?? 'Error occurred'),
       subtitle: ErrorText(
         error: error,
         textAlign: TextAlign.left,
@@ -194,9 +193,7 @@ class ErrorListView extends CustomErrorWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget errorWidget = (scrollDirection == Axis.vertical)
-        ? ErrorTile(error: error)
-        : ErrorCard(error: error);
+    Widget errorWidget = (scrollDirection == Axis.vertical) ? ErrorTile(error: error) : ErrorCard(error: error);
     return ListView(
       scrollDirection: scrollDirection,
       padding: padding,
@@ -247,7 +244,7 @@ class ErrorApp extends CustomErrorWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: ErrorPage(error: error),
-      color: Theme.of(context).errorColor,
+      color: Theme.of(context).colorScheme.error,
     );
   }
 }
