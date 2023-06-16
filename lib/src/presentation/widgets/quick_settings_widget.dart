@@ -8,8 +8,7 @@ class QuickSettingsExtendableButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Animation<double> animation =
-        NavigationRail.extendedAnimation(context);
+    final Animation<double> animation = NavigationRail.extendedAnimation(context);
     return AnimatedBuilder(
       animation: animation,
       builder: (context, child) {
@@ -43,14 +42,18 @@ class QuickSettingsActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-          horizontal: AppStyles.appBarIconHorizontalPadding),
+        horizontal: AppStyles.appBarIconHorizontalPadding,
+      ),
       child: IconButton(
         onPressed: () {
           openQuickSettings(context);
         },
-        icon: Icon(MediaQuery.of(context).orientation == Orientation.portrait
-            ? Icons.more_vert_rounded
-            : Icons.more_horiz_rounded),
+        icon: Icon(
+          MediaQuery.of(context).orientation == Orientation.portrait
+              ? Icons.more_vert_rounded
+              : Icons.more_horiz_rounded,
+          color: Theme.of(context).colorScheme.onBackground,
+        ),
       ),
     );
   }

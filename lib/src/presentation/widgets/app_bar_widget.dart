@@ -34,17 +34,20 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
             clipBehavior: Clip.hardEdge,
             borderRadius: BorderRadius.circular(20),
             child: Container(
-              color: Theme.of(context).colorScheme.background,
+              color: Theme.of(context).canvasColor,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: AppStyles.appBarIconHorizontalPadding,
                     ),
                     child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(Icons.search),
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.search,
+                        color: Theme.of(context).colorScheme.onBackground,
+                      ),
                     ),
                   ),
                   Expanded(
