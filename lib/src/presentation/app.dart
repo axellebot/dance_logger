@@ -150,7 +150,7 @@ class App extends StatelessWidget {
 
   ThemeData _buildTheme({required bool darkMode, required bool ultraDark}) {
     ThemeData themeData;
-    
+
     themeData = ThemeData(
       brightness: darkMode ? Brightness.dark : Brightness.light,
       useMaterial3: true,
@@ -158,27 +158,8 @@ class App extends StatelessWidget {
     );
 
     themeData = themeData.copyWith(
-      inputDecorationTheme: themeData.inputDecorationTheme.copyWith(
-        border: const OutlineInputBorder(),
-        floatingLabelBehavior: FloatingLabelBehavior.auto,
-      ),
-      bottomSheetTheme: themeData.bottomSheetTheme.copyWith(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(AppStyles.bottomSheetRadius),
-          ),
-        ),
-      ),
-      cardTheme: themeData.cardTheme.copyWith(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(AppStyles.cardBorderRadius),
-          ),
-        ),
-      ),
       navigationBarTheme: themeData.navigationBarTheme.copyWith(
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-        // height: AppStyles.navigationBarHeight,
       ),
       navigationRailTheme: themeData.navigationRailTheme.copyWith(
         useIndicator: false,
@@ -187,44 +168,12 @@ class App extends StatelessWidget {
 
     // Theme more non migrate ColorScheme (https://github.com/flutter/flutter/issues/91772)
 
-    return themeData.copyWith(
-      dialogTheme: _buildDialogTheme(
-        themeData,
-        darkMode: darkMode,
-        ultraDark: ultraDark,
-      ),
-      cardTheme: _buildCardTheme(
-        themeData,
-        darkMode: darkMode,
-        ultraDark: ultraDark,
+    return themeData = themeData.copyWith(
+      inputDecorationTheme: themeData.inputDecorationTheme.copyWith(
+        border: const OutlineInputBorder(),
+        floatingLabelBehavior: FloatingLabelBehavior.auto,
       ),
     );
-  }
-
-  CardTheme _buildCardTheme(
-    ThemeData themeData, {
-    required bool darkMode,
-    required bool ultraDark,
-  }) {
-    return themeData.cardTheme.copyWith(
-      surfaceTintColor: themeData.colorScheme.background,
-    );
-  }
-
-  DialogTheme _buildDialogTheme(
-    ThemeData themeData, {
-    required bool darkMode,
-    required bool ultraDark,
-  }) {
-    if (!darkMode) {
-      return themeData.dialogTheme.copyWith(
-        backgroundColor: themeData.colorScheme.background,
-      );
-    } else {
-      return themeData.dialogTheme.copyWith(
-        backgroundColor: themeData.colorScheme.background,
-      );
-    }
   }
 }
 
