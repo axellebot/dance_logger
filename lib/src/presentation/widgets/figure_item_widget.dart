@@ -208,9 +208,8 @@ class FigureCard extends StatelessWidget implements FigureDetailWidgetParams {
           return Card(
             elevation: AppStyles.cardElevation,
             clipBehavior: Clip.antiAlias,
-            child: SizedBox(
-              width: AppStyles.cardWidth,
-              height: AppStyles.cardHeight,
+            child: AspectRatio(
+              aspectRatio: AppStyles.figureCardRatio,
               child: InkWell(
                 onTap: () {
                   AutoRouter.of(context).push(

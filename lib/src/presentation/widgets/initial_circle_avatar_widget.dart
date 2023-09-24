@@ -22,7 +22,7 @@ class InitialCircleAvatar extends StatefulWidget {
 }
 
 class _InitialCircleAvatarState extends State<InitialCircleAvatar> {
-  bool _checkLoading = true;
+  bool _loading = true;
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _InitialCircleAvatarState extends State<InitialCircleAvatar> {
     widget.image?.resolve(const ImageConfiguration()).addListener(ImageStreamListener((image, synchronousCall) {
       if (mounted) {
         setState(() {
-          _checkLoading = false;
+          _loading = false;
         });
       }
     }));
@@ -42,15 +42,13 @@ class _InitialCircleAvatarState extends State<InitialCircleAvatar> {
       minRadius: widget.minRadius,
       maxRadius: widget.maxRadius,
       radius: widget.radius,
-      backgroundImage: (!_checkLoading) ? widget.image : null,
-      child: (_checkLoading)
-          ? Center(
-              child: Text(
-                getInitials(widget.text),
-                textAlign: TextAlign.center,
-              ),
-            )
-          : null,
+      foregroundImage: (!_loading) ? widget.image : null,
+      child: Center(
+        child: Text(
+          getInitials(widget.text),
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 }

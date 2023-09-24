@@ -30,7 +30,7 @@ class AppStyles {
   static const Color onErrorColorDark = Color(0xFFFFFFFF);
 
   /// --------------------------------------------------------------------------
-  ///                           Default dimensions
+  ///                           Form
   /// --------------------------------------------------------------------------
 
   static const EdgeInsets formPadding = EdgeInsets.all(15.0);
@@ -48,7 +48,7 @@ class AppStyles {
   /// --------------------------------------------------------------------------
 
   static const double cardElevation = 2.0;
-  static const EdgeInsets cardPadding = EdgeInsets.all(15.0);
+  static const EdgeInsets cardPadding = EdgeInsets.all(10.0);
   static const double cardBorderRadius = 10.0;
   static const double cardWidth = 150.0;
   static const double cardHeight = 80.0;
@@ -90,6 +90,7 @@ class AppStyles {
 
   static const double appBarIconHorizontalPadding = 16;
   static const sliverAppBarExpandedHeight = 320.0;
+  static const avatarRadius = 20.0;
 
   /// --------------------------------------------------------------------------
   ///                                Auth
@@ -109,6 +110,7 @@ class AppStyles {
   ///                              Artist
   /// --------------------------------------------------------------------------
 
+  static const double artistCardRatio = 1 / 1;
   static const double artistThumbnailRadius = 20.0;
   static const double artistSectionHeight = 120.0;
 
@@ -120,7 +122,19 @@ class AppStyles {
   static const double videoSectionHeight = 140.0;
 
   /// --------------------------------------------------------------------------
-  ///                              Video
+  ///                              Figure
+  /// --------------------------------------------------------------------------
+
+  static const double figureCardRatio = 2 / 1;
+
+  /// --------------------------------------------------------------------------
+  ///                              Dance
+  /// --------------------------------------------------------------------------
+
+  static const double danceCardRatio = 2 / 1;
+
+  /// --------------------------------------------------------------------------
+  ///                              Moment
   /// --------------------------------------------------------------------------
 
   static const double momentSectionHeight = chipHeight;

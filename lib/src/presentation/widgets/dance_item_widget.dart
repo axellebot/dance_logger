@@ -208,9 +208,8 @@ class DanceCard extends StatelessWidget implements DanceDetailWidgetParams {
           return Card(
             elevation: AppStyles.cardElevation,
             clipBehavior: Clip.antiAlias,
-            child: SizedBox(
-              width: AppStyles.cardWidth,
-              height: AppStyles.cardHeight,
+            child: AspectRatio(
+              aspectRatio: AppStyles.danceCardRatio,
               child: InkWell(
                 onTap: () {
                   AutoRouter.of(context).push(

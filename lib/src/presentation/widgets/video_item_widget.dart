@@ -228,51 +228,54 @@ class VideoCard extends StatelessWidget implements VideoDetailWidgetParams {
               );
           return Padding(
             padding: const EdgeInsets.all(AppStyles.itemPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Hero(
-                    tag: 'img-video-${state.video?.id ?? state.ofVideoId}',
-                    transitionOnUserGestures: false,
-                    child: Material(
-                      clipBehavior: Clip.antiAlias,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          AppStyles.videoThumbnailRadius,
+            child: AspectRatio(
+              aspectRatio: AppStyles.artistCardRatio,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Hero(
+                      tag: 'img-video-${state.video?.id ?? state.ofVideoId}',
+                      transitionOnUserGestures: false,
+                      child: Material(
+                        clipBehavior: Clip.antiAlias,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            AppStyles.videoThumbnailRadius,
+                          ),
                         ),
-                      ),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(
-                          AppStyles.videoThumbnailRadius,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(
+                            AppStyles.videoThumbnailRadius,
+                          ),
+                          onTap: onTap,
+                          child: (state.video != null && isYoutube(state.video?.url))
+                              ? Image.network(
+                                  'https://img.youtube.com/vi/${getYoutubeId(state.video!.url)}/mqdefault.jpg',
+                                  fit: BoxFit.cover,
+                                )
+                              : const SizedBox(),
                         ),
-                        onTap: onTap,
-                        child: (state.video != null && isYoutube(state.video?.url))
-                            ? Image.network(
-                                'https://img.youtube.com/vi/${getYoutubeId(state.video!.url)}/mqdefault.jpg',
-                                fit: BoxFit.cover,
-                              )
-                            : const SizedBox(),
                       ),
                     ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: onTap,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 5),
-                      (state.video != null)
-                          ? Text(
-                              '${state.video?.name}',
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.left,
-                            )
-                          : const Text('Loading ...')
-                    ],
-                  ),
-                )
-              ],
+                  GestureDetector(
+                    onTap: onTap,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 5),
+                        (state.video != null)
+                            ? Text(
+                                '${state.video?.name}',
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.left,
+                              )
+                            : const Text('Loading ...')
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           );
         },
