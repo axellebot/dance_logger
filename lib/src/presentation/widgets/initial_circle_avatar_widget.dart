@@ -38,15 +38,18 @@ class _InitialCircleAvatarState extends State<InitialCircleAvatar> {
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      minRadius: widget.minRadius,
-      maxRadius: widget.maxRadius,
-      radius: widget.radius,
-      foregroundImage: (!_loading) ? widget.image : null,
-      child: Center(
-        child: Text(
-          getInitials(widget.text),
-          textAlign: TextAlign.center,
+    return AspectRatio(
+      aspectRatio: 1,
+      child: CircleAvatar(
+        minRadius: widget.minRadius,
+        maxRadius: widget.maxRadius,
+        radius: widget.radius,
+        foregroundImage: (!_loading) ? widget.image : null,
+        child: Center(
+          child: Text(
+            getInitials(widget.text),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );

@@ -110,20 +110,23 @@ class ArtistListTile extends StatelessWidget implements ArtistDetailWidgetParams
                   )
                 : const Text('Loading...'),
             // TODO : Add shimmer text
-            leading: Hero(
-              tag: 'img-artist-${state.artist?.id ?? state.ofArtistId}',
-              transitionOnUserGestures: false,
-              child: (state.artist != null)
-                  ? InitialCircleAvatar(
-                      text: '${state.artist?.name}',
-                      image: (state.artist?.imageUrl != null)
-                          ? NetworkImage(
-                              state.artist!.imageUrl!,
-                            )
-                          : null,
-                      radius: AppStyles.artistThumbnailRadius,
-                    )
-                  : const CircularProgressIndicator(),
+            leading: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Hero(
+                tag: 'img-artist-${state.artist?.id ?? state.ofArtistId}',
+                transitionOnUserGestures: false,
+                child: (state.artist != null)
+                    ? InitialCircleAvatar(
+                        text: '${state.artist?.name}',
+                        image: (state.artist?.imageUrl != null)
+                            ? NetworkImage(
+                                state.artist!.imageUrl!,
+                              )
+                            : null,
+                        radius: AppStyles.artistThumbnailRadius,
+                      )
+                    : const CircularProgressIndicator(),
+              ),
             ),
             onTap: (onTap != null)
                 ? () {
@@ -236,25 +239,25 @@ class ArtistCard extends StatelessWidget implements ArtistDetailWidgetParams {
               child: Column(
                 children: [
                   Expanded(
-                    child: Hero(
-                      tag: 'img-artist-${state.artist?.id ?? state.ofArtistId}',
-                      transitionOnUserGestures: false,
-                      child: Material(
-                        clipBehavior: Clip.antiAlias,
-                        shape: const CircleBorder(),
-                        child: InkWell(
-                          onTap: onTap,
-                          child: (state.artist != null)
-                              ? InitialCircleAvatar(
+                    child: Material(
+                      clipBehavior: Clip.antiAlias,
+                      shape: const CircleBorder(),
+                      child: InkWell(
+                        onTap: onTap,
+                        child: (state.artist != null)
+                            ? Hero(
+                                tag: 'img-artist-${state.artist?.id ?? state.ofArtistId}',
+                                transitionOnUserGestures: false,
+                                child: InitialCircleAvatar(
                                   text: '${state.artist?.name}',
                                   image: (state.artist?.imageUrl) != null
                                       ? NetworkImage(
                                           state.artist!.imageUrl!,
                                         )
                                       : null,
-                                )
-                              : const CircularProgressIndicator(),
-                        ),
+                                ),
+                              )
+                            : const CircularProgressIndicator(),
                       ),
                     ),
                   ),
