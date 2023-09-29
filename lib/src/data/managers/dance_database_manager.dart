@@ -5,17 +5,13 @@ import 'package:dance/data.dart';
 import 'package:dance/domain.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+// TODO: Add SQLite flutter web
+// import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
+
 class DanceDatabaseManager
-    implements
-        ArtistDataStore,
-        DanceDataStore,
-        FigureDataStore,
-        PracticeDataStore,
-        VideoDataStore,
-        MomentDataStore {
+    implements ArtistDataStore, DanceDataStore, FigureDataStore, PracticeDataStore, VideoDataStore, MomentDataStore {
   final String filePath;
   late Database db;
   late final DatabaseFactory dbFactory;
@@ -23,13 +19,19 @@ class DanceDatabaseManager
   DanceDatabaseManager({
     required this.filePath,
   }) {
-    if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS) {
-      // sqflite config
-      dbFactory = databaseFactory;
-    } else if (Platform.isWindows || Platform.isLinux) {
-      // sqflite_ffi config
-      sqfliteFfiInit(); // sqflite_ffi init
-      dbFactory = databaseFactoryFfi; // sqflite_ffi factory
+    if (kIsWeb) {
+      // TODO: Add SQLite flutter web
+      // sqflite_ffi_web config
+      // databaseFactory = databaseFactoryFfiWeb; // sqflite_ffi_web factory
+    } else {
+      if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS) {
+        // sqflite config
+        dbFactory = databaseFactory;
+      } else if (Platform.isWindows || Platform.isLinux) {
+        // sqflite_ffi config
+        sqfliteFfiInit(); // sqflite_ffi init
+        dbFactory = databaseFactoryFfi; // sqflite_ffi factory
+      }
     }
   }
 
@@ -252,8 +254,7 @@ class DanceDatabaseManager
       limit: offset.limit,
       offset: offset.offset,
     );
-    List<ArtistDataModel> artists =
-        results.map((result) => ArtistDataModel.fromJson(result)).toList();
+    List<ArtistDataModel> artists = results.map((result) => ArtistDataModel.fromJson(result)).toList();
     return artists;
   }
 
@@ -279,8 +280,7 @@ class DanceDatabaseManager
         offset.offset,
       ],
     );
-    List<ArtistDataModel> artists =
-        results.map((result) => ArtistDataModel.fromJson(result)).toList();
+    List<ArtistDataModel> artists = results.map((result) => ArtistDataModel.fromJson(result)).toList();
     return artists;
   }
 
@@ -312,8 +312,7 @@ class DanceDatabaseManager
         offset.offset,
       ],
     );
-    List<ArtistDataModel> artists =
-        results.map((result) => ArtistDataModel.fromJson(result)).toList();
+    List<ArtistDataModel> artists = results.map((result) => ArtistDataModel.fromJson(result)).toList();
     return artists;
   }
 
@@ -343,8 +342,7 @@ class DanceDatabaseManager
         offset.offset,
       ],
     );
-    List<ArtistDataModel> artists =
-        results.map((result) => ArtistDataModel.fromJson(result)).toList();
+    List<ArtistDataModel> artists = results.map((result) => ArtistDataModel.fromJson(result)).toList();
     return artists;
   }
 
@@ -372,8 +370,7 @@ class DanceDatabaseManager
         offset.offset,
       ],
     );
-    List<ArtistDataModel> artists =
-        results.map((result) => ArtistDataModel.fromJson(result)).toList();
+    List<ArtistDataModel> artists = results.map((result) => ArtistDataModel.fromJson(result)).toList();
     return artists;
   }
 
@@ -404,8 +401,7 @@ class DanceDatabaseManager
       ],
     );
 
-    List<ArtistDataModel> artists =
-        results.map((result) => ArtistDataModel.fromJson(result)).toList();
+    List<ArtistDataModel> artists = results.map((result) => ArtistDataModel.fromJson(result)).toList();
     return artists;
   }
 
@@ -483,8 +479,7 @@ class DanceDatabaseManager
       limit: offset.limit,
       offset: offset.offset,
     );
-    List<DanceDataModel> dances =
-        results.map((result) => DanceDataModel.fromJson(result)).toList();
+    List<DanceDataModel> dances = results.map((result) => DanceDataModel.fromJson(result)).toList();
     return dances;
   }
 
@@ -510,8 +505,7 @@ class DanceDatabaseManager
         offset.offset,
       ],
     );
-    List<DanceDataModel> dances =
-        results.map((result) => DanceDataModel.fromJson(result)).toList();
+    List<DanceDataModel> dances = results.map((result) => DanceDataModel.fromJson(result)).toList();
     return dances;
   }
 
@@ -543,8 +537,7 @@ class DanceDatabaseManager
         offset.offset,
       ],
     );
-    List<DanceDataModel> dances =
-        results.map((result) => DanceDataModel.fromJson(result)).toList();
+    List<DanceDataModel> dances = results.map((result) => DanceDataModel.fromJson(result)).toList();
     return dances;
   }
 
@@ -574,8 +567,7 @@ class DanceDatabaseManager
         offset.offset,
       ],
     );
-    List<DanceDataModel> dances =
-        results.map((result) => DanceDataModel.fromJson(result)).toList();
+    List<DanceDataModel> dances = results.map((result) => DanceDataModel.fromJson(result)).toList();
     return dances;
   }
 
@@ -653,8 +645,7 @@ class DanceDatabaseManager
       limit: offset.limit,
       offset: offset.offset,
     );
-    List<FigureDataModel> figures =
-        results.map((result) => FigureDataModel.fromJson(result)).toList();
+    List<FigureDataModel> figures = results.map((result) => FigureDataModel.fromJson(result)).toList();
     return figures;
   }
 
@@ -684,8 +675,7 @@ class DanceDatabaseManager
         offset.offset,
       ],
     );
-    List<FigureDataModel> figures =
-        results.map((result) => FigureDataModel.fromJson(result)).toList();
+    List<FigureDataModel> figures = results.map((result) => FigureDataModel.fromJson(result)).toList();
     return figures;
   }
 
@@ -711,8 +701,7 @@ class DanceDatabaseManager
         offset.offset,
       ],
     );
-    List<FigureDataModel> figures =
-        results.map((result) => FigureDataModel.fromJson(result)).toList();
+    List<FigureDataModel> figures = results.map((result) => FigureDataModel.fromJson(result)).toList();
     return figures;
   }
 
@@ -740,8 +729,7 @@ class DanceDatabaseManager
         offset.offset,
       ],
     );
-    List<FigureDataModel> figures =
-        results.map((result) => FigureDataModel.fromJson(result)).toList();
+    List<FigureDataModel> figures = results.map((result) => FigureDataModel.fromJson(result)).toList();
     return figures;
   }
 
@@ -820,8 +808,7 @@ class DanceDatabaseManager
       offset: offset.offset,
     );
 
-    List<MomentDataModel> moments =
-        results.map((result) => MomentDataModel.fromJson(result)).toList();
+    List<MomentDataModel> moments = results.map((result) => MomentDataModel.fromJson(result)).toList();
     return moments;
   }
 
@@ -847,8 +834,7 @@ class DanceDatabaseManager
         offset.offset,
       ],
     );
-    List<MomentDataModel> moments =
-        results.map((result) => MomentDataModel.fromJson(result)).toList();
+    List<MomentDataModel> moments = results.map((result) => MomentDataModel.fromJson(result)).toList();
     return moments;
   }
 
@@ -875,8 +861,7 @@ class DanceDatabaseManager
       ],
     );
 
-    List<MomentDataModel> moments =
-        results.map((result) => MomentDataModel.fromJson(result)).toList();
+    List<MomentDataModel> moments = results.map((result) => MomentDataModel.fromJson(result)).toList();
     return moments;
   }
 
@@ -904,8 +889,7 @@ class DanceDatabaseManager
         offset.offset,
       ],
     );
-    List<MomentDataModel> moments =
-        results.map((result) => MomentDataModel.fromJson(result)).toList();
+    List<MomentDataModel> moments = results.map((result) => MomentDataModel.fromJson(result)).toList();
     return moments;
   }
 
@@ -914,8 +898,7 @@ class DanceDatabaseManager
   /// --------------------------------------------------------------------------
 
   @override
-  FutureOr<PracticeDataModel> savePractice(
-      PracticeDataModel practiceModel) async {
+  FutureOr<PracticeDataModel> savePractice(PracticeDataModel practiceModel) async {
     bool exists = true;
     if (kDebugMode) print('$runtimeType:savePractice($practiceModel)');
 
@@ -984,8 +967,7 @@ class DanceDatabaseManager
       limit: offset.limit,
       offset: offset.offset,
     );
-    List<PracticeDataModel> practices =
-        results.map((result) => PracticeDataModel.fromJson(result)).toList();
+    List<PracticeDataModel> practices = results.map((result) => PracticeDataModel.fromJson(result)).toList();
     return practices;
   }
 
@@ -1079,8 +1061,7 @@ class DanceDatabaseManager
       limit: offset.limit,
       offset: offset.offset,
     );
-    List<VideoDataModel> videos =
-        results.map((result) => VideoDataModel.fromJson(result)).toList();
+    List<VideoDataModel> videos = results.map((result) => VideoDataModel.fromJson(result)).toList();
     return videos;
   }
 
@@ -1107,8 +1088,7 @@ class DanceDatabaseManager
       ],
     );
 
-    List<VideoDataModel> videos =
-        results.map((result) => VideoDataModel.fromJson(result)).toList();
+    List<VideoDataModel> videos = results.map((result) => VideoDataModel.fromJson(result)).toList();
     return videos;
   }
 
@@ -1139,8 +1119,7 @@ class DanceDatabaseManager
       ],
     );
 
-    List<VideoDataModel> videos =
-        results.map((result) => VideoDataModel.fromJson(result)).toList();
+    List<VideoDataModel> videos = results.map((result) => VideoDataModel.fromJson(result)).toList();
     return videos;
   }
 
@@ -1171,8 +1150,7 @@ class DanceDatabaseManager
       ],
     );
 
-    List<VideoDataModel> videos =
-        results.map((result) => VideoDataModel.fromJson(result)).toList();
+    List<VideoDataModel> videos = results.map((result) => VideoDataModel.fromJson(result)).toList();
     return videos;
   }
 
@@ -1201,8 +1179,7 @@ class DanceDatabaseManager
       ],
     );
 
-    List<VideoDataModel> videos =
-        results.map((result) => VideoDataModel.fromJson(result)).toList();
+    List<VideoDataModel> videos = results.map((result) => VideoDataModel.fromJson(result)).toList();
     return videos;
   }
 }
