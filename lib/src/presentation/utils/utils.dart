@@ -4,10 +4,8 @@ import 'package:flutter/widgets.dart';
 String getInitials(String nameString) {
   if (nameString.isEmpty) return '';
 
-  List<String> nameArray =
-      nameString.replaceAll(RegExp(r'\s+\b|\b\s'), ' ').split(' ');
-  String initials = ((nameArray[0])[0] ?? ' ') +
-      (nameArray.length == 1 ? ' ' : (nameArray[nameArray.length - 1])[0]);
+  List<String> nameArray = nameString.replaceAll(RegExp(r'\s+\b|\b\s'), ' ').split(' ');
+  String initials = ((nameArray[0])[0] ?? ' ') + (nameArray.length == 1 ? ' ' : (nameArray[nameArray.length - 1])[0]);
 
   return initials;
 }
@@ -20,10 +18,13 @@ bool isYoutube(String? url) {
 }
 
 String? getYoutubeId(String url) {
-  RegExp regex = RegExp(
-      r'^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*');
+  RegExp regex = RegExp(r'^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*');
   RegExpMatch match = regex.firstMatch(url)!;
   return (match[7]?.length == 11) ? match[7] : null;
+}
+
+String getYoutubeThumbnail(String videoId) {
+  return 'https://img.youtube.com/vi/$videoId/mqdefault.jpg';
 }
 
 EdgeInsets calculateDefaultPadding(BuildContext context) {
@@ -91,7 +92,6 @@ String durationFormatter(int milliSeconds) {
       : seconds == 0
           ? '00'
           : '0$seconds';
-  final formattedTime =
-      '${hoursString == '00' ? '' : '$hoursString:'}$minutesString:$secondsString';
+  final formattedTime = '${hoursString == '00' ? '' : '$hoursString:'}$minutesString:$secondsString';
   return formattedTime;
 }

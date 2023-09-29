@@ -118,7 +118,7 @@ class VideoListTile extends StatelessWidget implements VideoDetailWidgetParams {
                   ),
                   child: (isYoutube(state.video?.url))
                       ? Image.network(
-                          'https://img.youtube.com/vi/${getYoutubeId(state.video!.url)}/mqdefault.jpg',
+                          getYoutubeThumbnail(getYoutubeId(state.video!.url) ?? ''),
                           fit: BoxFit.cover,
                         )
                       : Container(),
@@ -231,7 +231,7 @@ class VideoCard extends StatelessWidget implements VideoDetailWidgetParams {
             child: AspectRatio(
               aspectRatio: AppStyles.artistCardRatio,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     child: Hero(
@@ -251,7 +251,7 @@ class VideoCard extends StatelessWidget implements VideoDetailWidgetParams {
                           onTap: onTap,
                           child: (state.video != null && isYoutube(state.video?.url))
                               ? Image.network(
-                                  'https://img.youtube.com/vi/${getYoutubeId(state.video!.url)}/mqdefault.jpg',
+                            getYoutubeThumbnail(getYoutubeId(state.video!.url) ?? ''),
                                   fit: BoxFit.cover,
                                 )
                               : const SizedBox(),
@@ -341,7 +341,7 @@ class VideoThumbnail extends StatelessWidget {
     if (url != null) {
       return isYoutube(url!)
           ? Image.network(
-              'https://img.youtube.com/vi/${getYoutubeId(url!)}/mqdefault.jpg',
+        getYoutubeThumbnail(getYoutubeId(url!) ?? ''),
               fit: BoxFit.cover,
             )
           : Container();
