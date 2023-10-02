@@ -201,7 +201,7 @@ class DanceDatabaseManager
         'artists',
         artistModel.toJson(),
       );
-      if (count == 0) throw DataNotCreatedError('Artist');
+      if (count == 0) throw DataNotCreatedError('$artistModel');
     } else {
       count = await db.update(
         'artists',
@@ -209,7 +209,7 @@ class DanceDatabaseManager
         where: 'artist_id = ?',
         whereArgs: [artistModel.id],
       );
-      if (count == 0) throw DataNotUpdatedError('Artist');
+      if (count == 0) throw DataNotUpdatedError('$artistModel');
     }
     return await getArtist(artistModel.id);
   }
@@ -224,7 +224,7 @@ class DanceDatabaseManager
       whereArgs: [artistId],
       orderBy: 'name',
     );
-    if (results.isEmpty) throw DataNotFoundError('Artist');
+    if (results.isEmpty) throw DataNotFoundError('Artist: $artistId');
     ArtistDataModel artist = ArtistDataModel.fromJson(results.first);
     return artist;
   }
@@ -239,7 +239,7 @@ class DanceDatabaseManager
       where: 'artist_id= ?',
       whereArgs: [artistId],
     );
-    if (count == 0) throw DataNotDeletedError('Artist');
+    if (count == 0) throw DataNotDeletedError('Artist: $artistId');
   }
 
   @override
@@ -426,7 +426,7 @@ class DanceDatabaseManager
         'dances',
         danceModel.toJson(),
       );
-      if (count == 0) throw DataNotCreatedError('Dance');
+      if (count == 0) throw DataNotCreatedError('$danceModel');
     } else {
       count = await db.update(
         'dances',
@@ -434,7 +434,7 @@ class DanceDatabaseManager
         where: 'dance_id = ?',
         whereArgs: [danceModel.id],
       );
-      if (count == 0) throw DataNotUpdatedError('Dance');
+      if (count == 0) throw DataNotUpdatedError('$danceModel');
     }
     return await getDance(danceModel.id);
   }
@@ -449,7 +449,7 @@ class DanceDatabaseManager
       whereArgs: [danceId],
       orderBy: 'name',
     );
-    if (results.isEmpty) throw DataNotFoundError('Dance');
+    if (results.isEmpty) throw DataNotFoundError('Dance: $danceId');
     DanceDataModel dance = DanceDataModel.fromJson(results.first);
     return dance;
   }
@@ -464,7 +464,7 @@ class DanceDatabaseManager
       where: 'dance_id= ?',
       whereArgs: [danceId],
     );
-    if (count == 0) throw DataNotDeletedError('Dance');
+    if (count == 0) throw DataNotDeletedError('Dance: $danceId');
   }
 
   @override
@@ -592,7 +592,7 @@ class DanceDatabaseManager
         'figures',
         figureModel.toJson(),
       );
-      if (count == 0) throw DataNotCreatedError('Figure');
+      if (count == 0) throw DataNotCreatedError('$figureModel');
     } else {
       count = await db.update(
         'figures',
@@ -600,7 +600,7 @@ class DanceDatabaseManager
         where: 'figure_id = ?',
         whereArgs: [figureModel.id],
       );
-      if (count == 0) throw DataNotUpdatedError('Figure');
+      if (count == 0) throw DataNotUpdatedError('$figureModel');
     }
     return await getFigure(figureModel.id);
   }
@@ -615,7 +615,7 @@ class DanceDatabaseManager
       whereArgs: [figureId],
       orderBy: 'name',
     );
-    if (results.isEmpty) throw DataNotFoundError('Figure');
+    if (results.isEmpty) throw DataNotFoundError('Figure: $figureId');
     FigureDataModel figure = FigureDataModel.fromJson(results.first);
     return figure;
   }
@@ -630,7 +630,7 @@ class DanceDatabaseManager
       where: 'figure_id= ?',
       whereArgs: [figureId],
     );
-    if (count == 0) throw DataNotDeletedError('Figure');
+    if (count == 0) throw DataNotDeletedError('Figure: $figureId');
   }
 
   @override
@@ -754,7 +754,7 @@ class DanceDatabaseManager
         'moments',
         momentModel.toJson(),
       );
-      if (count == 0) throw DataNotCreatedError('Moment');
+      if (count == 0) throw DataNotCreatedError('$momentModel');
     } else {
       count = await db.update(
         'moments',
@@ -762,7 +762,7 @@ class DanceDatabaseManager
         where: 'moment_id = ?',
         whereArgs: [momentModel.id],
       );
-      if (count == 0) throw DataNotUpdatedError('Moment');
+      if (count == 0) throw DataNotUpdatedError('$momentModel');
     }
     return await getMoment(momentModel.id);
   }
@@ -777,7 +777,7 @@ class DanceDatabaseManager
       whereArgs: [momentId],
       orderBy: 'start_time',
     );
-    if (results.isEmpty) throw DataNotFoundError('Moment');
+    if (results.isEmpty) throw DataNotFoundError('Moment : $momentId');
     MomentDataModel moment = MomentDataModel.fromJson(results.first);
     return moment;
   }
@@ -792,7 +792,7 @@ class DanceDatabaseManager
       where: 'moment_id = ?',
       whereArgs: [momentId],
     );
-    if (count == 0) throw DataNotDeletedError('Moment');
+    if (count == 0) throw DataNotDeletedError('Moment : $momentId');
   }
 
   @override
@@ -914,7 +914,7 @@ class DanceDatabaseManager
         'practices',
         practiceModel.toJson(),
       );
-      if (count == 0) throw DataNotCreatedError('Practice');
+      if (count == 0) throw DataNotCreatedError('$practiceModel');
     } else {
       count = await db.update(
         'practices',
@@ -922,7 +922,7 @@ class DanceDatabaseManager
         where: 'practice_id = ?',
         whereArgs: [practiceModel.id],
       );
-      if (count == 0) throw DataNotUpdatedError('Practice');
+      if (count == 0) throw DataNotUpdatedError('$practiceModel');
     }
     return await getPractice(practiceModel.id);
   }
@@ -937,7 +937,7 @@ class DanceDatabaseManager
       whereArgs: [practiceId],
       orderBy: 'date',
     );
-    if (results.isEmpty) throw DataNotFoundError('Figure');
+    if (results.isEmpty) throw DataNotFoundError('Practice : $practiceId');
     PracticeDataModel practice = PracticeDataModel.fromJson(results.first);
     return practice;
   }
@@ -952,7 +952,7 @@ class DanceDatabaseManager
       where: 'practice_id = ?',
       whereArgs: [practiceId],
     );
-    if (count == 0) throw DataNotDeletedError('Practice');
+    if (count == 0) throw DataNotDeletedError('Practice: $practiceId');
   }
 
   @override
@@ -977,8 +977,24 @@ class DanceDatabaseManager
     required Offset offset,
   }) async {
     if (kDebugMode) print('$runtimeType:getPracticesOfFigure($figureId)');
-    // TODO: implement getPracticesOfFigure
-    throw UnimplementedError();
+
+    List results = await db.rawQuery(
+      '''
+      SELECT DISTINCT p.*
+      FROM practices
+      WHERE p.figure_id = ?
+      ORDER BY p.updated_at
+      LIMIT ?
+      OFFSET ?
+    ''',
+      [
+        figureId,
+        offset.limit,
+        offset.offset,
+      ],
+    );
+    List<PracticeDataModel> practices = results.map((result) => PracticeDataModel.fromJson(result)).toList();
+    return practices;
   }
 
   @override
@@ -986,8 +1002,28 @@ class DanceDatabaseManager
     String userId, {
     required Offset offset,
   }) async {
-    // TODO: implement getPracticesOfUser
-    throw UnimplementedError();
+
+    if (kDebugMode) print('$runtimeType:getPracticesOfUser($userId)');
+
+    List results = await db.rawQuery(
+      '''
+      SELECT DISTINCT p.*
+      FROM practices p
+        INNER JOIN users_practices u_p
+        ON p.practice_id = u_p.practice_id
+      WHERE u_p.user_id = ?
+      ORDER BY p.updated_at
+      LIMIT ?
+      OFFSET ?
+    ''',
+      [
+        userId,
+        offset.limit,
+        offset.offset,
+      ],
+    );
+    List<PracticeDataModel> practices = results.map((result) => PracticeDataModel.fromJson(result)).toList();
+    return practices;
   }
 
   /// --------------------------------------------------------------------------
@@ -1009,7 +1045,7 @@ class DanceDatabaseManager
         'videos',
         videoModel.toJson(),
       );
-      if (count == 0) throw DataNotCreatedError('Video');
+      if (count == 0) throw DataNotCreatedError('$videoModel');
     } else {
       count = await db.update(
         'videos',
@@ -1017,7 +1053,7 @@ class DanceDatabaseManager
         where: 'video_id = ?',
         whereArgs: [videoModel.id],
       );
-      if (count == 0) throw DataNotUpdatedError('Video');
+      if (count == 0) throw DataNotUpdatedError('$videoModel');
     }
     return await getVideo(videoModel.id);
   }
@@ -1032,7 +1068,7 @@ class DanceDatabaseManager
       whereArgs: [videoId],
       orderBy: 'name',
     );
-    if (results.isEmpty) throw DataNotFoundError('Video');
+    if (results.isEmpty) throw DataNotFoundError('Video: $videoId');
     VideoDataModel video = VideoDataModel.fromJson(results.first);
     return video;
   }
@@ -1047,7 +1083,7 @@ class DanceDatabaseManager
       where: 'video_id= ?',
       whereArgs: [videoId],
     );
-    if (count == 0) throw DataNotDeletedError('Video');
+    if (count == 0) throw DataNotDeletedError('Video: $videoId');
   }
 
   @override
