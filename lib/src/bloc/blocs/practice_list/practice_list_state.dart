@@ -69,7 +69,7 @@ class PracticeListState extends Equatable implements PracticeListParams {
   }) {
     return PracticeListState(
       status: status ?? this.status,
-      ofArtistId: ofArtist ?? this.ofArtistId,
+      ofArtistId: ofArtist ?? this.ofArtistId, // TODO : use artistId ?
       ofDanceId: ofDanceId ?? this.ofDanceId,
       ofFigureId: ofFigureId ?? this.ofFigureId,
       ofVideoId: ofVideoId ?? this.ofVideoId,

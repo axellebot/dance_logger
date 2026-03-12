@@ -96,7 +96,7 @@ class ArtistListPage extends StatelessWidget
                         shouldSelectMultiple)
                     ? () {
                         AutoRouter.of(context)
-                            .pop<List<ArtistViewModel>>(state.selectedArtists);
+                            .maybePop<List<ArtistViewModel>>(state.selectedArtists);
                       }
                     : null,
               );

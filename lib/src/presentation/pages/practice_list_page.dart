@@ -89,7 +89,7 @@ class PracticeListPage extends StatelessWidget
                 onConfirmed:
                     (state.selectedPractices.isNotEmpty && shouldSelectMultiple)
                         ? () {
-                            AutoRouter.of(context).pop<List<PracticeViewModel>>(
+                            AutoRouter.of(context).maybePop<List<PracticeViewModel>>(
                                 state.selectedPractices);
                           }
                         : null,

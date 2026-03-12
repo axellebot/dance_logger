@@ -93,7 +93,7 @@ class VideoListPage extends StatelessWidget
                         shouldSelectMultiple)
                     ? () {
                         AutoRouter.of(context)
-                            .pop<List<VideoViewModel>>(state.selectedVideos);
+                            .maybePop<List<VideoViewModel>>(state.selectedVideos);
                       }
                     : null,
               );

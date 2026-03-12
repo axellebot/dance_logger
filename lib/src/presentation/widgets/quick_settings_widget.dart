@@ -52,7 +52,7 @@ class QuickSettingsActionButton extends StatelessWidget {
           MediaQuery.of(context).orientation == Orientation.portrait
               ? Icons.more_vert_rounded
               : Icons.more_horiz_rounded,
-          color: Theme.of(context).colorScheme.onBackground,
+          color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
     );

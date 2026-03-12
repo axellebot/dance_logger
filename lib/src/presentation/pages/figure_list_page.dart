@@ -83,7 +83,7 @@ class FigureListPage extends StatelessWidget
                         shouldSelectMultiple)
                     ? () {
                         AutoRouter.of(context)
-                            .pop<List<FigureViewModel>>(state.selectedFigures);
+                            .maybePop<List<FigureViewModel>>(state.selectedFigures);
                       }
                     : null,
               );
@@ -94,7 +94,7 @@ class FigureListPage extends StatelessWidget
 
           if (shouldSelectOne) {
             onSelect = (item) {
-              AutoRouter.of(context).pop<List<FigureViewModel>>([item]);
+              AutoRouter.of(context).maybePop<List<FigureViewModel>>([item]);
             };
           } else if (shouldSelectMultiple) {
             onSelect = (item) {

@@ -46,7 +46,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: Icon(
                         Icons.search,
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ),
@@ -55,7 +55,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                       hintText!,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ),

@@ -37,7 +37,7 @@ dependencies:
 
   shared_preferences: ^2.2.1 # Storage
   path: ^1.8.3 # Path
-  intl: ^0.18.0 # Translations
+  intl: ^0.19.0 # Translations
   share_plus: ^7.1.0
 
   youtube_player_flutter: ^8.1.2

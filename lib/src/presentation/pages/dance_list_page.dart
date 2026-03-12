@@ -88,7 +88,7 @@ class DanceListPage extends StatelessWidget implements EntityListPageParams<Danc
                     : null,
                 onConfirmed: (state.selectedDances.isNotEmpty && shouldSelectMultiple)
                     ? () {
-                        AutoRouter.of(context).pop<List<DanceViewModel>>(state.selectedDances);
+                        AutoRouter.of(context).maybePop<List<DanceViewModel>>(state.selectedDances);
                       }
                     : null,
               );

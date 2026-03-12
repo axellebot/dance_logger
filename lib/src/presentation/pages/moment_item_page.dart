@@ -36,7 +36,7 @@ class MomentEditPage extends StatelessWidget implements AutoRouteWrapper {
               appBar: AppBar(
                 leading: IconButton(
                   onPressed: () {
-                    AutoRouter.of(context).pop();
+                    AutoRouter.of(context).maybePop();
                   },
                   icon: const Icon(Icons.close),
                 ),

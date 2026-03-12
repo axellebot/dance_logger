@@ -159,7 +159,7 @@ class _ArtistDetailsPageState extends State<ArtistDetailsPage> {
       child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+            colors: [Colors.transparent, Colors.black.withValues(alpha:0.7)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             stops: const [0.6, 0.95],
@@ -207,7 +207,7 @@ class ArtistEditPage extends StatelessWidget implements AutoRouteWrapper {
               appBar: AppBar(
                 leading: IconButton(
                   onPressed: () {
-                    AutoRouter.of(context).pop();
+                    AutoRouter.of(context).maybePop();
                   },
                   icon: const Icon(Icons.close),
                 ),
